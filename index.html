@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tử Vi Hoàng Hạc - Hệ Thống Di Sản</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50;
+        }
+        body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        
+        header { background-color: var(--primary-color); color: var(--accent-color); padding: 2.5rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
+        header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 2.5rem; }
+        
+        .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        
+        .tabs { display: flex; gap: 12px; }
+        .tab-btn { padding: 12px 24px; border: none; background: #e0d5c1; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; }
+        .tab-btn.active { background: var(--primary-color); color: white; }
+        
+        #search-bar { padding: 12px; width: 350px; border: 2px solid var(--accent-color); border-radius: 6px; outline: none; }
+
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; padding: 10px; background: rgba(0,0,0,0.03); border-radius: 8px; }
+        .tag-filter { padding: 5px 15px; background: white; border: 1px solid var(--accent-color); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
+        .tag-filter.active { background: var(--accent-color); color: white; }
+
+        .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
+
+        .card { 
+            background: white; padding: 1.8rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            border-top: 5px solid var(--primary-color); display: flex; flex-direction: column; position: relative;
+        }
+        .card.featured { border-left: 8px solid var(--accent-color); background: #fffdf9; }
+        .featured-badge { position: absolute; top: -12px; right: 20px; background: var(--accent-color); color: white; padding: 2px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        .card h3 { margin: 0.5rem 0; color: var(--primary-color); font-size: 1.25rem; }
+        .video-icon { color: #eb4034; margin-left: 8px; font-size: 0.9rem; }
+
+        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; font-size: 0.9rem; margin-top: auto; cursor: pointer; }
+        .btn-post { color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .btn-lib { background: var(--accent-color); color: var(--primary-color); }
+
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 3rem; }
+        .page-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; }
+        .page-btn.active { background: var(--primary-color); color: white; }
+
+        /* Footer & Legal Links */
+        footer { text-align: center; padding: 4rem 1rem; background: #1a1a1a; color: white; border-top: 4px solid var(--accent-color); }
+        .footer-links { margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .footer-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .footer-links a:hover { color: var(--accent-color); }
+        
+        /* Cookie Notice */
+        #cookie-notice {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; background: #fff; padding: 15px 25px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: space-between;
+            align-items: center; z-index: 9999; border-left: 5px solid var(--accent-color);
+        }
+        #cookie-notice p { margin: 0; font-size: 0.9rem; color: #444; }
+        .cookie-btn { background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TỬ VI HOÀNG HẠC</h1>
+    <p>Hệ Thống Di Sản & Nghiệm Lý 2026</p>
+</header>
+
+<div class="control-panel">
+    <div class="top-bar">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">BÀI VIẾT</button>
+            <button class="tab-btn" onclick="switchTab('library')">THƯ VIỆN PDF</button>
+        </div>
+        <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
+    </div>
+    
+    <div id="filter-bar" class="filter-bar">
+        <span class="tag-filter active" onclick="filterByTag('Tất cả')">Tất cả</span>
+    </div>
+</div>
+
+<div class="container">
+    
+
+    <section id="dashboard" class="content-section active">
+        <div class="grid" id="post-grid"></div>
+        <div id="post-pagination" class="pagination"></div>
+    </section>
+
+    <section id="library" class="content-section">
+        <div class="grid" id="lib-grid"></div>
+        <div id="lib-pagination" class="pagination"></div>
+    </section>
+</div>
+
+<footer>
+    <div class="footer-links">
+        <a href="#">Trang chủ</a>
+        <a href="#">Giới thiệu</a>
+        <a href="privacy.html">Chính sách bảo mật</a>
+        <a href="#">Điều khoản sử dụng</a>
+        <a href="#">Liên hệ</a>
+    </div>
+    <p>&copy; 2026 Tử Vi Hoàng Hạc - Di Sản Cụ Hoàng Hạc</p>
+    <div style="font-size: 10px; color: #555; margin-top: 10px;">Website được tối ưu hóa cho mục đích nghiên cứu mệnh lý.</div>
+</footer>
+
+<div id="cookie-notice">
+    <p>Chúng tôi sử dụng cookie để cải thiện trải nghiệm của bạn và phục vụ mục đích quảng cáo. Bằng cách tiếp tục, bạn đồng ý với chính sách của chúng tôi.</p>
+    <button class="cookie-btn" onclick="acceptCookies()">Đồng ý</button>
+</div>
+
+<script src="data/articles.js"></script>
+<script src="data/library.js"></script>
+
+<script>
+    let currentTag = 'Tất cả';
+    const config = {
+        posts: { page: 1, limit: 6, gridId: 'post-grid', navId: 'post-pagination' },
+        library: { page: 1, limit: 12, gridId: 'lib-grid', navId: 'lib-pagination' }
+    };
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function sortData(data) {
+        return [...data].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+    }
+
+    function renderUI(type, data) {
+        const settings = config[type];
+        const grid = document.getElementById(settings.gridId);
+        if (!grid) return;
+
+        let filteredData = (currentTag === 'Tất cả') 
+            ? data 
+            : data.filter(item => item.category === currentTag || (item.tags && item.tags.includes(currentTag)));
+        
+        filteredData = sortData(filteredData);
+        const start = (settings.page - 1) * settings.limit;
+        const items = filteredData.slice(start, start + settings.limit);
+
+        grid.innerHTML = items.map(item => `
+            <div class="card ${item.isFeatured ? 'featured' : ''}">
+                ${item.isFeatured ? '<span class="featured-badge">QUAN TRỌNG</span>' : ''}
+                <span class="category-tag">${item.category}</span>
+                <h3>${item.title} ${item.youtubeId ? '<span class="video-icon">▶ Video</span>' : ''}</h3>
+                <p>${item.desc}</p>
+                ${type === 'library' 
+                    ? `<a href="${item.fileUrl}" class="btn btn-lib" target="_blank">Tải tài liệu PDF</a>`
+                    : `<a href="posts/${item.id}.html" class="btn btn-post">Đọc tiếp →</a>`
+                }
+            </div>
+        `).join('');
+
+        renderPagination(type, filteredData.length);
+    }
+
+    function renderPagination(type, total) {
+        const settings = config[type];
+        const totalPages = Math.ceil(total / settings.limit);
+        const nav = document.getElementById(settings.navId);
+        if (totalPages <= 1) { nav.innerHTML = ""; return; }
+        
+        let html = `<button class="page-btn" onclick="changePage('${type}', ${settings.page - 1})" ${settings.page === 1 ? 'disabled' : ''}>Trước</button>`;
+        for(let i=1; i<=totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= settings.page-1 && i <= settings.page+1)) {
+                html += `<button class="page-btn ${i === settings.page ? 'active' : ''}" onclick="changePage('${type}', ${i})">${i}</button>`;
+            } else if (i === settings.page - 2 || i === settings.page + 2) {
+                html += `<span style="padding: 0 5px;">...</span>`;
+            }
+        }
+        html += `<button class="page-btn" onclick="changePage('${type}', ${settings.page + 1})" ${settings.page === totalPages ? 'disabled' : ''}>Sau</button>`;
+        nav.innerHTML = html;
+    }
+
+    function changePage(type, p) {
+        config[type].page = p;
+        const keyword = document.getElementById('search-bar').value.toLowerCase();
+        const rawData = (type === 'posts') ? postDatabase : libraryDatabase;
+        const searchData = rawData.filter(item => 
+            item.title.toLowerCase().includes(keyword) || 
+            item.desc.toLowerCase().includes(keyword)
+        );
+        renderUI(type, searchData);
+        window.scrollTo({ top: 200, behavior: 'smooth' });
+    }
+
+    function filterByTag(tag) {
+        currentTag = tag;
+        document.querySelectorAll('.tag-filter').forEach(el => el.classList.toggle('active', el.innerText === tag));
+        config.posts.page = 1;
+        config.library.page = 1;
+        renderUI('posts', postDatabase);
+        renderUI('library', libraryDatabase);
+    }
+
+    function handleSearch() {
+        const k = document.getElementById('search-bar').value.toLowerCase();
+        const fPosts = postDatabase.filter(p => p.title.toLowerCase().includes(k) || p.desc.toLowerCase().includes(k));
+        const fLib = libraryDatabase.filter(l => l.title.toLowerCase().includes(k) || l.desc.toLowerCase().includes(k));
+        config.posts.page = 1;
+        config.library.page = 1;
+        renderUI('posts', fPosts);
+        renderUI('library', fLib);
+    }
+
+    function initTags() {
+        const tags = new Set(['Tất cả']);
+        postDatabase.forEach(p => tags.add(p.category));
+        libraryDatabase.forEach(l => tags.add(l.category));
+        const bar = document.getElementById('filter-bar');
+        bar.innerHTML = Array.from(tags).map(t => `<span class="tag-filter ${t === currentTag ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
+    }
+
+    function acceptCookies() {
+        document.getElementById('cookie-notice').style.display = 'none';
+        localStorage.setItem('cookiesAccepted', 'true');
+    }
+
+    window.onload = () => {
+        if(localStorage.getItem('cookiesAccepted')) {
+            document.getElementById('cookie-notice').style.display = 'none';
+        }
+        initTags();
+        renderUI('posts', postDatabase);
+        renderUI('library', libraryDatabase);
+    };
+</script>
+</body>
+</html>
