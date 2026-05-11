@@ -5,7 +5,7 @@ const libraryDatabase = [
         title: "Di Sản Cụ Hoàng Hạc",
 		isFeatured: true, // Bài viết sẽ luôn nằm đầu
         desc: "Tổng hợp các bài giảng kinh điển về cung Vô Chính Diệu và cách luận giải đặc thù.",
-        fileUrl: "https://tuvihoanghac.id.vn/download?file=di-san-hoang-hac"
+        fileUrl: "https://tuvihoanghac.id.vn/download?file=1358901683_trich_tuvinghiemly_toanthu.pdf"
     },
     {
         category: "Nghiệm lý",
