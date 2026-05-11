@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: tantan1088e3/tu-vi-hoang-hac # Thay bằng đúng user/repo của bạn
+  branch: main # Nhánh chính của bạn
+
+media_folder: "download" # Nơi lưu file PDF và ảnh khi bạn upload qua Admin
+public_folder: "/download"
+
+collections:
+  - name: "posts"
+    label: "Bài viết mới"
+    folder: "posts" # Thư mục chứa các bài luận (file .md hoặc .html)
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Tiêu đề", name: "title", widget: "string" }
+      - { label: "Ngày đăng", name: "date", widget: "datetime" }
+      - { label: "Tài liệu PDF đính kèm", name: "document", widget: "file", required: false }
+      - { label: "Nội dung bài viết", name: "body", widget: "markdown" }
