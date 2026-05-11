@@ -1,5 +1,5 @@
 backend:
-  name: github
+  name: git-gateway
   repo: tantan1088e3/tu-vi-hoang-hac # Thay bằng đúng user/repo của bạn
   branch: main # Nhánh chính của bạn
 
