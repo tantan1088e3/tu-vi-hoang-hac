@@ -73,6 +73,10 @@
 <footer><p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p></footer>
 
 <script>
+    let pdfDb = []; // Lưu trữ danh sách file PDF tạm thời
+    let currentPdfPage = 1;
+    const pdfLimit = 6; // Số file mỗi trang
+    
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
     let db = [];
     let currentCategory = 'Tất cả';
@@ -144,6 +148,7 @@
         grid.innerHTML = ""; 
     
         if (type === 'pdf') {
+            currentPdfPage = 1; // Reset trang
             filterBar.style.display = "none";
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
             pagination.innerHTML = "";
@@ -196,26 +201,35 @@
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
     async function loadPDFLibrary() {
-    const username = "tantan1088e3"; // Tên user GitHub của ông
-    const repo = "tu-vi-hoang-hac";   // Tên repository của ông
-    const folder = "download";       // Thư mục chứa file
+        const username = "tantan1088e3"; 
+        const repo = "tu-vi-hoang-hac";   
+        const folder = "download";       
+        const GITHUB_API_URL = `https://api.github.com/repos/${username}/${repo}/contents/${folder}`;
     
-    // API lấy danh sách file từ GitHub
-    const GITHUB_API_URL = `https://api.github.com/repos/${username}/${repo}/contents/${folder}`;
+        try {
+            const res = await fetch(GITHUB_API_URL);
+            const files = await res.json();
+            
+            // Lọc file PDF và lưu vào mảng dùng chung
+            pdfDb = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
+    
+            renderPDFUI(); // Gọi hàm hiển thị riêng
+        } catch (e) {
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối thư viện.";
+        }
+    }
 
-    try {
-        const res = await fetch(GITHUB_API_URL);
-        const files = await res.json();
-        
-        // Chỉ lấy các file có đuôi .pdf
-        const pdfFiles = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
-
-        if (pdfFiles.length === 0) {
-            document.getElementById('post-grid').innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư mục hiện chưa có file PDF nào.</p>";
+    function renderPDFUI() {
+        const start = (currentPdfPage - 1) * pdfLimit;
+        const items = pdfDb.slice(start, start + pdfLimit);
+        const grid = document.getElementById('post-grid');
+    
+        if (items.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào.</p>";
             return;
         }
-
-        document.getElementById('post-grid').innerHTML = pdfFiles.map(file => `
+    
+        grid.innerHTML = items.map(file => `
             <div class="card">
                 <span class="category-tag">TÀI LIỆU PDF</span>
                 <h3>${file.name.replace('.pdf', '').replace(/-/g, ' ')}</h3>
@@ -223,15 +237,31 @@
                 <a href="${file.download_url}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none;">Tải xuống PDF ↓</a>
             </div>
         `).join('');
-        
-        document.getElementById('post-pagination').innerHTML = ""; 
-    } catch (e) {
-        console.error(e);
-        document.getElementById('post-grid').innerHTML = "Lỗi tự động kết nối thư viện GitHub.";
+    
+        renderPDFPagination(pdfDb.length);
     }
+
+function renderPDFPagination(total) {
+    const pages = Math.ceil(total / pdfLimit);
+    let html = '';
+    if (pages <= 1) { 
+        document.getElementById('post-pagination').innerHTML = "";
+        return; 
+    }
+    
+    for(let i = 1; i <= pages; i++) {
+        html += `<button class="page-btn ${i === currentPdfPage ? 'active' : ''}" onclick="goPdfPage(${i})">${i}</button>`;
+    }
+    document.getElementById('post-pagination').innerHTML = html;
 }
 
-    window.onload = init;
+function goPdfPage(p) {
+    currentPdfPage = p;
+    renderPDFUI();
+    window.scrollTo(0, 0);
+}
+
+window.onload = init;
 </script>
 </body>
 </html>
