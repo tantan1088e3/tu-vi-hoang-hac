@@ -9,13 +9,12 @@
         :root { --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50; }
         body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; }
         
-        /* Menu tối giản */
         nav { background: var(--primary-color); padding: 1rem; text-align: center; border-bottom: 3px solid var(--accent-color); position: sticky; top: 0; z-index: 100; }
         nav a { color: white; text-decoration: none; font-weight: bold; margin: 0 15px; text-transform: uppercase; font-size: 0.9rem; }
         
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
-        /* Trang danh sách bài viết */
+        /* Grid bài viết */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-top: 30px; }
         .card { 
             background: white; padding: 1.8rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
@@ -23,29 +22,33 @@
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
         .card h3 { margin: 10px 0; color: var(--primary-color); font-family: 'Playfair Display', serif; }
-        .card p { font-size: 0.95rem; color: #555; margin-bottom: 1.5rem; }
 
-        /* Trang chi tiết bài viết */
+        /* Chi tiết bài viết */
         .article-container { max-width: 850px; margin: 2rem auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); padding: 4rem; }
         .post-meta { color: var(--accent-color); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; display: block; }
-        h1 { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.8rem; line-height: 1.2; margin: 0; }
+        h1 { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.5rem; line-height: 1.2; margin-bottom: 2rem; }
         
-        .content { margin-top: 2.5rem; font-size: 1.15rem; text-align: justify; color: var(--text-color); }
-        .content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; border-left: 5px solid var(--accent-color); padding-left: 20px; margin-top: 3rem; font-size: 1.8rem; }
-        .content p { margin-bottom: 1.5rem; }
+        .content { margin-top: 2rem; font-size: 1.15rem; text-align: justify; }
         
-        /* Khung trích dẫn tự động */
-        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 25px; font-style: italic; margin: 2.5rem 0; color: var(--primary-color); line-height: 1.6; position: relative; }
+        /* Định dạng Header nội bộ (Cột H) */
+        .inner-header { color: var(--primary-color); font-family: 'Playfair Display', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 15px; margin-bottom: 25px; font-size: 1.8rem; }
+        
+        /* Định dạng các đoạn thân bài (Cột I) */
+        .content p { margin-bottom: 1.5rem; text-indent: 20px; }
+        .content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; margin-top: 2.5rem; font-size: 1.5rem; border-left: 4px solid var(--accent-color); padding-left: 15px; }
 
-        /* Nút bấm */
-        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; cursor: pointer; transition: 0.3s; display: inline-block; }
-        .btn-view { border: 2px solid var(--primary-color); color: var(--primary-color); background: none; margin-top: auto; }
+        /* Định dạng Kết luận (Cột J) */
+        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 30px; font-style: italic; margin-top: 4rem; color: var(--primary-color); position: relative; border-radius: 4px; }
+        .quote-box::before { content: "Lời kết:"; font-weight: bold; font-style: normal; display: block; margin-bottom: 10px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+        .btn { padding: 12px 25px; text-decoration: none; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; display: inline-block; border: 2px solid var(--primary-color); }
+        .btn-view { color: var(--primary-color); background: none; margin-top: auto; }
         .btn-view:hover { background: var(--primary-color); color: white; }
-        .btn-back { background: none; border: 2px solid var(--primary-color); color: var(--primary-color); margin-top: 3rem; }
+        .btn-back { color: var(--primary-color); background: none; margin-top: 3rem; }
         .btn-back:hover { background: var(--primary-color); color: white; }
 
         .hidden { display: none; }
-        @media (max-width: 768px) { .article-container { padding: 2rem; margin: 1rem; } h1 { font-size: 2rem; } }
+        @media (max-width: 768px) { .article-container { padding: 2rem; margin: 1rem; } h1 { font-size: 1.8rem; } }
     </style>
 </head>
 <body>
@@ -55,12 +58,14 @@
 </nav>
 
 <div class="container">
+    <!-- DANH SÁCH BÀI VIẾT -->
     <div id="list-view">
         <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; font-size: 2.2rem; margin-top: 40px;">Hệ Thống Nghiệm Lý Chi Tiết</h2>
         <p style="text-align: center; color: var(--accent-color); font-weight: bold;">DI SẢN CỤ HOÀNG HẠC (TRƯƠNG CUNG TÙNG)</p>
-        <div class="grid" id="post-grid">Đang kết nối thư viện di sản...</div>
+        <div class="grid" id="post-grid">Đang tải dữ liệu di sản...</div>
     </div>
 
+    <!-- CHI TIẾT BÀI VIẾT -->
     <div id="detail-view" class="hidden">
         <article class="article-container">
             <span id="article-meta" class="post-meta"></span>
@@ -76,7 +81,7 @@
     
     let db = [];
 
-    // HÀM TÁCH CSV CHUYÊN DỤNG (CHỐNG VỠ CỘT H)
+    // Hàm bóc tách CSV chuyên dụng
     function parseCSVLine(text) {
         const result = [];
         let cur = '';
@@ -84,7 +89,7 @@
         for (let i = 0; i < text.length; i++) {
             let char = text[i];
             if (char === '"') {
-                if (inQuote && text[i + 1] === '"') { cur += '"'; i++; } // Xử lý dấu ngoặc kép đôi ""
+                if (inQuote && text[i + 1] === '"') { cur += '"'; i++; }
                 else { inQuote = !inQuote; }
             } else if (char === ',' && !inQuote) {
                 result.push(cur.trim()); cur = '';
@@ -98,8 +103,6 @@
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-            
-            // Chia hàng dựa trên dấu xuống dòng nằm ngoài ngoặc kép
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/).slice(1);
             
             db = rows.map(r => {
@@ -109,16 +112,19 @@
                     cat: c[1] || "",
                     title: c[2] || "",
                     desc: c[3] || "",
-                    content: c[7] || "" // Cột H
+                    h_header: c[7] || "", // Cột H
+                    i_body:   c[8] || "", // Cột I
+                    j_footer: c[9] || ""  // Cột J
                 };
             }).filter(p => p.id);
             
+            // Xử lý Deep Link (nếu vào bằng link ?id=...)
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             if(postId) { renderList(); showPost(postId); } 
             else { renderList(); }
         } catch (e) { 
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu di sản.";
+            document.getElementById('post-grid').innerHTML = "Không thể kết nối dữ liệu Google Sheets.";
         }
     }
 
@@ -141,30 +147,34 @@
         document.getElementById('article-meta').innerText = p.cat;
         document.getElementById('article-title').innerText = p.title;
         
-        // XỬ LÝ HIỂN THỊ NỘI DUNG (CỘT H)
-        const rawText = p.content;
-        const lines = rawText.split(/\r?\n/);
-        let formattedHtml = "";
+        let html = "";
 
-        lines.forEach(line => {
-            const text = line.trim();
-            if(!text) return;
+        // 1. Phần Tiêu đề (Cột H)
+        if(p.h_header) {
+            html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
+        }
 
-            // Chuyển tiêu đề số thành H2
-            if(/^\d+\./.test(text)) {
-                formattedHtml += `<h2>${text}</h2>`;
-            } 
-            // Nếu là câu phú/trích dẫn (thường có dấu :)
-            else if(text.includes(":") && text.length < 150) {
-                formattedHtml += `<div class="quote-box">${text}</div>`;
-            }
-            // Đoạn văn thường
-            else {
-                formattedHtml += `<p>${text}</p>`;
-            }
-        });
+        // 2. Phần Thân bài (Cột I) - Xử lý thông minh tiêu đề con và đoạn văn
+        if(p.i_body) {
+            const lines = p.i_body.split(/\r?\n/);
+            lines.forEach(line => {
+                const text = line.trim();
+                if(!text) return;
+                
+                if(/^\d+\./.test(text) || text.length < 50 && text.endsWith(":")) {
+                    html += `<h2>${text}</h2>`;
+                } else {
+                    html += `<p>${text}</p>`;
+                }
+            });
+        }
 
-        document.getElementById('article-content').innerHTML = formattedHtml;
+        // 3. Phần Kết luận (Cột J)
+        if(p.j_footer) {
+            html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
+        }
+
+        document.getElementById('article-content').innerHTML = html;
         toggleView(true);
         window.scrollTo(0,0);
         document.title = p.title + " - Tử Vi Hoàng Hạc";
