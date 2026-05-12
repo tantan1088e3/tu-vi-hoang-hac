@@ -75,8 +75,8 @@
 </div>
 
 <script>
-    // URL CSV đã được cập nhật
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
+    // Thêm chuỗi thời gian để ép trình duyệt luôn lấy file mới nhất từ Google Sheets
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
     
     let db = [];
 
@@ -99,14 +99,12 @@
 
     async function init() {
         try {
-            const res = await fetch(SHEET_URL + '&cachebust=' + new Date().getTime());
+            const res = await fetch(SHEET_URL);
             const csv = await res.text();
+            // Tách dòng thông minh để không bị lỗi khi có xuống dòng trong ô dữ liệu
             const allRows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            // XỬ LÝ TIÊU ĐỀ: Tự động tìm cột bất kể viết hoa hay thường
-            const rawHeaders = parseCSVLine(allRows[0]);
-            const headers = rawHeaders.map(h => h.toLowerCase().trim());
-            
+            const headers = parseCSVLine(allRows[0]).map(h => h.toLowerCase().trim());
             const idx = {
                 id: headers.indexOf('id'),
                 cat: headers.indexOf('category'),
@@ -117,8 +115,7 @@
                 j: headers.indexOf('j_footer')
             };
 
-            const dataRows = allRows.slice(1);
-            db = dataRows.map(r => {
+            db = allRows.slice(1).map(r => {
                 const c = parseCSVLine(r);
                 return {
                     id: c[idx.id] || "",
@@ -129,20 +126,25 @@
                     i_body:   c[idx.i] || "",
                     j_footer: c[idx.j] || ""
                 };
-            }).filter(p => p.id && p.id !== "");
+            }).filter(p => p.id);
             
-            if(db.length === 0) {
-                document.getElementById('post-grid').innerHTML = "Không tìm thấy dữ liệu bài viết. Hãy kiểm tra lại cột ID trong Sheets.";
-                return;
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
-            renderList();
-            if(postId) { showPost(postId); } 
+            // Xử lý hiển thị dựa trên URL
+            renderUI();
         } catch (e) { 
             console.error(e);
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu. Vui lòng kiểm tra lại kết nối internet hoặc link CSV.";
+            document.getElementById('post-grid').innerHTML = "Lỗi tải dữ liệu di sản.";
+        }
+    }
+
+    function renderUI() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+        
+        if(postId) {
+            showPost(postId);
+        } else {
+            renderList();
+            toggleView(false);
         }
     }
 
@@ -150,75 +152,65 @@
         const grid = document.getElementById('post-grid');
         grid.innerHTML = db.map(p => `
             <div class="card">
-                <span class="post-meta" style="font-size: 0.7rem;">${p.cat}</span>
+                <span class="post-meta">${p.cat}</span>
                 <h3>${p.title}</h3>
-                <p>${p.desc.substring(0, 120)}${p.desc.length > 120 ? '...' : ''}</p>
-                <button class="btn btn-view" onclick="showPost('${p.id}')">Xem nội dung →</button>
+                <p>${p.desc}</p>
+                <button class="btn btn-view" onclick="updateUrlAndShow('${p.id}')">Xem nội dung →</button>
             </div>
         `).join('');
     }
 
+    // Hàm mới để cập nhật URL mà không làm mất trang
+    function updateUrlAndShow(id) {
+        const newUrl = window.location.pathname + '?id=' + id;
+        window.history.pushState({id: id}, '', newUrl);
+        showPost(id);
+    }
+
     function showPost(id) {
         const p = db.find(x => x.id === id);
-        if(!p) return;
+        if(!p) {
+            renderList();
+            toggleView(false);
+            return;
+        }
 
         document.getElementById('article-meta').innerText = p.cat;
         document.getElementById('article-title').innerText = p.title;
         
         let html = "";
+        if(p.h_header) html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
         
-        // Cột H (Lời dẫn)
-        if(p.h_header && p.h_header !== "") {
-            html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
-        }
-
-        // Cột I (Nội dung chính)
-        if(p.i_body && p.i_body !== "") {
-            const lines = p.i_body.split(/\r?\n/);
-            lines.forEach(line => {
+        if(p.i_body) {
+            p.i_body.split(/\r?\n/).forEach(line => {
                 const text = line.trim();
                 if(!text) return;
-                // Nếu là tiêu đề phụ (bắt đầu bằng số hoặc kết thúc bằng dấu hai chấm)
-                if(/^\d+\./.test(text) || (text.length < 100 && text.endsWith(":"))) {
+                if(/^\d+\./.test(text) || (text.length < 50 && text.endsWith(":"))) {
                     html += `<h2>${text}</h2>`;
                 } else {
                     html += `<p>${text}</p>`;
                 }
             });
         } else {
-            html += `<p style="text-align:center; color:#999; font-style:italic;">Nội dung bài viết này đang được cập nhật...</p>`;
+            html += `<p style="font-style:italic; color:gray;">Nội dung đang được cập nhật...</p>`;
         }
 
-        // Cột J (Lời kết)
-        if(p.j_footer && p.j_footer !== "") {
-            html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
-        }
+        if(p.j_footer) html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
 
         document.getElementById('article-content').innerHTML = html;
         toggleView(true);
         window.scrollTo(0,0);
-        document.title = p.title + " - Tử Vi Hoàng Hạc";
-        
-        // Cập nhật URL mà không reload trang
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?id=' + id;
-        window.history.pushState({path:newUrl},'',newUrl);
     }
 
     function toggleView(isDetail) {
-        const listView = document.getElementById('list-view');
-        const detailView = document.getElementById('detail-view');
-        if(isDetail) {
-            listView.classList.add('hidden');
-            detailView.classList.remove('hidden');
-        } else {
-            listView.classList.remove('hidden');
-            detailView.classList.add('hidden');
-            document.title = "Hệ Thống Di Sản - Tử Vi Hoàng Hạc";
-            // Xóa tham số id trên URL khi quay lại danh sách
-            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            window.history.pushState({path:cleanUrl},'',cleanUrl);
-        }
+        document.getElementById('list-view').style.display = isDetail ? 'none' : 'block';
+        document.getElementById('detail-view').style.display = isDetail ? 'block' : 'none';
     }
+
+    // Lắng nghe nút Back của trình duyệt để không bị nhảy trang
+    window.onpopstate = function() {
+        renderUI();
+    };
 
     window.onload = init;
 </script>
