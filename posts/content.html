@@ -80,31 +80,37 @@
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-            const rows = csv.split(/\r?\n/).slice(1);
+            
+            // Chia dòng thông minh: Chỉ chia dòng khi gặp dấu xuống dòng nằm ngoài dấu ngoặc kép
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/).slice(1);
             
             db = rows.map(r => {
-                const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                // Tách cột chuẩn xác hỗ trợ nội dung dài chứa dấu phẩy
+                const c = r.match(/(".*?"|[^",\n\r]+)(?=\s*,|\s*(\n|\r|$))/g) || [];
+                
+                const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
+
                 return {
-                    id: c[0]?.replace(/"/g, '').trim(),
-                    cat: c[1]?.replace(/"/g, '').trim(),
-                    title: c[2]?.replace(/"/g, '').trim(),
-                    desc: c[3]?.replace(/"/g, '').trim(),
-                    content: c[7]?.replace(/^"|"$/g, '').trim() // Lấy cột H (Chữ thuần)
+                    id: clean(c[0]),      // Cột A
+                    cat: clean(c[1]),     // Cột B
+                    title: clean(c[2]),   // Cột C
+                    desc: clean(c[3]),    // Cột D
+                    content: clean(c[7])  // Cột H (Đúng vị trí chứa bài luận)
                 };
             }).filter(p => p.id);
             
-            // Kiểm tra nếu URL có sẵn ID bài viết (ví dụ ?id=thien-khong)
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             
             if(postId) {
-                renderList(); // Vẫn render danh sách ngầm
+                renderList(); 
                 showPost(postId);
             } else {
                 renderList();
             }
         } catch (e) { 
-            document.getElementById('post-grid').innerHTML = "Lỗi tải dữ liệu. Vui lòng kiểm tra lại Sheets.";
+            console.error(e);
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu di sản.";
         }
     }
 
@@ -127,24 +133,25 @@
         document.getElementById('article-meta').innerText = p.cat;
         document.getElementById('article-title').innerText = p.title;
         
-        // XỬ LÝ CHỮ THUẦN TỪ SHEET THÀNH HTML ĐẸP
+        // XỬ LÝ NỘI DUNG CHI TIẾT
         const rawText = p.content || "Nội dung đang được cập nhật...";
-        const lines = rawText.split('\n');
+        // Tách các dòng thực tế trong bài luận
+        const lines = rawText.split(/\r?\n/);
         let formattedHtml = "";
 
         lines.forEach(line => {
             const text = line.trim();
             if(!text) return;
 
-            // 1. Dòng bắt đầu bằng số (ví dụ 1. Ý nghĩa) -> Biến thành tiêu đề H2
+            // 1. Dòng bắt đầu bằng số (Ví dụ: 1. Ý nghĩa...) -> Biến thành H2
             if(/^\d+\./.test(text)) {
                 formattedHtml += `<h2>${text}</h2>`;
             } 
-            // 2. Dòng nằm trong ngoặc kép -> Biến thành khung trích dẫn (Quote Box)
-            else if(text.startsWith('"') && text.endsWith('"')) {
+            // 2. Dòng trích dẫn đặc biệt (Nếu bạn muốn bọc khung cho các câu phú)
+            else if(text.length < 100 && (text.includes(":") || text.startsWith("-"))) {
                 formattedHtml += `<div class="quote-box">${text}</div>`;
-            } 
-            // 3. Dòng bình thường -> Thẻ P
+            }
+            // 3. Đoạn văn bình thường
             else {
                 formattedHtml += `<p>${text}</p>`;
             }
@@ -153,8 +160,6 @@
         document.getElementById('article-content').innerHTML = formattedHtml;
         toggleView(true);
         window.scrollTo(0,0);
-        
-        // Cập nhật lại tiêu đề trình duyệt
         document.title = p.title + " - Tử Vi Hoàng Hạc";
     }
 
