@@ -76,40 +76,48 @@
     
     let db = [];
 
+    // HÀM TÁCH CSV CHUYÊN DỤNG (CHỐNG VỠ CỘT H)
+    function parseCSVLine(text) {
+        const result = [];
+        let cur = '';
+        let inQuote = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') {
+                if (inQuote && text[i + 1] === '"') { cur += '"'; i++; } // Xử lý dấu ngoặc kép đôi ""
+                else { inQuote = !inQuote; }
+            } else if (char === ',' && !inQuote) {
+                result.push(cur.trim()); cur = '';
+            } else { cur += char; }
+        }
+        result.push(cur.trim());
+        return result;
+    }
+
     async function init() {
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
             
-            // Chia dòng thông minh: Chỉ chia dòng khi gặp dấu xuống dòng nằm ngoài dấu ngoặc kép
+            // Chia hàng dựa trên dấu xuống dòng nằm ngoài ngoặc kép
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/).slice(1);
             
             db = rows.map(r => {
-                // Tách cột chuẩn xác hỗ trợ nội dung dài chứa dấu phẩy
-                const c = r.match(/(".*?"|[^",\n\r]+)(?=\s*,|\s*(\n|\r|$))/g) || [];
-                
-                const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
-
+                const c = parseCSVLine(r);
                 return {
-                    id: clean(c[0]),      // Cột A
-                    cat: clean(c[1]),     // Cột B
-                    title: clean(c[2]),   // Cột C
-                    desc: clean(c[3]),    // Cột D
-                    content: clean(c[7])  // Cột H (Đúng vị trí chứa bài luận)
+                    id: c[0] || "",
+                    cat: c[1] || "",
+                    title: c[2] || "",
+                    desc: c[3] || "",
+                    content: c[7] || "" // Cột H
                 };
             }).filter(p => p.id);
             
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
-            
-            if(postId) {
-                renderList(); 
-                showPost(postId);
-            } else {
-                renderList();
-            }
+            if(postId) { renderList(); showPost(postId); } 
+            else { renderList(); }
         } catch (e) { 
-            console.error(e);
             document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu di sản.";
         }
     }
@@ -133,9 +141,8 @@
         document.getElementById('article-meta').innerText = p.cat;
         document.getElementById('article-title').innerText = p.title;
         
-        // XỬ LÝ NỘI DUNG CHI TIẾT
-        const rawText = p.content || "Nội dung đang được cập nhật...";
-        // Tách các dòng thực tế trong bài luận
+        // XỬ LÝ HIỂN THỊ NỘI DUNG (CỘT H)
+        const rawText = p.content;
         const lines = rawText.split(/\r?\n/);
         let formattedHtml = "";
 
@@ -143,15 +150,15 @@
             const text = line.trim();
             if(!text) return;
 
-            // 1. Dòng bắt đầu bằng số (Ví dụ: 1. Ý nghĩa...) -> Biến thành H2
+            // Chuyển tiêu đề số thành H2
             if(/^\d+\./.test(text)) {
                 formattedHtml += `<h2>${text}</h2>`;
             } 
-            // 2. Dòng trích dẫn đặc biệt (Nếu bạn muốn bọc khung cho các câu phú)
-            else if(text.length < 100 && (text.includes(":") || text.startsWith("-"))) {
+            // Nếu là câu phú/trích dẫn (thường có dấu :)
+            else if(text.includes(":") && text.length < 150) {
                 formattedHtml += `<div class="quote-box">${text}</div>`;
             }
-            // 3. Đoạn văn bình thường
+            // Đoạn văn thường
             else {
                 formattedHtml += `<p>${text}</p>`;
             }
@@ -164,12 +171,14 @@
     }
 
     function toggleView(isDetail) {
+        const listView = document.getElementById('list-view');
+        const detailView = document.getElementById('detail-view');
         if(isDetail) {
-            document.getElementById('list-view').classList.add('hidden');
-            document.getElementById('detail-view').classList.remove('hidden');
+            listView.classList.add('hidden');
+            detailView.classList.remove('hidden');
         } else {
-            document.getElementById('list-view').classList.remove('hidden');
-            document.getElementById('detail-view').classList.add('hidden');
+            listView.classList.remove('hidden');
+            detailView.classList.add('hidden');
             document.title = "Hệ Thống Di Sản - Tử Vi Hoàng Hạc";
         }
     }
