@@ -81,7 +81,6 @@
     
     let db = [];
 
-    // Hàm bóc tách CSV chuyên dụng
     function parseCSVLine(text) {
         const result = [];
         let cur = '';
@@ -103,28 +102,40 @@
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/).slice(1);
+            const allRows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            db = rows.map(r => {
+            // LẤY DÒNG TIÊU ĐỀ ĐỂ DÒ VỊ TRÍ CỘT
+            const headers = parseCSVLine(allRows[0]);
+            const idx = {
+                id: headers.indexOf('id'),
+                cat: headers.indexOf('category'),
+                title: headers.indexOf('title'),
+                desc: headers.indexOf('desc'),
+                h: headers.indexOf('h_header'),
+                i: headers.indexOf('i_body'),
+                j: headers.indexOf('j_footer')
+            };
+
+            const dataRows = allRows.slice(1);
+            db = dataRows.map(r => {
                 const c = parseCSVLine(r);
                 return {
-                    id: c[0] || "",
-                    cat: c[1] || "",
-                    title: c[2] || "",
-                    desc: c[3] || "",
-                    h_header: c[7] || "", // Cột H
-                    i_body:   c[8] || "", // Cột I
-                    j_footer: c[9] || ""  // Cột J
+                    id: c[idx.id] || "",
+                    cat: c[idx.cat] || "",
+                    title: c[idx.title] || "",
+                    desc: c[idx.desc] || "",
+                    h_header: c[idx.h] || "",
+                    i_body:   c[idx.i] || "",
+                    j_footer: c[idx.j] || ""
                 };
             }).filter(p => p.id);
             
-            // Xử lý Deep Link (nếu vào bằng link ?id=...)
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             if(postId) { renderList(); showPost(postId); } 
             else { renderList(); }
         } catch (e) { 
-            document.getElementById('post-grid').innerHTML = "Không thể kết nối dữ liệu Google Sheets.";
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu. Vui lòng kiểm tra cột H1, I1, J1.";
         }
     }
 
@@ -148,20 +159,14 @@
         document.getElementById('article-title').innerText = p.title;
         
         let html = "";
+        if(p.h_header) html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
 
-        // 1. Phần Tiêu đề (Cột H)
-        if(p.h_header) {
-            html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
-        }
-
-        // 2. Phần Thân bài (Cột I) - Xử lý thông minh tiêu đề con và đoạn văn
         if(p.i_body) {
             const lines = p.i_body.split(/\r?\n/);
             lines.forEach(line => {
                 const text = line.trim();
                 if(!text) return;
-                
-                if(/^\d+\./.test(text) || text.length < 50 && text.endsWith(":")) {
+                if(/^\d+\./.test(text) || (text.length < 60 && text.endsWith(":"))) {
                     html += `<h2>${text}</h2>`;
                 } else {
                     html += `<p>${text}</p>`;
@@ -169,10 +174,7 @@
             });
         }
 
-        // 3. Phần Kết luận (Cột J)
-        if(p.j_footer) {
-            html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
-        }
+        if(p.j_footer) html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
 
         document.getElementById('article-content').innerHTML = html;
         toggleView(true);
