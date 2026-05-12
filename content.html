@@ -6,7 +6,7 @@
     <title>Nội Dung Di Sản - Tử Vi Hoàng Hạc</title>
     <style>
         body { font-family: sans-serif; line-height: 1.8; max-width: 800px; margin: auto; padding: 20px; background: #fffaf1; color: #2c3e50; }
-        .article-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .article-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 200px; }
         .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #5d1a1a; font-weight: bold; }
         p { margin-bottom: 1.2rem; text-align: justify; }
     </style>
@@ -15,67 +15,69 @@
 
     <a href="index.html" class="btn-back">← Quay lại danh sách</a>
     
-    <!-- CÁI NÀY QUAN TRỌNG: Phải có ID 'article-view' ở đây -->
     <div id="article-view" class="article-container">
-        Đang tải nội dung...
+        Đang tải nội dung di sản...
     </div>
 
 <script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
+    document.addEventListener("DOMContentLoaded", function() {
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-    // Hàm tách ô xử lý được ngoặc kép bọc ngoài
-    function parseCSVLine(text) {
-        const result = [];
-        let cell = '', inQuotes = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i];
-            if (char === '"') inQuotes = !inQuotes;
-            else if (char === ',' && !inQuotes) {
-                result.push(cell.trim().replace(/^"|"$/g, ''));
-                cell = '';
-            } else cell += char;
-        }
-        result.push(cell.trim().replace(/^"|"$/g, ''));
-        return result;
-    }
-
-    async function loadContent() {
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-
-        try {
-            const res = await fetch(SHEET_URL);
-            const csv = await res.text();
-            
-            // Tách hàng (xử lý cả trường hợp xuống dòng trong ngoặc kép)
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            
-            const headers = parseCSVLine(rows[0]);
-            const idIdx = headers.indexOf('id');
-            const bodyIdx = headers.indexOf('i_body');
-
-            const targetRow = rows.slice(1).find(r => {
-                const cells = parseCSVLine(r);
-                return cells[idIdx] === id;
-            });
-
-            if (targetRow) {
-                const cells = parseCSVLine(targetRow);
-                let contentBody = cells[bodyIdx] || "Chưa có nội dung.";
-                
-                // Hiển thị và giữ nguyên xuống dòng
-                document.getElementById('article-view').innerHTML = contentBody
-                    .split('\n')
-                    .map(line => line.trim() ? `<p>${line}</p>` : '')
-                    .join('');
-            } else {
-                document.getElementById('article-view').innerHTML = "Không tìm thấy bài viết ID: " + id;
+        function parseCSVLine(text) {
+            const result = [];
+            let cell = '', inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) {
+                    result.push(cell.trim().replace(/^"|"$/g, ''));
+                    cell = '';
+                } else cell += char;
             }
-        } catch (e) {
-            document.getElementById('article-view').innerHTML = "Lỗi kết nối dữ liệu: " + e;
+            result.push(cell.trim().replace(/^"|"$/g, ''));
+            return result;
         }
-    }
-    window.onload = loadContent;
+
+        async function loadContent() {
+            const viewElement = document.getElementById('article-view');
+            if (!viewElement) return; // Bảo vệ nếu không tìm thấy thẻ
+
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            try {
+                const res = await fetch(SHEET_URL);
+                const csv = await res.text();
+                
+                // Tách hàng chuẩn xử lý xuống dòng trong ngoặc kép
+                const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const headers = parseCSVLine(rows[0]);
+                const idIdx = headers.indexOf('id');
+                const bodyIdx = headers.indexOf('i_body');
+
+                const targetRow = rows.slice(1).find(r => {
+                    const cells = parseCSVLine(r);
+                    return cells[idIdx] === id;
+                });
+
+                if (targetRow) {
+                    const cells = parseCSVLine(targetRow);
+                    let contentBody = cells[bodyIdx] || "Chưa có nội dung.";
+                    
+                    viewElement.innerHTML = contentBody
+                        .split('\n')
+                        .map(line => line.trim() ? `<p>${line}</p>` : '')
+                        .join('');
+                } else {
+                    viewElement.innerHTML = "Không tìm thấy bài viết ID: " + id;
+                }
+            } catch (e) {
+                viewElement.innerHTML = "Lỗi kết nối dữ liệu: " + e;
+            }
+        }
+        
+        loadContent();
+    });
 </script>
 </body>
 </html>
