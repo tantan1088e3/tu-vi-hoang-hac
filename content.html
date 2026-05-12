@@ -1,7 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nội Dung Di Sản - Tử Vi Hoàng Hạc</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.8; max-width: 800px; margin: auto; padding: 20px; background: #fffaf1; color: #2c3e50; }
+        .article-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #5d1a1a; font-weight: bold; }
+        p { margin-bottom: 1.2rem; text-align: justify; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-back">← Quay lại danh sách</a>
+    
+    <!-- CÁI NÀY QUAN TRỌNG: Phải có ID 'article-view' ở đây -->
+    <div id="article-view" class="article-container">
+        Đang tải nội dung...
+    </div>
+
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-    // Hàm tách các ô trong một hàng CSV (Xử lý dấu phẩy và ngoặc kép)
+    // Hàm tách ô xử lý được ngoặc kép bọc ngoài
     function parseCSVLine(text) {
         const result = [];
         let cell = '', inQuotes = false;
@@ -24,43 +46,36 @@
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-
-            // QUAN TRỌNG: Tách hàng theo Regex để không bị ngắt quãng bởi dấu xuống dòng trong ngoặc kép
-            const rows = csv.match(/(".*?"|[^",\n]+|(?<=,|^)(?=,|$))(?:,|\n|\r\n?|$)/gs)
-                            .reduce((acc, val) => {
-                                if (val.endsWith('\n') || val.endsWith('\r')) {
-                                    acc[acc.length-1].push(val.replace(/[\n\r]+$/, ''));
-                                    acc.push([]);
-                                } else {
-                                    acc[acc.length-1].push(val.replace(/,$/, ''));
-                                }
-                                return acc;
-                            }, [[]]);
-
-            // Lấy dòng tiêu đề
-            const headers = rows[0].map(h => h.toLowerCase().trim().replace(/"/g, ''));
+            
+            // Tách hàng (xử lý cả trường hợp xuống dòng trong ngoặc kép)
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+            const headers = parseCSVLine(rows[0]);
             const idIdx = headers.indexOf('id');
-            const bodyIdx = headers.indexOf('i_body'); // Cột I của ông
+            const bodyIdx = headers.indexOf('i_body');
 
-            // Tìm hàng có ID khớp
-            const targetRow = rows.find(r => r[idIdx] === id);
+            const targetRow = rows.slice(1).find(r => {
+                const cells = parseCSVLine(r);
+                return cells[idIdx] === id;
+            });
 
             if (targetRow) {
-                // Lấy nội dung cột i_body
-                let contentBody = targetRow[bodyIdx] || "Chưa có nội dung.";
+                const cells = parseCSVLine(targetRow);
+                let contentBody = cells[bodyIdx] || "Chưa có nội dung.";
                 
-                // Hiển thị ra màn hình, giữ nguyên xuống dòng bằng thẻ <p>
-                document.getElementById('article-view').innerHTML = `
-                    <div style="font-size: 1.2rem; line-height: 1.8; text-align: justify;">
-                        ${contentBody.split('\n').map(line => `<p>${line}</p>`).join('')}
-                    </div>
-                `;
+                // Hiển thị và giữ nguyên xuống dòng
+                document.getElementById('article-view').innerHTML = contentBody
+                    .split('\n')
+                    .map(line => line.trim() ? `<p>${line}</p>` : '')
+                    .join('');
             } else {
-                document.getElementById('article-view').innerHTML = "Không tìm thấy bài viết.";
+                document.getElementById('article-view').innerHTML = "Không tìm thấy bài viết ID: " + id;
             }
         } catch (e) {
-            document.getElementById('article-view').innerHTML = "Lỗi kết nối dữ liệu.";
+            document.getElementById('article-view').innerHTML = "Lỗi kết nối dữ liệu: " + e;
         }
     }
     window.onload = loadContent;
 </script>
+</body>
+</html>
