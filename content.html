@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Di Sản - Tử Vi Hoàng Hạc</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <title>Nội dung - Tử Vi Hoàng Hạc</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Lora', serif; line-height: 1.8; max-width: 850px; margin: auto; padding: 40px 20px; background: #fdf8f0; color: #333; }
-        .article-container { background: white; padding: 50px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .btn-back { display: inline-block; margin-bottom: 30px; text-decoration: none; color: #8e2121; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
-        .btn-back:hover { transform: translateX(-5px); }
+        body { font-family: 'Lora', serif; line-height: 1.8; max-width: 800px; margin: auto; padding: 20px; background: #fdf8f0; color: #2c3e50; }
+        .article-container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0d5c1; position: relative; }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #8e2121; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
+        .btn-back:hover { color: #c5a059; }
         
-        .post-cat { color: #c5a059; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; display: block; margin-bottom: 10px; }
-        .post-title { font-family: 'Playfair Display', serif; color: #5d1a1a; font-size: 2.5rem; margin: 0 0 25px 0; line-height: 1.2; }
+        /* Nút quay lại ở cuối trang */
+        .btn-back-bottom { display: block; width: fit-content; margin: 40px auto 20px; padding: 10px 25px; border: 1px solid #8e2121; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+        .btn-back-bottom:hover { background: #8e2121; color: white !important; }
+
+        h1 { color: #5d1a1a; font-size: 2.2rem; margin-bottom: 10px; line-height: 1.3; }
+        .meta-info { color: #c5a059; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 20px; display: block; }
+        .section-h { font-style: italic; color: #555; border-left: 4px solid #c5a059; padding-left: 15px; margin: 25px 0; }
+        .section-i { font-size: 1.15rem; text-align: justify; margin-top: 20px; }
+        .section-j { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-style: italic; color: #777; text-align: right; }
         
-        .content-header { font-style: italic; color: #666; border-left: 3px solid #c5a059; padding-left: 20px; margin: 30px 0; font-size: 1.1rem; }
-        .content-body { font-size: 1.15rem; text-align: justify; color: #2c3e50; }
-        .content-footer { margin-top: 50px; padding-top: 30px; border-top: 1px double #ddd; color: #777; font-size: 1rem; font-style: italic; text-align: right; }
-        
-        p { margin-bottom: 1.5rem; }
+        /* Style cho các đầu mục 1, 2, 3... */
+        .heading-number { font-weight: bold; color: #5d1a1a; font-size: 1.25rem; margin-top: 25px; display: block; }
+        p { margin-bottom: 1.2rem; }
     </style>
 </head>
 <body>
@@ -26,90 +31,73 @@
     <a href="index.html" class="btn-back">← QUAY LẠI DANH SÁCH</a>
     
     <div id="article-view" class="article-container">
-        <p>Đang chuẩn bị tài liệu...</p>
+        Đang tải dữ liệu...
     </div>
+
+    <!-- Nút quay lại cuối trang -->
+    <a href="index.html" class="btn-back btn-back-bottom">Quay lại danh sách</a>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-        function parseCSVLine(text) {
-            const result = [];
-            let cell = '', inQuotes = false;
-            if(!text) return result;
+        function parseLine(text) {
+            const cells = [];
+            let curr = '', inQ = false;
             for (let i = 0; i < text.length; i++) {
-                let char = text[i];
-                if (char === '"') inQuotes = !inQuotes;
-                else if (char === ',' && !inQuotes) {
-                    result.push(cell.trim().replace(/^"|"$/g, ''));
-                    cell = '';
-                } else cell += char;
+                if (text[i] === '"') inQ = !inQ;
+                else if (text[i] === ',' && !inQ) { cells.push(curr.trim()); curr = ''; }
+                else curr += text[i];
             }
-            result.push(cell.trim().replace(/^"|"$/g, ''));
-            return result;
+            cells.push(curr.trim());
+            return cells;
         }
 
-        async function loadContent() {
+        async function load() {
             const view = document.getElementById('article-view');
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
+            const idReq = new URLSearchParams(window.location.search).get('id');
 
             try {
                 const res = await fetch(SHEET_URL);
-                const csv = await res.text();
+                const text = await res.text();
+                const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const headers = parseLine(rows[0]).map(h => h.toLowerCase().trim());
                 
-                // Tách hàng (Regex xử lý xuống dòng nằm trong dấu ngoặc kép)
-                const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const headers = parseCSVLine(rows[0]);
-                
-                const idx = {
-                    id: headers.indexOf('id'),
-                    cat: headers.indexOf('category'),
-                    title: headers.indexOf('title'),
-                    header: headers.indexOf('h_header'),
-                    body: headers.indexOf('i_body'),
-                    footer: headers.indexOf('j_footer')
+                const getVal = (rowCells, name) => {
+                    const idx = headers.indexOf(name.toLowerCase());
+                    return idx > -1 ? rowCells[idx] : "";
                 };
 
-                const targetRow = rows.slice(1).find(r => {
-                    const cells = parseCSVLine(r);
-                    return cells[idx.id] === id;
-                });
+                const targetRowRaw = rows.slice(1).find(r => parseLine(r)[headers.indexOf('id')] === idReq);
 
-                if (targetRow) {
-                    const cells = parseCSVLine(targetRow);
+                if (targetRowRaw) {
+                    const d = parseLine(targetRowRaw);
                     
-                    // Hàm xử lý xuống dòng cho từng đoạn
-                    const formatText = (txt) => {
-                        if(!txt) return "";
-                        return txt.split('\n').map(l => l.trim() ? `<p>${l}</p>` : '').join('');
+                    // Logic format: Nếu dòng bắt đầu bằng số + dấu chấm thì in đậm
+                    const format = (t) => {
+                        if(!t) return "";
+                        return t.split('\n').map(line => {
+                            const trimmed = line.trim();
+                            if (/^\d+\./.test(trimmed)) {
+                                return `<span class="heading-number">${trimmed}</span>`;
+                            }
+                            return trimmed ? `<p>${trimmed}</p>` : "";
+                        }).join('');
                     };
 
                     view.innerHTML = `
-                        <span class="post-cat">${cells[idx.cat] || 'Tài liệu'}</span>
-                        <h1 class="post-title">${cells[idx.title] || 'Không tiêu đề'}</h1>
-                        
-                        <div class="content-header">
-                            ${formatText(cells[idx.header])}
-                        </div>
-
-                        <div class="content-body">
-                            ${formatText(cells[idx.body])}
-                        </div>
-
-                        <div class="content-footer">
-                            ${formatText(cells[idx.footer])}
-                        </div>
+                        <span class="meta-info">${getVal(d, 'category')}</span>
+                        <h1>${getVal(d, 'title')}</h1>
+                        <div class="section-h">${format(getVal(d, 'h_header'))}</div>
+                        <div class="section-i">${format(getVal(d, 'i_body'))}</div>
+                        <div class="section-j">${format(getVal(d, 'j_footer'))}</div>
                     `;
-                    document.title = (cells[idx.title] || "Nội dung") + " - Tử Vi Hoàng Hạc";
-                } else {
-                    view.innerHTML = "<h2>Không tìm thấy bài viết.</h2>";
                 }
             } catch (e) {
-                view.innerHTML = "<h2>Lỗi tải dữ liệu. Vui lòng thử lại.</h2>";
+                view.innerHTML = "Lỗi kết nối dữ liệu.";
             }
         }
-        loadContent();
+        load();
     });
 </script>
 </body>
