@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Di Sản - Tử Vi Hoàng Hạc</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS giữ nguyên như mẫu bài viết của bạn để đồng bộ giao diện */
+        :root { --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50; }
+        body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; }
+        nav { background: var(--primary-color); padding: 1rem; text-align: center; border-bottom: 3px solid var(--accent-color); position: sticky; top: 0; z-index: 100; }
+        nav a { color: white; text-decoration: none; font-weight: bold; margin: 0 15px; text-transform: uppercase; font-size: 0.9rem; }
+        .article-container { max-width: 850px; margin: 3rem auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 3rem; }
+        .post-meta { color: var(--accent-color); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 15px; display: block; }
+        h1 { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.5rem; line-height: 1.2; margin-top: 0; }
+        .content { margin-top: 2rem; font-size: 1.15rem; text-align: justify; }
+        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 20px; font-style: italic; margin: 2rem 0; color: var(--primary-color); }
+        .btn-back { display: inline-block; margin-top: 2rem; color: var(--primary-color); text-decoration: none; font-weight: bold; border: 2px solid var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 6px; transition: 0.3s; cursor: pointer; background: none; }
+        .btn-back:hover { background: var(--primary-color); color: white; }
+        .hidden { display: none; }
+        
+        /* Dashboard mini trong thư mục posts */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; border-top: 4px solid var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">🏠 TRANG CHỦ CHÍNH</a>
+</nav>
+
+<div class="container" style="max-width: 1100px; margin: 0 auto; padding: 20px;">
+    
+    <div id="list-view">
+        <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center;">Nghiệm Lý Chi Tiết</h2>
+        <div class="grid" id="post-grid">Đang tải dữ liệu từ Sheets...</div>
+    </div>
+
+    <div id="detail-view" class="hidden">
+        <article class="article-container">
+            <span id="article-meta" class="post-meta"></span>
+            <h1 id="article-title"></h1>
+            <div id="article-content" class="content"></div>
+            <button class="btn-back" onclick="toggleView(false)">← Quay lại danh sách</button>
+        </article>
+    </div>
+</div>
+
+<script>
+    // Link CSV của bạn
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
+    
+    let db = [];
+
+    async function init() {
+        try {
+            const res = await fetch(SHEET_URL);
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n/).slice(1);
+            
+            db = rows.map(r => {
+                const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                return {
+                    id: c[0]?.replace(/"/g, '').trim(),
+                    cat: c[1]?.replace(/"/g, '').trim(),
+                    title: c[2]?.replace(/"/g, '').trim(),
+                    desc: c[3]?.replace(/"/g, '').trim(),
+                    content: c[7]?.replace(/^"|"$/g, '').trim() // Lấy cột H
+                };
+            }).filter(p => p.id);
+            
+            renderList();
+        } catch (e) { console.error("Lỗi:", e); }
+    }
+
+    function renderList() {
+        const grid = document.getElementById('post-grid');
+        grid.innerHTML = db.map(p => `
+            <div class="card">
+                <small style="color: var(--accent-color)">${p.cat}</small>
+                <h3 style="margin: 10px 0">${p.title}</h3>
+                <p style="font-size: 0.9rem">${p.desc}</p>
+                <button onclick="showPost('${p.id}')" style="background: none; border: 1px solid var(--primary-color); padding: 5px 10px; cursor: pointer; color: var(--primary-color); font-weight: bold;">Xem bài viết</button>
+            </div>
+        `).join('');
+    }
+
+    function showPost(id) {
+        const p = db.find(x => x.id === id);
+        if(!p) return;
+
+        document.getElementById('article-meta').innerText = p.cat;
+        document.getElementById('article-title').innerText = p.title;
+        // Chuyển đổi các lần xuống dòng trong Sheet thành thẻ <br> để hiển thị đúng
+        document.getElementById('article-content').innerHTML = p.content.replace(/\n/g, '<br>');
+        
+        toggleView(true);
+        window.scrollTo(0,0);
+    }
+
+    function toggleView(isDetail) {
+        if(isDetail) {
+            document.getElementById('list-view').classList.add('hidden');
+            document.getElementById('detail-view').classList.remove('hidden');
+        } else {
+            document.getElementById('list-view').classList.remove('hidden');
+            document.getElementById('detail-view').classList.add('hidden');
+        }
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
