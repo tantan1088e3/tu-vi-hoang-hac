@@ -6,300 +6,145 @@
     <title>Tử Vi Hoàng Hạc - Hệ Thống Di Sản</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50;
-        }
+        :root { --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50; }
         body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-        
         header { background-color: var(--primary-color); color: var(--accent-color); padding: 2.5rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
         header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 2.5rem; }
-        
         .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-        
         .tabs { display: flex; gap: 12px; }
-        .tab-btn { padding: 12px 24px; border: none; background: #e0d5c1; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; }
+        .tab-btn { padding: 12px 24px; border: none; background: #e0d5c1; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: inherit; }
         .tab-btn.active { background: var(--primary-color); color: white; }
-        
         #search-bar { padding: 12px; width: 350px; border: 2px solid var(--accent-color); border-radius: 6px; outline: none; }
-
         .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; padding: 10px; background: rgba(0,0,0,0.03); border-radius: 8px; }
         .tag-filter { padding: 5px 15px; background: white; border: 1px solid var(--accent-color); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
         .tag-filter.active { background: var(--accent-color); color: white; }
-
         .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
-        .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
-
-        .card { 
-            background: white; padding: 1.8rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-            border-top: 5px solid var(--primary-color); display: flex; flex-direction: column; position: relative;
-        }
+        .card { background: white; padding: 1.8rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--primary-color); display: flex; flex-direction: column; position: relative; }
         .card.featured { border-left: 8px solid var(--accent-color); background: #fffdf9; }
         .featured-badge { position: absolute; top: -12px; right: 20px; background: var(--accent-color); color: white; padding: 2px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
-
         .card h3 { margin: 0.5rem 0; color: var(--primary-color); font-size: 1.25rem; }
         .category-tag { font-size: 0.75rem; font-weight: bold; color: var(--accent-color); text-transform: uppercase; }
-        .video-icon { color: #eb4034; margin-left: 8px; font-size: 0.9rem; }
-
-        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; font-size: 0.9rem; margin-top: auto; cursor: pointer; transition: 0.3s; }
+        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; font-size: 0.9rem; margin-top: auto; cursor: pointer; transition: 0.3s; display: inline-block; }
         .btn-post { color: var(--primary-color); border: 2px solid var(--primary-color); background: transparent; }
         .btn-post:hover { background: var(--primary-color); color: white; }
-        .btn-lib { background: var(--accent-color); color: var(--primary-color); border: none; }
-
-        /* Style cho trang chi tiết bài viết */
-        .article-container { max-width: 850px; margin: 0 auto; background: white; padding: 3.5rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .post-meta-detail { color: var(--accent-color); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; display: block; }
-        .article-title { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.8rem; line-height: 1.2; margin-top: 0; }
-        .article-content { margin-top: 2.5rem; font-size: 1.15rem; text-align: justify; line-height: 1.8; }
-        .article-content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; border-left: 5px solid var(--accent-color); padding-left: 20px; margin-top: 3rem; }
-        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 20px; font-style: italic; margin: 2rem 0; color: var(--primary-color); }
-
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 3rem; }
         .page-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; }
         .page-btn.active { background: var(--primary-color); color: white; }
-
         footer { text-align: center; padding: 4rem 1rem; background: #1a1a1a; color: white; border-top: 4px solid var(--accent-color); margin-top: 5rem; }
-        
-        #cookie-notice {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; background: #fff; padding: 15px 25px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: space-between;
-            align-items: center; z-index: 9999; border-left: 5px solid var(--accent-color);
-        }
-        .cookie-btn { background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<header id="site-header">
+<header>
     <h1>TỬ VI HOÀNG HẠC</h1>
     <p>Hệ Thống Di Sản & Nghiệm Lý 2026</p>
 </header>
 
-<div class="control-panel" id="control-panel">
+<div class="control-panel">
     <div class="top-bar">
         <div class="tabs">
-            <button class="tab-btn active" id="tab-posts" onclick="switchTab('dashboard')">BÀI VIẾT</button>
-            <button class="tab-btn" id="tab-library" onclick="switchTab('library')">THƯ VIỆN PDF</button>
+            <a href="index.html" class="tab-btn active">BÀI VIẾT</a>
+            <button class="tab-btn">THƯ VIỆN PDF</button>
         </div>
         <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
     </div>
-    
-    <div id="filter-bar" class="filter-bar">
-        <span class="tag-filter active" onclick="filterByTag('Tất cả')">Tất cả</span>
-    </div>
+    <div id="filter-bar" class="filter-bar"></div>
 </div>
 
 <div class="container">
-    <section id="dashboard" class="content-section active">
-        <div class="grid" id="post-grid">Đang kết nối dữ liệu di sản...</div>
+    <section id="dashboard" class="content-section">
+        <div class="grid" id="post-grid">Đang kết nối dữ liệu...</div>
         <div id="post-pagination" class="pagination"></div>
     </section>
-
-    <section id="library" class="content-section">
-        <div class="grid" id="lib-grid"></div>
-        <div id="lib-pagination" class="pagination"></div>
-    </section>
-
-    <section id="post-detail" class="content-section">
-        <div class="article-container">
-            <button onclick="backToDashboard()" class="tab-btn" style="margin-bottom: 2rem;">← Quay lại danh sách</button>
-            <span id="det-meta" class="post-meta-detail"></span>
-            <h1 id="det-title" class="article-title"></h1>
-            <div id="det-content" class="article-content"></div>
-            <center><button onclick="backToDashboard()" class="btn btn-post" style="margin-top: 4rem;">Trở về Dashboard</button></center>
-        </div>
-    </section>
 </div>
 
-<footer>
-    <p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
-</footer>
-
-<div id="cookie-notice">
-    <p>Chúng tôi sử dụng cookie để bảo mật và cải thiện trải nghiệm.</p>
-    <button class="cookie-btn" onclick="acceptCookies()">Đồng ý</button>
-</div>
-
-<script src="data/library.js"></script>
+<footer><p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p></footer>
 
 <script>
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv'; 
-    
-    let postDatabase = []; 
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&cache=' + new Date().getTime();
+    let db = [];
     let currentTag = 'Tất cả';
-    const config = {
-        posts: { page: 1, limit: 6, gridId: 'post-grid', navId: 'post-pagination' },
-        library: { page: 1, limit: 12, gridId: 'lib-grid', navId: 'lib-pagination' }
-    };
+    let currentPage = 1;
+    const limit = 6;
 
-    // Hàm tách CSV chuẩn xử lý được dấu phẩy bên trong ngoặc kép
     function parseCSVLine(text) {
-        const result = [];
-        let cur = '';
-        let inQuote = false;
+        const r = []; let c = '', q = false;
         for (let i = 0; i < text.length; i++) {
             let char = text[i];
-            if (char === '"') {
-                if (inQuote && text[i + 1] === '"') { cur += '"'; i++; }
-                else { inQuote = !inQuote; }
-            } else if (char === ',' && !inQuote) {
-                result.push(cur.trim()); cur = '';
-            } else { cur += char; }
+            if (char === '"') { if (q && text[i+1] === '"') { c += '"'; i++; } else q = !q; }
+            else if (char === ',' && !q) { r.push(c.trim()); c = ''; }
+            else c += char;
         }
-        result.push(cur.trim());
-        return result;
+        r.push(c.trim()); return r;
     }
 
-    async function fetchDriveData() {
+    async function init() {
         try {
-            const response = await fetch(SHEET_CSV_URL);
-            const data = await response.text();
+            const res = await fetch(SHEET_URL);
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             
-            // Tách dòng nhưng giữ nguyên nội dung có xuống dòng bên trong ô (bọc trong ngoặc kép)
-            const rows = data.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            
-            // Lấy tiêu đề cột để dò vị trí chính xác
-            const headers = parseCSVLine(rows[0]);
-            const colIndex = {
-                id: headers.indexOf('id'),
-                cat: headers.indexOf('category'),
-                title: headers.indexOf('title'),
-                desc: headers.indexOf('desc'),
-                feat: headers.indexOf('featured'),
-                yt: headers.indexOf('youtubeId'),
-                content: headers.indexOf('fullContent') // Sẽ tự tìm cột có tên 'fullContent'
-            };
+            const idx = { id: headers.indexOf('id'), cat: headers.indexOf('category'), title: headers.indexOf('title'), desc: headers.indexOf('desc'), feat: headers.indexOf('featured') };
 
-            const dataRows = rows.slice(1);
-            postDatabase = dataRows.map(row => {
-                const cols = parseCSVLine(row);
-                return {
-                    id: cols[colIndex.id] || "",
-                    category: cols[colIndex.cat] || "Chưa phân loại",
-                    title: cols[colIndex.title] || "Chưa có tiêu đề",
-                    desc: cols[colIndex.desc] || "",
-                    isFeatured: cols[colIndex.feat] ? cols[colIndex.feat].toLowerCase().includes('true') : false,
-                    youtubeId: cols[colIndex.yt] || "",
-                    fullContent: cols[colIndex.content] || "" 
-                };
-            }).filter(item => item.id !== "");
+            db = rows.slice(1).map(r => {
+                const c = parseCSVLine(r);
+                return { id: c[idx.id], category: c[idx.cat] || "Chưa phân loại", title: c[idx.title], desc: c[idx.desc], isFeatured: c[idx.feat]?.toLowerCase() === 'true' };
+            }).filter(p => p.id);
 
-            initTags();
-            renderUI('posts', postDatabase);
-        } catch (error) {
-            console.error("Lỗi:", error);
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu Sheets.";
-        }
+            renderTags();
+            renderUI();
+        } catch (e) { document.getElementById('post-grid').innerHTML = "Lỗi tải dữ liệu."; }
     }
 
-    function showDetail(id) {
-        const post = postDatabase.find(p => p.id === id);
-        if(!post) return;
-
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.getElementById('control-panel').classList.add('hidden');
-        
-        document.getElementById('det-meta').innerText = post.category;
-        document.getElementById('det-title').innerText = post.title;
-        
-        // Hiển thị nội dung: Chuyển xuống dòng thành thẻ <p>
-        if (post.fullContent) {
-            const paragraphs = post.fullContent.split(/\r?\n/);
-            const htmlResult = paragraphs
-                .map(p => p.trim() ? `<p>${p.trim()}</p>` : '')
-                .join('');
-            document.getElementById('det-content').innerHTML = htmlResult;
-        } else {
-            document.getElementById('det-content').innerHTML = "<i>Nội dung đang được cập nhật...</i>";
-        }
-
-        document.getElementById('post-detail').classList.add('active');
-        window.scrollTo(0, 0);
-    }
-
-    // Các hàm renderUI, switchTab, filterByTag... giữ nguyên logic của bạn nhưng dùng postDatabase mới
-    function renderUI(type, data) {
-        const settings = config[type];
-        const grid = document.getElementById(settings.gridId);
-        if (!grid) return;
-
-        let filteredData = (currentTag === 'Tất cả') ? data : data.filter(item => item.category === currentTag);
-        filteredData = [...filteredData].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
-        
-        const start = (settings.page - 1) * settings.limit;
-        const items = filteredData.slice(start, start + settings.limit);
-
-        grid.innerHTML = items.length > 0 ? items.map(item => `
-            <div class="card ${item.isFeatured ? 'featured' : ''}">
-                ${item.isFeatured ? '<span class="featured-badge">QUAN TRỌNG</span>' : ''}
-                <span class="category-tag">${item.category}</span>
-                <h3>${item.title} ${item.youtubeId ? '<span class="video-icon">▶ Video</span>' : ''}</h3>
-                <p>${item.desc}</p>
-                <button onclick="showDetail('${item.id}')" class="btn btn-post">Đọc tiếp →</button>
-            </div>
-        `).join('') : '<p style="text-align:center; grid-column: 1/-1;">Không tìm thấy nội dung.</p>';
-
-        renderPagination(type, filteredData.length);
-    }
-
-    function backToDashboard() {
-        document.getElementById('post-detail').classList.remove('active');
-        document.getElementById('dashboard').classList.add('active');
-        document.getElementById('control-panel').classList.remove('hidden');
-    }
-
-    function initTags() {
-        const tags = new Set(['Tất cả']);
-        postDatabase.forEach(p => { if(p.category) tags.add(p.category); });
-        const bar = document.getElementById('filter-bar');
-        if(bar) bar.innerHTML = Array.from(tags).map(t => `<span class="tag-filter ${t === currentTag ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
+    function renderTags() {
+        const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
+        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => 
+            `<span class="tag-filter ${t === currentTag ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
+        ).join('');
     }
 
     function filterByTag(tag) {
         currentTag = tag;
-        document.querySelectorAll('.tag-filter').forEach(el => el.classList.toggle('active', el.innerText === tag));
-        config.posts.page = 1;
-        renderUI('posts', postDatabase);
+        currentPage = 1;
+        renderTags();
+        renderUI();
     }
 
-    function renderPagination(type, total) {
-        const settings = config[type];
-        const totalPages = Math.ceil(total / settings.limit);
-        const nav = document.getElementById(settings.navId);
-        if (!nav) return;
-        if (totalPages <= 1) { nav.innerHTML = ""; return; }
+    function renderUI() {
+        let filtered = (currentTag === 'Tất cả') ? db : db.filter(p => p.category === currentTag);
+        filtered.sort((a,b) => b.isFeatured - a.isFeatured);
         
-        let html = `<button class="page-btn" onclick="changePage('${type}', ${settings.page - 1})" ${settings.page === 1 ? 'disabled' : ''}>Trước</button>`;
-        for(let i=1; i<=totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= settings.page-1 && i <= settings.page+1)) {
-                html += `<button class="page-btn ${i === settings.page ? 'active' : ''}" onclick="changePage('${type}', ${i})">${i}</button>`;
-            }
+        const start = (currentPage - 1) * limit;
+        const items = filtered.slice(start, start + limit);
+        
+        document.getElementById('post-grid').innerHTML = items.map(p => `
+            <div class="card ${p.isFeatured ? 'featured' : ''}">
+                ${p.isFeatured ? '<span class="featured-badge">QUAN TRỌNG</span>' : ''}
+                <span class="category-tag">${p.category}</span>
+                <h3>${p.title}</h3>
+                <p>${p.desc}</p>
+                <a href="content.html?id=${p.id}" class="btn btn-post">Đọc tiếp →</a>
+            </div>
+        `).join('');
+
+        renderPagination(filtered.length);
+    }
+
+    function renderPagination(total) {
+        const pages = Math.ceil(total / limit);
+        let html = '';
+        for(let i=1; i<=pages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
         }
-        html += `<button class="page-btn" onclick="changePage('${type}', ${settings.page + 1})" ${settings.page === totalPages ? 'disabled' : ''}>Sau</button>`;
-        nav.innerHTML = html;
+        document.getElementById('post-pagination').innerHTML = html;
     }
 
-    function changePage(type, p) {
-        config[type].page = p;
-        renderUI(type, postDatabase);
-        window.scrollTo({ top: 200, behavior: 'smooth' });
-    }
+    function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
-    function acceptCookies() {
-        document.getElementById('cookie-notice').style.display = 'none';
-        localStorage.setItem('cookiesAccepted', 'true');
-    }
-
-    window.onload = () => {
-        if(localStorage.getItem('cookiesAccepted')) document.getElementById('cookie-notice').style.display = 'none';
-        fetchDriveData();
-    };
+    window.onload = init;
 </script>
 </body>
 </html>
