@@ -27,17 +27,15 @@
 </div>
 
 <script>
-    // Link CSV của ông - thêm Date để xóa cache
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-    // Hàm tách CSV chuẩn (xử lý được cả dấu phẩy bên trong nội dung)
     function parseCSVLine(text) {
         const result = []; let cell = '', inQuotes = false;
         for (let i = 0; i < text.length; i++) {
             let char = text[i];
-            if (char === '"') { inQuotes = !inQuotes; }
+            if (char === '"') inQuotes = !inQuotes;
             else if (char === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
-            else { cell += char; }
+            else cell += char;
         }
         result.push(cell.trim()); return result;
     }
@@ -49,32 +47,50 @@
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-            const rows = csv.split(/\r?\n/);
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase());
+            const rows = csv.split(/\r?\n/).filter(r => r.trim() !== "");
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim().replace(/^"|"$/g, ''));
             
-            // Tìm vị trí các cột
+            // Khớp đúng tên cột từ dữ liệu ông vừa gửi
             const idIdx = headers.indexOf('id');
             const titleIdx = headers.indexOf('title');
             const catIdx = headers.indexOf('category');
-            const contentIdx = headers.indexOf('fullcontent'); // Đảm bảo cột nội dung tên là fullcontent
+            const headerIdx = headers.indexOf('h_header'); // Cột tiêu đề phụ
+            const bodyIdx = headers.indexOf('i_body');     // Cột nội dung chính quan trọng nhất
+            const footerIdx = headers.indexOf('j_footer'); // Cột lời kết
 
-            // Tìm hàng có ID trùng khớp
             const postRow = rows.slice(1).find(r => {
                 const cells = parseCSVLine(r);
-                return cells[idIdx] === id;
+                return cells[idIdx]?.replace(/^"|"$/g, '').trim() === id;
             });
 
             if (postRow) {
                 const cells = parseCSVLine(postRow);
+                
+                // Hàm xử lý xuống dòng và xóa ngoặc kép
+                const clean = (txt) => (txt || "").replace(/^"|"$/g, '').split(/\\n|\n/).map(line => `<p>${line}</p>`).join('');
+
                 document.getElementById('article-view').innerHTML = `
-                    <span class="post-meta">${cells[catIdx] || 'Tài liệu'}</span>
-                    <h1>${cells[titleIdx]}</h1>
-                    <div class="content">${cells[contentIdx] || 'Chưa có nội dung chi tiết cho bài này.'}</div>
+                    <span class="post-meta">${cells[catIdx]?.replace(/^"|"$/g, '') || 'Tài liệu'}</span>
+                    <h1>${cells[titleIdx]?.replace(/^"|"$/g, '')}</h1>
+                    
+                    <div class="content-header" style="font-style: italic; color: #555; margin-bottom: 20px;">
+                        ${clean(cells[headerIdx])}
+                    </div>
+
+                    <div class="content-body">
+                        ${clean(cells[bodyIdx])}
+                    </div>
+
+                    <div class="content-footer" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 0.95rem; color: #777;">
+                        ${clean(cells[footerIdx])}
+                    </div>
                 `;
+                document.title = cells[titleIdx]?.replace(/^"|"$/g, '') + " - Tử Vi Hoàng Hạc";
             } else {
-                document.getElementById('article-view').innerHTML = "<h2>Không tìm thấy nội dung bài viết.</h2>";
+                document.getElementById('article-view').innerHTML = "<h2>Không tìm thấy bài viết ID: " + id + "</h2>";
             }
         } catch (e) {
+            console.error("Lỗi:", e);
             document.getElementById('article-view').innerHTML = "<h2>Lỗi kết nối dữ liệu.</h2>";
         }
     }
