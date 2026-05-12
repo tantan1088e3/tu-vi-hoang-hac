@@ -226,7 +226,7 @@
                 <p>${item.desc}</p>
                 ${type === 'library' 
                     ? `<a href="${item.fileUrl}" class="btn btn-lib" target="_blank">Tải tài liệu PDF</a>`
-                    : `<button onclick="showDetail('${item.id}')" class="btn btn-post">Đọc tiếp →</button>`
+                    : `<a href="posts/content.html?id=${item.id}" class="btn btn-post">Đọc tiếp →</a>`
                 }
             </div>
         `).join('') : '<p style="text-align:center; grid-column: 1/-1;">Không tìm thấy nội dung yêu cầu.</p>';
