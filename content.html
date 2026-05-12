@@ -1,42 +1,66 @@
 <script>
-    // Link CSV của ông
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-    async function loadSimpleTest() {
+    // Hàm tách các ô trong một hàng CSV (Xử lý dấu phẩy và ngoặc kép)
+    function parseCSVLine(text) {
+        const result = [];
+        let cell = '', inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) {
+                result.push(cell.trim().replace(/^"|"$/g, ''));
+                cell = '';
+            } else cell += char;
+        }
+        result.push(cell.trim().replace(/^"|"$/g, ''));
+        return result;
+    }
+
+    async function loadContent() {
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
         try {
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
-            const rows = csv.split(/\r?\n/).filter(r => r.trim() !== "");
-            
-            // Hàm tách cột đơn giản bằng dấu phẩy (vì test cột H nên ít bị dính dấu phẩy nội dung)
-            const headers = rows[0].split(',').map(h => h.toLowerCase().trim());
-            const hIdx = headers.indexOf('h_header'); 
+
+            // QUAN TRỌNG: Tách hàng theo Regex để không bị ngắt quãng bởi dấu xuống dòng trong ngoặc kép
+            const rows = csv.match(/(".*?"|[^",\n]+|(?<=,|^)(?=,|$))(?:,|\n|\r\n?|$)/gs)
+                            .reduce((acc, val) => {
+                                if (val.endsWith('\n') || val.endsWith('\r')) {
+                                    acc[acc.length-1].push(val.replace(/[\n\r]+$/, ''));
+                                    acc.push([]);
+                                } else {
+                                    acc[acc.length-1].push(val.replace(/,$/, ''));
+                                }
+                                return acc;
+                            }, [[]]);
+
+            // Lấy dòng tiêu đề
+            const headers = rows[0].map(h => h.toLowerCase().trim().replace(/"/g, ''));
             const idIdx = headers.indexOf('id');
+            const bodyIdx = headers.indexOf('i_body'); // Cột I của ông
 
-            const postRow = rows.slice(1).find(r => {
-                const cells = r.split(',');
-                return cells[idIdx] === id;
-            });
+            // Tìm hàng có ID khớp
+            const targetRow = rows.find(r => r[idIdx] === id);
 
-            if (postRow) {
-                const cells = postRow.split(',');
-                const contentH = cells[hIdx] ? cells[hIdx].replace(/"/g, '') : "Cột H đang trống";
+            if (targetRow) {
+                // Lấy nội dung cột i_body
+                let contentBody = targetRow[bodyIdx] || "Chưa có nội dung.";
                 
+                // Hiển thị ra màn hình, giữ nguyên xuống dòng bằng thẻ <p>
                 document.getElementById('article-view').innerHTML = `
-                    <h2 style="color: red;">Đã nhận dữ liệu test từ cột H:</h2>
-                    <div style="font-size: 1.5rem; background: #eee; padding: 20px;">
-                        ${contentH}
+                    <div style="font-size: 1.2rem; line-height: 1.8; text-align: justify;">
+                        ${contentBody.split('\n').map(line => `<p>${line}</p>`).join('')}
                     </div>
                 `;
             } else {
-                document.getElementById('article-view').innerHTML = "Không tìm thấy ID: " + id;
+                document.getElementById('article-view').innerHTML = "Không tìm thấy bài viết.";
             }
         } catch (e) {
-            document.getElementById('article-view').innerHTML = "Lỗi kết nối: " + e;
+            document.getElementById('article-view').innerHTML = "Lỗi kết nối dữ liệu.";
         }
     }
-    window.onload = loadSimpleTest;
+    window.onload = loadContent;
 </script>
