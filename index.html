@@ -244,7 +244,7 @@
 function renderPDFPagination(total) {
     const pages = Math.ceil(total / pdfLimit);
     let html = '';
-    if (pages <= 1) { 
+    if (pages < 1) { 
         document.getElementById('post-pagination').innerHTML = "";
         return; 
     }
