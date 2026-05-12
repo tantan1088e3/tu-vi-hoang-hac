@@ -1,47 +1,8 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nội Dung Di Sản - Tử Vi Hoàng Hạc</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary-color: #5d1a1a; --accent-color: #c5a059; --bg-color: #fffaf1; --text-color: #2c3e50; }
-        body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; }
-        .container { max-width: 850px; margin: 3rem auto; padding: 0 1.5rem; }
-        .article-container { background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 400px; }
-        .post-meta { color: var(--accent-color); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 10px; display: block; }
-        h1 { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.2rem; line-height: 1.2; margin: 0 0 2rem 0; }
-        .content { font-size: 1.1rem; text-align: justify; white-space: pre-line; } /* white-space để giữ xuống dòng */
-        .btn-back { display: inline-block; margin-bottom: 2rem; text-decoration: none; color: var(--primary-color); font-weight: bold; font-size: 0.9rem; }
-        .loading { text-align: center; color: #888; margin-top: 50px; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <a href="index.html" class="btn-back">← Quay lại danh sách</a>
-    <article class="article-container" id="article-view">
-        <div class="loading">Đang tải nội dung từ Google Sheets...</div>
-    </article>
-</div>
-
 <script>
+    // Link CSV của ông
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
-    // Hàm tách CSV chuẩn xử lý được dấu phẩy trong văn bản
-    function parseCSVLine(text) {
-        const result = []; let cell = '', inQuotes = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i];
-            if (char === '"') inQuotes = !inQuotes;
-            else if (char === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
-            else cell += char;
-        }
-        result.push(cell.trim()); return result;
-    }
-
-    async function loadPost() {
+    async function loadSimpleTest() {
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
@@ -49,65 +10,33 @@
             const res = await fetch(SHEET_URL);
             const csv = await res.text();
             const rows = csv.split(/\r?\n/).filter(r => r.trim() !== "");
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim().replace(/^"|"$/g, ''));
             
-            // Khớp đúng tên cột từ Sheets của ông
-            const idx = {
-                id: headers.indexOf('id'),
-                title: headers.indexOf('title'),
-                cat: headers.indexOf('category'),
-                header: headers.indexOf('h_header'),
-                body: headers.indexOf('i_body'),
-                footer: headers.indexOf('j_footer')
-            };
+            // Hàm tách cột đơn giản bằng dấu phẩy (vì test cột H nên ít bị dính dấu phẩy nội dung)
+            const headers = rows[0].split(',').map(h => h.toLowerCase().trim());
+            const hIdx = headers.indexOf('h_header'); 
+            const idIdx = headers.indexOf('id');
 
             const postRow = rows.slice(1).find(r => {
-                const cells = parseCSVLine(r);
-                return cells[idx.id]?.replace(/^"|"$/g, '').trim() === id;
+                const cells = r.split(',');
+                return cells[idIdx] === id;
             });
 
             if (postRow) {
-                const cells = parseCSVLine(postRow);
+                const cells = postRow.split(',');
+                const contentH = cells[hIdx] ? cells[hIdx].replace(/"/g, '') : "Cột H đang trống";
                 
-                // Hàm làm sạch dữ liệu và xử lý xuống dòng
-                const format = (txt) => {
-                    if (!txt) return "";
-                    return txt.replace(/^"|"$/g, '')
-                              .split(/\\n|\n/)
-                              .filter(line => line.trim() !== "")
-                              .map(line => `<p style="margin-bottom: 1.5rem;">${line.trim()}</p>`)
-                              .join('');
-                };
-
                 document.getElementById('article-view').innerHTML = `
-                    <span class="post-meta" style="color: #c5a059; font-weight: bold; text-transform: uppercase; font-size: 0.85rem;">
-                        ${cells[idx.cat]?.replace(/^"|"$/g, '') || 'Tài liệu'}
-                    </span>
-                    <h1 style="font-family: 'Playfair Display', serif; color: #5d1a1a; font-size: 2.2rem; margin-top: 10px;">
-                        ${cells[idx.title]?.replace(/^"|"$/g, '')}
-                    </h1>
-                    
-                    <div class="content-header" style="font-style: italic; color: #555; border-left: 4px solid #c5a059; padding-left: 15px; margin: 2rem 0;">
-                        ${format(cells[idx.header])}
-                    </div>
-
-                    <div class="content-body" style="font-size: 1.1rem; text-align: justify;">
-                        ${format(cells[idx.body])}
-                    </div>
-
-                    <div class="content-footer" style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px dashed #ccc; color: #777; font-size: 0.95rem;">
-                        ${format(cells[idx.footer])}
+                    <h2 style="color: red;">Đã nhận dữ liệu test từ cột H:</h2>
+                    <div style="font-size: 1.5rem; background: #eee; padding: 20px;">
+                        ${contentH}
                     </div>
                 `;
-                document.title = cells[idx.title]?.replace(/^"|"$/g, '') + " - Tử Vi Hoàng Hạc";
             } else {
-                document.getElementById('article-view').innerHTML = "<h2>Không tìm thấy bài viết.</h2>";
+                document.getElementById('article-view').innerHTML = "Không tìm thấy ID: " + id;
             }
         } catch (e) {
-            document.getElementById('article-view').innerHTML = "<h2>Lỗi kết nối dữ liệu.</h2>";
+            document.getElementById('article-view').innerHTML = "Lỗi kết nối: " + e;
         }
     }
-    window.onload = loadPost;
+    window.onload = loadSimpleTest;
 </script>
-</body>
-</html>
