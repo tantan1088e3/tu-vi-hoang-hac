@@ -131,23 +131,28 @@
     }
 
     function switchTab(type) {
-    // 1. Cập nhật trạng thái nút tab
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
-    // 2. Xử lý logic hiển thị
-    if (type === 'pdf') {
-        document.getElementById('filter-bar').style.display = "none";
-        document.getElementById('post-grid').innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang kết nối thư viện GitHub...</div>";
-        document.getElementById('post-pagination').innerHTML = "";
-        
-        // Gọi hàm load file thực tế từ GitHub
-        loadPDFLibrary(); 
-    } else {
-        document.getElementById('filter-bar').style.display = "flex";
-        renderUI();
+        // 1. Cập nhật trạng thái nút tab
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Sử dụng currentTarget để chính xác hơn khi click
+        event.currentTarget.classList.add('active');
+    
+        const grid = document.getElementById('post-grid');
+        const pagination = document.getElementById('post-pagination');
+        const filterBar = document.getElementById('filter-bar');
+    
+        // Xóa nội dung cũ để sẵn sàng nhận dữ liệu mới
+        grid.innerHTML = ""; 
+    
+        if (type === 'pdf') {
+            filterBar.style.display = "none";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
+            pagination.innerHTML = "";
+            loadPDFLibrary(); 
+        } else {
+            filterBar.style.display = "flex";
+            renderUI();
+        }
     }
-}
 
     function renderUI() {
         let filtered = db.filter(p => {
