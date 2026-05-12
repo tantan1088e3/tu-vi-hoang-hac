@@ -43,42 +43,49 @@
         .featured-badge { position: absolute; top: -12px; right: 20px; background: var(--accent-color); color: white; padding: 2px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
 
         .card h3 { margin: 0.5rem 0; color: var(--primary-color); font-size: 1.25rem; }
+        .category-tag { font-size: 0.75rem; font-weight: bold; color: var(--accent-color); text-transform: uppercase; }
         .video-icon { color: #eb4034; margin-left: 8px; font-size: 0.9rem; }
 
-        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; font-size: 0.9rem; margin-top: auto; cursor: pointer; }
-        .btn-post { color: var(--primary-color); border: 2px solid var(--primary-color); }
-        .btn-lib { background: var(--accent-color); color: var(--primary-color); }
+        .btn { padding: 10px 20px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; font-size: 0.9rem; margin-top: auto; cursor: pointer; transition: 0.3s; }
+        .btn-post { color: var(--primary-color); border: 2px solid var(--primary-color); background: transparent; }
+        .btn-post:hover { background: var(--primary-color); color: white; }
+        .btn-lib { background: var(--accent-color); color: var(--primary-color); border: none; }
+
+        /* Style cho trang chi tiết bài viết */
+        .article-container { max-width: 850px; margin: 0 auto; background: white; padding: 3.5rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .post-meta-detail { color: var(--accent-color); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; display: block; }
+        .article-title { font-family: 'Playfair Display', serif; color: var(--primary-color); font-size: 2.8rem; line-height: 1.2; margin-top: 0; }
+        .article-content { margin-top: 2.5rem; font-size: 1.15rem; text-align: justify; line-height: 1.8; }
+        .article-content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; border-left: 5px solid var(--accent-color); padding-left: 20px; margin-top: 3rem; }
+        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 20px; font-style: italic; margin: 2rem 0; color: var(--primary-color); }
 
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 3rem; }
         .page-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; }
         .page-btn.active { background: var(--primary-color); color: white; }
 
-        footer { text-align: center; padding: 4rem 1rem; background: #1a1a1a; color: white; border-top: 4px solid var(--accent-color); }
-        .footer-links { margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .footer-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-        .footer-links a:hover { color: var(--accent-color); }
+        footer { text-align: center; padding: 4rem 1rem; background: #1a1a1a; color: white; border-top: 4px solid var(--accent-color); margin-top: 5rem; }
         
         #cookie-notice {
             position: fixed; bottom: 20px; left: 20px; right: 20px; background: #fff; padding: 15px 25px;
             box-shadow: 0 0 20px rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: space-between;
             align-items: center; z-index: 9999; border-left: 5px solid var(--accent-color);
         }
-        #cookie-notice p { margin: 0; font-size: 0.9rem; color: #444; }
         .cookie-btn { background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<header>
+<header id="site-header">
     <h1>TỬ VI HOÀNG HẠC</h1>
     <p>Hệ Thống Di Sản & Nghiệm Lý 2026</p>
 </header>
 
-<div class="control-panel">
+<div class="control-panel" id="control-panel">
     <div class="top-bar">
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('dashboard')">BÀI VIẾT</button>
-            <button class="tab-btn" onclick="switchTab('library')">THƯ VIỆN PDF</button>
+            <button class="tab-btn active" id="tab-posts" onclick="switchTab('dashboard')">BÀI VIẾT</button>
+            <button class="tab-btn" id="tab-library" onclick="switchTab('library')">THƯ VIỆN PDF</button>
         </div>
         <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
     </div>
@@ -90,7 +97,7 @@
 
 <div class="container">
     <section id="dashboard" class="content-section active">
-        <div class="grid" id="post-grid">Đang tải bài viết từ Drive...</div>
+        <div class="grid" id="post-grid">Đang kết nối dữ liệu di sản...</div>
         <div id="post-pagination" class="pagination"></div>
     </section>
 
@@ -98,28 +105,30 @@
         <div class="grid" id="lib-grid"></div>
         <div id="lib-pagination" class="pagination"></div>
     </section>
+
+    <section id="post-detail" class="content-section">
+        <div class="article-container">
+            <button onclick="backToDashboard()" class="tab-btn" style="margin-bottom: 2rem;">← Quay lại danh sách</button>
+            <span id="det-meta" class="post-meta-detail"></span>
+            <h1 id="det-title" class="article-title"></h1>
+            <div id="det-content" class="article-content"></div>
+            <center><button onclick="backToDashboard()" class="btn btn-post" style="margin-top: 4rem;">Trở về Dashboard</button></center>
+        </div>
+    </section>
 </div>
 
 <footer>
-    <div class="footer-links">
-        <a href="#">Trang chủ</a>
-        <a href="#">Giới thiệu</a>
-        <a href="privacy.html">Chính sách bảo mật</a>
-        <a href="#">Điều khoản sử dụng</a>
-        <a href="#">Liên hệ</a>
-    </div>
-    <p>&copy; 2026 Tử Vi Hoàng Hạc - Di Sản Cụ Hoàng Hạc</p>
+    <p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
 </footer>
 
 <div id="cookie-notice">
-    <p>Chúng tôi sử dụng cookie để cải thiện trải nghiệm của bạn. Bằng cách tiếp tục, bạn đồng ý với chính sách của chúng tôi.</p>
+    <p>Chúng tôi sử dụng cookie để bảo mật và cải thiện trải nghiệm.</p>
     <button class="cookie-btn" onclick="acceptCookies()">Đồng ý</button>
 </div>
 
 <script src="data/library.js"></script>
 
 <script>
-    // 1. Đường link CSV chính thức của bạn
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv'; 
     
     let postDatabase = []; 
@@ -129,19 +138,15 @@
         library: { page: 1, limit: 12, gridId: 'lib-grid', navId: 'lib-pagination' }
     };
 
-    // Hàm lấy dữ liệu từ Google Sheets
+    // 1. TẢI DỮ LIỆU TỪ SHEETS
     async function fetchDriveData() {
         try {
             const response = await fetch(SHEET_CSV_URL);
             const data = await response.text();
-            
-            // Tách dòng (xử lý cả trường hợp xuống dòng khác nhau)
             const rows = data.split(/\r?\n/).slice(1); 
             
             postDatabase = rows.map(row => {
-                // Tách cột bằng dấu phẩy, xử lý thông minh nếu nội dung có dấu phẩy bên trong ngoặc kép
                 const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-                
                 return {
                     id: cols[0]?.replace(/^"|"$/g, '').trim(),
                     category: cols[1]?.replace(/^"|"$/g, '').trim(),
@@ -149,28 +154,57 @@
                     desc: cols[3]?.replace(/^"|"$/g, '').trim(),
                     isFeatured: cols[4]?.toLowerCase().includes('true'),
                     tags: cols[5] ? [cols[5].replace(/^"|"$/g, '').trim()] : [],
-                    youtubeId: cols[6]?.replace(/^"|"$/g, '').trim()
+                    youtubeId: cols[6]?.replace(/^"|"$/g, '').trim(),
+                    fullContent: cols[7]?.replace(/^"|"$/g, '').trim() // LẤY CỘT H
                 };
-            }).filter(item => item.id); // Loại bỏ dòng trống
+            }).filter(item => item.id);
 
             initTags();
             renderUI('posts', postDatabase);
         } catch (error) {
-            document.getElementById('post-grid').innerHTML = "Lỗi: Không thể tải dữ liệu từ Google Sheets. Hãy kiểm tra kết nối mạng.";
-            console.error("Lỗi fetch:", error);
+            document.getElementById('post-grid').innerHTML = "Không thể tải dữ liệu di sản.";
         }
     }
 
-    // Các hàm xử lý giao diện (giữ nguyên logic cũ của bạn)
+    // 2. HIỂN THỊ CHI TIẾT BÀI VIẾT
+    function showDetail(id) {
+        const post = postDatabase.find(p => p.id === id);
+        if(!post) return;
+
+        // Ẩn các thành phần Dashboard
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('control-panel').classList.add('hidden');
+        
+        // Đổ dữ liệu
+        document.getElementById('det-meta').innerText = `${post.category} • ${post.tags.join(', ')}`;
+        document.getElementById('det-title').innerText = post.title;
+        
+        // Xử lý xuống dòng: Chuyển \n thành <br>
+        const contentHtml = post.fullContent ? post.fullContent.replace(/\n/g, '<br>') : "Nội dung đang được biên soạn...";
+        document.getElementById('det-content').innerHTML = contentHtml;
+
+        // Hiện trang chi tiết
+        document.getElementById('post-detail').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function backToDashboard() {
+        document.getElementById('post-detail').classList.remove('active');
+        document.getElementById('dashboard').classList.add('active');
+        document.getElementById('control-panel').classList.remove('hidden');
+        switchTab('dashboard');
+    }
+
+    // 3. XỬ LÝ GIAO DIỆN CHUNG
     function switchTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        
         document.getElementById(tabId).classList.add('active');
-        if (event) event.currentTarget.classList.add('active');
-    }
-
-    function sortData(data) {
-        return [...data].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+        if(tabId === 'dashboard') document.getElementById('tab-posts').classList.add('active');
+        if(tabId === 'library') document.getElementById('tab-library').classList.add('active');
+        
+        document.getElementById('control-panel').classList.remove('hidden');
     }
 
     function renderUI(type, data) {
@@ -178,11 +212,9 @@
         const grid = document.getElementById(settings.gridId);
         if (!grid) return;
 
-        let filteredData = (currentTag === 'Tất cả') 
-            ? data 
-            : data.filter(item => item.category === currentTag || (item.tags && item.tags.includes(currentTag)));
+        let filteredData = (currentTag === 'Tất cả') ? data : data.filter(item => item.category === currentTag || (item.tags && item.tags.includes(currentTag)));
+        filteredData = [...filteredData].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
         
-        filteredData = sortData(filteredData);
         const start = (settings.page - 1) * settings.limit;
         const items = filteredData.slice(start, start + settings.limit);
 
@@ -194,10 +226,10 @@
                 <p>${item.desc}</p>
                 ${type === 'library' 
                     ? `<a href="${item.fileUrl}" class="btn btn-lib" target="_blank">Tải tài liệu PDF</a>`
-                    : `<a href="posts/${item.id}.html" class="btn btn-post">Đọc tiếp →</a>`
+                    : `<button onclick="showDetail('${item.id}')" class="btn btn-post">Đọc tiếp →</button>`
                 }
             </div>
-        `).join('') : '<p style="text-align:center; grid-column: 1/-1;">Chưa có bài viết nào trong mục này.</p>';
+        `).join('') : '<p style="text-align:center; grid-column: 1/-1;">Không tìm thấy nội dung yêu cầu.</p>';
 
         renderPagination(type, filteredData.length);
     }
@@ -212,8 +244,6 @@
         for(let i=1; i<=totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= settings.page-1 && i <= settings.page+1)) {
                 html += `<button class="page-btn ${i === settings.page ? 'active' : ''}" onclick="changePage('${type}', ${i})">${i}</button>`;
-            } else if (i === settings.page - 2 || i === settings.page + 2) {
-                html += `<span style="padding: 0 5px;">...</span>`;
             }
         }
         html += `<button class="page-btn" onclick="changePage('${type}', ${settings.page + 1})" ${settings.page === totalPages ? 'disabled' : ''}>Sau</button>`;
@@ -222,13 +252,7 @@
 
     function changePage(type, p) {
         config[type].page = p;
-        const keyword = document.getElementById('search-bar').value.toLowerCase();
-        const rawData = (type === 'posts') ? postDatabase : (typeof libraryDatabase !== 'undefined' ? libraryDatabase : []);
-        const searchData = rawData.filter(item => 
-            item.title.toLowerCase().includes(keyword) || 
-            item.desc.toLowerCase().includes(keyword)
-        );
-        renderUI(type, searchData);
+        renderUI(type, (type === 'posts' ? postDatabase : libraryDatabase));
         window.scrollTo({ top: 200, behavior: 'smooth' });
     }
 
@@ -259,11 +283,8 @@
     }
 
     window.onload = () => {
-        if(localStorage.getItem('cookiesAccepted')) {
-            const notice = document.getElementById('cookie-notice');
-            if(notice) notice.style.display = 'none';
-        }
-        fetchDriveData(); // Bắt đầu tải dữ liệu từ Sheets
+        if(localStorage.getItem('cookiesAccepted')) document.getElementById('cookie-notice').style.display = 'none';
+        fetchDriveData();
         if(typeof libraryDatabase !== 'undefined') renderUI('library', libraryDatabase);
     };
 </script>
