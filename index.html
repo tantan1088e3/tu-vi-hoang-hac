@@ -186,6 +186,42 @@
 
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
+    async function loadPDFLibrary() {
+    const username = "tantan1088e3"; // Tên user GitHub của ông
+    const repo = "tu-vi-hoang-hac";   // Tên repository của ông
+    const folder = "download";       // Thư mục chứa file
+    
+    // API lấy danh sách file từ GitHub
+    const GITHUB_API_URL = `https://api.github.com/repos/${username}/${repo}/contents/${folder}`;
+
+    try {
+        const res = await fetch(GITHUB_API_URL);
+        const files = await res.json();
+        
+        // Chỉ lấy các file có đuôi .pdf
+        const pdfFiles = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
+
+        if (pdfFiles.length === 0) {
+            document.getElementById('post-grid').innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư mục hiện chưa có file PDF nào.</p>";
+            return;
+        }
+
+        document.getElementById('post-grid').innerHTML = pdfFiles.map(file => `
+            <div class="card">
+                <span class="category-tag">TÀI LIỆU PDF</span>
+                <h3>${file.name.replace('.pdf', '').replace(/-/g, ' ')}</h3>
+                <p>Tài liệu được lưu trữ tự động trong hệ thống di sản.</p>
+                <a href="${file.download_url}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none;">Tải xuống PDF ↓</a>
+            </div>
+        `).join('');
+        
+        document.getElementById('post-pagination').innerHTML = ""; 
+    } catch (e) {
+        console.error(e);
+        document.getElementById('post-grid').innerHTML = "Lỗi tự động kết nối thư viện GitHub.";
+    }
+}
+
     window.onload = init;
 </script>
 </body>
