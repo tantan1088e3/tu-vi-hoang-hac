@@ -19,9 +19,10 @@
         .card { 
             background: white; padding: 1.8rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
             border-top: 5px solid var(--primary-color); display: flex; flex-direction: column; transition: 0.3s;
+            height: 100%; box-sizing: border-box;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .card h3 { margin: 10px 0; color: var(--primary-color); font-family: 'Playfair Display', serif; }
+        .card h3 { margin: 10px 0; color: var(--primary-color); font-family: 'Playfair Display', serif; min-height: 3.6rem; }
 
         /* Chi tiết bài viết */
         .article-container { max-width: 850px; margin: 2rem auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); padding: 4rem; }
@@ -30,19 +31,18 @@
         
         .content { margin-top: 2rem; font-size: 1.15rem; text-align: justify; }
         
-        /* Định dạng Header nội bộ (Cột H) */
-        .inner-header { color: var(--primary-color); font-family: 'Playfair Display', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 15px; margin-bottom: 25px; font-size: 1.8rem; }
+        /* Định dạng Header nội bộ */
+        .inner-header { color: var(--primary-color); font-family: 'Playfair Display', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 15px; margin-bottom: 25px; font-size: 1.6rem; line-height: 1.4; font-style: italic; }
         
-        /* Định dạng các đoạn thân bài (Cột I) */
-        .content p { margin-bottom: 1.5rem; text-indent: 20px; }
-        .content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; margin-top: 2.5rem; font-size: 1.5rem; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+        .content p { margin-bottom: 1.5rem; }
+        .content h2 { color: var(--primary-color); font-family: 'Playfair Display', serif; margin-top: 2.5rem; font-size: 1.5rem; border-left: 4px solid var(--accent-color); padding-left: 15px; background: #f9f9f9; padding: 10px 15px; }
 
-        /* Định dạng Kết luận (Cột J) */
-        .quote-box { background: #fdf2f2; border-right: 5px solid var(--primary-color); padding: 30px; font-style: italic; margin-top: 4rem; color: var(--primary-color); position: relative; border-radius: 4px; }
+        /* Định dạng Kết luận */
+        .quote-box { background: #fdf2f2; border-left: 5px solid var(--primary-color); padding: 30px; font-style: italic; margin-top: 4rem; color: var(--primary-color); position: relative; border-radius: 4px; }
         .quote-box::before { content: "Lời kết:"; font-weight: bold; font-style: normal; display: block; margin-bottom: 10px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
 
         .btn { padding: 12px 25px; text-decoration: none; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; display: inline-block; border: 2px solid var(--primary-color); }
-        .btn-view { color: var(--primary-color); background: none; margin-top: auto; }
+        .btn-view { color: var(--primary-color); background: none; margin-top: auto; align-self: flex-start; }
         .btn-view:hover { background: var(--primary-color); color: white; }
         .btn-back { color: var(--primary-color); background: none; margin-top: 3rem; }
         .btn-back:hover { background: var(--primary-color); color: white; }
@@ -58,14 +58,12 @@
 </nav>
 
 <div class="container">
-    <!-- DANH SÁCH BÀI VIẾT -->
     <div id="list-view">
         <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; font-size: 2.2rem; margin-top: 40px;">Hệ Thống Nghiệm Lý Chi Tiết</h2>
         <p style="text-align: center; color: var(--accent-color); font-weight: bold;">DI SẢN CỤ HOÀNG HẠC (TRƯƠNG CUNG TÙNG)</p>
         <div class="grid" id="post-grid">Đang tải dữ liệu di sản...</div>
     </div>
 
-    <!-- CHI TIẾT BÀI VIẾT -->
     <div id="detail-view" class="hidden">
         <article class="article-container">
             <span id="article-meta" class="post-meta"></span>
@@ -77,6 +75,7 @@
 </div>
 
 <script>
+    // URL CSV đã được cập nhật
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
     
     let db = [];
@@ -100,12 +99,14 @@
 
     async function init() {
         try {
-            const res = await fetch(SHEET_URL);
+            const res = await fetch(SHEET_URL + '&cachebust=' + new Date().getTime());
             const csv = await res.text();
             const allRows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            // LẤY DÒNG TIÊU ĐỀ ĐỂ DÒ VỊ TRÍ CỘT
-            const headers = parseCSVLine(allRows[0]);
+            // XỬ LÝ TIÊU ĐỀ: Tự động tìm cột bất kể viết hoa hay thường
+            const rawHeaders = parseCSVLine(allRows[0]);
+            const headers = rawHeaders.map(h => h.toLowerCase().trim());
+            
             const idx = {
                 id: headers.indexOf('id'),
                 cat: headers.indexOf('category'),
@@ -128,14 +129,20 @@
                     i_body:   c[idx.i] || "",
                     j_footer: c[idx.j] || ""
                 };
-            }).filter(p => p.id);
+            }).filter(p => p.id && p.id !== "");
             
+            if(db.length === 0) {
+                document.getElementById('post-grid').innerHTML = "Không tìm thấy dữ liệu bài viết. Hãy kiểm tra lại cột ID trong Sheets.";
+                return;
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
-            if(postId) { renderList(); showPost(postId); } 
-            else { renderList(); }
+            renderList();
+            if(postId) { showPost(postId); } 
         } catch (e) { 
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu. Vui lòng kiểm tra cột H1, I1, J1.";
+            console.error(e);
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu. Vui lòng kiểm tra lại kết nối internet hoặc link CSV.";
         }
     }
 
@@ -145,7 +152,7 @@
             <div class="card">
                 <span class="post-meta" style="font-size: 0.7rem;">${p.cat}</span>
                 <h3>${p.title}</h3>
-                <p>${p.desc}</p>
+                <p>${p.desc.substring(0, 120)}${p.desc.length > 120 ? '...' : ''}</p>
                 <button class="btn btn-view" onclick="showPost('${p.id}')">Xem nội dung →</button>
             </div>
         `).join('');
@@ -159,27 +166,42 @@
         document.getElementById('article-title').innerText = p.title;
         
         let html = "";
-        if(p.h_header) html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
+        
+        // Cột H (Lời dẫn)
+        if(p.h_header && p.h_header !== "") {
+            html += `<div class="inner-header">${p.h_header.replace(/\n/g, '<br>')}</div>`;
+        }
 
-        if(p.i_body) {
+        // Cột I (Nội dung chính)
+        if(p.i_body && p.i_body !== "") {
             const lines = p.i_body.split(/\r?\n/);
             lines.forEach(line => {
                 const text = line.trim();
                 if(!text) return;
-                if(/^\d+\./.test(text) || (text.length < 60 && text.endsWith(":"))) {
+                // Nếu là tiêu đề phụ (bắt đầu bằng số hoặc kết thúc bằng dấu hai chấm)
+                if(/^\d+\./.test(text) || (text.length < 100 && text.endsWith(":"))) {
                     html += `<h2>${text}</h2>`;
                 } else {
                     html += `<p>${text}</p>`;
                 }
             });
+        } else {
+            html += `<p style="text-align:center; color:#999; font-style:italic;">Nội dung bài viết này đang được cập nhật...</p>`;
         }
 
-        if(p.j_footer) html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
+        // Cột J (Lời kết)
+        if(p.j_footer && p.j_footer !== "") {
+            html += `<div class="quote-box">${p.j_footer.replace(/\n/g, '<br>')}</div>`;
+        }
 
         document.getElementById('article-content').innerHTML = html;
         toggleView(true);
         window.scrollTo(0,0);
         document.title = p.title + " - Tử Vi Hoàng Hạc";
+        
+        // Cập nhật URL mà không reload trang
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?id=' + id;
+        window.history.pushState({path:newUrl},'',newUrl);
     }
 
     function toggleView(isDetail) {
@@ -192,6 +214,9 @@
             listView.classList.remove('hidden');
             detailView.classList.add('hidden');
             document.title = "Hệ Thống Di Sản - Tử Vi Hoàng Hạc";
+            // Xóa tham số id trên URL khi quay lại danh sách
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({path:cleanUrl},'',cleanUrl);
         }
     }
 
