@@ -70,7 +70,7 @@
     <div id="post-pagination" class="pagination"></div>
 </div>
 
-<footer><p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p> <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftuvihoanghac.id.vn&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Luot+truy+cap&edge_flat=false"/></a></footer>
+<footer><p>&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p></footer>
 
 
 <script>
@@ -264,5 +264,15 @@ function goPdfPage(p) {
 
 window.onload = init;
 </script>
+
+    <div style="text-align: center; color: #555; margin-top: 20px; font-family: sans-serif;">
+        Số lượt truy cập: <span id="visits">...</span>
+    </div>
+<script>
+function cb(response) {
+    document.getElementById('visits').innerText = response.value;
+}
+</script>
+<script async src="https://api.countapi.xyz/hit/tuvihoanghac.id.vn/visits?callback=cb"></script>
 </body>
 </html>
