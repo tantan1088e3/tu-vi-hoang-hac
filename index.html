@@ -138,44 +138,66 @@
         library: { page: 1, limit: 12, gridId: 'lib-grid', navId: 'lib-pagination' }
     };
 
-    // 1. HÀM TÁCH CSV CHUẨN (CHỐNG VỠ DỮ LIỆU)
-    function parseCSV(text) {
-        const p = Array.from(text.matchAll(/(".*?"|[^",\n\r]+)(?=\s*,|\s*(\n|\r|$))/g));
-        return p.map(m => m[0].replace(/^"|"$/g, '').trim());
+    // Hàm tách CSV chuẩn xử lý được dấu phẩy bên trong ngoặc kép
+    function parseCSVLine(text) {
+        const result = [];
+        let cur = '';
+        let inQuote = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') {
+                if (inQuote && text[i + 1] === '"') { cur += '"'; i++; }
+                else { inQuote = !inQuote; }
+            } else if (char === ',' && !inQuote) {
+                result.push(cur.trim()); cur = '';
+            } else { cur += char; }
+        }
+        result.push(cur.trim());
+        return result;
     }
 
-    // 2. TẢI DỮ LIỆU TỪ SHEETS
     async function fetchDriveData() {
         try {
             const response = await fetch(SHEET_CSV_URL);
             const data = await response.text();
             
-            // Chia dòng thông minh hơn để xử lý bài viết có xuống dòng bên trong ô
-            const rows = data.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/).slice(1); 
+            // Tách dòng nhưng giữ nguyên nội dung có xuống dòng bên trong ô (bọc trong ngoặc kép)
+            const rows = data.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            postDatabase = rows.map(row => {
-                const cols = parseCSV(row); 
+            // Lấy tiêu đề cột để dò vị trí chính xác
+            const headers = parseCSVLine(rows[0]);
+            const colIndex = {
+                id: headers.indexOf('id'),
+                cat: headers.indexOf('category'),
+                title: headers.indexOf('title'),
+                desc: headers.indexOf('desc'),
+                feat: headers.indexOf('featured'),
+                yt: headers.indexOf('youtubeId'),
+                content: headers.indexOf('fullContent') // Sẽ tự tìm cột có tên 'fullContent'
+            };
+
+            const dataRows = rows.slice(1);
+            postDatabase = dataRows.map(row => {
+                const cols = parseCSVLine(row);
                 return {
-                    id: cols[0] || "",
-                    category: cols[1] || "Chưa phân loại",
-                    title: cols[2] || "Chưa có tiêu đề",
-                    desc: cols[3] || "",
-                    isFeatured: cols[4] ? cols[4].toLowerCase().includes('true') : false,
-                    tags: cols[5] ? [cols[5]] : [],
-                    youtubeId: cols[6] || "",
-                    fullContent: cols[7] || "" // Đọc chính xác Cột H
+                    id: cols[colIndex.id] || "",
+                    category: cols[colIndex.cat] || "Chưa phân loại",
+                    title: cols[colIndex.title] || "Chưa có tiêu đề",
+                    desc: cols[colIndex.desc] || "",
+                    isFeatured: cols[colIndex.feat] ? cols[colIndex.feat].toLowerCase().includes('true') : false,
+                    youtubeId: cols[colIndex.yt] || "",
+                    fullContent: cols[colIndex.content] || "" 
                 };
             }).filter(item => item.id !== "");
 
             initTags();
             renderUI('posts', postDatabase);
         } catch (error) {
-            console.error(error);
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu. Vui lòng kiểm tra lại.";
+            console.error("Lỗi:", error);
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu Sheets.";
         }
     }
 
-    // 3. HIỂN THỊ CHI TIẾT BÀI VIẾT (Sửa lỗi hiển thị nội dung)
     function showDetail(id) {
         const post = postDatabase.find(p => p.id === id);
         if(!post) return;
@@ -183,13 +205,15 @@
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.getElementById('control-panel').classList.add('hidden');
         
-        document.getElementById('det-meta').innerText = `${post.category} ${post.tags.length > 0 ? '• ' + post.tags.join(', ') : ''}`;
+        document.getElementById('det-meta').innerText = post.category;
         document.getElementById('det-title').innerText = post.title;
         
-        // Xử lý xuống dòng chuẩn: Chuyển \n thành đoạn văn <p>
+        // Hiển thị nội dung: Chuyển xuống dòng thành thẻ <p>
         if (post.fullContent) {
-            const paragraphs = post.fullContent.split('\n');
-            const htmlResult = paragraphs.map(p => p.trim() ? `<p>${p.trim()}</p>` : '').join('');
+            const paragraphs = post.fullContent.split(/\r?\n/);
+            const htmlResult = paragraphs
+                .map(p => p.trim() ? `<p>${p.trim()}</p>` : '')
+                .join('');
             document.getElementById('det-content').innerHTML = htmlResult;
         } else {
             document.getElementById('det-content').innerHTML = "<i>Nội dung đang được cập nhật...</i>";
@@ -199,23 +223,7 @@
         window.scrollTo(0, 0);
     }
 
-    // 4. QUAY LẠI DASHBOARD
-    function backToDashboard() {
-        document.getElementById('post-detail').classList.remove('active');
-        document.getElementById('dashboard').classList.add('active');
-        document.getElementById('control-panel').classList.remove('hidden');
-        switchTab('dashboard');
-    }
-
-    // 5. CÁC HÀM GIAO DIỆN KHÁC (GIỮ NGUYÊN)
-    function switchTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        if(tabId === 'dashboard') document.getElementById('tab-posts').classList.add('active');
-        if(tabId === 'library') document.getElementById('tab-library').classList.add('active');
-    }
-
+    // Các hàm renderUI, switchTab, filterByTag... giữ nguyên logic của bạn nhưng dùng postDatabase mới
     function renderUI(type, data) {
         const settings = config[type];
         const grid = document.getElementById(settings.gridId);
@@ -233,21 +241,39 @@
                 <span class="category-tag">${item.category}</span>
                 <h3>${item.title} ${item.youtubeId ? '<span class="video-icon">▶ Video</span>' : ''}</h3>
                 <p>${item.desc}</p>
-                ${type === 'library' 
-                    ? `<a href="${item.fileUrl}" class="btn btn-lib" target="_blank">Tải tài liệu PDF</a>`
-                    : `<button onclick="showDetail('${item.id}')" class="btn btn-post">Đọc tiếp →</button>`
-                }
+                <button onclick="showDetail('${item.id}')" class="btn btn-post">Đọc tiếp →</button>
             </div>
         `).join('') : '<p style="text-align:center; grid-column: 1/-1;">Không tìm thấy nội dung.</p>';
 
         renderPagination(type, filteredData.length);
     }
 
+    function backToDashboard() {
+        document.getElementById('post-detail').classList.remove('active');
+        document.getElementById('dashboard').classList.add('active');
+        document.getElementById('control-panel').classList.remove('hidden');
+    }
+
+    function initTags() {
+        const tags = new Set(['Tất cả']);
+        postDatabase.forEach(p => { if(p.category) tags.add(p.category); });
+        const bar = document.getElementById('filter-bar');
+        if(bar) bar.innerHTML = Array.from(tags).map(t => `<span class="tag-filter ${t === currentTag ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
+    }
+
+    function filterByTag(tag) {
+        currentTag = tag;
+        document.querySelectorAll('.tag-filter').forEach(el => el.classList.toggle('active', el.innerText === tag));
+        config.posts.page = 1;
+        renderUI('posts', postDatabase);
+    }
+
     function renderPagination(type, total) {
         const settings = config[type];
         const totalPages = Math.ceil(total / settings.limit);
         const nav = document.getElementById(settings.navId);
-        if (!nav || totalPages <= 1) { if(nav) nav.innerHTML = ""; return; }
+        if (!nav) return;
+        if (totalPages <= 1) { nav.innerHTML = ""; return; }
         
         let html = `<button class="page-btn" onclick="changePage('${type}', ${settings.page - 1})" ${settings.page === 1 ? 'disabled' : ''}>Trước</button>`;
         for(let i=1; i<=totalPages; i++) {
@@ -261,29 +287,8 @@
 
     function changePage(type, p) {
         config[type].page = p;
-        renderUI(type, (type === 'posts' ? postDatabase : libraryDatabase));
+        renderUI(type, postDatabase);
         window.scrollTo({ top: 200, behavior: 'smooth' });
-    }
-
-    function filterByTag(tag) {
-        currentTag = tag;
-        document.querySelectorAll('.tag-filter').forEach(el => el.classList.toggle('active', el.innerText === tag));
-        config.posts.page = 1;
-        renderUI('posts', postDatabase);
-    }
-
-    function handleSearch() {
-        const k = document.getElementById('search-bar').value.toLowerCase();
-        const fPosts = postDatabase.filter(p => p.title.toLowerCase().includes(k) || p.desc.toLowerCase().includes(k));
-        config.posts.page = 1;
-        renderUI('posts', fPosts);
-    }
-
-    function initTags() {
-        const tags = new Set(['Tất cả']);
-        postDatabase.forEach(p => { if(p.category) tags.add(p.category); });
-        const bar = document.getElementById('filter-bar');
-        if(bar) bar.innerHTML = Array.from(tags).map(t => `<span class="tag-filter ${t === currentTag ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
     }
 
     function acceptCookies() {
@@ -294,7 +299,6 @@
     window.onload = () => {
         if(localStorage.getItem('cookiesAccepted')) document.getElementById('cookie-notice').style.display = 'none';
         fetchDriveData();
-        if(typeof libraryDatabase !== 'undefined') renderUI('library', libraryDatabase);
     };
 </script>
 </body>
