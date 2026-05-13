@@ -58,6 +58,7 @@
     <div class="top-bar">
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('posts')">BÀI VIẾT</button>
+            <button class="tab-btn" onclick="switchTab('video')">THƯ VIỆN VIDEO</button> <!-- Thêm dòng này -->
             <button class="tab-btn" onclick="switchTab('pdf')">THƯ VIỆN PDF</button>
         </div>
         <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
@@ -136,24 +137,26 @@
     }
 
     function switchTab(type) {
-        // 1. Cập nhật trạng thái nút tab
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        // Sử dụng currentTarget để chính xác hơn khi click
         event.currentTarget.classList.add('active');
     
         const grid = document.getElementById('post-grid');
         const pagination = document.getElementById('post-pagination');
         const filterBar = document.getElementById('filter-bar');
     
-        // Xóa nội dung cũ để sẵn sàng nhận dữ liệu mới
         grid.innerHTML = ""; 
     
         if (type === 'pdf') {
-            currentPdfPage = 1; // Reset trang
+            currentPdfPage = 1;
             filterBar.style.display = "none";
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
             pagination.innerHTML = "";
             loadPDFLibrary(); 
+        } else if (type === 'video') { // Logic cho Tab Video
+            filterBar.style.display = "none";
+            pagination.innerHTML = "";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+            loadVideoLibrary(); // Bạn sẽ cần viết thêm hàm này để lấy dữ liệu video từ YouTube hoặc Sheet
         } else {
             filterBar.style.display = "flex";
             renderUI();
