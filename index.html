@@ -98,23 +98,43 @@
     }
 
     async function init() {
-        try {
-            const res = await fetch(SHEET_URL);
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            
-            const idx = { id: headers.indexOf('id'), cat: headers.indexOf('category'), title: headers.indexOf('title'), desc: headers.indexOf('desc'), feat: headers.indexOf('featured') };
+    try {
+        const res = await fetch(SHEET_URL);
+        const csv = await res.text();
+        // Tách các dòng từ CSV, xử lý cả trường hợp nội dung có dấu phẩy bên trong ngoặc kép
+        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+        
+        // Khai báo chỉ mục (index) cho tất cả các cột cần thiết, bao gồm cả youtubeid
+        const idx = { 
+            id: headers.indexOf('id'), 
+            cat: headers.indexOf('category'), 
+            title: headers.indexOf('title'), 
+            desc: headers.indexOf('desc'), 
+            feat: headers.indexOf('featured'),
+            youtubeId: headers.indexOf('youtubeid') // Thêm cột youtubeid từ file CSV
+        };
 
-            db = rows.slice(1).map(r => {
-                const c = parseCSVLine(r);
-                return { id: c[idx.id], category: c[idx.cat] || "Chưa phân loại", title: c[idx.title], desc: c[idx.desc], isFeatured: String(c[idx.feat]).toLowerCase() === 'true' };
-            }).filter(p => p.id);
+        // Chuyển đổi dữ liệu từ các dòng CSV thành mảng đối tượng (db)
+        db = rows.slice(1).map(r => {
+            const c = parseCSVLine(r);
+            return { 
+                id: c[idx.id], 
+                category: c[idx.cat] || "Chưa phân loại", 
+                title: c[idx.title], 
+                desc: c[idx.desc], 
+                isFeatured: String(c[idx.feat]).toLowerCase() === 'true',
+                youtubeId: c[idx.youtubeId] || "" // Lưu trữ mã video để dùng cho Tab Video
+            };
+        }).filter(p => p.id); // Loại bỏ các dòng trống không có ID
 
-            renderTags();
-            renderUI();
-        } catch (e) { document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu."; }
+        renderTags();
+        renderUI();
+    } catch (e) { 
+        console.error(e);
+        document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu."; 
     }
+}
 
     function renderTags() {
         const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
