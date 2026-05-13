@@ -6,31 +6,42 @@
     <title>Nội dung - Tử Vi Hoàng Hạc</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Lora', serif; line-height: 1.8; max-width: 800px; margin: auto; padding: 20px; background: #fdf8f0; color: #2c3e50; }
-        .article-container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0d5c1; position: relative; }
-        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #8e2121; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
-        .btn-back:hover { color: #c5a059; }
+        /* Giao diện nền nhã nhặn, tôn vinh nội dung di sản */
+        body { font-family: 'Lora', serif; line-height: 1.8; max-width: 850px; margin: auto; padding: 20px; background: #fdf8f0; color: #2c3e50; }
         
-        /* Nút quay lại ở cuối trang */
-        .btn-back-bottom { display: block; width: fit-content; margin: 40px auto 20px; padding: 10px 25px; border: 1px solid #8e2121; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #8e2121; }
+        .article-container { background: white; padding: 45px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e0d5c1; position: relative; }
+        
+        /* Nút quay lại tinh tế */
+        .btn-back { display: inline-flex; align-items: center; margin-bottom: 25px; text-decoration: none; color: #8e2121; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
+        .btn-back:hover { color: #c5a059; transform: translateX(-5px); }
+        
+        .btn-back-bottom { display: block; width: fit-content; margin: 50px auto 20px; padding: 12px 30px; border: 1px solid #8e2121; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #8e2121; transition: 0.3s; }
         .btn-back-bottom:hover { background: #8e2121; color: white !important; }
 
-        h1 { color: #5d1a1a; font-size: 2.2rem; margin-bottom: 10px; line-height: 1.3; }
-        .meta-info { color: #c5a059; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 20px; display: block; }
-        .section-h { font-style: italic; color: #555; border-left: 4px solid #c5a059; padding-left: 15px; margin: 25px 0; }
-        .section-i { font-size: 1.15rem; text-align: justify; margin-top: 20px; }
-        .section-j { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-style: italic; color: #777; text-align: right; }
+        /* Typography */
+        h1 { color: #5d1a1a; font-size: 2.4rem; margin-bottom: 15px; line-height: 1.2; letter-spacing: -0.5px; }
+        .meta-info { color: #c5a059; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 25px; display: block; letter-spacing: 1.5px; }
         
-        /* Cấu trúc Video Responsive */
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 30px 0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #000; }
+        /* Phần dẫn nhập (Sapo) */
+        .section-h { font-style: italic; color: #4a4a4a; border-left: 5px solid #c5a059; padding: 10px 20px; margin: 30px 0; background: #fffcf8; font-size: 1.1rem; }
+        
+        /* Video Player mượt mà */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 35px 0; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-        .heading-number { font-weight: bold; color: #5d1a1a; font-size: 1.25rem; margin-top: 25px; display: block; }
-        p { margin-bottom: 1.2rem; }
+        /* Nội dung chính */
+        .section-i { font-size: 1.2rem; text-align: justify; color: #34495e; }
+        .section-j { margin-top: 50px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; }
+        
+        /* Định dạng đầu mục số */
+        .heading-number { font-weight: 700; color: #5d1a1a; font-size: 1.4rem; margin-top: 35px; margin-bottom: 15px; display: block; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
+        p { margin-bottom: 1.5rem; }
 
+        /* Responsive cho di động */
         @media (max-width: 600px) {
-            .article-container { padding: 20px; }
-            h1 { font-size: 1.6rem; }
+            .article-container { padding: 25px; }
+            h1 { font-size: 1.8rem; }
+            .section-i { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -39,13 +50,17 @@
     <a href="index.html" class="btn-back">← QUAY LẠI DANH SÁCH</a>
     
     <div id="article-view" class="article-container">
-        <div style="text-align: center; padding: 50px;">⏳ Đang kết nối kho di sản...</div>
+        <div style="text-align: center; padding: 60px;">
+            <div style="font-size: 2rem; margin-bottom: 15px;">⏳</div>
+            <div style="color: #c5a059; letter-spacing: 1px;">ĐANG KẾT NỐI KHO DI SẢN...</div>
+        </div>
     </div>
 
     <a href="index.html" class="btn-back btn-back-bottom">Quay lại danh sách</a>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Cache bust URL để luôn lấy dữ liệu mới nhất
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
         function parseLine(text) {
@@ -67,12 +82,13 @@
             try {
                 const res = await fetch(SHEET_URL);
                 const text = await res.text();
+                // Tách dòng thông minh bảo vệ nội dung trong ngoặc kép
                 const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const headers = parseLine(rows[0]).map(h => h.toLowerCase().trim());
                 
                 const getVal = (rowCells, name) => {
                     const idx = headers.indexOf(name.toLowerCase());
-                    return idx > -1 ? rowCells[idx] : "";
+                    return idx > -1 ? rowCells[idx].replace(/^"|"$/g, '') : "";
                 };
 
                 const targetRowRaw = rows.slice(1).find(r => {
@@ -87,6 +103,7 @@
                         if(!t) return "";
                         return t.split('\n').map(line => {
                             const trimmed = line.trim();
+                            // Nhận diện đầu mục 1. 2. 3. để in đậm phong cách cổ điển
                             if (/^\d+\./.test(trimmed)) {
                                 return `<span class="heading-number">${trimmed}</span>`;
                             }
@@ -94,19 +111,20 @@
                         }).join('');
                     };
 
-                    // Xử lý Youtube Video
-                    const youtubeId = getVal(d, 'youtubeid'); // Lấy từ cột G
+                    // Xử lý Video YouTube (Cột youtubeid)
+                    const youtubeId = getVal(d, 'youtubeid');
                     let videoHtml = "";
                     if (youtubeId && youtubeId.length > 5) {
                         videoHtml = `
                             <div class="video-wrapper">
-                                <iframe src="https://www.youtube.com/embed/${youtubeId.trim()}" 
+                                <iframe src="https://www.youtube.com/embed/${youtubeId.trim()}?rel=0&modestbranding=1" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen>
+                                    allowfullscreen loading="lazy">
                                 </iframe>
                             </div>`;
                     }
 
+                    // Render nội dung cuối cùng
                     view.innerHTML = `
                         <span class="meta-info">${getVal(d, 'category')}</span>
                         <h1>${getVal(d, 'title')}</h1>
@@ -118,10 +136,10 @@
                         <div class="section-j">${format(getVal(d, 'j_footer'))}</div>
                     `;
                 } else {
-                    view.innerHTML = "<div style='text-align: center; padding: 50px;'>Nội dung không tồn tại hoặc đã được di dời.</div>";
+                    view.innerHTML = "<div style='text-align: center; padding: 60px; color: #8e2121;'>⚠️ Nội dung không tồn tại hoặc đã được di dời.</div>";
                 }
             } catch (e) {
-                view.innerHTML = "<div style='text-align: center; padding: 50px;'>Lỗi kết nối dữ liệu. Vui lòng kiểm tra lại kết nối mạng.</div>";
+                view.innerHTML = "<div style='text-align: center; padding: 60px;'>Lỗi kết nối kho dữ liệu. Vui lòng làm mới trang.</div>";
             }
         }
         load();
