@@ -259,6 +259,31 @@ function renderPDFPagination(total) {
     document.getElementById('post-pagination').innerHTML = html;
 }
 
+async function loadVideoLibrary() {
+    const grid = document.getElementById('post-grid');
+    
+    // Lọc danh sách các bài viết có chứa youtubeId
+    const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
+
+    if (videoPosts.length === 0) {
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
+        return;
+    }
+
+    grid.innerHTML = videoPosts.map(p => `
+        <div class="card">
+            <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
+                <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2rem; pointer-events: none;">▶</div>
+            </div>
+            <span class="category-tag">VIDEO BÀI GIẢNG</span>
+            <h3>${p.title}</h3>
+            <p>${p.desc}</p>
+            <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
+        </div>
+    `).join('');
+}
+    
 function goPdfPage(p) {
     currentPdfPage = p;
     renderPDFUI();
