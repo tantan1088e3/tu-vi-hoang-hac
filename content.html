@@ -12,7 +12,7 @@
         .btn-back:hover { color: #c5a059; }
         
         /* Nút quay lại ở cuối trang */
-        .btn-back-bottom { display: block; width: fit-content; margin: 40px auto 20px; padding: 10px 25px; border: 1px solid #8e2121; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+        .btn-back-bottom { display: block; width: fit-content; margin: 40px auto 20px; padding: 10px 25px; border: 1px solid #8e2121; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #8e2121; }
         .btn-back-bottom:hover { background: #8e2121; color: white !important; }
 
         h1 { color: #5d1a1a; font-size: 2.2rem; margin-bottom: 10px; line-height: 1.3; }
@@ -21,9 +21,17 @@
         .section-i { font-size: 1.15rem; text-align: justify; margin-top: 20px; }
         .section-j { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-style: italic; color: #777; text-align: right; }
         
-        /* Style cho các đầu mục 1, 2, 3... */
+        /* Cấu trúc Video Responsive */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 30px 0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #000; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
         .heading-number { font-weight: bold; color: #5d1a1a; font-size: 1.25rem; margin-top: 25px; display: block; }
         p { margin-bottom: 1.2rem; }
+
+        @media (max-width: 600px) {
+            .article-container { padding: 20px; }
+            h1 { font-size: 1.6rem; }
+        }
     </style>
 </head>
 <body>
@@ -31,10 +39,9 @@
     <a href="index.html" class="btn-back">← QUAY LẠI DANH SÁCH</a>
     
     <div id="article-view" class="article-container">
-        Đang tải dữ liệu...
+        <div style="text-align: center; padding: 50px;">⏳ Đang kết nối kho di sản...</div>
     </div>
 
-    <!-- Nút quay lại cuối trang -->
     <a href="index.html" class="btn-back btn-back-bottom">Quay lại danh sách</a>
 
 <script>
@@ -68,12 +75,14 @@
                     return idx > -1 ? rowCells[idx] : "";
                 };
 
-                const targetRowRaw = rows.slice(1).find(r => parseLine(r)[headers.indexOf('id')] === idReq);
+                const targetRowRaw = rows.slice(1).find(r => {
+                    const cells = parseLine(r);
+                    return cells[headers.indexOf('id')] === idReq;
+                });
 
                 if (targetRowRaw) {
                     const d = parseLine(targetRowRaw);
                     
-                    // Logic format: Nếu dòng bắt đầu bằng số + dấu chấm thì in đậm
                     const format = (t) => {
                         if(!t) return "";
                         return t.split('\n').map(line => {
@@ -85,16 +94,34 @@
                         }).join('');
                     };
 
+                    // Xử lý Youtube Video
+                    const youtubeId = getVal(d, 'youtubeid'); // Lấy từ cột G
+                    let videoHtml = "";
+                    if (youtubeId && youtubeId.length > 5) {
+                        videoHtml = `
+                            <div class="video-wrapper">
+                                <iframe src="https://www.youtube.com/embed/${youtubeId.trim()}" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>`;
+                    }
+
                     view.innerHTML = `
                         <span class="meta-info">${getVal(d, 'category')}</span>
                         <h1>${getVal(d, 'title')}</h1>
                         <div class="section-h">${format(getVal(d, 'h_header'))}</div>
+                        
+                        ${videoHtml} 
+                        
                         <div class="section-i">${format(getVal(d, 'i_body'))}</div>
                         <div class="section-j">${format(getVal(d, 'j_footer'))}</div>
                     `;
+                } else {
+                    view.innerHTML = "<div style='text-align: center; padding: 50px;'>Nội dung không tồn tại hoặc đã được di dời.</div>";
                 }
             } catch (e) {
-                view.innerHTML = "Lỗi kết nối dữ liệu.";
+                view.innerHTML = "<div style='text-align: center; padding: 50px;'>Lỗi kết nối dữ liệu. Vui lòng kiểm tra lại kết nối mạng.</div>";
             }
         }
         load();
