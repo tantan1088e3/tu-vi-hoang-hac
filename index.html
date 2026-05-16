@@ -424,26 +424,42 @@
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
     function submitForm(event) {
-        event.preventDefault();
-        
-        // Thu thập toàn bộ dữ liệu từ Form nhập liệu
-        const formData = {
-            fullName: document.getElementById('fullname').value,
-            gender: document.querySelector('input[name="gender"]:checked').value,
-            birthDate: document.getElementById('birth-date').value,
-            calendarType: document.querySelector('input[name="calendar-type"]:checked').value,
-            birthTime: document.getElementById('birth-time').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            notes: document.getElementById('notes').value
-        };
+    event.preventDefault();
+    
+    // ĐIỀN USERNAME TELEGRAM CỦA ANH VÀO ĐÂY (Ví dụ: tantan1088e3)
+    const TELEGRAM_USERNAME = 'tantan1088e3'; 
 
-        console.log("Dữ liệu đăng ký:", formData);
-        
-        // Tạm thời hiển thị thông báo thành công cho người dùng
-        alert(`Gửi thông tin thành công!\nHệ thống đã tiếp nhận lá số của đương số: ${formData.fullName}.\nVui lòng kiểm tra email sau khi hoàn tất thủ tục.`);
-        document.getElementById('tuvi-booking-form').reset();
-    }
+    const fullName = document.getElementById('fullname').value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const birthDate = document.getElementById('birth-date').value.split('-').reverse().join('/');
+    const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
+    const birthTime = document.getElementById('birth-time').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
+
+    // Soạn sẵn nội dung tin nhắn để khách gửi cho anh
+    const message = `Xin chào anh, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
+                    `- Họ tên: ${fullName}\n` +
+                    `- Giới tính: ${gender}\n` +
+                    `- Ngày sinh: ${birthDate} (${calendarType})\n` +
+                    `- Giờ sinh: ${birthTime}\n` +
+                    `- Email nhận bài: ${email}\n` +
+                    `- SĐT liên hệ: ${phone}\n` +
+                    `- Vấn đề quan tâm: ${notes}`;
+
+    // Mã hóa đoạn văn bản để chèn vào đường link URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Tạo đường dẫn mở thẳng ứng dụng Telegram đi đến tài khoản của anh
+    const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${encodedMessage}`;
+
+    alert("Hệ thống sẽ chuyển hướng anh/chị sang Telegram để gửi thông tin lá số trực tiếp.");
+    
+    // Mở tab mới chuyển sang Telegram của anh kèm tin nhắn soạn sẵn
+    window.open(telegramUrl, '_blank');
+    document.getElementById('tuvi-booking-form').reset();
+}
 
     window.onload = init;
 </script>
