@@ -433,12 +433,13 @@
     }
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
-    async function submitForm(event) {
+    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
+function submitForm(event) {
     event.preventDefault();
     
-    // ĐIỀN SỐ ĐIỆN THOẠI ZALO CỦA ANH
+    // ĐIỀN SỐ ĐIỆN THOẠI ĐĂNG KÝ ZALO CỦA ANH
     const ZALO_PHONE = '0946712608'; 
-    // ĐƯỜNG DẪN ẢNH MÃ QR ZALO CỦA ANH (Anh lưu ảnh QR vào thư mục web rồi điền link vào đây)
+    // ĐƯỜNG DẪN ẢNH MÃ QR ZALO CỦA ANH
     const ZALO_QR_IMAGE_URL = 'data/qr-code-zalo.jpg'; 
 
     const fullName = document.getElementById('fullname').value;
@@ -450,6 +451,7 @@
     const phone = document.getElementById('phone').value;
     const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
+    // Soạn nội dung thông tin lá số có cấu trúc gọn gàng
     const message = `Xin chào, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
                     `- Họ tên: ${fullName}\n` +
                     `- Giới tính: ${gender}\n` +
@@ -459,30 +461,43 @@
                     `- SĐT liên hệ: ${phone}\n` +
                     `- Vấn đề quan tâm: ${notes}`;
 
-    try {
-        // Sao chép thông tin vào bộ nhớ tạm
-        await navigator.clipboard.writeText(message);
-        
-        // Kiểm tra xem khách đang dùng Điện thoại hay Máy tính
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        if (isMobile) {
-            // Nếu là điện thoại, mở thẳng ứng dụng Zalo
-            alert("Thông tin lá số đã được sao chép! Hệ thống đang chuyển hướng bạn sang Zalo, bạn chỉ cần nhấn 'Dán' vào ô chat.");
-            window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
-        } else {
-            // Nếu là Máy tính (PC), hiển thị Popup chứa mã QR Zalo để họ quét
-            showZaloPopup(ZALO_QR_IMAGE_URL);
+    // Kiểm tra xem khách đang dùng Điện thoại hay Máy tính
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // 1. MỞ LINK ZALO NGAY LẬP TỨC (Đồng bộ) để không bị trình duyệt mobile chặn Pop-up
+        const zaloUrl = `https://zalo.me/${ZALO_PHONE}`;
+        window.open(zaloUrl, '_blank');
+
+        // 2. SAO CHÉP CHẠY NGẦM VÀO BỘ NHỚ TẠM
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(message)
+                .then(() => console.log('Đã sao chép dữ liệu ngầm.'))
+                .catch(err => console.error('Lỗi sao chép ngầm:', err));
         }
         
-        document.getElementById('tuvi-booking-form').reset();
-    } catch (err) {
-        console.error('Lỗi:', err);
-        alert("Có lỗi xảy ra, vui lòng liên hệ Zalo số: " + ZALO_PHONE);
+        alert("Hệ thống đang chuyển hướng bạn sang Zalo.\nThông tin lá số đã được sao chép, bạn chỉ cần bấm 'Dán' (Paste) vào ô chat.");
+    } else {
+        // Nếu là PC: Không cần nhảy tab, xử lý sao chép trước rồi hiện luôn Popup QR
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(message)
+                .then(() => {
+                    showZaloPopup(ZALO_QR_IMAGE_URL);
+                })
+                .catch(err => {
+                    console.error('Lỗi sao chép PC:', err);
+                    showZaloPopup(ZALO_QR_IMAGE_URL); // Vẫn hiện popup kể cả khi lỗi copy
+                });
+        } else {
+            showZaloPopup(ZALO_QR_IMAGE_URL);
+        }
     }
+    
+    // Reset lại form nhập liệu
+    document.getElementById('tuvi-booking-form').reset();
 }
 
-// Hàm hiển thị Popup mã QR trên màn hình PC
+// Hàm hiển thị Popup mã QR trên màn hình PC (Giữ nguyên giao diện đẹp của anh)
 function showZaloPopup(qrImageUrl) {
     // Tạo một vùng phủ mờ toàn màn hình
     const overlay = document.createElement('div');
