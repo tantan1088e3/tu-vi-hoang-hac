@@ -61,6 +61,23 @@
         .page-btn.active { background: var(--primary-color); color: white; }
 
         footer { text-align: center; padding: 3rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); }
+
+        /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
+    @media (max-width: 600px) {
+    .form-container {
+        padding: 1.5rem 1rem !important; /* Thu nhỏ khoảng cách viền cho rộng màn hình */
+    }
+    
+    /* Ép các hàng đang chia đôi (ngày sinh, lịch sinh, email, sđt) chuyển thành xếp dọc 1 cột */
+    .form-group[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important; 
+        gap: 15px !important;
+    }
+    
+    .radio-group {
+        padding: 5px 0 !important;
+    }
+}
     </style>
 </head>
 <body>
