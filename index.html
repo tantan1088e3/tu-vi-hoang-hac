@@ -17,10 +17,11 @@
         .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
         
-        .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; }
+        .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; flex-wrap: wrap; }
         .tab-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: #5d1a1a; }
         .tab-btn.active { background: var(--primary-color); color: white; }
         
+        #search-container { display: block; }
         #search-bar { padding: 12px; width: 300px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-family: inherit; }
 
         .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; padding: 15px; background: white; border-radius: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
@@ -38,8 +39,22 @@
         .card h3 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.4rem; line-height: 1.3; }
         .card p { color: #666; font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; }
 
-        .btn-post { padding: 10px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); transition: 0.3s; }
+        .btn-post { padding: 10px; text-decoration: none; font-weight: bold; text-align: center; border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); transition: 0.3s; cursor: pointer;}
         .btn-post:hover { background: var(--primary-color); color: white; }
+
+        /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
+        .form-container { background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; display: none; }
+        .form-container h2 { font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--primary-color); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary-color); outline: none; }
+        .radio-group { display: flex; gap: 20px; padding: 10px 0; }
+        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .radio-group input { width: auto; }
+        .btn-submit { background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 1rem; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-submit:hover { background: #3d1010; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .notice-box { background: #fffcf6; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 2rem; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
 
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
         .page-btn { width: 40px; height: 40px; border: none; background: #e0d5c1; cursor: pointer; border-radius: 4px; font-weight: bold; }
@@ -58,48 +73,118 @@
 <div class="control-panel">
     <div class="top-bar">
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('posts')">BÀI VIẾT</button>
-            <button class="tab-btn" onclick="switchTab('video')">THƯ VIỆN VIDEO</button> <!-- Thêm dòng này -->
-            <button class="tab-btn" onclick="switchTab('pdf')">THƯ VIỆN PDF</button>
+            <button class="tab-btn active" onclick="switchTab('posts', this)">BÀI VIẾT</button>
+            <button class="tab-btn" onclick="switchTab('video', this)">THƯ VIỆN VIDEO</button> 
+            <button class="tab-btn" onclick="switchTab('pdf', this)">THƯ VIỆN PDF</button>
+            <button class="tab-btn" onclick="switchTab('register', this)" style="color: #a41c1c; font-weight: 700;">ĐĂNG KÝ XEM SỐ ★</button>
         </div>
-        <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
+        <div id="search-container">
+            <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
+        </div>
     </div>
     <div id="filter-bar" class="filter-bar"></div>
 </div>
 
 <div class="container">
+    <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
+
+    <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
+    <div id="consultation-form-wrapper" class="form-container">
+        <h2>ĐĂNG KÝ LUẬN GIẢI TỬ VI VIẾT TAY</h2>
+        <div class="notice-box">
+            <strong>Lưu ý từ Hệ thống nghiệm lý:</strong> Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email sau 3-5 ngày. Vui lòng cung cấp chính xác giờ sinh để đảm bảo tính chuẩn xác của các cung số.
+        </div>
+        <form id="tuvi-booking-form" onsubmit="submitForm(event)">
+            <div class="form-group">
+                <label for="fullname">Họ và tên đương số:</label>
+                <input type="text" id="fullname" required placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+            
+            <div class="form-group">
+                <label>Giới tính:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="Nam" checked> Nam</label>
+                    <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+                </div>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label for="birth-date">Ngày/Tháng/Năm sinh:</label>
+                    <input type="date" id="birth-date" required>
+                </div>
+                <div>
+                    <label>Lịch sinh theo:</label>
+                    <div class="radio-group" style="padding: 8px 0;">
+                        <label><input type="radio" name="calendar-type" value="Dương lịch" checked> Dương lịch</label>
+                        <label><input type="radio" name="calendar-type" value="Âm lịch"> Âm lịch</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="birth-time">Giờ sinh chính xác:</label>
+                <select id="birth-time" required>
+                    <option value="">-- Chọn khoảng giờ sinh --</option>
+                    <option value="Tý (23:00 - 01:00)">Giờ Tý (23:00 - 01:00)</option>
+                    <option value="Sửu (01:00 - 03:00)">Giờ Sửu (01:00 - 03:00)</option>
+                    <option value="Dần (03:00 - 05:00)">Giờ Dần (03:00 - 05:00)</option>
+                    <option value="Mão (05:00 - 07:00)">Giờ Mão (05:00 - 07:00)</option>
+                    <option value="Thìn (07:00 - 09:00)">Giờ Thìn (07:00 - 09:00)</option>
+                    <option value="Tỵ (09:00 - 11:00)">Giờ Tỵ (09:00 - 11:00)</option>
+                    <option value="Ngọ (11:00 - 13:00)">Giờ Ngọ (11:00 - 13:00)</option>
+                    <option value="Mùi (13:00 - 15:00)">Giờ Mùi (13:00 - 15:00)</option>
+                    <option value="Thân (15:00 - 17:00)">Giờ Thân (15:00 - 17:00)</option>
+                    <option value="Dậu (17:00 - 19:00)">Giờ Dậu (17:00 - 19:00)</option>
+                    <option value="Tuất (19:00 - 21:00)">Giờ Tuất (19:00 - 21:00)</option>
+                    <option value="Hợi (21:00 - 23:00)">Giờ Hợi (21:00 - 23:00)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label for="email">Địa chỉ Email nhận văn bản:</label>
+                    <input type="email" id="email" required placeholder="name@example.com">
+                </div>
+                <div>
+                    <label for="phone">Số điện thoại / Telegram:</label>
+                    <input type="tel" id="phone" required placeholder="090xxxxxxx">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Vấn đề cốt lõi cần tham vấn (Công danh, Tài lộc, Gia đạo, Hạn trong năm...):</label>
+                <textarea id="notes" rows="4" placeholder="Anh/Chị vui lòng ghi rõ bối cảnh công việc hoặc các câu hỏi cụ thể để nội dung luận giải sát thực tế nhất..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Gửi thông tin đăng ký</button>
+        </form>
+    </div>
 </div>
 
 <footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);">
     <div style="max-width: 400px; margin: 0 auto 30px auto; padding: 20px; border: 1px solid #333; border-radius: 15px; background: #222;">
         <p style="color: var(--accent-color); font-weight: bold; margin-top: 0; letter-spacing: 1px;">ỦNG HỘ DI SẢN CỤ HOÀNG HẠC</p>
-        
-        <!-- Link ảnh QR lấy từ GitHub của ông -->
         <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" 
              alt="QR Donate VPBank" 
              style="width: 180px; height: auto; border-radius: 10px; border: 4px solid white; margin: 15px 0;">
-        
         <p style="font-size: 0.9rem; line-height: 1.5; color: #bbb; margin-bottom: 0;">
             <span style="font-style: italic; font-size: 0.85rem;">Nếu hữu duyên, mời tôi một ly cafe để duy trì hệ thống và kho dữ liệu nghiệm lý.</span>
         </p>
     </div>
-
     <p style="margin-bottom: 20px;">&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
-
-    <!-- Bộ đếm lượt truy cập giữ nguyên bên dưới -->
-    <div style="font-size: 0.9rem; border-top: 1px solid #333; pt-20px; display: inline-block; padding-top: 20px;">
+    <div style="font-size: 0.9rem; border-top: 1px solid #333; display: inline-block; padding-top: 20px;">
         Số lượt truy cập: 
         <img src="https://counter1.fc2.com/counter_img.php?id=89493181" style="vertical-align: middle;">
     </div>
 </footer>
 
-
 <script>
-    let pdfDb = []; // Lưu trữ danh sách file PDF tạm thời
+    let pdfDb = []; 
     let currentPdfPage = 1;
-    const pdfLimit = 6; // Số file mỗi trang
+    const pdfLimit = 6; 
     
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
     let db = [];
@@ -120,43 +205,40 @@
     }
 
     async function init() {
-    try {
-        const res = await fetch(SHEET_URL);
-        const csv = await res.text();
-        // Tách các dòng từ CSV, xử lý cả trường hợp nội dung có dấu phẩy bên trong ngoặc kép
-        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-        
-        // Khai báo chỉ mục (index) cho tất cả các cột cần thiết, bao gồm cả youtubeid
-        const idx = { 
-            id: headers.indexOf('id'), 
-            cat: headers.indexOf('category'), 
-            title: headers.indexOf('title'), 
-            desc: headers.indexOf('desc'), 
-            feat: headers.indexOf('featured'),
-            youtubeId: headers.indexOf('youtubeid') // Thêm cột youtubeid từ file CSV
-        };
-
-        // Chuyển đổi dữ liệu từ các dòng CSV thành mảng đối tượng (db)
-        db = rows.slice(1).map(r => {
-            const c = parseCSVLine(r);
-            return { 
-                id: c[idx.id], 
-                category: c[idx.cat] || "Chưa phân loại", 
-                title: c[idx.title], 
-                desc: c[idx.desc], 
-                isFeatured: String(c[idx.feat]).toLowerCase() === 'true',
-                youtubeId: c[idx.youtubeId] || "" // Lưu trữ mã video để dùng cho Tab Video
+        try {
+            const res = await fetch(SHEET_URL);
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            
+            const idx = { 
+                id: headers.indexOf('id'), 
+                cat: headers.indexOf('category'), 
+                title: headers.indexOf('title'), 
+                desc: headers.indexOf('desc'), 
+                feat: headers.indexOf('featured'),
+                youtubeId: headers.indexOf('youtubeid') 
             };
-        }).filter(p => p.id); // Loại bỏ các dòng trống không có ID
 
-        renderTags();
-        renderUI();
-    } catch (e) { 
-        console.error(e);
-        document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu."; 
+            db = rows.slice(1).map(r => {
+                const c = parseCSVLine(r);
+                return { 
+                    id: c[idx.id], 
+                    category: c[idx.cat] || "Chưa phân loại", 
+                    title: c[idx.title], 
+                    desc: c[idx.desc], 
+                    isFeatured: String(c[idx.feat]).toLowerCase() === 'true',
+                    youtubeId: c[idx.youtubeId] || "" 
+                };
+            }).filter(p => p.id); 
+
+            renderTags();
+            renderUI();
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu."; 
+        }
     }
-}
 
     function renderTags() {
         const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
@@ -178,14 +260,22 @@
         renderUI();
     }
 
-    function switchTab(type) {
+    // Tối ưu hàm chuyển đổi Tab để ẩn/hiện Form Đăng ký linh hoạt
+    function switchTab(type, element) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        if(element) element.classList.add('active');
     
         const grid = document.getElementById('post-grid');
         const pagination = document.getElementById('post-pagination');
         const filterBar = document.getElementById('filter-bar');
+        const searchContainer = document.getElementById('search-container');
+        const formWrapper = document.getElementById('consultation-form-wrapper');
     
+        // Reset hiển thị mặc định
+        grid.style.display = "grid";
+        pagination.style.display = "flex";
+        formWrapper.style.display = "none";
+        searchContainer.style.display = "block";
         grid.innerHTML = ""; 
     
         if (type === 'pdf') {
@@ -194,11 +284,18 @@
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
             pagination.innerHTML = "";
             loadPDFLibrary(); 
-        } else if (type === 'video') { // Logic cho Tab Video
+        } else if (type === 'video') { 
             filterBar.style.display = "none";
             pagination.innerHTML = "";
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
-            loadVideoLibrary(); // Bạn sẽ cần viết thêm hàm này để lấy dữ liệu video từ YouTube hoặc Sheet
+            loadVideoLibrary(); 
+        } else if (type === 'register') {
+            // Hiển thị riêng Form Đăng ký, ẩn kho lưu trữ và thanh tìm kiếm
+            grid.style.display = "none";
+            pagination.style.display = "none";
+            filterBar.style.display = "none";
+            searchContainer.style.display = "none";
+            formWrapper.style.display = "block";
         } else {
             filterBar.style.display = "flex";
             renderUI();
@@ -213,11 +310,10 @@
         });
 
         filtered.sort((a,b) => b.isFeatured - a.isFeatured);
-        
         const start = (currentPage - 1) * limit;
         const items = filtered.slice(start, start + limit);
-        
         const grid = document.getElementById('post-grid');
+        
         if (items.length === 0) {
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Không tìm thấy nội dung phù hợp.</p>";
             return;
@@ -255,11 +351,8 @@
         try {
             const res = await fetch(GITHUB_API_URL);
             const files = await res.json();
-            
-            // Lọc file PDF và lưu vào mảng dùng chung
             pdfDb = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
-    
-            renderPDFUI(); // Gọi hàm hiển thị riêng
+            renderPDFUI(); 
         } catch (e) {
             document.getElementById('post-grid').innerHTML = "Lỗi kết nối thư viện.";
         }
@@ -287,58 +380,122 @@
         renderPDFPagination(pdfDb.length);
     }
 
-function renderPDFPagination(total) {
-    const pages = Math.ceil(total / pdfLimit);
-    let html = '';
-    if (pages < 1) { 
-        document.getElementById('post-pagination').innerHTML = "";
-        return; 
-    }
-    
-    for(let i = 1; i <= pages; i++) {
-        html += `<button class="page-btn ${i === currentPdfPage ? 'active' : ''}" onclick="goPdfPage(${i})">${i}</button>`;
-    }
-    document.getElementById('post-pagination').innerHTML = html;
-}
-
-async function loadVideoLibrary() {
-    const grid = document.getElementById('post-grid');
-    
-    // Lọc danh sách các bài viết có chứa youtubeId
-    const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
-
-    if (videoPosts.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
-        return;
+    function renderPDFPagination(total) {
+        const pages = Math.ceil(total / pdfLimit);
+        let html = '';
+        if (pages < 1) { 
+            document.getElementById('post-pagination').innerHTML = "";
+            return; 
+        }
+        for(let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i === currentPdfPage ? 'active' : ''}" onclick="goPdfPage(${i})">${i}</button>`;
+        }
+        document.getElementById('post-pagination').innerHTML = html;
     }
 
-    grid.innerHTML = videoPosts.map(p => `
-        <div class="card">
-            <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
-                <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2rem; pointer-events: none;">▶</div>
+    async function loadVideoLibrary() {
+        const grid = document.getElementById('post-grid');
+        const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
+
+        if (videoPosts.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
+            return;
+        }
+
+        grid.innerHTML = videoPosts.map(p => `
+            <div class="card">
+                <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
+                    <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2rem; pointer-events: none;">▶</div>
+                </div>
+                <span class="category-tag">VIDEO BÀI GIẢNG</span>
+                <h3>${p.title}</h3>
+                <p>${p.desc}</p>
+                <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
             </div>
-            <span class="category-tag">VIDEO BÀI GIẢNG</span>
-            <h3>${p.title}</h3>
-            <p>${p.desc}</p>
-            <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
-        </div>
-    `).join('');
-}
+        `).join('');
+    }
     
-function goPdfPage(p) {
-    currentPdfPage = p;
-    renderPDFUI();
-    window.scrollTo(0, 0);
+    function goPdfPage(p) {
+        currentPdfPage = p;
+        renderPDFUI();
+        window.scrollTo(0, 0);
+    }
+
+    // CẤU HÌNH THÔNG TIN TELEGRAM CỦA ANH VÀO ĐÂY
+const TELEGRAM_BOT_TOKEN = '8639067631:AAF5cfEEu8LxxJo4XF5f7m22-8mXTMCFl08'; // Thay Token của anh vào
+const TELEGRAM_CHAT_ID = '1685793461'; // Thay Chat ID của anh vào
+
+async function submitForm(event) {
+    event.preventDefault();
+    
+    // Thu thập dữ liệu từ các ô nhập liệu
+    const fullName = document.getElementById('fullname').value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const birthDate = document.getElementById('birth-date').value;
+    const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
+    const birthTime = document.getElementById('birth-time').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
+
+    // Đổi định dạng ngày sinh từ YYYY-MM-DD sang DD/MM/YYYY cho dễ nhìn
+    const formattedDate = birthDate.split('-').reverse().join('/');
+
+    // Thiết lập nội dung tin nhắn gửi về Telegram (Sử dụng định dạng Markdown)
+    const telegramMessage = `
+🔔 *CÓ ĐƠN ĐĂNG KÝ XEM TỬ VI MỚI*
+────────────────⚡
+👤 *Họ tên:* ${fullName}
+⚧ *Giới tính:* ${gender}
+📅 *Ngày sinh:* ${formattedDate} (${calendarType})
+⏰ *Giờ sinh:* ${birthTime}
+📧 *Email:* ${email}
+📞 *Số điện thoại:* ${phone}
+
+📝 *Vấn đề cốt lõi cần tham vấn:*
+_${notes}_
+────────────────⚡
+_Hệ thống di sản Tử Vi Hoàng Hạc 2026_
+    `;
+
+    // Thay đổi trạng thái nút bấm để tránh khách ấn gửi liên tục
+    const submitBtn = event.target.querySelector('.btn-submit');
+    const originalBtnText = submitBtn.innerText;
+    submitBtn.innerText = "⏳ ĐANG GỬI DỮ LIỆU...";
+    submitBtn.disabled = true;
+
+    // Gọi API Telegram gửi tin nhắn đi
+    const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+    try {
+        const response = await fetch(TELEGRAM_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: telegramMessage,
+                parse_mode: 'Markdown' // Giúp hiển thị chữ in đậm, in nghiêng cho đẹp
+            })
+        });
+
+        if (response.ok) {
+            alert(`Gửi thông tin thành công!\nHệ thống đã tiếp nhận lá số của đương số: ${fullName}.\nAnh/Chị vui lòng kiểm tra email sau khi hoàn tất thủ tục.`);
+            document.getElementById('tuvi-booking-form').reset();
+        } else {
+            alert('Có lỗi xảy ra khi gửi dữ liệu. Vui lòng liên hệ trực tiếp qua số điện thoại/Telegram.');
+        }
+    } catch (error) {
+        console.error('Lỗi kết nối:', error);
+        alert('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng internet.');
+    } finally {
+        // Khôi phục lại nút bấm
+        submitBtn.innerText = originalBtnText;
+        submitBtn.disabled = false;
+    }
 }
 
-window.onload = init;
+    window.onload = init;
 </script>
-<script>
-function cb(response) {
-    document.getElementById('visits').innerText = response.value;
-}
-</script>
-<script async src="https://api.countapi.xyz/hit/tuvihoanghac.id.vn/visits?callback=cb"></script>
 </body>
 </html>
