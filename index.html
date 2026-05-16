@@ -423,11 +423,11 @@
     }
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
-    function submitForm(event) {
+    async function submitForm(event) {
     event.preventDefault();
     
-    // ĐIỀN USERNAME TELEGRAM CỦA ANH VÀO ĐÂY (Ví dụ: tantan1088e3)
-    const TELEGRAM_USERNAME = 'tantan1088e3'; 
+    // ĐIỀN SỐ ĐIỆN THOẠI ĐĂNG KÝ ZALO CỦA ANH VÀO ĐÂY (Ví dụ: 0912345678)
+    const ZALO_PHONE = '0946712608'; 
 
     const fullName = document.getElementById('fullname').value;
     const gender = document.querySelector('input[name="gender"]:checked').value;
@@ -438,8 +438,8 @@
     const phone = document.getElementById('phone').value;
     const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
-    // Soạn sẵn nội dung tin nhắn để khách gửi cho anh
-    const message = `Xin chào anh, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
+    // Soạn nội dung thông tin lá số có cấu trúc gọn gàng
+    const message = `Xin chào, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
                     `- Họ tên: ${fullName}\n` +
                     `- Giới tính: ${gender}\n` +
                     `- Ngày sinh: ${birthDate} (${calendarType})\n` +
@@ -448,17 +448,22 @@
                     `- SĐT liên hệ: ${phone}\n` +
                     `- Vấn đề quan tâm: ${notes}`;
 
-    // Mã hóa đoạn văn bản để chèn vào đường link URL
-    const encodedMessage = encodeURIComponent(message);
-    
-    // Tạo đường dẫn mở thẳng ứng dụng Telegram đi đến tài khoản của anh
-    const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${encodedMessage}`;
-
-    alert("Hệ thống sẽ chuyển hướng anh/chị sang Telegram để gửi thông tin lá số trực tiếp.");
-    
-    // Mở tab mới chuyển sang Telegram của anh kèm tin nhắn soạn sẵn
-    window.open(telegramUrl, '_blank');
-    document.getElementById('tuvi-booking-form').reset();
+    try {
+        // Tự động sao chép đoạn văn bản trên vào bộ nhớ tạm của khách hàng
+        await navigator.clipboard.writeText(message);
+        
+        alert("Thông tin lá số đã được tự động sao chép!\nHệ thống sẽ chuyển hướng anh/chị sang Zalo. Anh/chị chỉ cần nhấn 'Dán' (Paste) vào ô chat để gửi thông tin trực tiếp.");
+        
+        // Đường dẫn mở thẳng cửa sổ nhắn tin Zalo với số điện thoại của anh
+        const zaloUrl = `https://zalo.me/${ZALO_PHONE}`;
+        window.open(zaloUrl, '_blank');
+        
+        document.getElementById('tuvi-booking-form').reset();
+    } catch (err) {
+        console.error('Không thể sao chép tự động: ', err);
+        // Trường hợp trình duyệt cũ không hỗ trợ sao chép ngầm, mở thẳng link Zalo để khách kết nối
+        window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
+    }
 }
 
     window.onload = init;
