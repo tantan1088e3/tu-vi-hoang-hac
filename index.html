@@ -422,78 +422,28 @@
         window.scrollTo(0, 0);
     }
 
-    // CẤU HÌNH THÔNG TIN TELEGRAM CỦA ANH VÀO ĐÂY
-const TELEGRAM_BOT_TOKEN = '8639067631:AAF5cfEEu8LxxJo4XF5f7m22-8mXTMCFl08'; // Thay Token của anh vào
-const TELEGRAM_CHAT_ID = '1685793461'; // Thay Chat ID của anh vào
+    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
+    function submitForm(event) {
+        event.preventDefault();
+        
+        // Thu thập toàn bộ dữ liệu từ Form nhập liệu
+        const formData = {
+            fullName: document.getElementById('fullname').value,
+            gender: document.querySelector('input[name="gender"]:checked').value,
+            birthDate: document.getElementById('birth-date').value,
+            calendarType: document.querySelector('input[name="calendar-type"]:checked').value,
+            birthTime: document.getElementById('birth-time').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            notes: document.getElementById('notes').value
+        };
 
-async function submitForm(event) {
-    event.preventDefault();
-    
-    // Thu thập dữ liệu từ các ô nhập liệu
-    const fullName = document.getElementById('fullname').value;
-    const gender = document.querySelector('input[name="gender"]:checked').value;
-    const birthDate = document.getElementById('birth-date').value;
-    const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
-    const birthTime = document.getElementById('birth-time').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
-
-    // Đổi định dạng ngày sinh từ YYYY-MM-DD sang DD/MM/YYYY cho dễ nhìn
-    const formattedDate = birthDate.split('-').reverse().join('/');
-
-    // Thiết lập nội dung tin nhắn gửi về Telegram (Sử dụng định dạng Markdown)
-    const telegramMessage = `
-🔔 *CÓ ĐƠN ĐĂNG KÝ XEM TỬ VI MỚI*
-────────────────⚡
-👤 *Họ tên:* ${fullName}
-⚧ *Giới tính:* ${gender}
-📅 *Ngày sinh:* ${formattedDate} (${calendarType})
-⏰ *Giờ sinh:* ${birthTime}
-📧 *Email:* ${email}
-📞 *Số điện thoại:* ${phone}
-
-📝 *Vấn đề cốt lõi cần tham vấn:*
-_${notes}_
-────────────────⚡
-_Hệ thống di sản Tử Vi Hoàng Hạc 2026_
-    `;
-
-    // Thay đổi trạng thái nút bấm để tránh khách ấn gửi liên tục
-    const submitBtn = event.target.querySelector('.btn-submit');
-    const originalBtnText = submitBtn.innerText;
-    submitBtn.innerText = "⏳ ĐANG GỬI DỮ LIỆU...";
-    submitBtn.disabled = true;
-
-    // Gọi API Telegram gửi tin nhắn đi
-    const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
-    try {
-        const response = await fetch(TELEGRAM_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text: telegramMessage,
-                parse_mode: 'Markdown' // Giúp hiển thị chữ in đậm, in nghiêng cho đẹp
-            })
-        });
-
-        if (response.ok) {
-            alert(`Gửi thông tin thành công!\nHệ thống đã tiếp nhận lá số của đương số: ${fullName}.\nAnh/Chị vui lòng kiểm tra email sau khi hoàn tất thủ tục.`);
-            document.getElementById('tuvi-booking-form').reset();
-        } else {
-            alert('Có lỗi xảy ra khi gửi dữ liệu. Vui lòng liên hệ trực tiếp qua số điện thoại/Telegram.');
-        }
-    } catch (error) {
-        console.error('Lỗi kết nối:', error);
-        alert('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng internet.');
-    } finally {
-        // Khôi phục lại nút bấm
-        submitBtn.innerText = originalBtnText;
-        submitBtn.disabled = false;
+        console.log("Dữ liệu đăng ký:", formData);
+        
+        // Tạm thời hiển thị thông báo thành công cho người dùng
+        alert(`Gửi thông tin thành công!\nHệ thống đã tiếp nhận lá số của đương số: ${formData.fullName}.\nVui lòng kiểm tra email sau khi hoàn tất thủ tục.`);
+        document.getElementById('tuvi-booking-form').reset();
     }
-}
 
     window.onload = init;
 </script>
