@@ -433,14 +433,13 @@
     }
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
-    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
+   // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
 function submitForm(event) {
     event.preventDefault();
     
-    // ĐIỀN SỐ ĐIỆN THOẠI ĐĂNG KÝ ZALO CỦA ANH
-    const ZALO_PHONE = '0946712608'; 
-    // ĐƯỜNG DẪN ẢNH MÃ QR ZALO CỦA ANH
-    const ZALO_QR_IMAGE_URL = 'data/qr-code-zalo.jpg'; 
+    // CẤU HÌNH THÔNG TIN CỦA ANH TẠI ĐÂY
+    const MY_PHONE = '0946712608';         // Số điện thoại nhận SMS và Zalo của anh
+    const TELEGRAM_USERNAME = 'tantan1088a'; // THAY USERNAME TELEGRAM CỦA ANH VÀO ĐÂY (Không chứa dấu @)
 
     const fullName = document.getElementById('fullname').value;
     const gender = document.querySelector('input[name="gender"]:checked').value;
@@ -451,74 +450,98 @@ function submitForm(event) {
     const phone = document.getElementById('phone').value;
     const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
-    // Soạn nội dung thông tin lá số có cấu trúc gọn gàng
-    const message = `Xin chào, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
-                    `- Họ tên: ${fullName}\n` +
-                    `- Giới tính: ${gender}\n` +
-                    `- Ngày sinh: ${birthDate} (${calendarType})\n` +
-                    `- Giờ sinh: ${birthTime}\n` +
-                    `- Email nhận bài: ${email}\n` +
-                    `- SĐT liên hệ: ${phone}\n` +
-                    `- Vấn đề quan tâm: ${notes}`;
+    // 1. Soạn nội dung có dấu đầy đủ dành cho Telegram và hiển thị trên Web
+    const messageUnicode = `Xin chào, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
+                           `- Họ tên: ${fullName}\n` +
+                           `- Giới tính: ${gender}\n` +
+                           `- Ngày sinh: ${birthDate} (${calendarType})\n` +
+                           `- Giờ sinh: ${birthTime}\n` +
+                           `- Email nhận bài: ${email}\n` +
+                           `- SĐT liên hệ: ${phone}\n` +
+                           `- Vấn đề quan tâm: ${notes}`;
 
-    // Kiểm tra xem khách đang dùng Điện thoại hay Máy tính
+    // 2. Soạn nội dung KHÔNG DẤU dành riêng cho SMS (để tránh lỗi hiển thị ký tự trên các dòng máy cũ)
+    const messageNoSign = `Dang ky Tu Vi: ${fullName} - ${gender}. Ngay sinh: ${birthDate} (${calendarType}) - Gio: ${birthTime}. Email: ${email}. SDT: ${phone}. Noi dung: ${notes}`;
+
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
-        // 1. MỞ LINK ZALO NGAY LẬP TỨC (Đồng bộ) để không bị trình duyệt mobile chặn Pop-up
-        const zaloUrl = `https://zalo.me/${ZALO_PHONE}`;
+        // TRÊN ĐIỆN THOẠI: Mở thẳng Zalo cá nhân (đồng bộ để không bị chặn) và copy ngầm dữ liệu
+        const zaloUrl = `https://zalo.me/${MY_PHONE}`;
         window.open(zaloUrl, '_blank');
 
-        // 2. SAO CHÉP CHẠY NGẦM VÀO BỘ NHỚ TẠM
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(message)
-                .then(() => console.log('Đã sao chép dữ liệu ngầm.'))
-                .catch(err => console.error('Lỗi sao chép ngầm:', err));
+            navigator.clipboard.writeText(messageUnicode)
+                .then(() => console.log('Đã copy dữ liệu lá số.'))
+                .catch(err => console.error('Lỗi copy:', err));
         }
-        
-        alert("Hệ thống đang chuyển hướng bạn sang Zalo.\nThông tin lá số đã được sao chép, bạn chỉ cần bấm 'Dán' (Paste) vào ô chat.");
+        alert("Hệ thống đang kết nối đến Zalo của Thầy...\nThông tin lá số đã được tự động sao chép. Khi vào cửa sổ chat, anh/chị chỉ cần bấm 'Dán' (Paste) và gửi đi.");
     } else {
-        // Nếu là PC: Không cần nhảy tab, xử lý sao chép trước rồi hiện luôn Popup QR
+        // TRÊN MÁY TÍNH (PC): Tạo đồng thời 2 link API mã QR động
+        const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
+        const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+
+        // Gọi API sinh mã QR tự động từ 2 đường link trên
+        const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
+        const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+
+        // Tự động sao chép dữ liệu vào bộ nhớ máy PC phòng trường hợp khách muốn dán thủ công
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(message)
-                .then(() => {
-                    showZaloPopup(ZALO_QR_IMAGE_URL);
-                })
-                .catch(err => {
-                    console.error('Lỗi sao chép PC:', err);
-                    showZaloPopup(ZALO_QR_IMAGE_URL); // Vẫn hiện popup kể cả khi lỗi copy
-                });
-        } else {
-            showZaloPopup(ZALO_QR_IMAGE_URL);
+            navigator.clipboard.writeText(messageUnicode).catch(e => console.log(e));
         }
+
+        // Hiển thị Popup chứa cả 2 mã QR
+        showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
     }
     
-    // Reset lại form nhập liệu
+    // Reset lại form nhập liệu sau khi gửi thành công
     document.getElementById('tuvi-booking-form').reset();
 }
 
-// Hàm hiển thị Popup mã QR trên màn hình PC (Giữ nguyên giao diện đẹp của anh)
-function showZaloPopup(qrImageUrl) {
-    // Tạo một vùng phủ mờ toàn màn hình
+// HÀM HIỂN THỊ POPUP CHỨA ĐỒNG THỜI 2 MÃ QR TRÊN PC
+function showDualQrPopup(qrSms, qrTele, messageText) {
     const overlay = document.createElement('div');
-    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif;";
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
     
-    // Hộp thoại nội dung chính
     const modal = document.createElement('div');
-    modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:360px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); position:relative;";
+    modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
     
+    const formattedMessage = messageText.replace(/\n/g, '<br>');
+
     modal.innerHTML = `
-        <h3 style="color:#5d1a1a; margin-top:0;">Đã sao chép thông tin thành công!</h3>
-        <p style="font-size:14px; color:#555; line-height:1.4;">Thông tin lá số đã nằm trong bộ nhớ máy của anh/chị.<br><b>Vui lòng quét mã QR dưới đây để mở Zalo</b> và nhấn <b>chuột phải -> Dán (Paste)</b> để gửi tin nhắn.</p>
-        <img src="${qrImageUrl}" alt="Zalo QR" style="width:200px; height:200px; margin:15px 0; border:1px solid #eee; padding:5px;">
-        <br>
-        <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-weight:bold; margin-top:10px;">Đóng cửa sổ</button>
+        <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
+        <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
+            Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
+        </p>
+
+        <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
+            <strong>Nội dung thông tin của bạn:</strong><br>
+            ${formattedMessage}
+        </div>
+
+        <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+            
+            <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
+                <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
+                <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Tự động soạn tin nhắn có dấu trên app Telegram</p>
+            </div>
+
+            <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
+                <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
+                <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Tự động soạn tin nhắn SMS hệ thống (Miễn phí ứng dụng)</p>
+            </div>
+
+        </div>
+
+        <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
     `;
     
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     
-    // Nút đóng popup
+    // Đóng popup khi bấm nút Close
     document.getElementById('close-zalo-popup').addEventListener('click', () => {
         document.body.removeChild(overlay);
     });
