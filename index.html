@@ -457,17 +457,18 @@ function submitForm(event) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
-        // TRÊN ĐIỆN THOẠI: Mở thẳng Zalo cá nhân ngay lập tức (Đồng bộ để qua mặt bộ chặn Pop-up)
-        const zaloUrl = `https://zalo.me/${MY_PHONE}`;
-        window.open(zaloUrl, '_blank');
-
-        // Sao chép ĐOẠN VĂN BẢN SẠCH (Plain Text) vào bộ nhớ máy, không sao chép link SMS kỹ thuật nữa
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(messageUnicode)
-                .then(() => console.log('Đã copy dữ liệu lá số dạng văn bản thuần.'))
-                .catch(err => console.error('Lỗi copy:', err));
-        }
-        alert("Hệ thống đang kết nối đến Zalo của Thầy...\nThông tin lá số đã được tự động sao chép. Khi vào cửa sổ chat, anh/chị chỉ cần bấm 'Dán' (Paste) và gửi đi.");
+        // Kiểm tra xem khách dùng iPhone (iOS) hay Android để dùng cấu trúc dấu hỏi (?) hoặc dấu và (&) cho đúng
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const separator = isIOS ? '&' : '?';
+        
+        // Tạo đường dẫn SMS tự động điền số điện thoại và nội dung KHÔNG DẤU (để tránh lỗi hiển thị trên SMS)
+        const smsMobileUrl = `sms:${MY_PHONE}${separator}body=${encodeURIComponent(messageNoSign)}`;
+        
+        // Kích hoạt mở ứng dụng tin nhắn ngay lập tức
+        window.location.href = smsMobileUrl;
+        
+        // Thông báo ngắn gọn cho khách yên tâm
+        alert("Hệ thống đang mở ứng dụng Tin nhắn SMS...\nThông tin lá số đã được tự động điền sẵn, anh/chị chỉ cần bấm nút 'GỬI' là hoàn tất đăng ký.");
     } else {
         // TRÊN MÁY TÍNH (PC): Tạo link API mã QR động
         const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
