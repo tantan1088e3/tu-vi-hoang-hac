@@ -93,8 +93,18 @@
     <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
     <div id="consultation-form-wrapper" class="form-container">
         <h2>ĐĂNG KÝ LUẬN GIẢI TỬ VI VIẾT TAY</h2>
-        <div class="notice-box">
-            <strong>Lưu ý từ Hệ thống nghiệm lý:</strong> Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email sau 3-5 ngày. Vui lòng cung cấp chính xác giờ sinh để đảm bảo tính chuẩn xác của các cung số.
+        <div class="notice-box" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <strong>Lưu ý từ Hệ thống nghiệm lý:</strong> 
+                <p style="margin: 5px 0 10px 0;">Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email sau 3-5 ngày. Vui lòng cung cấp chính xác giờ sinh để đảm bảo tính chuẩn xác của các cung số.</p>
+                <span style="color: var(--primary-color); font-weight: bold;">💡 Sau khi bấm gửi, hệ thống sẽ tự động sao chép thông tin và chuyển hướng bạn sang Zalo để gửi tin nhắn.</span>
+            </div>
+            <div style="text-align: center; margin: 0 auto;">
+                <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr-code-zalo.jpg" 
+                     alt="QR Kết nối Zalo" 
+                     style="width: 140px; height: auto; border-radius: 8px; border: 2px solid var(--accent-color); padding: 4px; background: white;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: bold; margin-top: 5px;">Quét mã kết nối Zalo</div>
+            </div>
         </div>
         <form id="tuvi-booking-form" onsubmit="submitForm(event)">
             <div class="form-group">
@@ -426,8 +436,10 @@
     async function submitForm(event) {
     event.preventDefault();
     
-    // ĐIỀN SỐ ĐIỆN THOẠI ĐĂNG KÝ ZALO CỦA ANH VÀO ĐÂY (Ví dụ: 0912345678)
+    // ĐIỀN SỐ ĐIỆN THOẠI ZALO CỦA ANH
     const ZALO_PHONE = '0946712608'; 
+    // ĐƯỜNG DẪN ẢNH MÃ QR ZALO CỦA ANH (Anh lưu ảnh QR vào thư mục web rồi điền link vào đây)
+    const ZALO_QR_IMAGE_URL = 'data/qr-code-zalo.jpg'; 
 
     const fullName = document.getElementById('fullname').value;
     const gender = document.querySelector('input[name="gender"]:checked').value;
@@ -438,7 +450,6 @@
     const phone = document.getElementById('phone').value;
     const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
-    // Soạn nội dung thông tin lá số có cấu trúc gọn gàng
     const message = `Xin chào, tôi muốn đăng ký luận giải Tử Vi với thông tin sau:\n` +
                     `- Họ tên: ${fullName}\n` +
                     `- Giới tính: ${gender}\n` +
@@ -449,21 +460,53 @@
                     `- Vấn đề quan tâm: ${notes}`;
 
     try {
-        // Tự động sao chép đoạn văn bản trên vào bộ nhớ tạm của khách hàng
+        // Sao chép thông tin vào bộ nhớ tạm
         await navigator.clipboard.writeText(message);
         
-        alert("Thông tin lá số đã được tự động sao chép!\nHệ thống sẽ chuyển hướng anh/chị sang Zalo. Anh/chị chỉ cần nhấn 'Dán' (Paste) vào ô chat để gửi thông tin trực tiếp.");
+        // Kiểm tra xem khách đang dùng Điện thoại hay Máy tính
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         
-        // Đường dẫn mở thẳng cửa sổ nhắn tin Zalo với số điện thoại của anh
-        const zaloUrl = `https://zalo.me/${ZALO_PHONE}`;
-        window.open(zaloUrl, '_blank');
+        if (isMobile) {
+            // Nếu là điện thoại, mở thẳng ứng dụng Zalo
+            alert("Thông tin lá số đã được sao chép! Hệ thống đang chuyển hướng bạn sang Zalo, bạn chỉ cần nhấn 'Dán' vào ô chat.");
+            window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
+        } else {
+            // Nếu là Máy tính (PC), hiển thị Popup chứa mã QR Zalo để họ quét
+            showZaloPopup(ZALO_QR_IMAGE_URL);
+        }
         
         document.getElementById('tuvi-booking-form').reset();
     } catch (err) {
-        console.error('Không thể sao chép tự động: ', err);
-        // Trường hợp trình duyệt cũ không hỗ trợ sao chép ngầm, mở thẳng link Zalo để khách kết nối
-        window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
+        console.error('Lỗi:', err);
+        alert("Có lỗi xảy ra, vui lòng liên hệ Zalo số: " + ZALO_PHONE);
     }
+}
+
+// Hàm hiển thị Popup mã QR trên màn hình PC
+function showZaloPopup(qrImageUrl) {
+    // Tạo một vùng phủ mờ toàn màn hình
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif;";
+    
+    // Hộp thoại nội dung chính
+    const modal = document.createElement('div');
+    modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:360px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); position:relative;";
+    
+    modal.innerHTML = `
+        <h3 style="color:#5d1a1a; margin-top:0;">Đã sao chép thông tin thành công!</h3>
+        <p style="font-size:14px; color:#555; line-height:1.4;">Thông tin lá số đã nằm trong bộ nhớ máy của anh/chị.<br><b>Vui lòng quét mã QR dưới đây để mở Zalo</b> và nhấn <b>chuột phải -> Dán (Paste)</b> để gửi tin nhắn.</p>
+        <img src="${qrImageUrl}" alt="Zalo QR" style="width:200px; height:200px; margin:15px 0; border:1px solid #eee; padding:5px;">
+        <br>
+        <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-weight:bold; margin-top:10px;">Đóng cửa sổ</button>
+    `;
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    // Nút đóng popup
+    document.getElementById('close-zalo-popup').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+    });
 }
 
     window.onload = init;
