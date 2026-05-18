@@ -33,41 +33,42 @@
         /* Nội dung chính */
         .section-i { font-size: 1.2rem; text-align: justify; color: #34495e; }
         /* Footer bài viết - Căn lề phải chuẩn hóa khoảng cách */
-        .section-j { margin-top: 50px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; white-space: pre-line; }
+        .section-j { margin-top: 40px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; white-space: pre-line; }
         
         /* Định dạng đầu mục số */
         .heading-number { font-weight: 700; color: #5d1a1a; font-size: 1.4rem; margin-top: 35px; margin-bottom: 15px; display: block; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
         p { margin-bottom: 1.5rem; }
 
-        /* CSS KHU VỰC THƯƠNG MẠI ĐIỆN TỬ: ĐA SÁCH + ĐA ẢNH GALLERY ĐỘC LẬP */
-        .aff-wrapper { margin: 40px auto; display: flex; flex-direction: column; gap: 25px; }
-        .aff-heading { font-size: 1.1rem; font-weight: bold; color: #5d1a1a; letter-spacing: 1px; border-bottom: 2px solid #e0d5c1; padding-bottom: 5px; margin-bottom: 5px; }
-        .aff-container { padding: 25px; border: 1px solid #e0d5c1; background: #fffcf8; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); display: flex; gap: 30px; align-items: flex-start; position: relative; overflow: hidden; transition: 0.3s; }
-        .aff-container:hover { box-shadow: 0 8px 25px rgba(142,33,33,0.06); border-color: #c5a059; }
+        /* CSS KHU VỰC THƯƠNG MẠI ĐIỆN TỬ - THIẾT KẾ ĐÃ ĐƯỢC PHÓNG TO */
+        .aff-wrapper { margin: 50px auto 20px auto; display: flex; flex-direction: column; gap: 25px; width: 100%; }
+        .aff-heading { font-size: 1.15rem; font-weight: bold; color: #5d1a1a; letter-spacing: 1px; border-bottom: 2px solid #e0d5c1; padding-bottom: 8px; margin-bottom: 5px; text-transform: uppercase; }
+        .aff-container { padding: 30px; border: 1px solid #e0d5c1; background: #fffcf8; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); display: flex; gap: 35px; align-items: flex-start; position: relative; overflow: hidden; transition: 0.3s; }
+        .aff-container:hover { box-shadow: 0 10px 30px rgba(142,33,33,0.08); border-color: #c5a059; }
         
-        /* Đã nâng cấp kích thước rộng rãi để nhìn rõ sách */
-        .aff-gallery-side { width: 180px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
-        .aff-main-img-box { width: 180px; height: 250px; border-radius: 6px; box-shadow: 2px 4px 12px rgba(0,0,0,0.15); overflow: hidden; background: #fff; border: 1px solid #eee; }
+        /* Khung ảnh gallery phóng to bề thế */
+        .aff-gallery-side { width: 220px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+        .aff-main-img-box { width: 220px; height: 300px; border-radius: 8px; box-shadow: 3px 6px 15px rgba(0,0,0,0.15); overflow: hidden; background: #fff; border: 1px solid #eee; }
         .aff-book-main-img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
-        .aff-thumb-list { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-        .aff-thumb-item { width: 40px; height: 40px; border: 1px solid #e0d5c1; border-radius: 4px; overflow: hidden; cursor: pointer; opacity: 0.5; background: #fff; transition: 0.2s; }
-        .aff-thumb-item:hover, .aff-thumb-item.active { border-color: #8e2121; opacity: 1; transform: scale(1.05); }
+        .aff-thumb-list { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .aff-thumb-item { width: 45px; height: 45px; border: 1px solid #e0d5c1; border-radius: 4px; overflow: hidden; cursor: pointer; opacity: 0.5; background: #fff; transition: 0.2s; }
+        .aff-thumb-item:hover, .aff-thumb-item.active { border-color: #8e2121; opacity: 1; transform: scale(1.08); }
         .aff-thumb-item img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Thông tin và nút hành động */
-        .aff-info { flex-grow: 1; display: flex; flex-direction: column; gap: 12px; padding-top: 5px; }
-        .aff-book-title { font-size: 1.3rem; font-weight: 700; color: #5d1a1a; margin: 0; line-height: 1.4; }
-        .aff-desc { font-size: 0.95rem; color: #555; margin: 0; font-style: italic; line-height: 1.6; }
-        .btn-aff-vip { width: fit-content; margin-top: 10px; padding: 10px 25px; background: #8e2121; color: white !important; text-decoration: none; font-weight: bold; font-size: 0.9rem; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(142,33,33,0.2); }
-        .btn-aff-vip:hover { background: #c5a059; box-shadow: 0 4px 12px rgba(197,160,89,0.3); }
+        /* Khung thông tin chi tiết bên phải */
+        .aff-info { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; padding-top: 5px; }
+        .aff-book-title { font-size: 1.4rem; font-weight: 700; color: #5d1a1a; margin: 0; line-height: 1.4; }
+        .aff-desc { font-size: 1rem; color: #444; margin: 0; font-style: italic; line-height: 1.6; }
+        .btn-aff-vip { width: fit-content; margin-top: 10px; padding: 12px 30px; background: #8e2121; color: white !important; text-decoration: none; font-weight: bold; font-size: 0.95rem; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(142,33,33,0.25); }
+        .btn-aff-vip:hover { background: #c5a059; box-shadow: 0 4px 15px rgba(197,160,89,0.35); }
 
-        /* Responsive cho di động */
+        /* Responsive cho thiết bị di động */
         @media (max-width: 600px) {
             .article-container { padding: 25px; }
             h1 { font-size: 1.8rem; }
             .section-i { font-size: 1.1rem; }
             .aff-container { flex-direction: column; text-align: center; padding: 20px; gap: 20px; align-items: center; }
             .aff-gallery-side { width: 100%; align-items: center; }
+            .aff-main-img-box { width: 180px; height: 250px; }
             .btn-aff-vip { width: 100%; box-sizing: border-box; text-align: center; }
         }
     </style>
@@ -87,7 +88,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Cache bust URL để luôn lấy dữ liệu mới nhất
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
 
         function parseLine(text) {
@@ -109,7 +109,6 @@
             try {
                 const res = await fetch(SHEET_URL);
                 const text = await res.text();
-                // Tách dòng thông minh bảo vệ nội dung trong ngoặc kép
                 const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const headers = parseLine(rows[0]).map(h => h.toLowerCase().trim());
                 
@@ -126,7 +125,6 @@
                 if (targetRowRaw) {
                     const d = parseLine(targetRowRaw);
                     
-                    // Chỉ dùng format tạo thẻ p cho phần nội dung chính i_body
                     const formatBody = (t) => {
                         if(!t) return "";
                         return t.split('\n').map(line => {
@@ -138,7 +136,6 @@
                         }).join('');
                     };
 
-                    // Xử lý Video YouTube (Cột youtubeid)
                     const youtubeId = getVal(d, 'youtubeid');
                     let videoHtml = "";
                     if (youtubeId && youtubeId.length > 5) {
@@ -170,7 +167,6 @@
                                 const link = bookLinks[index] || bookLinks[0];
                                 const imgRow = bookImgRows[index] || "";
                                 
-                                // Chuẩn hóa loại bỏ điều kiện filter quá khắt khe, chấp nhận mọi loại link ảnh hợp lệ
                                 const imgs = imgRow.split(',')
                                     .map(x => x.trim().replace(/[\r\n]/g, ""))
                                     .filter(x => x.length > 0);
