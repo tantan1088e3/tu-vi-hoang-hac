@@ -23,8 +23,8 @@
         h1 { color: #5d1a1a; font-size: 2.4rem; margin-bottom: 15px; line-height: 1.2; letter-spacing: -0.5px; }
         .meta-info { color: #c5a059; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 25px; display: block; letter-spacing: 1.5px; }
         
-        /* Phần dẫn nhập (Sapo) */
-        .section-h { font-style: italic; color: #4a4a4a; border-left: 5px solid #c5a059; padding: 10px 20px; margin: 30px 0; background: #fffcf8; font-size: 1.1rem; }
+        /* Phần dẫn nhập (Sapo) - Tối ưu hiển thị xuống dòng tự nhiên */
+        .section-h { font-style: italic; color: #4a4a4a; border-left: 5px solid #c5a059; padding: 10px 20px; margin: 30px 0; background: #fffcf8; font-size: 1.1rem; white-space: pre-line; }
         
         /* Video Player mượt mà */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 35px 0; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); background: #000; }
@@ -32,7 +32,8 @@
 
         /* Nội dung chính */
         .section-i { font-size: 1.2rem; text-align: justify; color: #34495e; }
-        .section-j { margin-top: 50px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; }
+        /* Footer bài viết - Căn lề phải chuẩn hóa khoảng cách */
+        .section-j { margin-top: 50px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; white-space: pre-line; }
         
         /* Định dạng đầu mục số */
         .heading-number { font-weight: 700; color: #5d1a1a; font-size: 1.4rem; margin-top: 35px; margin-bottom: 15px; display: block; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
@@ -114,7 +115,7 @@
                 
                 const getVal = (rowCells, name) => {
                     const idx = headers.indexOf(name.toLowerCase());
-                    return idx > -1 ? rowCells[idx].replace(/^"|"$/g, '') : "";
+                    return idx > -1 ? rowCells[idx].replace(/^"|"$/g, '').trim() : "";
                 };
 
                 const targetRowRaw = rows.slice(1).find(r => {
@@ -125,11 +126,11 @@
                 if (targetRowRaw) {
                     const d = parseLine(targetRowRaw);
                     
-                    const format = (t) => {
+                    // Chỉ dùng format tạo thẻ p cho phần nội dung chính i_body
+                    const formatBody = (t) => {
                         if(!t) return "";
                         return t.split('\n').map(line => {
                             const trimmed = line.trim();
-                            // Nhận diện đầu mục 1. 2. 3. để in đậm phong cách cổ điển
                             if (/^\d+\./.test(trimmed)) {
                                 return `<span class="heading-number">${trimmed}</span>`;
                             }
@@ -150,7 +151,7 @@
                             </div>`;
                     }
 
-                    // XỬ LÝ ĐỘNG KHU VỰC THƯƠNG MẠI (DANH SÁCH ĐA SÁCH VÀ ĐA ẢNH)
+                    // XỬ LÝ ĐỘNG KHU VỰC THƯƠNG MẠI
                     const rawLinks = getVal(d, 'aff_link');
                     const rawImgs = getVal(d, 'aff_img');
                     const rawNames = getVal(d, 'aff_name');
@@ -158,7 +159,6 @@
                     let affHtml = "";
 
                     if (rawLinks && rawNames) {
-                        // Tách các cuốn sách theo dấu xuống dòng (Bao gồm cả các dạng biến thể xuống dòng của CSV)
                         const bookNames = rawNames.split(/[|\n\r\u2028\u2029]+/).map(x => x.trim()).filter(x => x.length > 0);
                         const bookLinks = rawLinks.split(/[|\n\r\u2028\u2029]+/).map(x => x.trim()).filter(x => x.length > 0);
                         const bookImgRows = rawImgs.split(/[|\n\r\u2028\u2029]+/).map(x => x.trim());
@@ -170,14 +170,12 @@
                                 const link = bookLinks[index] || bookLinks[0];
                                 const imgRow = bookImgRows[index] || "";
                                 
-                                // Tách các link ảnh của riêng cuốn sách này bằng dấu phẩy
-                                const imgs = imgRow.split(',').map(x => x.trim()).filter(x => x.length > 10);
-                                if (imgs.length === 0) imgs.push("data/fini-icon.png"); // Ảnh mặc định nếu trống
+                                // Chuẩn hóa xóa bỏ khoảng trắng thừa do định dạng CSV phát sinh
+                                const imgs = imgRow.split(',').map(x => x.trim().replace(/[\r\n]/g, "")).filter(x => x.length > 10);
+                                if (imgs.length === 0) imgs.push("data/fini-icon.png");
                                 
-                                // Tạo ID ngẫu nhiên không trùng lặp cho bộ điều khiển ảnh lớn
                                 const mainImgId = `img_main_${index}_` + Math.random().toString(36).substr(2, 5);
                                 
-                                // Dựng danh sách ảnh nhỏ (Thumbnails) nếu sách có nhiều hơn 1 ảnh
                                 let thumbsHtml = "";
                                 if (imgs.length > 1) {
                                     thumbsHtml = `<div class="aff-thumb-list">`;
@@ -193,7 +191,6 @@
                                     thumbsHtml += `</div>`;
                                 }
                                 
-                                // Dựng cấu trúc HTML cho từng hộp sách
                                 itemsHtml += `
                                     <div class="aff-container">
                                         <div class="aff-gallery-side">
@@ -210,7 +207,6 @@
                                     </div>`;
                             });
 
-                            // Khung wrapper tổng chứa toàn bộ danh sách sách
                             affHtml = `
                                 <div class="aff-wrapper">
                                     <div class="aff-heading">📖 TÀI LIỆU THAM KHẢO NÊN CÓ</div>
@@ -223,15 +219,15 @@
                     view.innerHTML = `
                         <span class="meta-info">${getVal(d, 'category')}</span>
                         <h1>${getVal(d, 'title')}</h1>
-                        <div class="section-h">${format(getVal(d, 'h_header'))}</div>
+                        <div class="section-h">${getVal(d, 'h_header')}</div>
                         
                         ${videoHtml} 
                         
-                        <div class="section-i">${format(getVal(d, 'i_body'))}</div>
+                        <div class="section-i">${formatBody(getVal(d, 'i_body'))}</div>
                         
                         ${affHtml}
                         
-                        <div class="section-j">${format(getVal(d, 'j_footer'))}</div>
+                        <div class="section-j">${getVal(d, 'j_footer')}</div>
                     `;
                 } else {
                     view.innerHTML = "<div style='text-align: center; padding: 60px; color: #8e2121;'>⚠️ Nội dung không tồn tại hoặc đã được di dời.</div>";
