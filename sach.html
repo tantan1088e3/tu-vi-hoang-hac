@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tủ Sách Học Thuật - Tử Vi Hoàng Hạc</title>
+    <link rel="icon" type="image/png" href="data/fini-icon.png" sizes="96x96">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lora', serif; line-height: 1.6; max-width: 1100px; margin: auto; padding: 20px; background: #fdf8f0; color: #2c3e50; }
+        
+        /* Header & Thanh Điều Hướng */
+        header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e0d5c1; }
+        header h1 { color: #5d1a1a; margin-bottom: 10px; font-size: 2.5rem; }
+        header p { font-style: italic; color: #7f8c8d; font-size: 1.1rem; }
+        
+        .nav-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 35px; }
+        .tab-btn { padding: 10px 25px; border: 1px solid #8e2121; background: transparent; color: #8e2121; font-family: 'Lora', serif; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+        .tab-btn:hover, .tab-btn.active { background: #8e2121; color: white; }
+        
+        .btn-home { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #8e2121; font-weight: bold; }
+        
+        /* Lưới hiển thị danh sách sách */
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        /* Hộp sản phẩm sách cao cấp */
+        .book-card { background: white; border: 1px solid #e0d5c1; border-radius: 12px; padding: 20px; display: flex; gap: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); transition: 0.3s; position: relative; overflow: hidden; }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(142,33,33,0.08); border-color: #c5a059; }
+        
+        /* Khung ảnh sách tỉ lệ chuẩn */
+        .book-img-box { width: 110px; height: 155px; flex-shrink: 0; border-radius: 6px; overflow: hidden; border: 1px solid #eee; box-shadow: 2px 4px 8px rgba(0,0,0,0.1); }
+        .book-img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+        
+        /* Thông tin chi tiết */
+        .book-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .book-title { font-size: 1.15rem; font-weight: bold; color: #5d1a1a; margin: 0 0 5px 0; line-height: 1.4; }
+        .book-price { font-size: 1.2rem; color: #8e2121; font-weight: bold; margin-bottom: 5px; }
+        .book-desc { font-size: 0.85rem; color: #666; margin: 0 0 10px 0; font-style: italic; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Nhãn trạng thái số lượng/loại sách */
+        .badge { position: absolute; top: 12px; right: 12px; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .badge-new { background: #e8f8f5; color: #117a65; }
+        .badge-old { background: #fdf2e9; color: #dc7633; }
+        
+        .qty-status { font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; }
+        .qty-instock { color: #27ae60; }
+        .qty-out { color: #c0392b; }
+        
+        /* Nút bấm mua hàng chuyên biệt */
+        .btn-buy { display: block; text-align: center; padding: 8px 15px; text-decoration: none; font-weight: bold; font-size: 0.85rem; border-radius: 4px; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-buy-aff { background: #d35400; color: white !important; box-shadow: 0 3px 8px rgba(211,84,0,0.2); }
+        .btn-buy-aff:hover { background: #ba4a00; }
+        .btn-buy-tele { background: #2980b9; color: white !important; box-shadow: 0 3px 8px rgba(41,128,185,0.2); }
+        .btn-buy-tele:hover { background: #2471a3; }
+        .btn-disabled { background: #bdc3c7; color: #7f8c8d !important; cursor: not-allowed; pointer-events: none; }
+
+        @media (max-width: 650px) {
+            .book-card { flex-direction: column; align-items: center; text-align: center; padding: 15px; }
+            .book-img-box { width: 130px; height: 180px; }
+            .badge { top: auto; bottom: 12px; right: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-home">← TRỞ VỀ TRANG CHỦ</a>
+    
+    <header>
+        <h1>TỦ SÁCH TỬ VI & PHONG THỦY</h1>
+        <p>"Tài liệu học thuật tinh hoa - Kiến tạo không gian sống an lành"</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="filterBooks('all', this)">TẤT CẢ SÁCH</button>
+        <button class="tab-btn" onclick="filterBooks('new', this)">SÁCH MỚI (AFFILIATE)</button>
+        <button class="tab-btn" onclick="filterBooks('old', this)">SÁCH CŨ SƯU TẦM</button>
+    </div>
+
+    <div id="books-container" class="books-grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #c5a059;">
+            ⏳ ĐANG TẢI KHO TÀI LIỆU...
+        </div>
+    </div>
+
+<script>
+    // Điền link CSV của bạn vào đây. Hãy nhớ cấu hình mã gid chính xác của Tab SÁCH (ví dụ gid=123456) nếu có
+    const SÁCH_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=204099507&single=true&output=csv&t=' + new Date().getTime();
+
+    let allBooksData = [];
+
+    function parseLine(text) {
+        const cells = [];
+        let curr = '', inQ = false;
+        for (let i = 0; i < text.length; i++) {
+            if (text[i] === '"') inQ = !inQ;
+            else if (text[i] === ',' && !inQ) { cells.push(curr.trim()); curr = ''; }
+            else curr += text[i];
+        }
+        cells.push(curr.trim());
+        return cells;
+    }
+
+    async function loadBooks() {
+        const container = document.getElementById('books-container');
+        try {
+            const res = await fetch(SÁCH_SHEET_URL);
+            const text = await res.text();
+            const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            const headers = parseLine(rows[0]).map(h => h.toLowerCase().trim());
+
+            allBooksData = rows.slice(1).map(row => {
+                const cells = parseLine(row);
+                const item = {};
+                headers.forEach((h, idx) => {
+                    if (cells[idx]) {
+                        item[h] = cells[idx].replace(/^"|"$/g, '').trim();
+                    } else {
+                        item[h] = "";
+                    }
+                });
+                return item;
+            }).filter(item => item.book_name);
+
+            renderBooks(allBooksData);
+        } catch (e) {
+            container.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 40px;'>⚠️ Không thể kết nối với kho sách. Vui lòng tải lại trang.</div>";
+        }
+    }
+
+    function renderBooks(data) {
+        const container = document.getElementById('books-container');
+        if (data.length === 0) {
+            container.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 40px; color: #7f8c8d;'>Hiện chưa có cuốn sách nào thuộc danh mục này.</div>";
+            return;
+        }
+
+        container.innerHTML = data.map(b => {
+            const isNew = b.type === 'new';
+            const qty = parseInt(b.book_qty) || 0;
+            
+            // Xử lý nhãn phân loại bài viết
+            const badgeHtml = isNew ? `<span class="badge badge-new">Sách Mới</span>` : `<span class="badge badge-old">Sách Cũ</span>`;
+            
+            // Xử lý trạng thái kho hàng và cấu trúc nút bấm an toàn chống bom hàng
+            let qtyHtml = "";
+            let btnHtml = "";
+
+            if (isNew) {
+                qtyHtml = `<div class="qty-status qty-instock">✓ Sẵn hàng (Chính hãng)</div>`;
+                btnHtml = `<a href="${b.book_link}" target="_blank" class="btn-buy btn-buy-aff">MUA TRÊN SHOPEE ➔</a>`;
+            } else {
+                if (qty > 0) {
+                    qtyHtml = `<div class="qty-status qty-instock">⚠️ Chỉ còn: ${qty} cuốn độc bản</div>`;
+                    btnHtml = `<a href="${b.book_link}" target="_blank" class="btn-buy btn-buy-tele">MUA QUA TELEGRAM ➔</a>`;
+                } else {
+                    qtyHtml = `<div class="qty-status qty-out">❌ Hết hàng (Đã giao lưu)</div>`;
+                    btnHtml = `<a href="#" class="btn-buy btn-disabled">HẾT SÁCH</a>`;
+                }
+            }
+
+            return `
+                <div class="book-card">
+                    ${badgeHtml}
+                    <div class="book-img-box">
+                        <img class="book-img" src="${b.book_img || 'data/fini-icon.png'}" alt="${b.book_name}">
+                    </div>
+                    <div class="book-info">
+                        <div>
+                            <h3 class="book-title">${b.book_name}</h3>
+                            <div class="book-price">${b.book_price || 'Liên hệ'}</div>
+                            <p class="book-desc">${b.book_desc || 'Tài liệu tra cứu học thuật chuyên sâu.'}</p>
+                        </div>
+                        <div>
+                            ${qtyHtml}
+                            ${btnHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Bộ lọc tab mượt mà không cần chuyển khoản trang
+    function filterBooks(type, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (type === 'all') {
+            renderBooks(allBooksData);
+        } else {
+            const filtered = allBooksData.filter(b => b.type === type);
+            renderBooks(filtered);
+        }
+    }
+
+    loadBooks();
+</script>
+</body>
+</html>
