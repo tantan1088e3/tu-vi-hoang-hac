@@ -10,25 +10,25 @@
     :root { 
         --primary-color: #5d1a1a; 
         --accent-color: #c5a059; 
-        --bg-color: #fffbf4; /* Tăng nhẹ độ ấm nền kem giúp đọc sách không mỏi mắt */
+        --bg-color: #fffbf4; /* Nền kem ấm dịu mắt */
         --text-color: #2c3e50; 
         --card-border: #e2d9c8; /* Màu viền hoài cổ nhẹ */
     }
     
-    /* NÂNG CẤP BỀ MẶT WEB: Thêm vân giấy gấm cổ chìm siêu nhẹ (opacity 1.5%) */
+    /* 1. NÂNG CẤP NỀN WEB: Thêm vân gấm họa tiết vạn tự mờ siêu ẩn (opacity 1.5%) */
     body { 
         margin: 0; 
         font-family: 'Arimo', sans-serif; 
         background-color: var(--bg-color); 
-        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23c5a059' fill-opacity='0.015'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 0h2v20H9V0zm25.134.866l1.414 1.414-14.142 14.142L20 15 34.134.866zM59 0h2v20h-2V0zm-1.866 1.134L58.55 2.55 44.408 16.692L43 15.278 57.134 1.134zM89 0h2v20h-2V0zm-1.866 1.134L88.55 2.55 74.408 16.692L73 15.278 87.134 1.134zM119 0h2v20h-2V0zm-1.866 1.134l1.414 1.414-14.142 14.142L103 15 117.134 1.134zM0 9h20v2H0V9zm.866 25.134l1.414-1.414L16.422 46.862 15 48.276.866 34.134zM0 59h20v2H0v-2zm.866-1.866L2.28 58.55 16.422 72.692 15 74.106.866 59.866zM0 89h20v2H0v-2zm.866-1.866L2.28 88.55 16.422 102.692 15 104.106.866 89.866zM0 119h20v2H0v-2zm.866-1.866L2.28 118.55 16.422 132.692 15 134.106.866 119.866z' fill='%23c5a059' fill-opacity='0.015'/%3E%3C/svg%3E");
         color: var(--text-color); 
         line-height: 1.6; 
     }
     
-    /* NÂNG CẤP HEADER: Phủ vân triện gấm hoàng gia chìm (opacity 5%) */
+    /* 2. NÂNG CẤP HEADER: Phủ vân triện hoàng gia chìm (opacity 5%) */
     header { 
         background-color: var(--primary-color); 
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2zm-48 0c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2zm24-24c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2z' fill='%23c5a059' fill-opacity='0.05'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2zm-48 0c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2zm24-24c-2 0-3 1-4 2v4c1 1 2 2 4 2s3-1 4-2v-4c-1-1-2-2-4-2z' fill='%23c5a059' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
         color: var(--accent-color); 
         padding: 3.5rem 1rem; 
         text-align: center; 
@@ -37,6 +37,7 @@
     header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 4px; font-size: 3rem; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
     header p { margin-top: 12px; opacity: 0.9; font-style: italic; font-size: 1.05rem; }
 
+    /* Các phần khác giữ nguyên cấu trúc */
     .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
     
@@ -54,10 +55,10 @@
     .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
     
-    /* NÂNG CẤP THỂ BÀI VIẾT (CARD): Nền họa tiết kỷ hà Hán Nôm mờ siêu ẩn (opacity 2.5%) */
+    /* 3. NÂNG CẤP CARD BÀI VIẾT: Chèn vân mây triện cổ mờ siêu ẩn (opacity 2.5%) */
     .card { 
         background: white; 
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c5a059' fill-opacity='0.025'%3E%3Cpath d='M15 0H0v15h15V0zm15 15H15v15h15V15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h15v15H0V0zm15 15h15v15H15V15z' fill='%23c5a059' fill-opacity='0.025' fill-rule='evenodd'/%3E%3C/svg%3E");
         padding: 2.2rem 2rem; 
         border-radius: 12px; 
         border: 1px solid var(--card-border); 
@@ -68,7 +69,6 @@
         transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
     }
     
-    /* Hiệu ứng nhấc nhẹ khung bài viết và tỏa bóng mờ đỏ huyết dụ */
     .card:hover { 
         transform: translateY(-6px); 
         box-shadow: 0 14px 28px rgba(93, 26, 26, 0.08); 
@@ -76,43 +76,12 @@
     }
     .card.featured { border-left: 8px solid var(--accent-color); }
     
-    /* CÁCH ĐIỆU DANH MỤC: Có gạch chân nét đứt cổ kính */
-    .category-tag { 
-        font-size: 0.8rem; 
-        font-weight: 700; 
-        color: var(--accent-color); 
-        text-transform: uppercase; 
-        letter-spacing: 1.2px; 
-        margin-bottom: 14px; 
-        display: inline-block;
-        border-bottom: 1px dashed var(--card-border);
-        padding-bottom: 3px;
-        width: max-content;
-    }
+    .category-tag { font-size: 0.8rem; font-weight: 700; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; display: inline-block; border-bottom: 1px dashed var(--card-border); padding-bottom: 3px; width: max-content;}
     .card h3 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.45rem; line-height: 1.4; font-weight: 700; }
     .card p { color: #555; font-size: 0.98rem; margin-bottom: 25px; flex-grow: 1; text-align: justify; text-justify: inter-word; line-height: 1.65; }
 
-    /* CÁCH ĐIỆU NÚT BẤM ĐỌC TIẾP: Cân đối, lịch lãm phong cách phong thủy thư các */
-    .btn-post { 
-        padding: 12px; 
-        text-decoration: none; 
-        font-weight: 700; 
-        text-align: center; 
-        border-radius: 4px; 
-        border: 1px solid var(--primary-color); 
-        color: var(--primary-color); 
-        background: transparent;
-        transition: all 0.25s ease; 
-        cursor: pointer;
-        text-transform: uppercase; 
-        letter-spacing: 1px;
-        font-size: 0.85rem;
-    }
-    .btn-post:hover { 
-        background: var(--primary-color); 
-        color: white; 
-        box-shadow: 0 4px 15px rgba(93,26,26,0.2);
-    }
+    .btn-post { padding: 12px; text-decoration: none; font-weight: 700; text-align: center; border-radius: 4px; border: 1px solid var(--primary-color); color: var(--primary-color); background: transparent; transition: all 0.25s ease; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;}
+    .btn-post:hover { background: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(93,26,26,0.2);}
 
     /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
     .form-container { background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; display: none; }
@@ -140,7 +109,7 @@
             padding: 1.5rem 1rem !important; 
         }
         .grid {
-            grid-template-columns: 1fr !important; 
+            grid-template-columns: 1fr !important; /* Trên điện thoại bắt buộc xếp 1 cột dọc thẳng đều */
         }
         .form-group[style*="grid-template-columns"] {
             grid-template-columns: 1fr !important; 
