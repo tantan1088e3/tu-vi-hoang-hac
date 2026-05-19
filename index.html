@@ -93,6 +93,7 @@
             <button class="tab-btn active" onclick="switchTab('posts', this)">BÀI VIẾT</button>
             <button class="tab-btn" onclick="switchTab('video', this)">THƯ VIỆN VIDEO</button> 
             <button class="tab-btn" onclick="switchTab('pdf', this)">THƯ VIỆN PDF</button>
+            <button class="tab-btn" onclick="switchTab('books', this)">TỦ SÁCH CỔ HỌC</button>
             <button class="tab-btn" onclick="switchTab('register', this)" style="font-weight: 700;">ĐĂNG KÝ XEM SỐ ★</button>
         </div>
         <div id="search-container">
@@ -206,6 +207,7 @@
     const pdfLimit = 6; 
     
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
+    const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv&t=' + new Date().getTime();
     let db = [];
     let currentCategory = 'Tất cả';
     let searchQuery = '';
@@ -315,12 +317,95 @@
             filterBar.style.display = "none";
             searchContainer.style.display = "none";
             formWrapper.style.display = "block";
-        } else {
+        } else if (type === 'books') {
+            filterBar.style.display = "none";
+            pagination.style.display = "none"; // Ẩn thanh phân trang cũ của bài viết
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
+            loadAffiliateBooks(); // Gọi hàm load từ trang tính SÁCH
+        }
+        else {
             filterBar.style.display = "flex";
             renderUI();
         }
     }
 
+    async function loadAffiliateBooks() {
+        const grid = document.getElementById('post-grid');
+        try {
+            const res = await fetch(BOOK_SHEET_URL);
+            const csv = await res.text();
+            
+            // Tách các dòng dữ liệu bằng Regex tương tự cấu trúc bài viết của bạn
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+            // Đọc các tiêu đề cột (id, type, book_name, book_img, book_link, book_price, book_qty, book_desc)
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            
+            const idx = {
+                id: headers.indexOf('id'),
+                type: headers.indexOf('type'),
+                name: headers.indexOf('book_name'),
+                img: headers.indexOf('book_img'),
+                link: headers.indexOf('book_link'),
+                price: headers.indexOf('book_price'),
+                qty: headers.indexOf('book_qty'),
+                desc: headers.indexOf('book_desc')
+            };
+    
+            // Chuyển đổi dữ liệu từ CSV sang mảng Object sách
+            const books = rows.slice(1).map(r => {
+                const c = parseCSVLine(r);
+                return {
+                    id: c[idx.id],
+                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
+                    name: c[idx.name],
+                    img: c[idx.img] || "https://via.placeholder.com/250x350?text=No+Image",
+                    link: c[idx.link] || "#",
+                    price: c[idx.price] || "Liên hệ",
+                    qty: c[idx.qty] || "0",
+                    desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
+                };
+            }).filter(b => b.id && b.name); // Bỏ qua dòng trống
+    
+            if (books.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
+            }
+    
+            // Render giao diện danh sách sách đồng bộ với CSS .card có sẵn của bạn
+            grid.innerHTML = books.map(b => `
+                <div class="card" style="border-top: 5px solid var(--accent-color); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="width: 100%; height: 260px; display: flex; align-items: center; justify-content: center; background: #fff; margin-bottom: 15px; overflow: hidden; border-radius: 6px;">
+                            <img src="${b.img}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                        
+                        <span class="category-tag">${b.type}</span>
+                        
+                        <h3 style="font-size: 1.15rem; margin-bottom: 8px; min-height: 2.6rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--primary-color);">
+                            ${b.name}
+                        </h3>
+                        
+                        <p style="color: #c5a059; font-weight: bold; font-size: 1.2rem; margin: 5px 0 10px 0;">
+                            ${b.price.toLocaleString('vi-VN')}đ
+                        </p>
+                        
+                        <p style="font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            ${b.desc}
+                        </p>
+                    </div>
+                    
+                    <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; margin-top: auto; padding: 12px;">
+                        Tìm hiểu & Đặt mua →
+                    </a>
+                </div>
+            `).join('');
+    
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách. Vui lòng kiểm tra lại cấu hình xuất bản dữ liệu web.</div>";
+        }
+    }
     function renderUI() {
         let filtered = db.filter(p => {
             const matchCat = (currentCategory === 'Tất cả' || p.category === currentCategory);
