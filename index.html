@@ -333,120 +333,129 @@
     }
 
     async function loadAffiliateBooks() {
-        const grid = document.getElementById('post-grid');
-        try {
-            const res = await fetch(BOOK_SHEET_URL);
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            
-            const idx = {
-                id: headers.indexOf('id'),
-                type: headers.indexOf('type'),
-                name: headers.indexOf('book_name'),
-                img: headers.indexOf('book_img'),
-                link: headers.indexOf('book_link'),
-                price: headers.indexOf('book_price'),
-                qty: headers.indexOf('book_qty'),
-                desc: headers.indexOf('book_desc')
-            };
+    const grid = document.getElementById('post-grid');
+    try {
+        const res = await fetch(BOOK_SHEET_URL);
+        const csv = await res.text();
+        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+        
+        const idx = {
+            id: headers.indexOf('id'),
+            type: headers.indexOf('type'),
+            name: headers.indexOf('book_name'),
+            img: headers.indexOf('book_img'),
+            link: headers.indexOf('book_link'),
+            price: headers.indexOf('book_price'),
+            qty: headers.indexOf('book_qty'),
+            desc: headers.indexOf('book_desc')
+        };
 
-            const books = rows.slice(1).map(r => {
-                const c = parseCSVLine(r);
-                if (!c || c.length <= Math.max(...Object.values(idx))) return null;
+        const books = rows.slice(1).map(r => {
+            const c = parseCSVLine(r);
+            if (!c || c.length <= Math.max(...Object.values(idx))) return null;
 
-                const rawImgStr = c[idx.img] || "";
-                const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
+            const rawImgStr = c[idx.img] || "";
+            const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
 
-                let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
-                let cleanPrice = "";
-                let isContact = false;
+            let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
+            let cleanPrice = "";
+            let isContact = false;
 
-                if (rawPrice === "" || rawPrice.toLowerCase() === "liên hệ") {
-                    isContact = true;
-                } else {
-                    cleanPrice = rawPrice.replace(/[^0-9]/g, "");
-                    if (cleanPrice === "") isContact = true;
-                }
-
-                return {
-                    id: c[idx.id] ? c[idx.id].trim() : "",
-                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
-                    name: c[idx.name] ? c[idx.name].trim() : "",
-                    images: imgList,
-                    link: c[idx.link] || "#",
-                    price: isContact ? "Liên hệ" : cleanPrice,
-                    qty: c[idx.qty] || "0",
-                    desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
-                };
-            }).filter(b => b && b.id && b.name);
-
-
-            if (books.length === 0) {
-                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
-                return;
+            if (rawPrice === "" || rawPrice.toLowerCase() === "liên hệ") {
+                isContact = true;
+            } else {
+                cleanPrice = rawPrice.replace(/[^0-9]/g, "");
+                if (cleanPrice === "") isContact = true;
             }
 
-            grid.innerHTML = books.map((b, bIdx) => {
-                const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
-                
-                let thumbnailsHTML = '';
-                if (b.images.length > 1) {
-                    thumbnailsHTML = `
-                        <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px;">
-                            ${b.images.map((img, imgIdx) => `
-                                <img src="${img}" 
-                                     alt="Thumb ${imgIdx}" 
-                                     class="thumb-img-${bIdx}"
-                                     style="width: 42px; height: 55px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
-                                     onclick="changeBookImage(this, '${img}', ${bIdx})">
-                            `).join('')}
-                        </div>
-                    `;
-                } else {
-                    thumbnailsHTML = `<div style="height: 71px;"></div>`;
-                }
+            return {
+                id: c[idx.id] ? c[idx.id].trim() : "",
+                type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
+                name: c[idx.name] ? c[idx.name].trim() : "",
+                images: imgList,
+                link: c[idx.link] || "#",
+                price: isContact ? "Liên hệ" : cleanPrice,
+                qty: c[idx.qty] || "0",
+                desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
+            };
+        }).filter(b => b && b.id && b.name);
 
-                const displayPrice = b.price === "Liên hệ" 
-                    ? "Liên hệ" 
-                    : Number(b.price).toLocaleString('vi-VN') + 'đ';
 
-                return `
-                    <div class="card" style="border-top: 5px solid var(--accent-color); display: flex; flex-direction: column; justify-content: space-between; padding: 15px;">
-                        <div>
-                            <div style="width: 100%; height: 260px; display: flex; align-items: center; justify-content: center; background: #fff; margin-bottom: 10px; overflow: hidden; border-radius: 6px;">
-                                <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain; transition: fade 0.3s;">
-                            </div>
-                            
-                            ${thumbnailsHTML}
-                            
-                            <span class="category-tag">${b.type}</span>
-                            
-                            <h3 style="font-size: 1.15rem; margin-bottom: 8px; min-height: 2.6rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--primary-color);">
-                                ${b.name}
-                            </h3>
-                            
-                            <p style="color: #c5a059; font-weight: bold; font-size: 1.2rem; margin: 5px 0 10px 0;">
-                                ${displayPrice}
-                            </p>
-                            
-                            <p style="font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                ${b.desc}
-                            </p>
-                        </div>
-                        
-                        <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; margin-top: auto; padding: 12px; text-align: center; text-decoration: none; display: block; border-radius: 4px;">
-                            Tìm hiểu & Đặt mua →
-                        </a>
+        if (books.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+            return;
+        }
+
+        grid.innerHTML = books.map((b, bIdx) => {
+            const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
+            
+            // Xử lý khối hình thu nhỏ (Thumbnails) gọn gàng, không chiếm không gian vô ích
+            let thumbnailsHTML = '';
+            if (b.images.length > 1) {
+                thumbnailsHTML = `
+                    <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;">
+                        ${b.images.map((img, imgIdx) => `
+                            <img src="${img}" 
+                                 alt="Thumb ${imgIdx}" 
+                                 class="thumb-img-${bIdx}"
+                                 style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
+                                 onclick="changeBookImage(this, '${img}', ${bIdx})">
+                        `).join('')}
                     </div>
                 `;
-            }).join('');
+            }
 
-        } catch (e) {
-            console.error(e);
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách. Vui lòng kiểm tra lại cấu hình xuất bản dữ liệu web.</div>";
-        }
+            const displayPrice = b.price === "Liên hệ" 
+                ? "Liên hệ" 
+                : Number(b.price).toLocaleString('vi-VN') + 'đ';
+
+            // Trả về cấu trúc 2 cột linh hoạt: Trái chứa Ảnh, Phải chứa Thông tin sách
+            return `
+                <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+                        
+                        <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
+                            <div style="width: 100%; height: 320px; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; border-radius: 6px; border: 1px solid #f0f0f0;">
+                                <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>
+                            ${thumbnailsHTML}
+                        </div>
+                        
+                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: Beers;">
+                            <div style="margin-bottom: auto;">
+                                <span class="category-tag" style="margin-bottom: 8px; display: inline-block;">${b.type}</span>
+                                
+                                <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">
+                                    ${b.name}
+                                </h3>
+                                
+                                <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                                    ${displayPrice}
+                                </p>
+                                
+                                <div style="font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: justify;">
+                                    ${b.desc.replace(/\n/g, '<br>')}
+                                </div>
+                            </div>
+                            
+                            <div style="width: 100%; max-width: 200px;">
+                                <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 20px; text-align: center; text-decoration: none; display: block; border-radius: 4px; transition: background 0.2s;">
+                                    Tìm hiểu & Đặt mua →
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (e) {
+        console.error(e);
+        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách. Vui lòng kiểm tra lại cấu hình xuất bản dữ liệu web.</div>";
     }
+}
     
     function changeBookImage(thumbElement, newSrc, bookIdx) {
         const mainImg = document.getElementById(`main-img-${bookIdx}`);
