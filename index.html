@@ -373,41 +373,45 @@
     async function loadAffiliateBooks() {
         const grid = document.getElementById('post-grid');
         const CACHE_BOOKS_KEY = 'tuvi_books_cache';
-        const CACHE_BOOKS_VERSION_KEY = 'tuvi_books_version'; // Khóa lưu phiên bản tủ sách hiện tại trong máy
+        const CACHE_BOOKS_VERSION_KEY = 'tuvi_books_version';
 
         try {
             let csv = '';
             const now = new Date().getTime();
 
-            // 1. Quét file Update siêu nhẹ để kiểm tra phiên bản trên Sheets
+            // 1. Tải file cấu hình Update siêu nhẹ
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
             
-            // Tách chuỗi để lấy giá trị version ở ô B1 (Kết quả dạng: "version,1")
-            const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
+            // Dùng Regex làm sạch hoàn toàn ký tự \r hoặc xuống dòng, đảm bảo cắt trúng ô B1 sạch sẽ
+            const firstLine = versionText.split(/\r?\n/)[0];
+            const latestVersion = firstLine.split(',')[1]?.trim() || "0";
             
-            // Đọc dữ liệu và số version tủ sách cũ trong trình duyệt
             const cachedData = localStorage.getItem(CACHE_BOOKS_KEY);
             const cachedVersion = localStorage.getItem(CACHE_BOOKS_VERSION_KEY);
 
-            // 2. SO SÁNH: Nếu có dữ liệu cũ VÀ phiên bản hoàn toàn trùng khớp
+            // 2. Kiểm tra bộ nhớ đệm đồng bộ phiên bản
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
-                console.log(`⚡ [Tủ sách] Không đổi (v${latestVersion}). Khởi động thần tốc từ LocalStorage!`);
+                console.log(`⚡ [Tủ sách] Chạy siêu tốc từ LocalStorage (Phiên bản v${latestVersion})`);
             } else {
-                // Nếu chưa có cache HOẶC phát hiện bạn vừa đổi số trên Sheets (Có bản cập nhật mới)
-                console.log(`🌐 [Tủ sách] Phát hiện dữ liệu mới (Mới: v${latestVersion} - Cũ: v${cachedVersion}). Tiến hành đồng bộ...`);
+                console.log(`🌐 [Tủ sách] Nâng cấp dữ liệu (Cũ: v${cachedVersion} -> Mới: v${latestVersion}). Đang tải...`);
                 
                 const res = await fetch(`${BOOK_SHEET_URL}&t=${now}`);
                 csv = await res.text();
                 
-                // Lưu đè dữ liệu mới và mã phiên bản mới nhất vào LocalStorage
                 localStorage.setItem(CACHE_BOOKS_KEY, csv);
                 localStorage.setItem(CACHE_BOOKS_VERSION_KEY, latestVersion);
             }
 
-            // 3. XỬ LÝ DỮ LIỆU ĐỂ RENDER RA GIAO DIỆN (Giữ nguyên cấu trúc gốc của bạn)
+            // 3. Xử lý dữ liệu CSV của Tủ sách
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            // Bảo vệ an toàn nếu file trống hoặc lỗi kết nối
+            if (rows.length === 0 || !rows[0]) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
+            }
+
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             
             const idx = {
@@ -423,6 +427,7 @@
             };
 
             const books = rows.slice(1).map(r => {
+                if (!r.trim()) return null;
                 const c = parseCSVLine(r);
                 if (!c || c.length <= Math.max(...Object.values(idx))) return null;
 
@@ -461,6 +466,7 @@
                 return;
             }
 
+            // Giao diện hiển thị danh sách sách
             grid.innerHTML = books.map((b, bIdx) => {
                 const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
                 
