@@ -88,7 +88,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
 
         function parseLine(text) {
             const cells = [];
@@ -107,8 +107,20 @@
             const idReq = new URLSearchParams(window.location.search).get('id');
 
             try {
-                const res = await fetch(SHEET_URL);
-                const text = await res.text();
+                let text = '';
+                // TẬN DỤNG CACHE TRANG CHỦ: Kiểm tra xem đã có dữ liệu lưu trữ tại LocalStorage chưa
+                const cachedPosts = localStorage.getItem('tuvi_posts_cache');
+
+                if (cachedPosts) {
+                    text = cachedPosts;
+                    console.log("⚡ [Chi tiết] Lấy dữ liệu bài viết thần tốc từ LocalStorage!");
+                } else {
+                    // Trường hợp không có bộ nhớ đệm (Ví dụ: vào trực tiếp từ liên kết chia sẻ)
+                    console.log("🌐 [Chi tiết] Không tìm thấy bộ nhớ đệm, tải dữ liệu trực tiếp từ Google Sheets...");
+                    const res = await fetch(`${SHEET_URL}&t=${new Date().getTime()}`);
+                    text = await res.text();
+                }
+
                 const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const headers = parseLine(rows[0]).map(h => h.toLowerCase().trim());
                 
@@ -234,6 +246,7 @@
                     view.innerHTML = "<div style='text-align: center; padding: 60px; color: #8e2121;'>⚠️ Nội dung không tồn tại hoặc đã được di dời.</div>";
                 }
             } catch (e) {
+                console.error(e);
                 view.innerHTML = "<div style='text-align: center; padding: 60px;'>Lỗi kết nối kho dữ liệu. Vui lòng làm mới trang.</div>";
             }
         }
