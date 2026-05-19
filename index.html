@@ -337,7 +337,6 @@
     try {
         const res = await fetch(BOOK_SHEET_URL);
         const csv = await res.text();
-        // Regex chuẩn hóa để tách dòng từ Sheets không sợ bị vỡ khi có xuống dòng
         const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
         
@@ -348,6 +347,7 @@
             img: headers.indexOf('book_img'),
             link: headers.indexOf('book_link'),
             price: headers.indexOf('book_price'),
+            oldPrice: headers.indexOf('book_old_price'), // Thêm chỉ mục tìm cột giá cũ
             qty: headers.indexOf('book_qty'),
             desc: headers.indexOf('book_desc')
         };
@@ -359,6 +359,7 @@
             const rawImgStr = c[idx.img] || "";
             const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
 
+            // 1. Xử lý giá bán hiện tại
             let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
             let cleanPrice = "";
             let isContact = false;
@@ -370,6 +371,10 @@
                 if (cleanPrice === "") isContact = true;
             }
 
+            // 2. Xử lý giá cũ (Gạch ngang)
+            let rawOldPrice = idx.oldPrice !== -1 && c[idx.oldPrice] ? c[idx.oldPrice].toString().trim() : "";
+            let cleanOldPrice = rawOldPrice.replace(/[^0-9]/g, "");
+
             return {
                 id: c[idx.id] ? c[idx.id].trim() : "",
                 type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
@@ -377,6 +382,7 @@
                 images: imgList,
                 link: c[idx.link] || "#",
                 price: isContact ? "Liên hệ" : cleanPrice,
+                oldPrice: cleanOldPrice, // Lưu giá cũ đã làm sạch vào object
                 qty: c[idx.qty] || "0",
                 desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
             };
@@ -406,9 +412,28 @@
                 `;
             }
 
+            // Xử lý chuỗi hiển thị giá bán hiện tại
             const displayPrice = b.price === "Liên hệ" 
                 ? "Liên hệ" 
                 : Number(b.price).toLocaleString('vi-VN') + 'đ';
+
+            // Xử lý chuỗi hiển thị KHỐI GIÁ (Bao gồm cả giá cũ gạch ngang nếu có)
+            let priceBlockHTML = '';
+            if (b.price !== "Liên hệ" && b.oldPrice !== "" && Number(b.oldPrice) > Number(b.price)) {
+                const displayOldPrice = Number(b.oldPrice).toLocaleString('vi-VN') + 'đ';
+                priceBlockHTML = `
+                    <p style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span style="color: #c5a059; font-weight: bold; font-size: 1.4rem;">${displayPrice}</span>
+                        <span style="color: #999; text-decoration: line-through; font-size: 1.0rem; font-weight: normal;">${displayOldPrice}</span>
+                    </p>
+                `;
+            } else {
+                priceBlockHTML = `
+                    <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                        ${displayPrice}
+                    </p>
+                `;
+            }
 
             return `
                 <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box; width: 100%;">
@@ -429,9 +454,7 @@
                                     ${b.name}
                                 </h3>
                                 
-                                <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
-                                    ${displayPrice}
-                                </p>
+                                ${priceBlockHTML}
                                 
                                 <div class="book-desc-scroll" style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 160px; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
                                     ${b.desc.replace(/\n/g, '<br>')}
