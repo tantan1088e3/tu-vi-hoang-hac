@@ -206,11 +206,13 @@
     let currentPdfPage = 1;
     const pdfLimit = 6; 
     
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv&t=' + new Date().getTime();
-
-    // 2. URL của tab SÁCH (Gid=1124468701) anh vừa xuất bản toàn bộ, tích hợp chống cache hoàn hảo
-    const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv&t=' + new Date().getTime();
+    // Giữ nguyên URL gốc, chúng ta sẽ xử lý chống cache/xử lý cache linh hoạt bên dưới
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
+    const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv';
     
+    // Cấu hình thời gian lưu Cache (15 phút)
+    const CACHE_DURATION = 15 * 60 * 1000; 
+
     let db = [];
     let currentCategory = 'Tất cả';
     let searchQuery = '';
@@ -228,10 +230,30 @@
         r.push(c.trim()); return r;
     }
 
+    // 1. TỐI ƯU CACHE CHO BÀI VIẾT (Hàm init)
     async function init() {
+        const CACHE_POSTS_KEY = 'tuvi_posts_cache';
+        const CACHE_POSTS_TIME_KEY = 'tuvi_posts_cache_time';
+
         try {
-            const res = await fetch(SHEET_URL);
-            const csv = await res.text();
+            let csv = '';
+            const now = new Date().getTime();
+            const cachedData = localStorage.getItem(CACHE_POSTS_KEY);
+            const cachedTime = localStorage.getItem(CACHE_POSTS_TIME_KEY);
+
+            // Nếu chưa quá 15 phút, lấy luôn dữ liệu cũ từ bộ nhớ máy khách
+            if (cachedData && cachedTime && (now - cachedTime < CACHE_DURATION)) {
+                csv = cachedData;
+            } else {
+                // Quá hạn hoặc chưa có thì fetch bản mới kèm theo dập timestamp chống cache nhà mạng
+                const res = await fetch(`${SHEET_URL}&t=${now}`);
+                csv = await res.text();
+                
+                // Lưu lại vào bộ nhớ trình duyệt
+                localStorage.setItem(CACHE_POSTS_KEY, csv);
+                localStorage.setItem(CACHE_POSTS_TIME_KEY, now.toString());
+            }
+
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             
@@ -260,224 +282,158 @@
             renderUI();
         } catch (e) { 
             console.error(e);
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu."; 
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu bài viết."; 
         }
     }
 
-    function renderTags() {
-        const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
-        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => 
-            `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
-        ).join('');
-    }
-
-    function filterByTag(tag) {
-        currentCategory = tag;
-        currentPage = 1;
-        renderTags();
-        renderUI();
-    }
-
-    function handleSearch() {
-        searchQuery = document.getElementById('search-bar').value.toLowerCase();
-        currentPage = 1;
-        renderUI();
-    }
-
-    // Tối ưu hàm chuyển đổi Tab để ẩn/hiện Form Đăng ký linh hoạt
-    function switchTab(type, element) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if(element) element.classList.add('active');
-    
-        const grid = document.getElementById('post-grid');
-        const pagination = document.getElementById('post-pagination');
-        const filterBar = document.getElementById('filter-bar');
-        const searchContainer = document.getElementById('search-container');
-        const formWrapper = document.getElementById('consultation-form-wrapper');
-    
-        // Reset hiển thị mặc định
-        grid.style.display = "grid";
-        pagination.style.display = "flex";
-        formWrapper.style.display = "none";
-        searchContainer.style.display = "block";
-        grid.innerHTML = ""; 
-    
-        if (type === 'pdf') {
-            currentPdfPage = 1;
-            filterBar.style.display = "none";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
-            pagination.innerHTML = "";
-            loadPDFLibrary(); 
-        } else if (type === 'video') { 
-            filterBar.style.display = "none";
-            pagination.innerHTML = "";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
-            loadVideoLibrary(); 
-        } else if (type === 'register') {
-            // Hiển thị riêng Form Đăng ký, ẩn kho lưu trữ và thanh tìm kiếm
-            grid.style.display = "none";
-            pagination.style.display = "none";
-            filterBar.style.display = "none";
-            searchContainer.style.display = "none";
-            formWrapper.style.display = "block";
-        } else if (type === 'books') {
-            filterBar.style.display = "none";
-            pagination.style.display = "none"; // Ẩn thanh phân trang cũ của bài viết
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
-            loadAffiliateBooks(); // Gọi hàm load từ trang tính SÁCH
-        }
-        else {
-            filterBar.style.display = "flex";
-            renderUI();
-        }
-    }
-
+    // 2. TỐI ƯU CACHE CHO TỦ SÁCH (Hàm loadAffiliateBooks)
     async function loadAffiliateBooks() {
-    const grid = document.getElementById('post-grid');
-    try {
-        const res = await fetch(BOOK_SHEET_URL);
-        const csv = await res.text();
-        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-        
-        const idx = {
-            id: headers.indexOf('id'),
-            type: headers.indexOf('type'),
-            name: headers.indexOf('book_name'),
-            img: headers.indexOf('book_img'),
-            link: headers.indexOf('book_link'),
-            price: headers.indexOf('book_price'),
-            oldPrice: headers.indexOf('book_old_price'), // Thêm chỉ mục tìm cột giá cũ
-            qty: headers.indexOf('book_qty'),
-            desc: headers.indexOf('book_desc')
-        };
+        const grid = document.getElementById('post-grid');
+        const CACHE_BOOKS_KEY = 'tuvi_books_cache';
+        const CACHE_BOOKS_TIME_KEY = 'tuvi_books_cache_time';
 
-        const books = rows.slice(1).map(r => {
-            const c = parseCSVLine(r);
-            if (!c || c.length <= Math.max(...Object.values(idx))) return null;
+        try {
+            let csv = '';
+            const now = new Date().getTime();
+            const cachedData = localStorage.getItem(CACHE_BOOKS_KEY);
+            const cachedTime = localStorage.getItem(CACHE_BOOKS_TIME_KEY);
 
-            const rawImgStr = c[idx.img] || "";
-            const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
-
-            // 1. Xử lý giá bán hiện tại
-            let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
-            let cleanPrice = "";
-            let isContact = false;
-
-            if (rawPrice === "" || rawPrice.toLowerCase() === "liên hệ") {
-                isContact = true;
+            // Kiểm tra bộ nhớ đệm tủ sách
+            if (cachedData && cachedTime && (now - cachedTime < CACHE_DURATION)) {
+                csv = cachedData;
             } else {
-                cleanPrice = rawPrice.replace(/[^0-9]/g, "");
-                if (cleanPrice === "") isContact = true;
+                const res = await fetch(`${BOOK_SHEET_URL}&t=${now}`);
+                csv = await res.text();
+                
+                localStorage.setItem(CACHE_BOOKS_KEY, csv);
+                localStorage.setItem(CACHE_BOOKS_TIME_KEY, now.toString());
             }
 
-            // 2. Xử lý giá cũ (Gạch ngang)
-            let rawOldPrice = idx.oldPrice !== -1 && c[idx.oldPrice] ? c[idx.oldPrice].toString().trim() : "";
-            let cleanOldPrice = rawOldPrice.replace(/[^0-9]/g, "");
-
-            return {
-                id: c[idx.id] ? c[idx.id].trim() : "",
-                type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
-                name: c[idx.name] ? c[idx.name].trim() : "",
-                images: imgList,
-                link: c[idx.link] || "#",
-                price: isContact ? "Liên hệ" : cleanPrice,
-                oldPrice: cleanOldPrice, // Lưu giá cũ đã làm sạch vào object
-                qty: c[idx.qty] || "0",
-                desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
-            };
-        }).filter(b => b && b.id && b.name);
-
-
-        if (books.length === 0) {
-            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
-            return;
-        }
-
-        grid.innerHTML = books.map((b, bIdx) => {
-            const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             
-            let thumbnailsHTML = '';
-            if (b.images.length > 1) {
-                thumbnailsHTML = `
-                    <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;">
-                        ${b.images.map((img, imgIdx) => `
-                            <img src="${img}" 
-                                 alt="Thumb ${imgIdx}" 
-                                 class="thumb-img-${bIdx}"
-                                 style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
-                                 onclick="changeBookImage(this, '${img}', ${bIdx})">
-                        `).join('')}
-                    </div>
-                `;
+            const idx = {
+                id: headers.indexOf('id'),
+                type: headers.indexOf('type'),
+                name: headers.indexOf('book_name'),
+                img: headers.indexOf('book_img'),
+                link: headers.indexOf('book_link'),
+                price: headers.indexOf('book_price'),
+                oldPrice: headers.indexOf('book_old_price'),
+                qty: headers.indexOf('book_qty'),
+                desc: headers.indexOf('book_desc')
+            };
+
+            const books = rows.slice(1).map(r => {
+                const c = parseCSVLine(r);
+                if (!c || c.length <= Math.max(...Object.values(idx))) return null;
+
+                const rawImgStr = c[idx.img] || "";
+                const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
+
+                let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
+                let cleanPrice = "";
+                let isContact = false;
+
+                if (rawPrice === "" || rawPrice.toLowerCase() === "liên hệ") {
+                    isContact = true;
+                } else {
+                    cleanPrice = rawPrice.replace(/[^0-9]/g, "");
+                    if (cleanPrice === "") isContact = true;
+                }
+
+                let rawOldPrice = idx.oldPrice !== -1 && c[idx.oldPrice] ? c[idx.oldPrice].toString().trim() : "";
+                let cleanOldPrice = rawOldPrice.replace(/[^0-9]/g, "");
+
+                return {
+                    id: c[idx.id] ? c[idx.id].trim() : "",
+                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
+                    name: c[idx.name] ? c[idx.name].trim() : "",
+                    images: imgList,
+                    link: c[idx.link] || "#",
+                    price: isContact ? "Liên hệ" : cleanPrice,
+                    oldPrice: cleanOldPrice,
+                    qty: c[idx.qty] || "0",
+                    desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
+                };
+            }).filter(b => b && b.id && b.name);
+
+            if (books.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
             }
 
-            // Xử lý chuỗi hiển thị giá bán hiện tại
-            const displayPrice = b.price === "Liên hệ" 
-                ? "Liên hệ" 
-                : Number(b.price).toLocaleString('vi-VN') + 'đ';
-
-            // Xử lý chuỗi hiển thị KHỐI GIÁ (Bao gồm cả giá cũ gạch ngang nếu có)
-            let priceBlockHTML = '';
-            if (b.price !== "Liên hệ" && b.oldPrice !== "" && Number(b.oldPrice) > Number(b.price)) {
-                const displayOldPrice = Number(b.oldPrice).toLocaleString('vi-VN') + 'đ';
-                priceBlockHTML = `
-                    <p style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                        <span style="color: #c5a059; font-weight: bold; font-size: 1.4rem;">${displayPrice}</span>
-                        <span style="color: #999; text-decoration: line-through; font-size: 1.0rem; font-weight: normal;">${displayOldPrice}</span>
-                    </p>
-                `;
-            } else {
-                priceBlockHTML = `
-                    <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
-                        ${displayPrice}
-                    </p>
-                `;
-            }
-
-            return `
-                <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box; width: 100%;">
-                    <div style="display: flex; gap: 25px; flex-wrap: wrap;">
-                        
-                        <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
-                            <div style="width: 100%; height: 320px; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; border-radius: 6px; border: 1px solid #f0f0f0;">
-                                <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                            </div>
-                            ${thumbnailsHTML}
+            grid.innerHTML = books.map((b, bIdx) => {
+                const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
+                
+                let thumbnailsHTML = '';
+                if (b.images.length > 1) {
+                    thumbnailsHTML = `
+                        <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;">
+                            ${b.images.map((img, imgIdx) => `
+                                <img src="${img}" 
+                                     alt="Thumb ${imgIdx}" 
+                                     class="thumb-img-${bIdx}"
+                                     style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
+                                     onclick="changeBookImage(this, '${img}', ${bIdx})">
+                            `).join('')}
                         </div>
-                        
-                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between; max-height: 380px; box-sizing: border-box;">
-                            <div style="overflow: hidden; display: flex; flex-direction: column; flex: 1;">
-                                <span class="category-tag" style="margin-bottom: 8px; display: inline-block; width: max-content;">${b.type}</span>
-                                
-                                <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">
-                                    ${b.name}
-                                </h3>
-                                
-                                ${priceBlockHTML}
-                                
-                                <div class="book-desc-scroll" style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 160px; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
-                                    ${b.desc.replace(/\n/g, '<br>')}
+                    `;
+                }
+
+                const displayPrice = b.price === "Liên hệ" 
+                    ? "Liên hệ" 
+                    : Number(b.price).toLocaleString('vi-VN') + 'đ';
+
+                let priceBlockHTML = '';
+                if (b.price !== "Liên hệ" && b.oldPrice !== "" && Number(b.oldPrice) > Number(b.price)) {
+                    const displayOldPrice = Number(b.oldPrice).toLocaleString('vi-VN') + 'đ';
+                    priceBlockHTML = `
+                        <p style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span style="color: #c5a059; font-weight: bold; font-size: 1.4rem;">${displayPrice}</span>
+                            <span style="color: #999; text-decoration: line-through; font-size: 1.0rem; font-weight: normal;">${displayOldPrice}</span>
+                        </p>
+                    `;
+                } else {
+                    priceBlockHTML = `
+                        <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                            ${displayPrice}
+                        </p>
+                    `;
+                }
+
+                return `
+                    <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box; width: 100%;">
+                        <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
+                                <div style="width: 100%; height: 320px; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; border-radius: 6px; border: 1px solid #f0f0f0;">
+                                    <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </div>
+                                ${thumbnailsHTML}
+                            </div>
+                            <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between; max-height: 380px; box-sizing: border-box;">
+                                <div style="overflow: hidden; display: flex; flex-direction: column; flex: 1;">
+                                    <span class="category-tag" style="margin-bottom: 8px; display: inline-block; width: max-content;">${b.type}</span>
+                                    <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">${b.name}</h3>
+                                    ${priceBlockHTML}
+                                    <div class="book-desc-scroll" style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 160px; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
+                                        ${b.desc.replace(/\n/g, '<br>')}
+                                    </div>
+                                </div>
+                                <div style="width: 100%; max-width: 200px; padding-top: 5px;">
+                                    <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 20px; text-align: center; text-decoration: none; display: block; border-radius: 4px; transition: background 0.2s;">Tìm hiểu & Đặt mua →</a>
                                 </div>
                             </div>
-                            
-                            <div style="width: 100%; max-width: 200px; padding-top: 5px;">
-                                <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 20px; text-align: center; text-decoration: none; display: block; border-radius: 4px; transition: background 0.2s;">
-                                    Tìm hiểu & Đặt mua →
-                                </a>
-                            </div>
                         </div>
-
                     </div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
 
-    } catch (e) {
-        console.error(e);
-        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách. Vui lòng kiểm tra lại cấu hình xuất bản dữ liệu web.</div>";
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách.</div>";
+        }
     }
-}
     
     function changeBookImage(thumbElement, newSrc, bookIdx) {
         const mainImg = document.getElementById(`main-img-${bookIdx}`);
