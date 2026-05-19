@@ -337,7 +337,7 @@
     try {
         const res = await fetch(BOOK_SHEET_URL);
         const csv = await res.text();
-        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^3]*$)/);
         const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
         
         const idx = {
@@ -390,7 +390,6 @@
         grid.innerHTML = books.map((b, bIdx) => {
             const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
             
-            // Xử lý khối hình thu nhỏ (Thumbnails) gọn gàng, không chiếm không gian vô ích
             let thumbnailsHTML = '';
             if (b.images.length > 1) {
                 thumbnailsHTML = `
@@ -410,37 +409,39 @@
                 ? "Liên hệ" 
                 : Number(b.price).toLocaleString('vi-VN') + 'đ';
 
-            // Trả về cấu trúc 2 cột linh hoạt: Trái chứa Ảnh, Phải chứa Thông tin sách
+            // Xử lý xuống dòng mượt mà cho nội dung từ Sheets
+            const formattedDesc = b.desc.replace(/\n/g, '<br>');
+
             return `
                 <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <div style="display: flex; gap: 25px; flex-wrap: wrap;">
                         
-                        <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
+                        <div style="flex: 1; min-width: 220px; max-width: 260px; margin: 0 auto;">
                             <div style="width: 100%; height: 320px; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; border-radius: 6px; border: 1px solid #f0f0f0;">
                                 <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                             </div>
                             ${thumbnailsHTML}
                         </div>
                         
-                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: Beers;">
-                            <div style="margin-bottom: auto;">
-                                <span class="category-tag" style="margin-bottom: 8px; display: inline-block;">${b.type}</span>
+                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between; max-height: 380px;">
+                            <div>
+                                <span class="category-tag" style="margin-bottom: 6px; display: inline-block;">${b.type}</span>
                                 
-                                <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">
+                                <h3 style="font-size: 1.3rem; font-weight: 600; line-height: 1.3; margin: 0 0 6px 0; color: var(--primary-color);">
                                     ${b.name}
                                 </h3>
                                 
-                                <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                                <p style="color: #c5a059; font-weight: bold; font-size: 1.35rem; margin: 0 0 10px 0;">
                                     ${displayPrice}
                                 </p>
                                 
-                                <div style="font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: justify;">
-                                    ${b.desc.replace(/\n/g, '<br>')}
+                                <div class="book-desc-scroll" style="font-size: 0.92rem; color: #555; line-height: 1.5; text-align: justify; max-height: 180px; overflow-y: auto; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
+                                    ${formattedDesc}
                                 </div>
                             </div>
                             
-                            <div style="width: 100%; max-width: 200px;">
-                                <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 20px; text-align: center; text-decoration: none; display: block; border-radius: 4px; transition: background 0.2s;">
+                            <div style="width: 100%;">
+                                <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; min-width: 180px; border-radius: 4px; transition: background 0.2s;">
                                     Tìm hiểu & Đặt mua →
                                 </a>
                             </div>
