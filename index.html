@@ -337,6 +337,7 @@
     try {
         const res = await fetch(BOOK_SHEET_URL);
         const csv = await res.text();
+        // Regex chuẩn hóa để tách dòng từ Sheets không sợ bị vỡ khi có xuống dòng
         const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
         
@@ -390,7 +391,6 @@
         grid.innerHTML = books.map((b, bIdx) => {
             const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
             
-            // Xử lý khối hình thu nhỏ (Thumbnails) gọn gàng, không chiếm không gian vô ích
             let thumbnailsHTML = '';
             if (b.images.length > 1) {
                 thumbnailsHTML = `
@@ -410,9 +410,8 @@
                 ? "Liên hệ" 
                 : Number(b.price).toLocaleString('vi-VN') + 'đ';
 
-            // Trả về cấu trúc 2 cột linh hoạt: Trái chứa Ảnh, Phải chứa Thông tin sách
             return `
-                <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box; width: 100%;">
                     <div style="display: flex; gap: 25px; flex-wrap: wrap;">
                         
                         <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
@@ -422,9 +421,9 @@
                             ${thumbnailsHTML}
                         </div>
                         
-                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: Beers;">
-                            <div style="margin-bottom: auto;">
-                                <span class="category-tag" style="margin-bottom: 8px; display: inline-block;">${b.type}</span>
+                        <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between; max-height: 380px; box-sizing: border-box;">
+                            <div style="overflow: hidden; display: flex; flex-direction: column; flex: 1;">
+                                <span class="category-tag" style="margin-bottom: 8px; display: inline-block; width: max-content;">${b.type}</span>
                                 
                                 <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">
                                     ${b.name}
@@ -434,12 +433,12 @@
                                     ${displayPrice}
                                 </p>
                                 
-                                <div style="font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: justify;">
+                                <div class="book-desc-scroll" style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 160px; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
                                     ${b.desc.replace(/\n/g, '<br>')}
                                 </div>
                             </div>
                             
-                            <div style="width: 100%; max-width: 200px;">
+                            <div style="width: 100%; max-width: 200px; padding-top: 5px;">
                                 <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 20px; text-align: center; text-decoration: none; display: block; border-radius: 4px; transition: background 0.2s;">
                                     Tìm hiểu & Đặt mua →
                                 </a>
