@@ -89,6 +89,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
+        // Thêm link UPDATE để phòng trường hợp người dùng vào thẳng link bài viết (không qua trang chủ)
+        const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
 
         function parseLine(text) {
             const cells = [];
@@ -108,17 +110,29 @@
 
             try {
                 let text = '';
-                // TẬN DỤNG CACHE TRANG CHỦ: Kiểm tra xem đã có dữ liệu lưu trữ tại LocalStorage chưa
                 const cachedPosts = localStorage.getItem('tuvi_posts_cache');
 
                 if (cachedPosts) {
+                    // ƯU TIÊN 1: Bật luôn từ LocalStorage do trang chủ chuẩn bị sẵn -> Tốc độ 0.01 giây
                     text = cachedPosts;
-                    console.log("⚡ [Chi tiết] Lấy dữ liệu bài viết thần tốc từ LocalStorage!");
+                    console.log("⚡ [Chi tiết] Khởi động thần tốc từ LocalStorage!");
                 } else {
-                    // Trường hợp không có bộ nhớ đệm (Ví dụ: vào trực tiếp từ liên kết chia sẻ)
-                    console.log("🌐 [Chi tiết] Không tìm thấy bộ nhớ đệm, tải dữ liệu trực tiếp từ Google Sheets...");
-                    const res = await fetch(`${SHEET_URL}&t=${new Date().getTime()}`);
+                    // ƯU TIÊN 2: Vào trực tiếp không qua trang chủ -> Quét phiên bản và kéo dữ liệu mới nhất về lưu cache luôn
+                    console.log("🌐 [Chi tiết] Không thấy bộ nhớ đệm, tiến hành quét phiên bản trực tiếp từ Sheets...");
+                    const now = new Date().getTime();
+                    
+                    // Quét nhanh số version hiện tại
+                    const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
+                    const versionText = await versionRes.text();
+                    const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
+
+                    // Tải dữ liệu CSV gốc
+                    const res = await fetch(`${SHEET_URL}&t=${now}`);
                     text = await res.text();
+                    
+                    // Tiện tay lưu luôn vào LocalStorage cho các lần sau đọc nhanh
+                    localStorage.setItem('tuvi_posts_cache', text);
+                    localStorage.setItem('tuvi_posts_version', latestVersion);
                 }
 
                 const rows = text.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
