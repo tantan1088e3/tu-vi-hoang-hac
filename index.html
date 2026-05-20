@@ -598,6 +598,7 @@
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
     // 🌟 HÀM MỚI: TẢI DANH SÁCH FILE PDF TỪ GOOGLE SHEETS & ĐỒNG BỘ CACHE PHIÊN BẢN
+    // 🌟 ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS (Đã bổ sung cột pdf_author)
     async function loadPDFFromGoogleSheets() {
         const grid = document.getElementById('post-grid');
         const CACHE_PDF_KEY = 'tuvi_pdf_cache';
@@ -607,7 +608,7 @@
             let csv = '';
             const now = new Date().getTime();
 
-            // 1. Quét file cấu hình siêu nhẹ để check phiên bản thay đổi
+            // 1. Check phiên bản thay đổi từ file cấu hình
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
             const firstLine = versionText.split(/\r?\n/)[0];
@@ -616,19 +617,19 @@
             const cachedData = localStorage.getItem(CACHE_PDF_KEY);
             const cachedVersion = localStorage.getItem(CACHE_PDF_VERSION_KEY);
 
-            // 2. Chạy từ bộ nhớ đệm LocalStorage nếu phiên bản trùng khớp hoàn toàn
+            // 2. Kiểm tra Cache LocalStorage
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
-                console.log(`⚡ [Thư viện PDF] Đồng bộ siêu tốc từ LocalStorage (v${latestVersion})`);
+                console.log(`⚡ [Thư viện PDF] Đồng bộ từ LocalStorage (v${latestVersion})`);
             } else {
-                console.log(`🌐 [Thư viện PDF] Đang cập nhật dữ liệu mới từ Google Sheets...`);
+                console.log(`🌐 [Thư viện PDF] Đang tải cấu trúc dữ liệu mới từ Google Sheets...`);
                 const res = await fetch(`${PDF_SHEET_URL}&t=${now}`);
                 csv = await res.text();
                 localStorage.setItem(CACHE_PDF_KEY, csv);
                 localStorage.setItem(CACHE_PDF_VERSION_KEY, latestVersion);
             }
 
-            // 3. Xử lý dữ liệu cắt chuỗi CSV
+            // 3. Xử lý cắt chuỗi CSV và định vị các cột
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             if (rows.length === 0 || !rows[0]) {
                 grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư viện tài liệu hiện chưa có dữ liệu.</p>";
@@ -638,7 +639,8 @@
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             const idxName = headers.indexOf('pdf_name');
             const idxLink = headers.indexOf('pdf_link');
-            const idxDesc = headers.indexOf('pdf_desc'); // Khai báo thêm index đọc cột mô tả mới
+            const idxDesc = headers.indexOf('pdf_desc');
+            const idxAuthor = headers.indexOf('pdf_author'); // Định vị cột tác giả mới thêm
 
             pdfDb = rows.slice(1).map(r => {
                 if (!r.trim()) return null;
@@ -646,8 +648,9 @@
                 return {
                     name: c[idxName] ? c[idxName].trim() : "Tài liệu chưa đặt tên",
                     link: c[idxLink] ? c[idxLink].trim() : "#",
-                    // Lấy dữ liệu từ cột mô tả trên Sheets, nếu ô đó trống thì gán mô tả mặc định
-                    desc: (idxDesc !== -1 && c[idxDesc]) ? c[idxDesc].trim() : "Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive."
+                    desc: (idxDesc !== -1 && c[idxDesc]) ? c[idxDesc].trim() : "Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive.",
+                    // Lấy dữ liệu cột tác giả, nếu trống thì để mặc định
+                    author: (idxAuthor !== -1 && c[idxAuthor]) ? c[idxAuthor].trim().toUpperCase() : "TÀI LIỆU HỌC THUẬT"
                 };
             }).filter(file => file && file.link !== "#");
 
@@ -658,7 +661,7 @@
         }
     }
 
-    // GIAO DIỆN HIỂN THỊ FILE PDF (Tải trực tiếp từ link Drive của anh)
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt)
     function renderPDFUI() {
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
@@ -671,7 +674,7 @@
         
         grid.innerHTML = items.map(file => `
             <div class="card">
-                <span class="category-tag">TÀI LIỆU GOOGLE DRIVE</span>
+                <span class="category-tag">${file.author}</span>
                 <h3>${file.name}</h3>
                 <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
                 <a href="${file.link}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none; text-align: center;">Tải xuống PDF ↓</a>
