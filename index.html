@@ -638,13 +638,16 @@
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             const idxName = headers.indexOf('pdf_name');
             const idxLink = headers.indexOf('pdf_link');
+            const idxDesc = headers.indexOf('pdf_desc'); // Khai báo thêm index đọc cột mô tả mới
 
             pdfDb = rows.slice(1).map(r => {
                 if (!r.trim()) return null;
                 const c = parseCSVLine(r);
                 return {
                     name: c[idxName] ? c[idxName].trim() : "Tài liệu chưa đặt tên",
-                    link: c[idxLink] ? c[idxLink].trim() : "#"
+                    link: c[idxLink] ? c[idxLink].trim() : "#",
+                    // Lấy dữ liệu từ cột mô tả trên Sheets, nếu ô đó trống thì gán mô tả mặc định
+                    desc: (idxDesc !== -1 && c[idxDesc]) ? c[idxDesc].trim() : "Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive."
                 };
             }).filter(file => file && file.link !== "#");
 
@@ -660,21 +663,21 @@
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
         const grid = document.getElementById('post-grid');
-    
+        
         if (items.length === 0) {
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào trong thư mục.</p>";
             return;
         }
-    
+        
         grid.innerHTML = items.map(file => `
             <div class="card">
                 <span class="category-tag">TÀI LIỆU GOOGLE DRIVE</span>
                 <h3>${file.name}</h3>
-                <p>Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive.</p>
+                <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
                 <a href="${file.link}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none; text-align: center;">Tải xuống PDF ↓</a>
             </div>
         `).join('');
-    
+        
         renderPDFPagination(pdfDb.length);
     }
 
