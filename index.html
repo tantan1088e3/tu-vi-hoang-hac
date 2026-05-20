@@ -677,12 +677,28 @@
             return;
         }
         
+        const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
+
         grid.innerHTML = items.map(file => `
-            <div class="card">
-                <span class="category-tag">${file.author}</span>
-                <h3>${file.name}</h3>
-                <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
-                <a href="${file.link}" target="_blank" class="btn-post" style="background: #27ae60; color: white; border: none; text-align: center; font-weight: bold; transition: background 0.2s ease;">Tải xuống PDF ↓</a>
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                <div>
+                    <span class="category-tag">${file.author}</span>
+                    <h3>${file.name}</h3>
+                    <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px; margin-bottom: 12px;">${file.desc.replace(/\n/g, '<br>')}</p>
+                    
+                    <div class="donate-zone" style="position: relative; text-align: center; margin-bottom: 15px;">
+                        <span style="font-size: 0.8rem; color: #e67e22; font-weight: bold; cursor: pointer; display: inline-block; padding: 4px 8px; border-radius: 4px; background: #fff5e6;">
+                            Ủng hộ duy trì web (Hiện mã QR) ☕
+                        </span>
+                        
+                        <div class="qr-hover-box">
+                            <img src="${QR_IMAGE_URL}" alt="QR Donate">
+                            <p>Quét mã Momo/Ngân hàng để đồng hành cùng Tử Vi Hoàng Hạc xin cảm ơn anh em!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="${file.link}" target="_blank" class="btn-post">Tải xuống PDF ↓</a>
             </div>
         `).join('');
         
