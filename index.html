@@ -241,13 +241,13 @@
     let currentPdfPage = 1;
     const pdfLimit = 6; 
     
-    // Giữ nguyên URL gốc, chúng ta sẽ xử lý chống cache/xử lý cache linh hoạt bên dưới
+    // CẤU HÌNH CÁC ĐƯỜNG LINK GOOGLE SHEETS CỦA ANH
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
     const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv';
     const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
     
-    // Cấu hình thời gian lưu Cache (15 phút)
-    const CACHE_DURATION = 15 * 60 * 1000; 
+    // 🛑 CHÚ Ý: Anh dán link đường dẫn CSV của Tab "PDF" mới tạo trên Google Sheets vào đây nhé!
+    const PDF_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=ĐIỀN_MÃ_GID_TAB_PDF_VÀO_ĐÂY&single=true&output=csv';
 
     let db = [];
     let currentCategory = 'Tất cả';
@@ -266,44 +266,34 @@
         r.push(c.trim()); return r;
     }
 
-    // 1. TỐI ƯU CACHE CHO BÀI VIẾT (Hàm init)
     // 1. TỐI ƯU CACHE THÔNG MINH QUA PHIÊN BẢN (Hàm init)
     async function init() {
         const CACHE_POSTS_KEY = 'tuvi_posts_cache';
-        const CACHE_VERSION_KEY = 'tuvi_posts_version'; // Khóa lưu phiên bản hiện tại trong máy
+        const CACHE_VERSION_KEY = 'tuvi_posts_version';
 
         try {
             let csv = '';
             const now = new Date().getTime();
 
-            // 1. Quét file Update siêu nhẹ để kiểm tra phiên bản trên Sheets
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
             
-            // Tách chuỗi để lấy giá trị version ở ô B1 (Kết quả dạng: "version,1")
             const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
             
-            // Đọc dữ liệu cache cũ và số version cũ trong trình duyệt
             const cachedData = localStorage.getItem(CACHE_POSTS_KEY);
             const cachedVersion = localStorage.getItem(CACHE_VERSION_KEY);
 
-            // 2. SO SÁNH: Nếu có dữ liệu cũ VÀ phiên bản hoàn toàn trùng khớp
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
                 console.log(`⚡ [Trang chủ] Không đổi (v${latestVersion}). Khởi động thần tốc từ LocalStorage!`);
             } else {
-                // Nếu chưa có cache HOẶC bạn vừa đổi số trên Sheets (Dữ liệu có cập nhật mới)
                 console.log(`🌐 [Trang chủ] Phát hiện dữ liệu mới (Mới: v${latestVersion} - Cũ: v${cachedVersion}). Tiến hành đồng bộ...`);
-                
                 const res = await fetch(`${SHEET_URL}&t=${now}`);
                 csv = await res.text();
-                
-                // Lưu đè dữ liệu mới và mã phiên bản mới nhất vào LocalStorage
                 localStorage.setItem(CACHE_POSTS_KEY, csv);
                 localStorage.setItem(CACHE_VERSION_KEY, latestVersion);
             }
 
-            // 3. XỬ LÝ DỮ LIỆU ĐỂ RENDER RA GIAO DIỆN (Giữ nguyên cấu trúc gốc của bạn)
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             
@@ -356,7 +346,6 @@
         renderUI();
     }
 
-    // Tối ưu hàm chuyển đổi Tab để ẩn/hiện Form Đăng ký linh hoạt
     function switchTab(type, element) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         if(element) element.classList.add('active');
@@ -367,7 +356,6 @@
         const searchContainer = document.getElementById('search-container');
         const formWrapper = document.getElementById('consultation-form-wrapper');
     
-        // Reset hiển thị mặc định
         grid.style.display = "grid";
         pagination.style.display = "flex";
         formWrapper.style.display = "none";
@@ -377,16 +365,15 @@
         if (type === 'pdf') {
             currentPdfPage = 1;
             filterBar.style.display = "none";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang quét thư mục tài liệu...</div>";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang kết nối kho dữ liệu Google Drive...</div>";
             pagination.innerHTML = "";
-            loadPDFLibrary(); 
+            loadPDFFromGoogleSheets(); // Gọi hàm load mới từ Google Sheets
         } else if (type === 'video') { 
             filterBar.style.display = "none";
             pagination.innerHTML = "";
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
             loadVideoLibrary(); 
         } else if (type === 'register') {
-            // Hiển thị riêng Form Đăng ký, ẩn kho lưu trữ và thanh tìm kiếm
             grid.style.display = "none";
             pagination.style.display = "none";
             filterBar.style.display = "none";
@@ -394,9 +381,9 @@
             formWrapper.style.display = "block";
         } else if (type === 'books') {
             filterBar.style.display = "none";
-            pagination.style.display = "none"; // Ẩn thanh phân trang cũ của bài viết
+            pagination.style.display = "none"; 
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
-            loadAffiliateBooks(); // Gọi hàm load từ trang tính SÁCH
+            loadAffiliateBooks(); 
         }
         else {
             filterBar.style.display = "flex";
@@ -414,34 +401,27 @@
             let csv = '';
             const now = new Date().getTime();
 
-            // 1. Tải file cấu hình Update siêu nhẹ
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
             
-            // Dùng Regex làm sạch hoàn toàn ký tự \r hoặc xuống dòng, đảm bảo cắt trúng ô B1 sạch sẽ
             const firstLine = versionText.split(/\r?\n/)[0];
             const latestVersion = firstLine.split(',')[1]?.trim() || "0";
             
             const cachedData = localStorage.getItem(CACHE_BOOKS_KEY);
             const cachedVersion = localStorage.getItem(CACHE_BOOKS_VERSION_KEY);
 
-            // 2. Kiểm tra bộ nhớ đệm đồng bộ phiên bản
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
                 console.log(`⚡ [Tủ sách] Chạy siêu tốc từ LocalStorage (Phiên bản v${latestVersion})`);
             } else {
                 console.log(`🌐 [Tủ sách] Nâng cấp dữ liệu (Cũ: v${cachedVersion} -> Mới: v${latestVersion}). Đang tải...`);
-                
                 const res = await fetch(`${BOOK_SHEET_URL}&t=${now}`);
                 csv = await res.text();
-                
                 localStorage.setItem(CACHE_BOOKS_KEY, csv);
                 localStorage.setItem(CACHE_BOOKS_VERSION_KEY, latestVersion);
             }
 
-            // 3. Xử lý dữ liệu CSV của Tủ sách
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            // Bảo vệ an toàn nếu file trống hoặc lỗi kết nối
             if (rows.length === 0 || !rows[0]) {
                 grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
                 return;
@@ -501,10 +481,8 @@
                 return;
             }
 
-            // Giao diện hiển thị danh sách sách
             grid.innerHTML = books.map((b, bIdx) => {
                 const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
-                
                 let thumbnailsHTML = '';
                 if (b.images.length > 1) {
                     thumbnailsHTML = `
@@ -520,10 +498,7 @@
                     `;
                 }
 
-                const displayPrice = b.price === "Liên hệ" 
-                    ? "Liên hệ" 
-                    : Number(b.price).toLocaleString('vi-VN') + 'đ';
-
+                const displayPrice = b.price === "Liên hệ" ? "Liên hệ" : Number(b.price).toLocaleString('vi-VN') + 'đ';
                 let priceBlockHTML = '';
                 if (b.price !== "Liên hệ" && b.oldPrice !== "" && Number(b.oldPrice) > Number(b.price)) {
                     const displayOldPrice = Number(b.oldPrice).toLocaleString('vi-VN') + 'đ';
@@ -559,19 +534,16 @@
                                         ${b.desc.replace(/\n/g, '<br>')}
                                     </div>
                                 </div>
-                                
                                 <div style="width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; padding-top: 10px;">
                                     <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 25px; text-decoration: none; display: inline-block; width: 85%; max-width: 240px; margin: 0 auto !important; border-radius: 4px; transition: background 0.2s; text-align: center;">
                                         Tìm hiểu & Đặt mua →
                                     </a>
                                 </div>
                             </div>
-                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
-
         } catch (e) {
             console.error(e);
             grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách.</div>";
@@ -581,10 +553,7 @@
     function changeBookImage(thumbElement, newSrc, bookIdx) {
         const mainImg = document.getElementById(`main-img-${bookIdx}`);
         if (mainImg) mainImg.src = newSrc;
-    
-        document.querySelectorAll(`.thumb-img-${bookIdx}`).forEach(img => {
-            img.style.border = "1px solid #ddd";
-        });
+        document.querySelectorAll(`.thumb-img-${bookIdx}`).forEach(img => { img.style.border = "1px solid #ddd"; });
         thumbElement.style.border = "1px solid var(--accent-color)";
     }
     
@@ -628,38 +597,81 @@
 
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
-    async function loadPDFLibrary() {
-        const username = "tantan1088e3"; 
-        const repo = "tu-vi-hoang-hac";   
-        const folder = "download";       
-        const GITHUB_API_URL = `https://api.github.com/repos/${username}/${repo}/contents/${folder}`;
-    
+    // 🌟 HÀM MỚI: TẢI DANH SÁCH FILE PDF TỪ GOOGLE SHEETS & ĐỒNG BỘ CACHE PHIÊN BẢN
+    async function loadPDFFromGoogleSheets() {
+        const grid = document.getElementById('post-grid');
+        const CACHE_PDF_KEY = 'tuvi_pdf_cache';
+        const CACHE_PDF_VERSION_KEY = 'tuvi_pdf_version';
+
         try {
-            const res = await fetch(GITHUB_API_URL);
-            const files = await res.json();
-            pdfDb = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
-            renderPDFUI(); 
+            let csv = '';
+            const now = new Date().getTime();
+
+            // 1. Quét file cấu hình siêu nhẹ để check phiên bản thay đổi
+            const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
+            const versionText = await versionRes.text();
+            const firstLine = versionText.split(/\r?\n/)[0];
+            const latestVersion = firstLine.split(',')[1]?.trim() || "0";
+
+            const cachedData = localStorage.getItem(CACHE_PDF_KEY);
+            const cachedVersion = localStorage.getItem(CACHE_PDF_VERSION_KEY);
+
+            // 2. Chạy từ bộ nhớ đệm LocalStorage nếu phiên bản trùng khớp hoàn toàn
+            if (cachedData && cachedVersion && cachedVersion === latestVersion) {
+                csv = cachedData;
+                console.log(`⚡ [Thư viện PDF] Đồng bộ siêu tốc từ LocalStorage (v${latestVersion})`);
+            } else {
+                console.log(`🌐 [Thư viện PDF] Đang cập nhật dữ liệu mới từ Google Sheets...`);
+                const res = await fetch(`${PDF_SHEET_URL}&t=${now}`);
+                csv = await res.text();
+                localStorage.setItem(CACHE_PDF_KEY, csv);
+                localStorage.setItem(CACHE_PDF_VERSION_KEY, latestVersion);
+            }
+
+            // 3. Xử lý dữ liệu cắt chuỗi CSV
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (rows.length === 0 || !rows[0]) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư viện tài liệu hiện chưa có dữ liệu.</p>";
+                return;
+            }
+
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            const idxName = headers.indexOf('pdf_name');
+            const idxLink = headers.indexOf('pdf_link');
+
+            pdfDb = rows.slice(1).map(r => {
+                if (!r.trim()) return null;
+                const c = parseCSVLine(r);
+                return {
+                    name: c[idxName] ? c[idxName].trim() : "Tài liệu chưa đặt tên",
+                    link: c[idxLink] ? c[idxLink].trim() : "#"
+                };
+            }).filter(file => file && file.link !== "#");
+
+            renderPDFUI();
         } catch (e) {
-            document.getElementById('post-grid').innerHTML = "Lỗi kết nối thư viện.";
+            console.error(e);
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Lỗi kết nối kho dữ liệu Google Drive.</div>";
         }
     }
 
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Tải trực tiếp từ link Drive của anh)
     function renderPDFUI() {
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
         const grid = document.getElementById('post-grid');
     
         if (items.length === 0) {
-            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào.</p>";
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào trong thư mục.</p>";
             return;
         }
     
         grid.innerHTML = items.map(file => `
             <div class="card">
-                <span class="category-tag">TÀI LIỆU PDF</span>
-                <h3>${file.name.replace('.pdf', '').replace(/-/g, ' ')}</h3>
-                <p>Tài liệu được lưu trữ tự động trong hệ thống di sản.</p>
-                <a href="${file.download_url}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none;">Tải xuống PDF ↓</a>
+                <span class="category-tag">TÀI LIỆU GOOGLE DRIVE</span>
+                <h3>${file.name}</h3>
+                <p>Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive.</p>
+                <a href="${file.link}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none; text-align: center;">Tải xuống PDF ↓</a>
             </div>
         `).join('');
     
@@ -669,7 +681,7 @@
     function renderPDFPagination(total) {
         const pages = Math.ceil(total / pdfLimit);
         let html = '';
-        if (pages < 1) { 
+        if (pages <= 1) { 
             document.getElementById('post-pagination').innerHTML = "";
             return; 
         }
@@ -709,121 +721,101 @@
     }
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
-function submitForm(event) {
-    event.preventDefault();
-    
-    // CẤU HÌNH THÔNG TIN CỦA ANH TẠI ĐÂY
-    const MY_PHONE = '0946712608';          // Số điện thoại nhận Zalo của anh
-    const TELEGRAM_USERNAME = 'tantan1088a'; // Username Telegram của anh (Không chứa dấu @)
-
-    const fullName = document.getElementById('fullname').value;
-    const gender = document.querySelector('input[name="gender"]:checked').value;
-    const birthDate = document.getElementById('birth-date').value.split('-').reverse().join('/');
-    const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
-    const birthTime = document.getElementById('birth-time').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
-
-    // 1. ĐOẠN VĂN BẢN TIẾNG VIỆT SẠCH CÓ DẤU ĐỂ KHÁCH DÁN VÀO ZALO / TELEGRAM (Không chứa ký tự lạ)
-    const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ XEM TỬ VI\n` +
-                           `• Họ và tên: ${fullName}\n` +
-                           `• Giới tính: ${gender}\n` +
-                           `• Ngày sinh: ${birthDate} (${calendarType})\n` +
-                           `• Giờ sinh: ${birthTime}\n` +
-                           `• Email: ${email}\n` +
-                           `• SĐT liên hệ: ${phone}\n` +
-                           `• Nội dung tham vấn: ${notes}`;
-
-    // 2. Soạn nội dung KHÔNG DẤU dành riêng cho SMS (tránh lỗi hiển thị trên máy cổ)
-    const messageNoSign = `Dang ky Tu Vi: ${fullName} - ${gender}. Ngay sinh: ${birthDate} (${calendarType}) - Gio: ${birthTime}. Email: ${email}. SDT: ${phone}. Noi dung: ${notes}`;
-
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    if (isMobile) {
-        // Kiểm tra xem khách dùng iPhone (iOS) hay Android để dùng cấu trúc dấu hỏi (?) hoặc dấu và (&) cho đúng
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        const separator = isIOS ? '&' : '?';
+    function submitForm(event) {
+        event.preventDefault();
         
-        // Tạo đường dẫn SMS tự động điền số điện thoại và nội dung KHÔNG DẤU (để tránh lỗi hiển thị trên SMS)
-        const smsMobileUrl = `sms:${MY_PHONE}${separator}body=${encodeURIComponent(messageNoSign)}`;
-        
-        // Kích hoạt mở ứng dụng tin nhắn ngay lập tức
-        window.location.href = smsMobileUrl;
-        
-        // Thông báo ngắn gọn cho khách yên tâm
-        alert("Hệ thống đang mở ứng dụng Tin nhắn SMS...\nThông tin lá số đã được tự động điền sẵn, anh/chị chỉ cần bấm nút 'GỬI' là hoàn tất đăng ký.");
-    } else {
-        // TRÊN MÁY TÍNH (PC): Tạo link API mã QR động
-        const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
-        const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+        const MY_PHONE = '0946712608';          
+        const TELEGRAM_USERNAME = 'tantan1088a'; 
 
-        // Tạo link mã QR từ API của qrserver
-        const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
-        const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+        const fullName = document.getElementById('fullname').value;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        const birthDate = document.getElementById('birth-date').value.split('-').reverse().join('/');
+        const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
+        const birthTime = document.getElementById('birth-time').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
-        // Tự động sao chép dữ liệu dạng chữ sạch vào máy tính phòng khi họ cần dán thủ công
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(messageUnicode).catch(e => console.log(e));
+        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ XEM TỬ VI\n` +
+                               `• Họ và tên: ${fullName}\n` +
+                               `• Giới tính: ${gender}\n` +
+                               `• Ngày sinh: ${birthDate} (${calendarType})\n` +
+                               `• Giờ sinh: ${birthTime}\n` +
+                               `• Email: ${email}\n` +
+                               `• SĐT liên hệ: ${phone}\n` +
+                               `• Nội dung tham vấn: ${notes}`;
+
+        const messageNoSign = `Dang ky Tu Vi: ${fullName} - ${gender}. Ngay sinh: ${birthDate} (${calendarType}) - Gio: ${birthTime}. Email: ${email}. SDT: ${phone}. Noi dung: ${notes}`;
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const separator = isIOS ? '&' : '?';
+            const smsMobileUrl = `sms:${MY_PHONE}${separator}body=${encodeURIComponent(messageNoSign)}`;
+            window.location.href = smsMobileUrl;
+            alert("Hệ thống đang mở ứng dụng Tin nhắn SMS...\nThông tin lá số đã được tự động điền sẵn, anh/chị chỉ cần bấm nút 'GỬI' là hoàn tất đăng ký.");
+        } else {
+            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
+            const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+
+            const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
+            const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(messageUnicode).catch(e => console.log(e));
+            }
+
+            showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
         }
-
-        // Hiển thị Popup chứa cả 2 mã QR
-        showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
+        
+        document.getElementById('tuvi-booking-form').reset();
     }
-    
-    // Reset lại form nhập liệu sau khi hoàn tất gửi
-    document.getElementById('tuvi-booking-form').reset();
-}
 
-// HÀM HIỂN THỊ POPUP CHỨA ĐỒNG THỜI 2 MÃ QR TRÊN PC
-function showDualQrPopup(qrSms, qrTele, messageText) {
-    const overlay = document.createElement('div');
-    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
-    
-    const modal = document.createElement('div');
-    modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
-    
-    const formattedMessage = messageText.replace(/\n/g, '<br>');
+    function showDualQrPopup(qrSms, qrTele, messageText) {
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
+        
+        const modal = document.createElement('div');
+        modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
+        
+        const formattedMessage = messageText.replace(/\n/g, '<br>');
 
-    modal.innerHTML = `
-        <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
-        <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
-            Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
-        </p>
+        modal.innerHTML = `
+            <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
+            <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
+                Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
+            </p>
 
-        <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
-            <strong>Nội dung thông tin của bạn:</strong><br>
-            ${formattedMessage}
-        </div>
-
-        <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
-            
-            <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
-                <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
-                <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
-                <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động soạn văn bản có dấu trên ứng dụng Telegram</p>
+            <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
+                <strong>Nội dung thông tin của bạn:</strong><br>
+                ${formattedMessage}
             </div>
 
-            <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
-                <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
-                <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
-                <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động mở ứng dụng tin nhắn SMS của máy điện thoại</p>
+            <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+                <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
+                    <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
+                    <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động soạn văn bản có dấu trên ứng dụng Telegram</p>
+                </div>
+                <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
+                    <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
+                    <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động mở ứng dụng tin nhắn SMS của máy điện thoại</p>
+                </div>
             </div>
+            <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        document.getElementById('close-zalo-popup').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+    }
 
-        </div>
-
-        <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
-    `;
-    
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    document.getElementById('close-zalo-popup').addEventListener('click', () => {
-        document.body.removeChild(overlay);
-    });
-}
-
-window.onload = init;
+    window.onload = init;
 </script>
 </body>
 </html>
