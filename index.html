@@ -68,8 +68,10 @@
             font-weight: 700; 
             text-align: center; 
             border-radius: 4px; 
-            border: 1px solid var(--primary-color); 
-            color: var(--primary-color); 
+            /* Đổi viền sang màu xanh lá tươi */
+            border: 1px solid #27ae60; 
+            /* Đổi chữ sang màu xanh lá tươi */
+            color: #27ae60; 
             background: transparent;
             transition: all 0.25s ease; 
             cursor: pointer;
@@ -77,11 +79,14 @@
             letter-spacing: 0.5px;
             font-size: 0.85rem;
         }
-        /* Hiệu ứng nạp đầy màu đỏ rực khi rà chuột vào nút bấm */
+        
+        /* Hiệu ứng nạp đầy màu XANH LÁ CÂY khi rà chuột vào nút bấm */
         .btn-post:hover { 
-            background: var(--primary-color); 
+            /* Khi di chuột vào, nền chuyển sang màu xanh lá tươi */
+            background: #27ae60; 
             color: white; 
-            box-shadow: 0 4px 12px rgba(142,33,33,0.15);
+            /* Đổ bóng nhẹ theo tông xanh lá cho sang trọng */
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
         }
         /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
         .form-container { background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; display: none; }
@@ -677,7 +682,7 @@
                 <span class="category-tag">${file.author}</span>
                 <h3>${file.name}</h3>
                 <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
-                <a href="${file.link}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none; text-align: center;">Tải xuống PDF ↓</a>
+                <a href="${file.link}" target="_blank" class="btn-post" style="background: #27ae60; color: white; border: none; text-align: center; font-weight: bold; transition: background 0.2s ease;">Tải xuống PDF ↓</a>
             </div>
         `).join('');
         
