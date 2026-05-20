@@ -666,7 +666,7 @@
         }
     }
 
-    // 🌟 GIAO DIỆN THƯ VIỆN PDF - TÁCH BIỆT KHỐI DONATE ĐỂ CHỐNG VỠ GRID CARD SÁCH
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt)
     function renderPDFUI() {
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
@@ -676,68 +676,15 @@
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào trong thư mục.</p>";
             return;
         }
-
-        const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
         
-        // 1. Khối Donate độc lập (Được bọc ngoài chỉn chu, có lề dưới margin-bottom thoáng đãng)
-        const donateHtml = `
-            <div class="pdf-donate-wrapper" style="width: 100%; margin-bottom: 30px; display: block;">
-                <div class="global-donate-box" style="
-                    max-width: 750px; 
-                    margin: 0 auto; 
-                    background: #fffdf9; 
-                    border: 1px dashed #e67e22; 
-                    border-radius: 8px; 
-                    padding: 20px; 
-                    display: flex; 
-                    align-items: center; 
-                    gap: 25px; 
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
-                    box-sizing: border-box;
-                ">
-                    <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                        <img src="${QR_IMAGE_URL}" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
-                    </div>
-                    
-                    <div style="text-align: left; flex-grow: 1;">
-                        <h4 style="margin: 0 0 8px 0; color: #d35400; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.3px;">
-                            Đồng Hành Cùng Tử Vi Hoàng Hạc ☕
-                        </h4>
-                        <p style="margin: 0; color: #555; font-size: 0.85rem; line-height: 1.5; text-align: justify;">
-                            Chào anh em đồng đạo! Toàn bộ tài liệu học thuật tại Thư Viện PDF đều được chia sẻ hoàn toàn miễn phí nhằm lưu trữ và lan tỏa di sản cổ học. Nếu thấy kho sách hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // 2. Tạo chuỗi HTML cho danh sách card sách PDF
-        const cardsHtml = items.map(file => `
-            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-                <div>
-                    <span class="category-tag">${file.author}</span>
-                    <h3>${file.name}</h3>
-                    <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px; margin-bottom: 15px;">
-                        ${file.desc.replace(/\n/g, '<br>')}
-                    </p>
-                </div>
-                <a href="${file.link}" target="_blank" class="btn-post">Tải xuống PDF ↓</a>
+        grid.innerHTML = items.map(file => `
+            <div class="card">
+                <span class="category-tag">${file.author}</span>
+                <h3>${file.name}</h3>
+                <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
+                <a href="${file.link}" target="_blank" class="btn-post" style="background: #2c3e50; color: white; border: none; text-align: center;">Tải xuống PDF ↓</a>
             </div>
         `).join('');
-
-        // 🌟 BƯỚC QUAN TRỌNG: Đẩy khối Donate ra LÀM PHẦN TỬ ĐỨNG TRƯỚC cái Grid thay vì nhét chung vào Grid
-        // Kiểm tra xem phía trước grid đã có khối donate chưa, nếu có rồi thì xóa đi để không bị lặp
-        const oldDonate = document.getElementById('pdf-donate-section');
-        if (oldDonate) oldDonate.remove();
-
-        // Tạo một node container mới cho khối Donate nằm độc lập ngay trên grid sách
-        const donateContainer = document.createElement('div');
-        donateContainer.id = 'pdf-donate-section';
-        donateContainer.innerHTML = donateHtml;
-        grid.parentNode.insertBefore(donateContainer, grid);
-
-        // Đổ duy nhất danh sách các card sách vào trong Grid
-        grid.innerHTML = cardsHtml;
         
         renderPDFPagination(pdfDb.length);
     }
