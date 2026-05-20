@@ -148,6 +148,16 @@
 
 <div class="container">
     <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
+    <div class="global-donate-box" style="max-width: 600px; margin: 0 auto 30px auto; background: #fffdf9; border: 1px dashed #e67e22; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+    <img src="https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Donate" style="width: 110px; height: 110px; object-fit: contain; border-radius: 6px; background: white; padding: 4px; border: 1px solid #eee; flex-shrink: 0;">
+    
+    <div style="text-align: left;">
+        <h4 style="margin: 0 0 6px 0; color: #d35400; font-size: 1rem; font-weight: bold;">Đồng Hành Cùng Tử Vi Hoàng Hạc ☕</h4>
+        <p style="margin: 0; color: #555; font-size: 0.85rem; line-height: 1.4; text-align: justify;">
+            Chào anh em đồng đạo! Toàn bộ tài liệu học thuật tại Thư Viện PDF đều được chia sẻ hoàn toàn miễn phí nhằm lưu trữ và lan tỏa di sản cổ học. Nếu thấy kho sách hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
+        </p>
+    </div>
+</div>
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
 
@@ -667,6 +677,7 @@
     }
 
     // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt)
+    // 🌟 GIAO DIỆN HIỂN THỊ FILE PDF GỌN GÀNG (ĐÃ NHẤC QR RA NGOÀI)
     function renderPDFUI() {
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
@@ -677,27 +688,15 @@
             return;
         }
         
-        const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
-
         grid.innerHTML = items.map(file => `
-            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                 <div>
                     <span class="category-tag">${file.author}</span>
                     <h3>${file.name}</h3>
-                    <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px; margin-bottom: 12px;">${file.desc.replace(/\n/g, '<br>')}</p>
-                    
-                    <div class="donate-zone" style="position: relative; text-align: center; margin-bottom: 15px;">
-                        <span style="font-size: 0.8rem; color: #e67e22; font-weight: bold; cursor: pointer; display: inline-block; padding: 4px 8px; border-radius: 4px; background: #fff5e6;">
-                            Ủng hộ duy trì web (Hiện mã QR) ☕
-                        </span>
-                        
-                        <div class="qr-hover-box">
-                            <img src="${QR_IMAGE_URL}" alt="QR Donate">
-                            <p>Quét mã Momo/Ngân hàng để đồng hành cùng Tử Vi Hoàng Hạc xin cảm ơn anh em!</p>
-                        </div>
-                    </div>
+                    <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px; margin-bottom: 15px;">
+                        ${file.desc.replace(/\n/g, '<br>')}
+                    </p>
                 </div>
-
                 <a href="${file.link}" target="_blank" class="btn-post">Tải xuống PDF ↓</a>
             </div>
         `).join('');
