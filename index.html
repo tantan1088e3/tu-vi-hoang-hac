@@ -352,6 +352,10 @@
     }
 
     function switchTab(type, element) {
+        // 🌟 1. LUÔN LUÔN DỌN DẸP KHỐI QR DONATE KHI CHUYỂN TAB
+        const oldDonate = document.getElementById('pdf-donate-section');
+        if (oldDonate) oldDonate.remove();
+
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         if(element) element.classList.add('active');
     
