@@ -667,6 +667,7 @@
     }
 
     // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt + Khối QR nằm dưới menu)
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Khối QR kéo giãn rộng tràn 2 bên bằng với lưới Card)
     function renderPDFUI() {
         const start = (currentPdfPage - 1) * pdfLimit;
         const items = pdfDb.slice(start, start + pdfLimit);
@@ -677,53 +678,53 @@
             return;
         }
 
-        // --- ĐOẠN XỬ LÝ KHỐI QR DONATE NẰM DƯỚI MENU (TRÊN GRID) ---
-        // Xóa khối cũ trước khi chèn để tránh bị lặp khi chuyển trang (Pagination)
+        // --- XỬ LÝ KHỐI QR DONATE RỘNG TOÀN CHIỀU RỘNG ---
+        // Xóa khối cũ để tránh lặp khi đổi trang
         const oldDonate = document.getElementById('pdf-donate-section');
         if (oldDonate) oldDonate.remove();
 
         const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
         
-        
-        // Tạo khối HTML độc lập có viền bọc bo góc tinh tế
+        // Thay max-width thành 100% để co giãn khít theo container cha của trang web
         const donateHtml = `
             <div class="global-donate-box" style="
-                max-width: 750px; 
+                max-width: 100%; 
                 margin: 0 auto 30px auto; 
                 background: #fffdf9; 
                 border: 1px dashed #e67e22; 
                 border-radius: 8px; 
-                padding: 20px; 
+                padding: 20px 25px; 
                 display: flex; 
                 align-items: center; 
-                gap: 25px; 
+                gap: 30px; 
                 box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
                 box-sizing: border-box;
                 width: 100%;
             ">
                 <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
+                    <img src="${QR_IMAGE_URL}" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
                 </div>
                 
                 <div style="text-align: left; flex-grow: 1;">
                     <h4 style="margin: 0 0 8px 0; color: #d35400; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.3px;">
                         Đồng Hành Cùng Tử Vi Hoàng Hạc ☕
                     </h4>
-                    <p style="margin: 0; color: #555; font-size: 0.85rem; line-height: 1.5; text-align: justify;">
+                    <p style="margin: 0; color: #555; font-size: 0.88rem; line-height: 1.6; text-align: justify;">
                         Chào anh em đồng đạo! Toàn bộ tài liệu học thuật tại Thư Viện PDF đều được chia sẻ hoàn toàn miễn phí nhằm lưu trữ và lan tỏa di sản cổ học. Nếu thấy kho sách hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
                     </p>
                 </div>
             </div>
         `;
 
-        // Chèn khối donate này vào ngay TRƯỚC khối lưới post-grid (nằm dưới menu)
+        // Chèn khối bọc độc lập vào ngay trên lưới grid card sách
         const donateContainer = document.createElement('div');
         donateContainer.id = 'pdf-donate-section';
+        donateContainer.style.width = '100%'; // Đảm bảo container ngoài cũng ăn hết đất
         donateContainer.innerHTML = donateHtml;
         grid.parentNode.insertBefore(donateContainer, grid);
         // -----------------------------------------------------------
         
-        // Đổ danh sách card sách vào Grid (Code gốc mượt mà của anh)
+        // Đổ danh sách card sách mượt mà của anh vào Grid
         grid.innerHTML = items.map(file => `
             <div class="card">
                 <span class="category-tag">${file.author}</span>
