@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tử Vi Hoàng Hạc - Hệ Thống Di Sản</title>
+    <link rel="icon" type="image/png" href="data/fini-icon.png" sizes="96x96">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -11,7 +12,7 @@
             --accent-color: #c5a059; 
             --bg-color: #fffaf1; 
             --text-color: #2c3e50; 
-            --card-border: #e2d9c8; 
+            --card-border: #e2d9c8; /* Màu viền hoài cổ nhẹ */
         }
         body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
         header { background-color: var(--primary-color); color: var(--accent-color); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
@@ -29,21 +30,65 @@
         .tag-filter.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
         .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        /* 1. ĐỔI MỚI THẺ BÀI VIẾT (CARD): Sang trọng, có chiều sâu không gian */
         .card { 
-            background: white; padding: 2rem; border-radius: 10px; 
-            border: 1px solid var(--card-border); border-top: 5px solid var(--primary-color); 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); display: flex; flex-direction: column; 
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 10px; /* Bo góc mềm mại quý phái */
+            border: 1px solid var(--card-border); /* Viền vàng cát cổ kính */
+            border-top: 5px solid var(--primary-color); /* Giữ nguyên viền chỉ đỏ thượng hiệu */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
+            display: flex; 
+            flex-direction: column; 
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(142, 33, 33, 0.08); border-color: var(--accent-color); }
+        /* Hiệu ứng nhấc khung thần thánh khi rà chuột qua bài viết */
+        .card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 12px 25px rgba(142, 33, 33, 0.08); /* Đổ bóng màu đỏ thẫm huyền bí */
+            border-color: var(--accent-color); /* Đổi viền sang màu vàng đồng khi hovers */
+        }
         .card.featured { border-left: 8px solid var(--accent-color); }
-        .category-tag { font-size: 0.8rem; font-weight: 700; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+        /* 2. ĐỔI MỚI CHỮ DANH MỤC: Chuyển sang vàng đồng học thuật */
+        .category-tag { 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: var(--accent-color); /* Đổi từ màu xám cũ sang màu vàng cát quý phái */
+            text-transform: uppercase; 
+            letter-spacing: 1px; /* Tạo khoảng hở chữ phong cách sách cổ */
+            margin-bottom: 12px; 
+            display: block; 
+        }
         .card h3 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.4rem; line-height: 1.35; font-weight: 700; }
         .card p { color: #555; font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; text-align: justify; }
-        .btn-post { padding: 11px; text-decoration: none; font-weight: 700; text-align: center; border-radius: 4px; border: 1px solid #27ae60; color: #27ae60; background: transparent; transition: all 0.25s ease; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
-        .btn-post:hover { background: #27ae60; color: white; box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25); }
+        /* 3. ĐỔI MỚI NÚT BẤM (ĐỌC TIẾP / ĐẶT MUA): Cân đối và chuyên nghiệp */
+        .btn-post { 
+            padding: 11px; 
+            text-decoration: none; 
+            font-weight: 700; 
+            text-align: center; 
+            border-radius: 4px; 
+            /* Đổi viền sang màu xanh lá tươi */
+            border: 1px solid #27ae60; 
+            /* Đổi chữ sang màu xanh lá tươi */
+            color: #27ae60; 
+            background: transparent;
+            transition: all 0.25s ease; 
+            cursor: pointer;
+            text-transform: uppercase; /* Viết hoa cho lịch lãm */
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
         
-        /* FORM CHUNG */
+        /* Hiệu ứng nạp đầy màu XANH LÁ CÂY khi rà chuột vào nút bấm */
+        .btn-post:hover { 
+            /* Khi di chuột vào, nền chuyển sang màu xanh lá tươi */
+            background: #27ae60; 
+            color: white; 
+            /* Đổ bóng nhẹ theo tông xanh lá cho sang trọng */
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
+        }
+        /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
         .form-container { background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; display: none; }
         .form-container h2 { font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 2rem; }
         .form-group { margin-bottom: 1.5rem; }
@@ -52,65 +97,29 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary-color); outline: none; }
         .radio-group { display: flex; gap: 20px; padding: 10px 0; }
         .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .radio-group input { width: auto; }
         .btn-submit { background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 1rem; text-transform: uppercase; letter-spacing: 1px;}
-        .btn-submit:hover { background: #3d1010; }
-        
-        /* --- KHU VỰC GIEO QUẺ (LỤC HÀO) --- */
-        #hexagram-container { text-align: center; }
-        .coin-area { display: flex; justify-content: center; gap: 20px; margin: 30px 0; height: 70px; align-items: center; }
-        .coin { 
-            width: 65px; height: 65px; border-radius: 50%; 
-            background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%);
-            border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;
-        }
-        .coin.tossing { animation: flipCoin 1.2s ease-in-out; }
-        @keyframes flipCoin {
-            0% { transform: translateY(0) rotateY(0deg) scale(1); }
-            50% { transform: translateY(-60px) rotateY(720deg) scale(1.2); }
-            100% { transform: translateY(0) rotateY(1440deg) scale(1); }
-        }
-        .btn-gieo { 
-            background: var(--primary-color); color: var(--accent-color); border: 2px solid var(--accent-color);
-            padding: 15px 40px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;
-        }
-        .btn-gieo:hover:not(:disabled) { background: #3d1010; box-shadow: 0 0 15px rgba(197, 160, 89, 0.5); }
-        .btn-gieo:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .hexagram-draw-area {
-            display: flex; flex-direction: column-reverse; /* Vẽ từ dưới lên */
-            align-items: center; gap: 12px; margin: 30px 0; min-height: 200px;
-        }
-        .hao-row { display: flex; align-items: center; justify-content: center; width: 100%; position: relative;}
-        .hao-label { position: absolute; left: 0; font-size: 0.9rem; color: #888; font-style: italic;}
-        .hao-line-box { width: 180px; height: 18px; display: flex; justify-content: center; }
-        .hao-duong { width: 100%; height: 100%; background-color: var(--primary-color); border-radius: 2px;}
-        .hao-am { width: 100%; height: 100%; display: flex; justify-content: space-between; }
-        .hao-am::before, .hao-am::after { content: ''; width: 45%; height: 100%; background-color: var(--primary-color); border-radius: 2px;}
-        .hao-dong-mark { position: absolute; right: 0; color: #e74c3c; font-weight: bold; font-size: 1.2rem; line-height: 18px;}
-        
-        .result-box {
-            background: #fffcf6; border: 1px solid var(--accent-color); padding: 25px;
-            border-radius: 8px; margin-top: 20px; display: none; text-align: left;
-        }
-        .cta-box {
-            background: #fdf2f2; border-left: 4px solid #e74c3c; padding: 15px; margin-top: 20px; font-size: 0.95rem;
-        }
-
+        .btn-submit:hover { background: #3d1010; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .notice-box { background: #fffcf6; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 2rem; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
         .page-btn { width: 40px; height: 40px; border: none; background: #e0d5c1; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .page-btn.active { background: var(--primary-color); color: white; }
-        
         footer { text-align: center; padding: 3rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); }
-        
+        /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
         @media (max-width: 600px) {
-            .form-container { padding: 1.5rem 1rem !important; }
-            .grid { grid-template-columns: 1fr !important; }
-            .form-group[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 15px !important; }
-            .coin { width: 50px; height: 50px; font-size: 1rem;}
-            .hao-line-box { width: 140px; }
+            .form-container {
+                padding: 1.5rem 1rem !important; 
+            }
+            .grid {
+                grid-template-columns: 1fr !important; /* Trên điện thoại bắt buộc xếp 1 cột dọc thẳng đều */
+            }
+            .form-group[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important; 
+                gap: 15px !important;
+            }
+            .radio-group {
+                padding: 5px 0 !important;
+            }
         }
     </style>
 </head>
@@ -126,7 +135,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('posts', this)">BÀI VIẾT</button>
             <button class="tab-btn" onclick="switchTab('video', this)">THƯ VIỆN VIDEO</button> 
-            <button class="tab-btn" onclick="switchTab('hexagram', this)" style="color: #c5a059; background: #5d1a1a;">GIEO QUẺ DỊCH</button>
+            <button class="tab-btn" onclick="switchTab('pdf', this)">THƯ VIỆN PDF</button>
             <button class="tab-btn" onclick="switchTab('books', this)">TỦ SÁCH CỔ HỌC</button>
             <button class="tab-btn" onclick="switchTab('register', this)" style="font-weight: 700;">ĐĂNG KÝ XEM SỐ ★</button>
         </div>
@@ -138,51 +147,24 @@
 </div>
 
 <div class="container">
+    <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
 
-    <div id="hexagram-container" class="form-container">
-        <h2>XIN QUẺ LỤC HÀO</h2>
-        <p style="color: #555; font-style: italic; margin-bottom: 20px;">"Đồng thanh tương ứng, đồng khí tương cầu. Hãy tĩnh tâm nghĩ về việc cần hỏi trước khi gieo."</p>
-        
-        <div class="coin-area" id="coin-area">
-            <div class="coin" id="coin-1">?</div>
-            <div class="coin" id="coin-2">?</div>
-            <div class="coin" id="coin-3">?</div>
-        </div>
-        
-        <button class="btn-gieo" id="btn-gieo" onclick="tossCoins()">Gieo Lần 1</button>
-        
-        <div class="hexagram-draw-area" id="hexagram-draw-area">
-            </div>
-
-        <div class="result-box" id="hexagram-result">
-            <h3 style="color: var(--primary-color); margin-top:0; border-bottom: 1px solid var(--accent-color); padding-bottom: 10px;">☯ KẾT QUẢ QUẺ DỊCH CỦA BẠN</h3>
-            <p><strong>Quẻ Chủ:</strong> <span id="res-que">Hệ thống đang tính toán...</span></p>
-            <p><strong>Hào Động:</strong> <span id="res-dong">...</span></p>
-            <p><strong>Thời gian ứng kỳ dự kiến:</strong> Số <span id="res-ungky" style="color:#e74c3c; font-weight:bold; font-size:1.2rem;">...</span> (Có thể là Ngày/Tuần/Tháng)</p>
-            
-            <div class="cta-box">
-                <strong style="color: #c0392b;">Lưu ý từ chuyên gia:</strong> Việc của bạn đang ở giai đoạn có biến động (Hào động). Máy tính chỉ có thể tính ra số ứng kỳ chung, nhưng để chốt chính xác <strong>ngày nào, giờ nào</strong> nên xuất tiền, xuất hành hoặc né tránh rủi ro, bạn cần một chuyên gia bấm quyết.<br><br>
-                👉 Hãy copy mã quẻ này và đăng ký <strong>Gói Gỡ Rối 99k</strong> để tôi trực tiếp luận giải chi tiết cho bạn.<br>
-                👉 <em>Mẹo phong thủy:</em> Quẻ báo có chút tạp khí cản trở, bạn có thể tham khảo thỉnh Vòng Thạch Anh Tóc Đen để kỵ tà <a href="#" style="color:#27ae60; font-weight:bold;">[Xem tại Tiệm Phong Thủy]</a>.
-            </div>
-            <button class="btn-submit" onclick="switchTab('register', document.querySelectorAll('.tab-btn')[4])" style="margin-top: 15px;">ĐĂNG KÝ GÓI GỠ RỐI 99K NGAY</button>
-        </div>
-    </div>
-
+    <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
     <div id="consultation-form-wrapper" class="form-container">
         <h2>ĐĂNG KÝ LUẬN GIẢI TỬ VI VIẾT TAY</h2>
-        <div style="padding: 15px 20px; background: #fffcf6; border-left: 4px solid var(--accent-color); border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+        <div class="notice-box" style="padding: 15px 20px; background: #fffcf6; border-left: 4px solid var(--accent-color); border-radius: 0 8px 8px 0; font-size: 0.95rem; line-height: 1.6;">
             <strong>Lưu ý từ Hệ thống nghiệm lý:</strong> 
-            <p style="margin: 8px 0;">Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email. Vui lòng cung cấp chính xác giờ sinh.</p>
-            <span style="color: var(--primary-color); font-weight: bold;">💡 Hướng dẫn:</span> Hệ thống sẽ tự động tạo tin nhắn SMS hoặc mã QR để bạn gửi thông tin cho Thầy dễ dàng nhất.
+            <p style="margin: 8px 0;">Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email sau 3-5 ngày. Vui lòng cung cấp chính xác giờ sinh để đảm bảo tính chuẩn xác của các cung số.</p>
+            <span style="color: var(--primary-color); font-weight: bold;">💡 Hướng dẫn gửi thông tin:</span> After điền Form và bấm nút gửi, hệ thống sẽ tự động đồng bộ. Nếu dùng Điện thoại máy sẽ tự mở ứng dụng sms, nếu dùng Máy tính (PC) màn hình sẽ hiển thị mã QR để bạn gửi thông tin lập tức.
         </div>
         <form id="tuvi-booking-form" onsubmit="submitForm(event)">
             <div class="form-group">
                 <label for="fullname">Họ và tên đương số:</label>
                 <input type="text" id="fullname" required placeholder="Ví dụ: Nguyễn Văn A">
             </div>
+            
             <div class="form-group">
                 <label>Giới tính:</label>
                 <div class="radio-group">
@@ -190,6 +172,7 @@
                     <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
                 </div>
             </div>
+
             <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div>
                     <label for="birth-date">Ngày/Tháng/Năm sinh:</label>
@@ -203,6 +186,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="birth-time">Giờ sinh chính xác:</label>
                 <select id="birth-time" required>
@@ -221,20 +205,23 @@
                     <option value="Hợi (21:00 - 23:00)">Giờ Hợi (21:00 - 23:00)</option>
                 </select>
             </div>
+
             <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div>
-                    <label for="email">Địa chỉ Email:</label>
+                    <label for="email">Địa chỉ Email nhận văn bản:</label>
                     <input type="email" id="email" required placeholder="name@example.com">
                 </div>
                 <div>
-                    <label for="phone">Số điện thoại / Zalo:</label>
+                    <label for="phone">Số điện thoại / Telegram:</label>
                     <input type="tel" id="phone" required placeholder="090xxxxxxx">
                 </div>
             </div>
+
             <div class="form-group">
-                <label for="notes">Vấn đề cốt lõi cần tham vấn:</label>
-                <textarea id="notes" rows="4" placeholder="Anh/Chị vui lòng ghi rõ bối cảnh..."></textarea>
+                <label for="notes">Vấn đề cốt lõi cần tham vấn (Công danh, Tài lộc, Gia đạo, Hạn trong năm...):</label>
+                <textarea id="notes" rows="4" placeholder="Anh/Chị vui lòng ghi rõ bối cảnh công việc hoặc các câu hỏi cụ thể để nội dung luận giải sát thực tế nhất..."></textarea>
             </div>
+
             <button type="submit" class="btn-submit">Gửi thông tin đăng ký</button>
         </form>
     </div>
@@ -245,10 +232,17 @@
 </footer>
 
 <script>
-    // 1. CẤU HÌNH LIÊN KẾT GOOGLE SHEETS
+    let pdfDb = []; 
+    let currentPdfPage = 1;
+    const pdfLimit = 6; 
+    
+    // CẤU HÌNH CÁC ĐƯỜNG LINK GOOGLE SHEETS CỦA ANH
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
     const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv';
     const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
+    
+    // 🛑 CHÚ Ý: Anh dán link đường dẫn CSV của Tab "PDF" mới tạo trên Google Sheets vào đây nhé!
+    const PDF_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1654655134&single=true&output=csv';
 
     let db = [];
     let currentCategory = 'Tất cả';
@@ -256,7 +250,6 @@
     let currentPage = 1;
     const limit = 6;
 
-    // 2. CÁC HÀM XỬ LÝ DỮ LIỆU CỐT LÕI
     function parseCSVLine(text) {
         const r = []; let c = '', q = false;
         for (let i = 0; i < text.length; i++) {
@@ -268,21 +261,28 @@
         r.push(c.trim()); return r;
     }
 
+    // 1. TỐI ƯU CACHE THÔNG MINH QUA PHIÊN BẢN (Hàm init)
     async function init() {
         const CACHE_POSTS_KEY = 'tuvi_posts_cache';
         const CACHE_VERSION_KEY = 'tuvi_posts_version';
+
         try {
             let csv = '';
             const now = new Date().getTime();
+
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
+            
             const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
+            
             const cachedData = localStorage.getItem(CACHE_POSTS_KEY);
             const cachedVersion = localStorage.getItem(CACHE_VERSION_KEY);
 
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
+                console.log(`⚡ [Trang chủ] Không đổi (v${latestVersion}). Khởi động thần tốc từ LocalStorage!`);
             } else {
+                console.log(`🌐 [Trang chủ] Phát hiện dữ liệu mới (Mới: v${latestVersion} - Cũ: v${cachedVersion}). Tiến hành đồng bộ...`);
                 const res = await fetch(`${SHEET_URL}&t=${now}`);
                 csv = await res.text();
                 localStorage.setItem(CACHE_POSTS_KEY, csv);
@@ -291,24 +291,34 @@
 
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            
             const idx = { 
-                id: headers.indexOf('id'), cat: headers.indexOf('category'), 
-                title: headers.indexOf('title'), desc: headers.indexOf('desc'), 
-                feat: headers.indexOf('featured'), youtubeId: headers.indexOf('youtubeid') 
+                id: headers.indexOf('id'), 
+                cat: headers.indexOf('category'), 
+                title: headers.indexOf('title'), 
+                desc: headers.indexOf('desc'), 
+                feat: headers.indexOf('featured'),
+                youtubeId: headers.indexOf('youtubeid') 
             };
 
             db = rows.slice(1).map(r => {
                 const c = parseCSVLine(r);
                 return { 
-                    id: c[idx.id], category: c[idx.cat] || "Chưa phân loại", 
-                    title: c[idx.title], desc: c[idx.desc], 
-                    isFeatured: String(c[idx.feat]).toLowerCase() === 'true', youtubeId: c[idx.youtubeId] || "" 
+                    id: c[idx.id], 
+                    category: c[idx.cat] || "Chưa phân loại", 
+                    title: c[idx.title], 
+                    desc: c[idx.desc], 
+                    isFeatured: String(c[idx.feat]).toLowerCase() === 'true',
+                    youtubeId: c[idx.youtubeId] || "" 
                 };
             }).filter(p => p.id); 
 
             renderTags();
             renderUI();
-        } catch (e) { document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu bài viết."; }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('post-grid').innerHTML = "Lỗi kết nối dữ liệu bài viết."; 
+        }
     }
 
     function renderTags() {
@@ -318,9 +328,234 @@
         ).join('');
     }
 
-    function filterByTag(tag) { currentCategory = tag; currentPage = 1; renderTags(); renderUI(); }
-    function handleSearch() { searchQuery = document.getElementById('search-bar').value.toLowerCase(); currentPage = 1; renderUI(); }
+    function filterByTag(tag) {
+        currentCategory = tag;
+        currentPage = 1;
+        renderTags();
+        renderUI();
+    }
 
+    function handleSearch() {
+        searchQuery = document.getElementById('search-bar').value.toLowerCase();
+        currentPage = 1;
+        renderUI();
+    }
+
+    function switchTab(type, element) {
+        // 🌟 1. LUÔN LUÔN DỌN DẸP KHỐI QR DONATE KHI CHUYỂN TAB
+        const oldDonate = document.getElementById('pdf-donate-section');
+        if (oldDonate) oldDonate.remove();
+
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        if(element) element.classList.add('active');
+    
+        const grid = document.getElementById('post-grid');
+        const pagination = document.getElementById('post-pagination');
+        const filterBar = document.getElementById('filter-bar');
+        const searchContainer = document.getElementById('search-container');
+        const formWrapper = document.getElementById('consultation-form-wrapper');
+    
+        grid.style.display = "grid";
+        pagination.style.display = "flex";
+        formWrapper.style.display = "none";
+        searchContainer.style.display = "block";
+        grid.innerHTML = ""; 
+    
+        if (type === 'pdf') {
+            currentPdfPage = 1;
+            filterBar.style.display = "none";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang kết nối kho dữ liệu Google Drive...</div>";
+            pagination.innerHTML = "";
+            loadPDFFromGoogleSheets(); // Gọi hàm load mới từ Google Sheets
+        } else if (type === 'video') { 
+            filterBar.style.display = "none";
+            pagination.innerHTML = "";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+            loadVideoLibrary(); 
+        } else if (type === 'register') {
+            grid.style.display = "none";
+            pagination.style.display = "none";
+            filterBar.style.display = "none";
+            searchContainer.style.display = "none";
+            formWrapper.style.display = "block";
+        } else if (type === 'books') {
+            filterBar.style.display = "none";
+            pagination.style.display = "none"; 
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
+            loadAffiliateBooks(); 
+        }
+        else {
+            filterBar.style.display = "flex";
+            renderUI();
+        }
+    }
+
+    // 2. TỐI ƯU CACHE CHO TỦ SÁCH (Hàm loadAffiliateBooks)
+    async function loadAffiliateBooks() {
+        const grid = document.getElementById('post-grid');
+        const CACHE_BOOKS_KEY = 'tuvi_books_cache';
+        const CACHE_BOOKS_VERSION_KEY = 'tuvi_books_version';
+
+        try {
+            let csv = '';
+            const now = new Date().getTime();
+
+            const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
+            const versionText = await versionRes.text();
+            
+            const firstLine = versionText.split(/\r?\n/)[0];
+            const latestVersion = firstLine.split(',')[1]?.trim() || "0";
+            
+            const cachedData = localStorage.getItem(CACHE_BOOKS_KEY);
+            const cachedVersion = localStorage.getItem(CACHE_BOOKS_VERSION_KEY);
+
+            if (cachedData && cachedVersion && cachedVersion === latestVersion) {
+                csv = cachedData;
+                console.log(`⚡ [Tủ sách] Chạy siêu tốc từ LocalStorage (Phiên bản v${latestVersion})`);
+            } else {
+                console.log(`🌐 [Tủ sách] Nâng cấp dữ liệu (Cũ: v${cachedVersion} -> Mới: v${latestVersion}). Đang tải...`);
+                const res = await fetch(`${BOOK_SHEET_URL}&t=${now}`);
+                csv = await res.text();
+                localStorage.setItem(CACHE_BOOKS_KEY, csv);
+                localStorage.setItem(CACHE_BOOKS_VERSION_KEY, latestVersion);
+            }
+
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (rows.length === 0 || !rows[0]) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
+            }
+
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            
+            const idx = {
+                id: headers.indexOf('id'),
+                type: headers.indexOf('type'),
+                name: headers.indexOf('book_name'),
+                img: headers.indexOf('book_img'),
+                link: headers.indexOf('book_link'),
+                price: headers.indexOf('book_price'),
+                oldPrice: headers.indexOf('book_old_price'),
+                qty: headers.indexOf('book_qty'),
+                desc: headers.indexOf('book_desc')
+            };
+
+            const books = rows.slice(1).map(r => {
+                if (!r.trim()) return null;
+                const c = parseCSVLine(r);
+                if (!c || c.length <= Math.max(...Object.values(idx))) return null;
+
+                const rawImgStr = c[idx.img] || "";
+                const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
+
+                let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
+                let cleanPrice = "";
+                let isContact = false;
+
+                if (rawPrice === "" || rawPrice.toLowerCase() === "liên hệ") {
+                    isContact = true;
+                } else {
+                    cleanPrice = rawPrice.replace(/[^0-9]/g, "");
+                    if (cleanPrice === "") isContact = true;
+                }
+
+                let rawOldPrice = idx.oldPrice !== -1 && c[idx.oldPrice] ? c[idx.oldPrice].toString().trim() : "";
+                let cleanOldPrice = rawOldPrice.replace(/[^0-9]/g, "");
+
+                return {
+                    id: c[idx.id] ? c[idx.id].trim() : "",
+                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
+                    name: c[idx.name] ? c[idx.name].trim() : "",
+                    images: imgList,
+                    link: c[idx.link] || "#",
+                    price: isContact ? "Liên hệ" : cleanPrice,
+                    oldPrice: cleanOldPrice,
+                    qty: c[idx.qty] || "0",
+                    desc: c[idx.desc] || "Tài liệu nghiên cứu, nghiệm lý Tử Vi học chất lượng cao."
+                };
+            }).filter(b => b && b.id && b.name);
+
+            if (books.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
+            }
+
+            grid.innerHTML = books.map((b, bIdx) => {
+                const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
+                let thumbnailsHTML = '';
+                if (b.images.length > 1) {
+                    thumbnailsHTML = `
+                        <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;">
+                            ${b.images.map((img, imgIdx) => `
+                                <img src="${img}" 
+                                     alt="Thumb ${imgIdx}" 
+                                     class="thumb-img-${bIdx}"
+                                     style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
+                                     onclick="changeBookImage(this, '${img}', ${bIdx})">
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                const displayPrice = b.price === "Liên hệ" ? "Liên hệ" : Number(b.price).toLocaleString('vi-VN') + 'đ';
+                let priceBlockHTML = '';
+                if (b.price !== "Liên hệ" && b.oldPrice !== "" && Number(b.oldPrice) > Number(b.price)) {
+                    const displayOldPrice = Number(b.oldPrice).toLocaleString('vi-VN') + 'đ';
+                    priceBlockHTML = `
+                        <p style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span style="color: #c5a059; font-weight: bold; font-size: 1.4rem;">${displayPrice}</span>
+                            <span style="color: #999; text-decoration: line-through; font-size: 1.0rem; font-weight: normal;">${displayOldPrice}</span>
+                        </p>
+                    `;
+                } else {
+                    priceBlockHTML = `
+                        <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                            ${displayPrice}
+                        </p>
+                    `;
+                }
+
+                return `
+                    <div class="card" style="border-top: 5px solid var(--accent-color); padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box; width: 100%;">
+                        <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 220px; max-width: 280px; margin: 0 auto;">
+                                <div style="width: 100%; height: 320px; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; border-radius: 6px; border: 1px solid #f0f0f0;">
+                                    <img id="main-img-${bIdx}" src="${mainImg}" alt="${b.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </div>
+                                ${thumbnailsHTML}
+                            </div>
+                            <div style="flex: 1.5; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between; max-height: 380px; box-sizing: border-box;">
+                                <div style="overflow: hidden; display: flex; flex-direction: column; flex: 1;">
+                                    <span class="category-tag" style="margin-bottom: 8px; display: inline-block; width: max-content;">${b.type}</span>
+                                    <h3 style="font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin: 0 0 10px 0; color: var(--primary-color);">${b.name}</h3>
+                                    ${priceBlockHTML}
+                                    <div class="book-desc-scroll" style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 160px; padding-right: 8px; margin-bottom: 15px; border-bottom: 1px dashed #eee;">
+                                        ${b.desc.replace(/\n/g, '<br>')}
+                                    </div>
+                                </div>
+                                <div style="width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; padding-top: 10px;">
+                                    <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 25px; text-decoration: none; display: inline-block; width: 85%; max-width: 240px; margin: 0 auto !important; border-radius: 4px; transition: background 0.2s; text-align: center;">
+                                        Tìm hiểu & Đặt mua →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Không thể kết nối dữ liệu tủ sách.</div>";
+        }
+    }
+    
+    function changeBookImage(thumbElement, newSrc, bookIdx) {
+        const mainImg = document.getElementById(`main-img-${bookIdx}`);
+        if (mainImg) mainImg.src = newSrc;
+        document.querySelectorAll(`.thumb-img-${bookIdx}`).forEach(img => { img.style.border = "1px solid #ddd"; });
+        thumbElement.style.border = "1px solid var(--accent-color)";
+    }
+    
     function renderUI() {
         let filtered = db.filter(p => {
             const matchCat = (currentCategory === 'Tất cả' || p.category === currentCategory);
@@ -333,7 +568,10 @@
         const items = filtered.slice(start, start + limit);
         const grid = document.getElementById('post-grid');
         
-        if (items.length === 0) { grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Không tìm thấy nội dung.</p>"; return; }
+        if (items.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Không tìm thấy nội dung phù hợp.</p>";
+            return;
+        }
 
         grid.innerHTML = items.map(p => `
             <div class="card ${p.isFeatured ? 'featured' : ''}">
@@ -358,55 +596,163 @@
 
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
-    // 3. ĐIỀU HƯỚNG TABS
-    function switchTab(type, element) {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-            btn.style.background = ''; btn.style.color = '';
-        });
-        if(element) element.classList.add('active');
-        
+    // 🌟 HÀM MỚI: TẢI DANH SÁCH FILE PDF TỪ GOOGLE SHEETS & ĐỒNG BỘ CACHE PHIÊN BẢN
+    // 🌟 ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS (Đã bổ sung cột pdf_author)
+    async function loadPDFFromGoogleSheets() {
         const grid = document.getElementById('post-grid');
-        const pagination = document.getElementById('post-pagination');
-        const filterBar = document.getElementById('filter-bar');
-        const searchContainer = document.getElementById('search-container');
-        const formWrapper = document.getElementById('consultation-form-wrapper');
-        const hexagramWrapper = document.getElementById('hexagram-container');
-        
-        grid.style.display = "none";
-        pagination.style.display = "none";
-        formWrapper.style.display = "none";
-        filterBar.style.display = "none";
-        searchContainer.style.display = "none";
-        hexagramWrapper.style.display = "none";
-        
-        if (type === 'hexagram') {
-            hexagramWrapper.style.display = "block";
-            element.style.background = '#5d1a1a'; element.style.color = '#c5a059';
-        } else if (type === 'video') { 
-            grid.style.display = "grid";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
-            loadVideoLibrary(); 
-        } else if (type === 'books') {
-            grid.style.display = "grid";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
-            loadAffiliateBooks(); 
-        } else if (type === 'register') {
-            formWrapper.style.display = "block";
-        } else {
-            grid.style.display = "grid";
-            pagination.style.display = "flex";
-            filterBar.style.display = "flex";
-            searchContainer.style.display = "block";
-            renderUI();
+        const CACHE_PDF_KEY = 'tuvi_pdf_cache';
+        const CACHE_PDF_VERSION_KEY = 'tuvi_pdf_version';
+
+        try {
+            let csv = '';
+            const now = new Date().getTime();
+
+            // 1. Check phiên bản thay đổi từ file cấu hình
+            const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
+            const versionText = await versionRes.text();
+            const firstLine = versionText.split(/\r?\n/)[0];
+            const latestVersion = firstLine.split(',')[1]?.trim() || "0";
+
+            const cachedData = localStorage.getItem(CACHE_PDF_KEY);
+            const cachedVersion = localStorage.getItem(CACHE_PDF_VERSION_KEY);
+
+            // 2. Kiểm tra Cache LocalStorage
+            if (cachedData && cachedVersion && cachedVersion === latestVersion) {
+                csv = cachedData;
+                console.log(`⚡ [Thư viện PDF] Đồng bộ từ LocalStorage (v${latestVersion})`);
+            } else {
+                console.log(`🌐 [Thư viện PDF] Đang tải cấu trúc dữ liệu mới từ Google Sheets...`);
+                const res = await fetch(`${PDF_SHEET_URL}&t=${now}`);
+                csv = await res.text();
+                localStorage.setItem(CACHE_PDF_KEY, csv);
+                localStorage.setItem(CACHE_PDF_VERSION_KEY, latestVersion);
+            }
+
+            // 3. Xử lý cắt chuỗi CSV và định vị các cột
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (rows.length === 0 || !rows[0]) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư viện tài liệu hiện chưa có dữ liệu.</p>";
+                return;
+            }
+
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            const idxName = headers.indexOf('pdf_name');
+            const idxLink = headers.indexOf('pdf_link');
+            const idxDesc = headers.indexOf('pdf_desc');
+            const idxAuthor = headers.indexOf('pdf_author'); // Định vị cột tác giả mới thêm
+
+            pdfDb = rows.slice(1).map(r => {
+                if (!r.trim()) return null;
+                const c = parseCSVLine(r);
+                return {
+                    name: c[idxName] ? c[idxName].trim() : "Tài liệu chưa đặt tên",
+                    link: c[idxLink] ? c[idxLink].trim() : "#",
+                    desc: (idxDesc !== -1 && c[idxDesc]) ? c[idxDesc].trim() : "Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive.",
+                    // Lấy dữ liệu cột tác giả, nếu trống thì để mặc định
+                    author: (idxAuthor !== -1 && c[idxAuthor]) ? c[idxAuthor].trim().toUpperCase() : "TÀI LIỆU HỌC THUẬT"
+                };
+            }).filter(file => file && file.link !== "#");
+
+            renderPDFUI();
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Lỗi kết nối kho dữ liệu Google Drive.</div>";
         }
     }
 
-    // 4. LOAD THƯ VIỆN VIDEO
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt + Khối QR nằm dưới menu)
+    // GIAO DIỆN HIỂN THỊ FILE PDF (Khối QR kéo giãn rộng tràn 2 bên bằng với lưới Card)
+    function renderPDFUI() {
+        const start = (currentPdfPage - 1) * pdfLimit;
+        const items = pdfDb.slice(start, start + pdfLimit);
+        const grid = document.getElementById('post-grid');
+        
+        if (items.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào trong thư mục.</p>";
+            return;
+        }
+
+        // --- XỬ LÝ KHỐI QR DONATE RỘNG TOÀN CHIỀU RỘNG ---
+        // Xóa khối cũ để tránh lặp khi đổi trang
+        const oldDonate = document.getElementById('pdf-donate-section');
+        if (oldDonate) oldDonate.remove();
+
+        const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
+        
+        // Thay max-width thành 100% để co giãn khít theo container cha của trang web
+        const donateHtml = `
+            <div class="global-donate-box" style="
+                max-width: 100%; 
+                margin: 0 auto 30px auto; 
+                background: #fffdf9; 
+                border: 1px dashed #e67e22; 
+                border-radius: 8px; 
+                padding: 20px 25px; 
+                display: flex; 
+                align-items: center; 
+                gap: 30px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
+                box-sizing: border-box;
+                width: 100%;
+            ">
+                <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
+                </div>
+                
+                <div style="text-align: left; flex-grow: 1;">
+                    <h4 style="margin: 0 0 8px 0; color: #d35400; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.3px;">
+                        Đồng Hành Cùng Tử Vi Hoàng Hạc ☕
+                    </h4>
+                    <p style="margin: 0; color: #555; font-size: 0.88rem; line-height: 1.6; text-align: justify;">
+                        Chào anh em đồng đạo! Toàn bộ tài liệu học thuật tại Thư Viện PDF đều được chia sẻ hoàn toàn miễn phí nhằm lưu trữ và lan tỏa di sản cổ học. Nếu thấy kho sách hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
+                    </p>
+                </div>
+            </div>
+        `;
+
+        // Chèn khối bọc độc lập vào ngay trên lưới grid card sách
+        const donateContainer = document.createElement('div');
+        donateContainer.id = 'pdf-donate-section';
+        donateContainer.style.width = '100%'; // Đảm bảo container ngoài cũng ăn hết đất
+        donateContainer.innerHTML = donateHtml;
+        grid.parentNode.insertBefore(donateContainer, grid);
+        // -----------------------------------------------------------
+        
+        // Đổ danh sách card sách mượt mà của anh vào Grid
+        grid.innerHTML = items.map(file => `
+            <div class="card">
+                <span class="category-tag">${file.author}</span>
+                <h3>${file.name}</h3>
+                <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
+                <a href="${file.link}" target="_blank" class="btn-post" style="background: #27ae60; color: white; border: none; text-align: center; font-weight: bold; transition: background 0.2s ease;">Tải xuống PDF ↓</a>
+            </div>
+        `).join('');
+        
+        renderPDFPagination(pdfDb.length);
+    }
+    
+    function renderPDFPagination(total) {
+        const pages = Math.ceil(total / pdfLimit);
+        let html = '';
+        if (pages <= 1) { 
+            document.getElementById('post-pagination').innerHTML = "";
+            return; 
+        }
+        for(let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i === currentPdfPage ? 'active' : ''}" onclick="goPdfPage(${i})">${i}</button>`;
+        }
+        document.getElementById('post-pagination').innerHTML = html;
+    }
+
     async function loadVideoLibrary() {
         const grid = document.getElementById('post-grid');
         const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
-        if (videoPosts.length === 0) { grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có video.</p>"; return; }
+
+        if (videoPosts.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
+            return;
+        }
+
         grid.innerHTML = videoPosts.map(p => `
             <div class="card">
                 <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
@@ -420,163 +766,108 @@
             </div>
         `).join('');
     }
-
-    // 5. LOAD TỦ SÁCH AFFILIATE
-    async function loadAffiliateBooks() {
-        const grid = document.getElementById('post-grid');
-        try {
-            const res = await fetch(`${BOOK_SHEET_URL}&t=${new Date().getTime()}`);
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            if (rows.length <= 1) { grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách đang cập nhật...</p>"; return; }
-
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            const idx = { id: headers.indexOf('id'), type: headers.indexOf('type'), name: headers.indexOf('book_name'), img: headers.indexOf('book_img'), link: headers.indexOf('book_link'), price: headers.indexOf('book_price'), desc: headers.indexOf('book_desc') };
-
-            const books = rows.slice(1).map(r => {
-                if (!r.trim()) return null;
-                const c = parseCSVLine(r);
-                return {
-                    name: c[idx.name] ? c[idx.name].trim() : "",
-                    img: c[idx.img] ? c[idx.img].split(',')[0].trim() : "https://via.placeholder.com/250x350",
-                    link: c[idx.link] || "#",
-                    price: c[idx.price] ? c[idx.price].trim() : "Liên hệ",
-                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
-                    desc: c[idx.desc] || "Tài liệu học thuật."
-                };
-            }).filter(b => b && b.name);
-
-            grid.innerHTML = books.map((b) => `
-                <div class="card" style="padding: 20px; align-items: center;">
-                    <img src="${b.img}" style="width: 150px; height: 200px; object-fit: contain; margin-bottom: 15px; border: 1px solid #eee;">
-                    <span class="category-tag">${b.type}</span>
-                    <h3 style="text-align:center; font-size: 1.1rem; margin-bottom: 5px;">${b.name}</h3>
-                    <p style="color: #c5a059; font-weight: bold; font-size: 1.2rem; text-align: center; margin-bottom:10px;">${b.price === 'Liên hệ' ? 'Liên hệ' : Number(b.price.replace(/[^0-9]/g, '')).toLocaleString('vi-VN') + 'đ'}</p>
-                    <a href="${b.link}" target="_blank" class="btn-post" style="width: 80%; background: var(--primary-color); color: white;">Xem & Đặt Mua</a>
-                </div>
-            `).join('');
-        } catch (e) { grid.innerHTML = "<p>Lỗi tải Tủ sách.</p>"; }
+    
+    function goPdfPage(p) {
+        currentPdfPage = p;
+        renderPDFUI();
+        window.scrollTo(0, 0);
     }
 
-    // 6. THUẬT TOÁN GIEO QUẺ LỤC HÀO
-    let currentHao = 1;
-    let hexagramData = [];
-    const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
-
-    function tossCoins() {
-        const btn = document.getElementById('btn-gieo');
-        const coins = [document.getElementById('coin-1'), document.getElementById('coin-2'), document.getElementById('coin-3')];
-        
-        btn.disabled = true; btn.innerText = "Đang gieo...";
-        let audio = new Audio(coinSoundUrl); audio.play().catch(e => console.log("Cần click vào màn hình để bật tiếng."));
-
-        coins.forEach(c => {
-            c.innerHTML = ""; c.classList.remove('tossing');
-            void c.offsetWidth; c.classList.add('tossing');
-        });
-
-        setTimeout(() => {
-            let headsCount = 0;
-            coins.forEach(c => {
-                c.classList.remove('tossing');
-                let isHead = Math.random() > 0.5; 
-                c.innerHTML = isHead ? "SẤP" : "NGỬA";
-                if(isHead) headsCount++;
-            });
-            processHaoResult(headsCount);
-        }, 1200);
-    }
-
-    function processHaoResult(headsCount) {
-        let haoHTML = ''; let isDong = false;
-        
-        if (headsCount === 0) { // 3 Ngửa
-            isDong = true; haoHTML = `<div class="hao-am"></div><span class="hao-dong-mark">✕</span>`;
-        } else if (headsCount === 1) { // 1 Sấp 2 Ngửa
-            haoHTML = `<div class="hao-duong"></div>`;
-        } else if (headsCount === 2) { // 2 Sấp 1 Ngửa
-            haoHTML = `<div class="hao-am"></div>`;
-        } else if (headsCount === 3) { // 3 Sấp
-            isDong = true; haoHTML = `<div class="hao-duong"></div><span class="hao-dong-mark">O</span>`;
-        }
-
-        hexagramData.push({ line: currentHao, isDong: isDong });
-
-        const drawArea = document.getElementById('hexagram-draw-area');
-        const newRow = document.createElement('div');
-        newRow.className = 'hao-row';
-        newRow.innerHTML = `<span class="hao-label">Hào ${currentHao}</span><div class="hao-line-box">${haoHTML}</div>`;
-        drawArea.appendChild(newRow); 
-
-        currentHao++;
-        const btn = document.getElementById('btn-gieo');
-        
-        if (currentHao <= 6) {
-            btn.innerText = `Gieo Lần ${currentHao}`; btn.disabled = false;
-        } else {
-            btn.innerText = "ĐANG LẬP QUẺ...";
-            setTimeout(() => {
-                btn.style.display = 'none'; document.getElementById('coin-area').style.display = 'none'; showResult();
-            }, 1000);
-        }
-    }
-
-    function showResult() {
-        document.getElementById('hexagram-result').style.display = 'block';
-        const mockQue = ["Thủy Lôi Truân", "Địa Lôi Phục", "Hỏa Thiên Đại Hữu", "Trạch Thủy Khốn"];
-        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
-        
-        document.getElementById('res-que').innerText = mockQue[Math.floor(Math.random() * mockQue.length)];
-        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không động)" : "Động ở Hào " + dongLines;
-        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
-        document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // 7. GỬI FORM ĐĂNG KÝ XEM TỬ VI (Bật QR Code)
+    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
     function submitForm(event) {
         event.preventDefault();
-        const MY_PHONE = '0946712608'; const TELEGRAM_USERNAME = 'tantan1088a'; 
+        
+        const MY_PHONE = '0946712608';          
+        const TELEGRAM_USERNAME = 'tantan1088a'; 
+
         const fullName = document.getElementById('fullname').value;
         const gender = document.querySelector('input[name="gender"]:checked').value;
-        const birthDate = document.getElementById('birth-date').value;
+        const birthDate = document.getElementById('birth-date').value.split('-').reverse().join('/');
         const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
         const birthTime = document.getElementById('birth-time').value;
-        const notes = document.getElementById('notes').value || 'Không có';
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
 
-        const messageUnicode = `ĐƠN XEM TỬ VI\n• Tên: ${fullName}\n• GT: ${gender}\n• Sinh: ${birthDate} (${calendarType})\n• Giờ: ${birthTime}\n• Vấn đề: ${notes}`;
+        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ XEM TỬ VI\n` +
+                               `• Họ và tên: ${fullName}\n` +
+                               `• Giới tính: ${gender}\n` +
+                               `• Ngày sinh: ${birthDate} (${calendarType})\n` +
+                               `• Giờ sinh: ${birthTime}\n` +
+                               `• Email: ${email}\n` +
+                               `• SĐT liên hệ: ${phone}\n` +
+                               `• Nội dung tham vấn: ${notes}`;
+
+        const messageNoSign = `Dang ky Tu Vi: ${fullName} - ${gender}. Ngay sinh: ${birthDate} (${calendarType}) - Gio: ${birthTime}. Email: ${email}. SDT: ${phone}. Noi dung: ${notes}`;
+
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
-            window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
-            alert("Mở SMS thành công.");
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const separator = isIOS ? '&' : '?';
+            const smsMobileUrl = `sms:${MY_PHONE}${separator}body=${encodeURIComponent(messageNoSign)}`;
+            window.location.href = smsMobileUrl;
+            alert("Hệ thống đang mở ứng dụng Tin nhắn SMS...\nThông tin lá số đã được tự động điền sẵn, anh/chị chỉ cần bấm nút 'GỬI' là hoàn tất đăng ký.");
         } else {
-            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
             const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+
             const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
             const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(messageUnicode).catch(e => console.log(e));
+            }
+
             showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
         }
+        
         document.getElementById('tuvi-booking-form').reset();
     }
 
     function showDualQrPopup(qrSms, qrTele, messageText) {
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;";
-        overlay.innerHTML = `
-            <div style="background:#fff; padding:25px; border-radius:12px; max-width:500px; text-align:center;">
-                <h3 style="color:#5d1a1a;">GỬI THÔNG TIN THÀNH CÔNG</h3>
-                <p>Quét mã QR dưới đây bằng điện thoại để tự động điền tin nhắn gửi cho Thầy.</p>
-                <div style="display:flex; justify-content:space-around; gap:15px; margin: 20px 0;">
-                    <div><p style="font-weight:bold; color:#229ED9;">TELEGRAM</p><img src="${qrTele}" width="150"></div>
-                    <div><p style="font-weight:bold; color:#28a745;">SMS</p><img src="${qrSms}" width="150"></div>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer;">Đóng cửa sổ</button>
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
+        
+        const modal = document.createElement('div');
+        modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
+        
+        const formattedMessage = messageText.replace(/\n/g, '<br>');
+
+        modal.innerHTML = `
+            <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
+            <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
+                Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
+            </p>
+
+            <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
+                <strong>Nội dung thông tin của bạn:</strong><br>
+                ${formattedMessage}
             </div>
+
+            <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+                <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
+                    <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
+                    <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động soạn văn bản có dấu trên ứng dụng Telegram</p>
+                </div>
+                <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
+                    <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
+                    <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động mở ứng dụng tin nhắn SMS của máy điện thoại</p>
+                </div>
+            </div>
+            <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
         `;
+        
+        overlay.appendChild(modal);
         document.body.appendChild(overlay);
+        
+        document.getElementById('close-zalo-popup').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
     }
 
-    // Khởi chạy khi load xong web
     window.onload = init;
 </script>
 </body>
