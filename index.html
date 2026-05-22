@@ -145,38 +145,40 @@
         }
         /* Chỉ áp dụng cho điện thoại (màn hình nhỏ hơn 600px) */
     @media (max-width: 600px) {
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;       /* Cho phép xuống dòng */
-            gap: 8px;              /* Khoảng cách giữa các nút */
-            width: 100%;
-            background: #e0d5c1;
-            padding: 8px;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-    
-        .tab-btn {
-            flex: 1 1 45%;         /* Ép các nút chia đều, 2 nút một dòng */
-            padding: 10px 5px;
-            border: none;
-            background: #d1c4b0;
-            cursor: pointer;
-            font-weight: bold;
-            color: #5d1a1a;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-    
-        /* Nút cuối cùng (Đăng ký) tự động giãn hết cỡ để không bị lẻ loi */
-        .tab-btn:last-child {
-            flex: 1 1 100%; 
-            background: #d1c4b0; 
-            color: white;
-        }
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;       /* Cho phép xuống dòng */
+        gap: 8px;              /* Khoảng cách giữa các nút */
+        width: 100%;
+        background: #e0d5c1;
+        padding: 8px;
+        border-radius: 8px;
+        box-sizing: border-box;
     }
+
+    .tab-btn {
+        /* Chỉnh 45% để đảm bảo 2 nút/dòng, nếu nút dài quá sẽ tự xuống dòng */
+        flex: 1 1 45%;         
+        padding: 10px 5px;
+        border: none;
+        background: #d1c4b0;
+        cursor: pointer;
+        font-weight: bold;
+        color: #5d1a1a;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+
+    /* Đưa nút cuối về giống hệt các nút khác */
+    .tab-btn:last-child {
+        flex: 1 1 45%;         /* Giống hệt các nút trên */
+        background: #d1c4b0;   /* Màu nền giống hệt nút trên */
+        color: #5d1a1a;        /* Màu chữ giống hệt nút trên */
+    }
+}
     </style>
 </head>
 <body>
