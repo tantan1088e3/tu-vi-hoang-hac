@@ -362,4 +362,222 @@
     function switchTab(type, element) {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
-            btn.style.background = ''; btn.style.color
+            btn.style.background = ''; btn.style.color = '';
+        });
+        if(element) element.classList.add('active');
+        
+        const grid = document.getElementById('post-grid');
+        const pagination = document.getElementById('post-pagination');
+        const filterBar = document.getElementById('filter-bar');
+        const searchContainer = document.getElementById('search-container');
+        const formWrapper = document.getElementById('consultation-form-wrapper');
+        const hexagramWrapper = document.getElementById('hexagram-container');
+        
+        grid.style.display = "none";
+        pagination.style.display = "none";
+        formWrapper.style.display = "none";
+        filterBar.style.display = "none";
+        searchContainer.style.display = "none";
+        hexagramWrapper.style.display = "none";
+        
+        if (type === 'hexagram') {
+            hexagramWrapper.style.display = "block";
+            element.style.background = '#5d1a1a'; element.style.color = '#c5a059';
+        } else if (type === 'video') { 
+            grid.style.display = "grid";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+            loadVideoLibrary(); 
+        } else if (type === 'books') {
+            grid.style.display = "grid";
+            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
+            loadAffiliateBooks(); 
+        } else if (type === 'register') {
+            formWrapper.style.display = "block";
+        } else {
+            grid.style.display = "grid";
+            pagination.style.display = "flex";
+            filterBar.style.display = "flex";
+            searchContainer.style.display = "block";
+            renderUI();
+        }
+    }
+
+    // 4. LOAD THƯ VIỆN VIDEO
+    async function loadVideoLibrary() {
+        const grid = document.getElementById('post-grid');
+        const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
+        if (videoPosts.length === 0) { grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có video.</p>"; return; }
+        grid.innerHTML = videoPosts.map(p => `
+            <div class="card">
+                <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
+                    <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2rem; pointer-events: none;">▶</div>
+                </div>
+                <span class="category-tag">VIDEO BÀI GIẢNG</span>
+                <h3>${p.title}</h3>
+                <p>${p.desc}</p>
+                <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
+            </div>
+        `).join('');
+    }
+
+    // 5. LOAD TỦ SÁCH AFFILIATE
+    async function loadAffiliateBooks() {
+        const grid = document.getElementById('post-grid');
+        try {
+            const res = await fetch(`${BOOK_SHEET_URL}&t=${new Date().getTime()}`);
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (rows.length <= 1) { grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách đang cập nhật...</p>"; return; }
+
+            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            const idx = { id: headers.indexOf('id'), type: headers.indexOf('type'), name: headers.indexOf('book_name'), img: headers.indexOf('book_img'), link: headers.indexOf('book_link'), price: headers.indexOf('book_price'), desc: headers.indexOf('book_desc') };
+
+            const books = rows.slice(1).map(r => {
+                if (!r.trim()) return null;
+                const c = parseCSVLine(r);
+                return {
+                    name: c[idx.name] ? c[idx.name].trim() : "",
+                    img: c[idx.img] ? c[idx.img].split(',')[0].trim() : "https://via.placeholder.com/250x350",
+                    link: c[idx.link] || "#",
+                    price: c[idx.price] ? c[idx.price].trim() : "Liên hệ",
+                    type: c[idx.type] || "SÁCH KHUYÊN ĐỌC",
+                    desc: c[idx.desc] || "Tài liệu học thuật."
+                };
+            }).filter(b => b && b.name);
+
+            grid.innerHTML = books.map((b) => `
+                <div class="card" style="padding: 20px; align-items: center;">
+                    <img src="${b.img}" style="width: 150px; height: 200px; object-fit: contain; margin-bottom: 15px; border: 1px solid #eee;">
+                    <span class="category-tag">${b.type}</span>
+                    <h3 style="text-align:center; font-size: 1.1rem; margin-bottom: 5px;">${b.name}</h3>
+                    <p style="color: #c5a059; font-weight: bold; font-size: 1.2rem; text-align: center; margin-bottom:10px;">${b.price === 'Liên hệ' ? 'Liên hệ' : Number(b.price.replace(/[^0-9]/g, '')).toLocaleString('vi-VN') + 'đ'}</p>
+                    <a href="${b.link}" target="_blank" class="btn-post" style="width: 80%; background: var(--primary-color); color: white;">Xem & Đặt Mua</a>
+                </div>
+            `).join('');
+        } catch (e) { grid.innerHTML = "<p>Lỗi tải Tủ sách.</p>"; }
+    }
+
+    // 6. THUẬT TOÁN GIEO QUẺ LỤC HÀO
+    let currentHao = 1;
+    let hexagramData = [];
+    const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
+
+    function tossCoins() {
+        const btn = document.getElementById('btn-gieo');
+        const coins = [document.getElementById('coin-1'), document.getElementById('coin-2'), document.getElementById('coin-3')];
+        
+        btn.disabled = true; btn.innerText = "Đang gieo...";
+        let audio = new Audio(coinSoundUrl); audio.play().catch(e => console.log("Cần click vào màn hình để bật tiếng."));
+
+        coins.forEach(c => {
+            c.innerHTML = ""; c.classList.remove('tossing');
+            void c.offsetWidth; c.classList.add('tossing');
+        });
+
+        setTimeout(() => {
+            let headsCount = 0;
+            coins.forEach(c => {
+                c.classList.remove('tossing');
+                let isHead = Math.random() > 0.5; 
+                c.innerHTML = isHead ? "SẤP" : "NGỬA";
+                if(isHead) headsCount++;
+            });
+            processHaoResult(headsCount);
+        }, 1200);
+    }
+
+    function processHaoResult(headsCount) {
+        let haoHTML = ''; let isDong = false;
+        
+        if (headsCount === 0) { // 3 Ngửa
+            isDong = true; haoHTML = `<div class="hao-am"></div><span class="hao-dong-mark">✕</span>`;
+        } else if (headsCount === 1) { // 1 Sấp 2 Ngửa
+            haoHTML = `<div class="hao-duong"></div>`;
+        } else if (headsCount === 2) { // 2 Sấp 1 Ngửa
+            haoHTML = `<div class="hao-am"></div>`;
+        } else if (headsCount === 3) { // 3 Sấp
+            isDong = true; haoHTML = `<div class="hao-duong"></div><span class="hao-dong-mark">O</span>`;
+        }
+
+        hexagramData.push({ line: currentHao, isDong: isDong });
+
+        const drawArea = document.getElementById('hexagram-draw-area');
+        const newRow = document.createElement('div');
+        newRow.className = 'hao-row';
+        newRow.innerHTML = `<span class="hao-label">Hào ${currentHao}</span><div class="hao-line-box">${haoHTML}</div>`;
+        drawArea.appendChild(newRow); 
+
+        currentHao++;
+        const btn = document.getElementById('btn-gieo');
+        
+        if (currentHao <= 6) {
+            btn.innerText = `Gieo Lần ${currentHao}`; btn.disabled = false;
+        } else {
+            btn.innerText = "ĐANG LẬP QUẺ...";
+            setTimeout(() => {
+                btn.style.display = 'none'; document.getElementById('coin-area').style.display = 'none'; showResult();
+            }, 1000);
+        }
+    }
+
+    function showResult() {
+        document.getElementById('hexagram-result').style.display = 'block';
+        const mockQue = ["Thủy Lôi Truân", "Địa Lôi Phục", "Hỏa Thiên Đại Hữu", "Trạch Thủy Khốn"];
+        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
+        
+        document.getElementById('res-que').innerText = mockQue[Math.floor(Math.random() * mockQue.length)];
+        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không động)" : "Động ở Hào " + dongLines;
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
+        document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 7. GỬI FORM ĐĂNG KÝ XEM TỬ VI (Bật QR Code)
+    function submitForm(event) {
+        event.preventDefault();
+        const MY_PHONE = '0946712608'; const TELEGRAM_USERNAME = 'tantan1088a'; 
+        const fullName = document.getElementById('fullname').value;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        const birthDate = document.getElementById('birth-date').value;
+        const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
+        const birthTime = document.getElementById('birth-time').value;
+        const notes = document.getElementById('notes').value || 'Không có';
+
+        const messageUnicode = `ĐƠN XEM TỬ VI\n• Tên: ${fullName}\n• GT: ${gender}\n• Sinh: ${birthDate} (${calendarType})\n• Giờ: ${birthTime}\n• Vấn đề: ${notes}`;
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            alert("Mở SMS thành công.");
+        } else {
+            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+            const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
+            const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+            showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
+        }
+        document.getElementById('tuvi-booking-form').reset();
+    }
+
+    function showDualQrPopup(qrSms, qrTele, messageText) {
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;";
+        overlay.innerHTML = `
+            <div style="background:#fff; padding:25px; border-radius:12px; max-width:500px; text-align:center;">
+                <h3 style="color:#5d1a1a;">GỬI THÔNG TIN THÀNH CÔNG</h3>
+                <p>Quét mã QR dưới đây bằng điện thoại để tự động điền tin nhắn gửi cho Thầy.</p>
+                <div style="display:flex; justify-content:space-around; gap:15px; margin: 20px 0;">
+                    <div><p style="font-weight:bold; color:#229ED9;">TELEGRAM</p><img src="${qrTele}" width="150"></div>
+                    <div><p style="font-weight:bold; color:#28a745;">SMS</p><img src="${qrSms}" width="150"></div>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer;">Đóng cửa sổ</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    // Khởi chạy khi load xong web
+    window.onload = init;
+</script>
+</body>
+</html>
