@@ -14,7 +14,16 @@
             --text-color: #2c3e50; 
             --card-border: #e2d9c8; /* Màu viền hoài cổ nhẹ */
         }
-        body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        body { 
+            margin: 0; 
+            font-family: 'Arimo', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Chiều cao tối thiểu bằng màn hình */
+        }
         header { background-color: var(--primary-color); color: var(--accent-color); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
         header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 2.8rem; }
         header p { margin-top: 10px; opacity: 0.9; font-style: italic; }
@@ -69,7 +78,12 @@
             white-space: nowrap; /* Không cho chữ trong tag xuống dòng */
         }
         .tag-filter.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto 5rem auto; 
+            padding: 0 1.5rem; 
+            flex: 1; /* Quan trọng: Đẩy footer xuống đáy */
+        }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
         /* 1. ĐỔI MỚI THẺ BÀI VIẾT (CARD): Sang trọng, có chiều sâu không gian */
         .card { 
