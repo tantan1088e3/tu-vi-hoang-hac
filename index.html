@@ -20,36 +20,9 @@
         header p { margin-top: 10px; opacity: 0.9; font-style: italic; }
         .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-        .tabs {
-            display: flex;
-            flex-wrap: nowrap;     /* Không bao giờ cho phép xuống dòng */
-            width: 100%;           /* Full chiều ngang màn hình */
-            background: #e0d5c1;
-            padding: 5px;
-            border-radius: 8px;
-            box-sizing: border-box; /* Cực kỳ quan trọng để không bị tràn lề */
-        }
-        
-        .tab-btn {
-            flex: 1;              /* Các nút tự chia tỉ lệ để lấp đầy khoảng trống */
-            padding: 10px 2px;    /* Padding ngang nhỏ lại để chữ không bị ngắt */
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-weight: bold;
-            color: #5d1a1a;
-            text-align: center;
-            white-space: nowrap;  /* Chữ không bị nhảy xuống dòng */
-            font-size: 0.85rem;   /* Giảm nhẹ size chữ để tối ưu diện tích */
-            transition: 0.3s;
-        }
-        
-        /* Hiệu ứng khi hover/active */
-        .tab-btn.active {
-            background: #8b4513;  /* Màu nâu đậm hơn khi được chọn */
-            color: #fff;
-            border-radius: 6px;
-        }
+        .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: #5d1a1a; }
+        .tab-btn.active { background: var(--primary-color); color: white; }
         #search-container { display: block; }
         #search-bar {
             padding: 12px;
