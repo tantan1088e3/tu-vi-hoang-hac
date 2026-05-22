@@ -604,6 +604,72 @@
     let currentHao = 1;
     let hexagramData = [];
     const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
+    const QUE_DATA = {
+        "111111": { name: "Bát Thuần Càn", desc: "Vạn sự khởi đầu đại hanh thông, mạnh mẽ, cương quyết." },
+        "000000": { name: "Bát Thuần Khôn", desc: "Nhu thuận, bao dung. Thời điểm cần nhẫn nại, lùi một bước biển rộng trời cao." },
+        "100010": { name: "Thủy Lôi Truân", desc: "Gian nan, trắc trở lúc ban đầu. Cần tích lũy nội lực chờ thời." },
+        "010001": { name: "Sơn Thủy Mông", desc: "Mờ mịt, thiếu phương hướng. Cần tìm bậc minh sư để chỉ đường dẫn lối." },
+        "111010": { name: "Thủy Thiên Nhu", desc: "Có hiểm nguy phía trước. Cần bình tâm chờ đợi, dục tốc bất đạt." },
+        "010111": { name: "Thiên Thủy Tụng", desc: "Dễ dính vào kiện tụng, tranh chấp thị phi. Nên dĩ hòa vi quý." },
+        "010000": { name: "Địa Thủy Sư", desc: "Hội tụ lực lượng. Cần sự kỷ luật thép và người lãnh đạo tài ba." },
+        "000010": { name: "Thủy Địa Tỷ", desc: "Sự gắn kết, gần gũi. Rất tốt cho việc hợp tác, kết giao bằng hữu." },
+        "111011": { name: "Phong Thiên Tiểu Súc", desc: "Tích lũy nhỏ, tạm thời bị kìm hãm. Cần mềm mỏng tiến từng bước." },
+        "110111": { name: "Thiên Trạch Lý", desc: "Đi trên đuôi cọp. Cần hành sự cẩn trọng, giữ đúng lễ nghĩa." },
+        "111000": { name: "Địa Thiên Thái", desc: "Đại Cát! Âm dương giao hòa, trên dưới đồng lòng, vạn sự hanh thông." },
+        "000111": { name: "Thiên Địa Bĩ", desc: "Bế tắc, tiểu nhân đắc thế. Nên thu mình lại để bảo toàn lực lượng." },
+        "101111": { name: "Thiên Hỏa Đồng Nhân", desc: "Đồng tâm hiệp lực cùng chí hướng. Ra ngoài kết giao rất thuận lợi." },
+        "111101": { name: "Hỏa Thiên Đại Hữu", desc: "Sở hữu lớn, tài lộc dồi dào. Giai đoạn cực thịnh, công thành danh toại." },
+        "001000": { name: "Địa Sơn Khiêm", desc: "Khiêm tốn, nhún nhường thì việc gì cũng thành. Lấy nhu thắng cương." },
+        "000100": { name: "Lôi Địa Dự", desc: "Vui vẻ, hân hoan. Thời cơ đã chín muồi để bắt đầu hành động." },
+        "100110": { name: "Trạch Lôi Tùy", desc: "Tùy cơ ứng biến, thuận theo thời thế. Làm theo số đông sẽ có lợi." },
+        "011001": { name: "Sơn Phong Cổ", desc: "Bên trong có sự thối nát, hỏng hóc. Cần mạnh tay cải tổ, dọn dẹp lại." },
+        "110000": { name: "Địa Trạch Lâm", desc: "Tiến đến, bao trùm. Vận khí đang lên, là lúc nắm quyền lãnh đạo." },
+        "000011": { name: "Phong Địa Quán", desc: "Quan sát, xem xét kỹ lưỡng. Đừng vội quyết định, hãy tĩnh tâm nhìn nhận." },
+        "100101": { name: "Hỏa Lôi Phệ Hạp", desc: "Có rào cản cần cắn đứt. Cần dùng hình phạt hoặc hành động quyết liệt." },
+        "101001": { name: "Sơn Hỏa Bí", desc: "Trang sức, bề ngoài hào nhoáng. Chỉ phù hợp với việc nhỏ, văn chương nghệ thuật." },
+        "000001": { name: "Sơn Địa Bác", desc: "Suy vi, bóc lột, tiểu nhân dồn ép. Chớ nên manh động." },
+        "100000": { name: "Địa Lôi Phục", desc: "Sự phục hồi. Sau cơn mưa trời lại sáng, bắt đầu chu kỳ tốt đẹp mới." },
+        "100111": { name: "Thiên Lôi Vô Vọng", desc: "Đừng mưu cầu viển vông. Hãy làm việc thuận theo tự nhiên thì giữ được yên ổn." },
+        "111001": { name: "Sơn Thiên Đại Súc", desc: "Tích lũy tài sản và tri thức lớn lao. Thời điểm bùng nổ sức mạnh." },
+        "100001": { name: "Sơn Lôi Di", desc: "Nuôi dưỡng, bồi bổ. Cẩn thận lời ăn tiếng nói và việc ăn uống." },
+        "011110": { name: "Trạch Phong Đại Quá", desc: "Cột nhà oằn xuống, sức chịu đựng quá tải. Cần hành động bất thường để thoát hiểm." },
+        "010010": { name: "Bát Thuần Khảm", desc: "Hiểm nguy trùng trùng (nước sâu). Cần giữ tâm kiên định để vượt qua sóng gió." },
+        "101101": { name: "Bát Thuần Ly", desc: "Sáng sủa, chói lọi nhưng dễ bốc đồng. Cần dựa vào nền tảng vững chắc." },
+        "001110": { name: "Trạch Sơn Hàm", desc: "Sự cảm ứng, giao cảm nam nữ. Rất tốt cho tình duyên và hợp tác." },
+        "011100": { name: "Lôi Phong Hằng", desc: "Sự bền bỉ, trường cửu. Cứ giữ nguyên đường lối cũ sẽ thành công." },
+        "001111": { name: "Thiên Sơn Độn", desc: "Rút lui, ẩn nấp. Thời điểm tiểu nhân đang mạnh, lùi lại là thượng sách." },
+        "111100": { name: "Lôi Thiên Đại Tráng", desc: "Sức mạnh đang ở độ sung mãn nhất. Tuyệt đối không được kiêu ngạo, vấp ngã." },
+        "000101": { name: "Hỏa Địa Tấn", desc: "Tiến lên, vinh hiển. Mặt trời mọc, công danh sự nghiệp rạng rỡ." },
+        "101000": { name: "Địa Hỏa Minh Di", desc: "Ánh sáng bị che khuất. Bị hiểu lầm, trù dập. Nên ẩn nhẫn chờ thời." },
+        "101011": { name: "Phong Hỏa Gia Nhân", desc: "Quẻ của gia đạo. Tề gia nội trợ tốt thì mọi việc bên ngoài ắt thành công." },
+        "110101": { name: "Hỏa Trạch Khuê", desc: "Sự trái ngược, bất đồng quan điểm. Nội bộ lục đục, khó làm việc lớn." },
+        "001010": { name: "Thủy Sơn Kiển", desc: "Què quặt, gian nan bế tắc. Phía trước là đầm lầy, tốt nhất là nên dừng lại." },
+        "010100": { name: "Lôi Thủy Giải", desc: "Cởi trói, giải phóng. Mối nguy đã qua, hãy tha thứ và làm lại từ đầu." },
+        "110001": { name: "Sơn Trạch Tổn", desc: "Tổn thất, bớt đi. Chịu thiệt thòi lúc này để đổi lấy lợi ích lâu dài về sau." },
+        "100011": { name: "Phong Lôi Ích", desc: "Thêm vào, được lợi. Thời kỳ vàng để đầu tư và mở rộng." },
+        "111110": { name: "Trạch Thiên Quải", desc: "Quyết đoán, dứt khoát cắt bỏ thành phần độc hại. Cần cẩn trọng thế lực ngầm." },
+        "011111": { name: "Thiên Phong Cấu", desc: "Sự gặp gỡ bất ngờ (thường là tiểu nhân hoặc tình duyên thoáng qua). Chớ tin người." },
+        "000110": { name: "Trạch Địa Tụy", desc: "Nhóm họp, tụ tập nhân tài, của cải. Đang có quý nhân phù trợ." },
+        "011000": { name: "Địa Phong Thăng", desc: "Thăng tiến, vươn lên đều đặn như mầm cây. Tốt cho cầu quan chức, công danh." },
+        "010110": { name: "Trạch Thủy Khốn", desc: "Cùng quẫn, bị vây hãm bốn bề. Không ai tin tưởng, phải tự cứu mình." },
+        "011010": { name: "Thủy Phong Tỉnh", desc: "Giếng nước. Lặng lẽ tu thân, bồi bổ kiến thức. Chớ nôn nóng đổi dời." },
+        "101110": { name: "Trạch Hỏa Cách", desc: "Đổi mới, cách mạng. Đập đi xây lại cấu trúc cũ thì mới có tương lai." },
+        "011101": { name: "Hỏa Phong Đỉnh", desc: "Chiếc vạc vững chãi. Định hình cơ đồ, được giao trọng trách lớn." },
+        "100100": { name: "Bát Thuần Chấn", desc: "Biến động dữ dội, sấm sét kinh hãi nhưng không để lại hậu quả. Cứ giữ bình tĩnh." },
+        "001001": { name: "Bát Thuần Cấn", desc: "Ngưng nghỉ, dừng lại đúng lúc. Việc gì đến tay cũng nên án binh bất động." },
+        "001011": { name: "Phong Sơn Tiệm", desc: "Chậm rãi, tuần tự nhi tiến. Dục tốc bất đạt, cứ thong thả thì chắc thắng." },
+        "110100": { name: "Lôi Trạch Quy Muội", desc: "Lệch pha, kết hợp miễn cưỡng. Mọi việc không như ý nguyện ban đầu." },
+        "101100": { name: "Lôi Hỏa Phong", desc: "Cực thịnh, phồn hoa tột đỉnh. Chú ý luật 'Vật cực tất phản' (thịnh quá sẽ suy)." },
+        "001101": { name: "Hỏa Sơn Lữ", desc: "Lữ khách tha hương. Việc đi lại, xuất ngoại thì được, việc ổn định thì khó." },
+        "011011": { name: "Bát Thuần Tốn", desc: "Thuận theo, thâm nhập dần dần. Cần sự mềm mỏng, linh hoạt như cơn gió." },
+        "110110": { name: "Bát Thuần Đoài", desc: "Hòa nhã, vui vẻ, thuyết phục. Khéo léo trong giao tiếp sẽ thu phục được nhân tâm." },
+        "010011": { name: "Phong Thủy Hoán", desc: "Tan vỡ, phát tán. Cái xấu bị cuốn trôi, chuẩn bị đón nhận cơ hội mới." },
+        "110010": { name: "Thủy Trạch Tiết", desc: "Tiết chế, biết đủ. Giới hạn lại lòng tham, chi tiêu chừng mực thì giữ được lộc." },
+        "110011": { name: "Phong Trạch Trung Phu", desc: "Tín thực. Lấy sự chân thành tuyệt đối để cảm hóa lòng người." },
+        "001100": { name: "Lôi Sơn Tiểu Quá", desc: "Chỉ nên làm việc nhỏ, bay thấp. Việc lớn đầu tư mạnh tay ắt gặp họa." },
+        "101010": { name: "Thủy Hỏa Ký Tế", desc: "Mọi việc đã hoàn thành, trật tự đâu vào đấy. Chú ý phòng ngừa sự suy thoái." },
+        "010101": { name: "Hỏa Thủy Vị Tế", desc: "Mọi sự còn dang dở, chưa xong. Tương lai phía trước vẫn còn vô vàn biến số." }
+    };
 
     // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
     // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
@@ -692,28 +758,32 @@
         }, 1200);
     }
 
+    // Hàm Xử lý từng Hào (Tính cả giá trị Nhị phân)
     function processHaoResult(headsCount) {
-        let haoHTML = ''; let isDong = false;
+        let haoHTML = ''; let isDong = false; let binaryValue = 0;
         
-        // CSS inline cho các Hào
         const duongStyle = "width: 100%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
         const amStyle = "width: 100%; height: 100%; display: flex; justify-content: space-between;";
         const amPill = "width: 45%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
         const dongMark = "position: absolute; right: -25px; color: #e74c3c; font-weight: bold; font-size: 1.2rem; line-height: 18px;";
 
+        // Logic 3 đồng xu quy chuẩn thành Mã Nhị Phân (0/1)
         if (headsCount === 0) { // 3 Ngửa -> Âm Động
-            isDong = true; 
+            isDong = true; binaryValue = 0;
             haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div><span style="${dongMark}">✕</span>`;
         } else if (headsCount === 1) { // 1 Sấp 2 Ngửa -> Dương Tĩnh
+            binaryValue = 1;
             haoHTML = `<div style="${duongStyle}"></div>`;
         } else if (headsCount === 2) { // 2 Sấp 1 Ngửa -> Âm Tĩnh
+            binaryValue = 0;
             haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div>`;
         } else if (headsCount === 3) { // 3 Sấp -> Dương Động
-            isDong = true; 
+            isDong = true; binaryValue = 1;
             haoHTML = `<div style="${duongStyle}"></div><span style="${dongMark}">O</span>`;
         }
 
-        hexagramData.push({ line: currentHao, isDong: isDong });
+        // Lưu lại dữ liệu từng Hào
+        hexagramData.push({ line: currentHao, isDong: isDong, val: binaryValue });
 
         const drawArea = document.getElementById('hexagram-draw-area');
         const newRow = document.createElement('div');
@@ -732,7 +802,7 @@
             btn.disabled = false;
             btn.style.opacity = "1";
         } else {
-            btn.innerText = "ĐANG LẬP QUẺ...";
+            btn.innerText = "ĐANG DỊCH QUẺ...";
             setTimeout(() => {
                 btn.style.display = 'none'; 
                 document.getElementById('coin-area').style.display = 'none'; 
@@ -741,14 +811,32 @@
         }
     }
 
+    // Hàm Nhả Kết Quả Thực Chiến
     function showResult() {
         document.getElementById('hexagram-result').style.display = 'block';
-        const mockQue = ["Thủy Lôi Truân", "Địa Lôi Phục", "Hỏa Thiên Đại Hữu", "Trạch Thủy Khốn", "Thiên Phong Cấu", "Địa Thiên Thái"];
-        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
         
-        document.getElementById('res-que').innerText = mockQue[Math.floor(Math.random() * mockQue.length)];
-        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không có hào động)" : "Động ở Hào " + dongLines;
-        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
+        // 1. Tự động ghép 6 Hào thành chuỗi Nhị Phân (Từ dưới lên)
+        const binaryCode = hexagramData.map(h => h.val).join('');
+        
+        // 2. Lấy dữ liệu Quẻ từ Database
+        const ketQuaQue = QUE_DATA[binaryCode];
+        const tenQue = ketQuaQue ? ketQuaQue.name : "Không xác định";
+        const yNghiaQue = ketQuaQue ? ketQuaQue.desc : "Đã có lỗi dữ liệu gieo quẻ.";
+
+        // 3. Tìm các Hào Động
+        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
+        let hienThiDong = dongLines === "" ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
+        
+        // Cập nhật lên Giao Diện
+        document.getElementById('res-que').innerText = tenQue;
+        document.getElementById('res-dong').innerText = hienThiDong;
+        
+        // Tôi đã thêm một thẻ p để hiển thị ý nghĩa súc tích của Quẻ ngay dưới tên Quẻ
+        const moTaQueHTML = `<p style="margin: 8px 0 15px 0; font-size: 1rem; color: #555; font-style: italic;">"${yNghiaQue}"</p>`;
+        document.getElementById('res-que').insertAdjacentHTML('afterend', moTaQueHTML);
+
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1; // Số ứng kỳ vẫn lấy gợi ý
+        
         document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
     }
     // =========================================================
