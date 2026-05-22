@@ -194,9 +194,6 @@
             <button class="tab-btn" onclick="switchTab('books', this)">TỦ SÁCH CỔ HỌC</button>
             <button class="tab-btn" onclick="switchTab('register', this)" style="font-weight: 700;">ĐĂNG KÝ XEM SỐ ★</button>
         </div>
-        <div id="search-container">
-            <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
-        </div>
     </div>
     <div id="filter-bar" class="filter-bar"></div>
 </div>
@@ -302,7 +299,7 @@
         </form>
     </div>
 
-<footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);">
+<footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);margin-top: 20px">
     <p style="margin-bottom: 15px; font-size: 1.05rem; font-weight: bold; color: #aaa;">&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
     
     <p style="font-size: 0.85rem; opacity: 0.6; max-width: 800px; margin: 0 auto; line-height: 1.6; text-align: justify; text-align-last: center;">
@@ -402,9 +399,19 @@
 
     function renderTags() {
         const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
-        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => 
+        
+        // Gộp cả Ô TÌM KIẾM vào chung hàng với các Tag
+        const searchHtml = `
+            <input type="text" id="search-bar" placeholder="🔍 Tìm trong bài viết..." 
+                   onkeyup="handleSearch()" 
+                   style="padding: 6px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 0.85rem; width: 200px;">
+        `;
+        
+        const tagsHtml = Array.from(tags).map(t => 
             `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
         ).join('');
+    
+        document.getElementById('filter-bar').innerHTML = searchHtml + tagsHtml;
     }
 
     function filterByTag(tag) {
@@ -421,53 +428,48 @@
     }
 
     function switchTab(type, element) {
-        // 🌟 1. LUÔN LUÔN DỌN DẸP KHỐI QR DONATE KHI CHUYỂN TAB
-        const oldDonate = document.getElementById('pdf-donate-section');
-        if (oldDonate) oldDonate.remove();
+    // 1. Dọn dẹp
+    const oldDonate = document.getElementById('pdf-donate-section');
+    if (oldDonate) oldDonate.remove();
 
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if(element) element.classList.add('active');
-    
-        const grid = document.getElementById('post-grid');
-        const pagination = document.getElementById('post-pagination');
-        const filterBar = document.getElementById('filter-bar');
-        const searchContainer = document.getElementById('search-container');
-        const formWrapper = document.getElementById('consultation-form-wrapper');
-    
-        grid.style.display = "grid";
-        pagination.style.display = "flex";
-        formWrapper.style.display = "none";
-        searchContainer.style.display = "block";
-        grid.innerHTML = ""; 
-    
-       if (type === 'pdf') {
-            currentPdfPage = 1;
-            filterBar.style.display = "none";
-            pagination.innerHTML = "";
-            // CHỈ SỬA DUY NHẤT DÒNG DƯỚI ĐÂY:
-            renderGieoQueUI(); 
-        } else if (type === 'video') { 
-            filterBar.style.display = "none";
-            pagination.innerHTML = "";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
-            loadVideoLibrary(); 
-        } else if (type === 'register') {
-            grid.style.display = "none";
-            pagination.style.display = "none";
-            filterBar.style.display = "none";
-            searchContainer.style.display = "none";
-            formWrapper.style.display = "block";
-        } else if (type === 'books') {
-            filterBar.style.display = "none";
-            pagination.style.display = "none"; 
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách di sản...</div>";
-            loadAffiliateBooks(); 
-        }
-        else {
-            filterBar.style.display = "flex";
-            renderUI();
-        }
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if(element) element.classList.add('active');
+
+    const grid = document.getElementById('post-grid');
+    const pagination = document.getElementById('post-pagination');
+    const filterBar = document.getElementById('filter-bar');
+    const formWrapper = document.getElementById('consultation-form-wrapper');
+
+    // Mặc định reset giao diện
+    grid.style.display = "grid";
+    pagination.style.display = "flex";
+    formWrapper.style.display = "none";
+    filterBar.style.display = "none"; // Mặc định ẩn thanh lọc
+    grid.innerHTML = "";
+
+    // 2. Logic theo từng Tab
+    if (type === 'posts') {
+        filterBar.style.display = "flex"; // Hiện thanh chứa Tag + Tìm kiếm
+        renderTags(); 
+        renderUI();
+    } else if (type === 'pdf') {
+        currentPdfPage = 1;
+        pagination.innerHTML = "";
+        renderGieoQueUI();
+    } else if (type === 'video') {
+        pagination.innerHTML = "";
+        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+        loadVideoLibrary();
+    } else if (type === 'register') {
+        grid.style.display = "none";
+        pagination.style.display = "none";
+        formWrapper.style.display = "block";
+    } else if (type === 'books') {
+        pagination.style.display = "none";
+        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách...</div>";
+        loadAffiliateBooks();
     }
+}
 
     // 2. TỐI ƯU CACHE CHO TỦ SÁCH (Hàm loadAffiliateBooks)
     async function loadAffiliateBooks() {
