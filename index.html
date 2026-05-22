@@ -407,19 +407,11 @@
 
     function renderTags() {
         const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
-        
-        // Gộp cả Ô TÌM KIẾM vào chung hàng với các Tag
-        const searchHtml = `
-            <input type="text" id="search-bar" placeholder="🔍 Tìm trong bài viết..." 
-                   onkeyup="handleSearch()" 
-                   style="padding: 6px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 0.85rem; width: 200px;">
-        `;
-        
         const tagsHtml = Array.from(tags).map(t => 
             `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
         ).join('');
     
-        document.getElementById('filter-bar').innerHTML = searchHtml + tagsHtml;
+        document.getElementById('filter-bar').innerHTML =  tagsHtml;
     }
 
     function filterByTag(tag) {
