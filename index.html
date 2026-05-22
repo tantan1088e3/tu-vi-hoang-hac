@@ -20,8 +20,39 @@
         header p { margin-top: 10px; opacity: 0.9; font-style: italic; }
         .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-        .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: #5d1a1a; }
+        /* TỐI ƯU MENU - Ép vào 1 hàng duy nhất */
+        .tabs {
+            display: flex;
+            flex-wrap: nowrap; /* Cấm xuống dòng */
+            width: 100%;
+            background: #e0d5c1;
+            padding: 8px 4px;
+            border-radius: 8px;
+            gap: 4px; /* Khoảng cách giữa các nút */
+            box-sizing: border-box;
+            overflow-x: hidden; /* Ẩn phần thừa nếu có */
+        }
+        
+        .tab-btn {
+            flex: 1; /* Các nút tự chia đều diện tích */
+            padding: 8px 2px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: bold;
+            color: #5d1a1a;
+            font-size: 0.75rem; /* Giảm size chữ để nhét vừa trên điện thoại */
+            white-space: nowrap; /* Chữ luôn nằm trên 1 hàng */
+            text-align: center;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        
+        /* Đảm bảo ô tìm kiếm không phá vỡ layout */
+        #search-container-custom {
+            width: 100%;
+            margin-top: 10px;
+        }
         .tab-btn.active { background: var(--primary-color); color: white; }
         #search-container { display: block; }
         #search-bar {
