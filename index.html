@@ -228,7 +228,11 @@
 </div>
 
 <footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);">
-    <p style="margin-bottom: 20px;">&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
+    <p style="margin-bottom: 15px; font-size: 1.05rem; font-weight: bold; color: #aaa;">&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
+    
+    <p style="font-size: 0.85rem; opacity: 0.6; max-width: 800px; margin: 0 auto; line-height: 1.6; text-align: justify; text-align-last: center;">
+        <em>* Khuyến nghị: Các nội dung luận giải Tử Vi và Lục Hào Kinh Dịch trên website được tổng hợp từ nền tảng triết học cổ học phương Đông. Mọi phân tích và tài liệu (PDF) chỉ mang tính chất chiêm nghiệm, tham khảo học thuật. Đương số hoàn toàn tự cân nhắc và tự chịu trách nhiệm với mọi quyết định cá nhân trong cuộc sống thực tế.</em>
+    </p>
 </footer>
 
 <script>
@@ -604,71 +608,331 @@
     let currentHao = 1;
     let hexagramData = [];
     const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
+    // =========================================================
+    // 🌟 KHO DỮ LIỆU 64 QUẺ KINH DỊCH THỰC CHIẾN (FULL VER)
+    // Quy ước mã hóa: 1 = Hào Dương, 0 = Hào Âm (Từ dưới lên)
+    // =========================================================
     const QUE_DATA = {
-        "111111": { name: "Bát Thuần Càn", desc: "Vạn sự khởi đầu đại hanh thông, mạnh mẽ, cương quyết." },
-        "000000": { name: "Bát Thuần Khôn", desc: "Nhu thuận, bao dung. Thời điểm cần nhẫn nại, lùi một bước biển rộng trời cao." },
-        "100010": { name: "Thủy Lôi Truân", desc: "Gian nan, trắc trở lúc ban đầu. Cần tích lũy nội lực chờ thời." },
-        "010001": { name: "Sơn Thủy Mông", desc: "Mờ mịt, thiếu phương hướng. Cần tìm bậc minh sư để chỉ đường dẫn lối." },
-        "111010": { name: "Thủy Thiên Nhu", desc: "Có hiểm nguy phía trước. Cần bình tâm chờ đợi, dục tốc bất đạt." },
-        "010111": { name: "Thiên Thủy Tụng", desc: "Dễ dính vào kiện tụng, tranh chấp thị phi. Nên dĩ hòa vi quý." },
-        "010000": { name: "Địa Thủy Sư", desc: "Hội tụ lực lượng. Cần sự kỷ luật thép và người lãnh đạo tài ba." },
-        "000010": { name: "Thủy Địa Tỷ", desc: "Sự gắn kết, gần gũi. Rất tốt cho việc hợp tác, kết giao bằng hữu." },
-        "111011": { name: "Phong Thiên Tiểu Súc", desc: "Tích lũy nhỏ, tạm thời bị kìm hãm. Cần mềm mỏng tiến từng bước." },
-        "110111": { name: "Thiên Trạch Lý", desc: "Đi trên đuôi cọp. Cần hành sự cẩn trọng, giữ đúng lễ nghĩa." },
-        "111000": { name: "Địa Thiên Thái", desc: "Đại Cát! Âm dương giao hòa, trên dưới đồng lòng, vạn sự hanh thông." },
-        "000111": { name: "Thiên Địa Bĩ", desc: "Bế tắc, tiểu nhân đắc thế. Nên thu mình lại để bảo toàn lực lượng." },
-        "101111": { name: "Thiên Hỏa Đồng Nhân", desc: "Đồng tâm hiệp lực cùng chí hướng. Ra ngoài kết giao rất thuận lợi." },
-        "111101": { name: "Hỏa Thiên Đại Hữu", desc: "Sở hữu lớn, tài lộc dồi dào. Giai đoạn cực thịnh, công thành danh toại." },
-        "001000": { name: "Địa Sơn Khiêm", desc: "Khiêm tốn, nhún nhường thì việc gì cũng thành. Lấy nhu thắng cương." },
-        "000100": { name: "Lôi Địa Dự", desc: "Vui vẻ, hân hoan. Thời cơ đã chín muồi để bắt đầu hành động." },
-        "100110": { name: "Trạch Lôi Tùy", desc: "Tùy cơ ứng biến, thuận theo thời thế. Làm theo số đông sẽ có lợi." },
-        "011001": { name: "Sơn Phong Cổ", desc: "Bên trong có sự thối nát, hỏng hóc. Cần mạnh tay cải tổ, dọn dẹp lại." },
-        "110000": { name: "Địa Trạch Lâm", desc: "Tiến đến, bao trùm. Vận khí đang lên, là lúc nắm quyền lãnh đạo." },
-        "000011": { name: "Phong Địa Quán", desc: "Quan sát, xem xét kỹ lưỡng. Đừng vội quyết định, hãy tĩnh tâm nhìn nhận." },
-        "100101": { name: "Hỏa Lôi Phệ Hạp", desc: "Có rào cản cần cắn đứt. Cần dùng hình phạt hoặc hành động quyết liệt." },
-        "101001": { name: "Sơn Hỏa Bí", desc: "Trang sức, bề ngoài hào nhoáng. Chỉ phù hợp với việc nhỏ, văn chương nghệ thuật." },
-        "000001": { name: "Sơn Địa Bác", desc: "Suy vi, bóc lột, tiểu nhân dồn ép. Chớ nên manh động." },
-        "100000": { name: "Địa Lôi Phục", desc: "Sự phục hồi. Sau cơn mưa trời lại sáng, bắt đầu chu kỳ tốt đẹp mới." },
-        "100111": { name: "Thiên Lôi Vô Vọng", desc: "Đừng mưu cầu viển vông. Hãy làm việc thuận theo tự nhiên thì giữ được yên ổn." },
-        "111001": { name: "Sơn Thiên Đại Súc", desc: "Tích lũy tài sản và tri thức lớn lao. Thời điểm bùng nổ sức mạnh." },
-        "100001": { name: "Sơn Lôi Di", desc: "Nuôi dưỡng, bồi bổ. Cẩn thận lời ăn tiếng nói và việc ăn uống." },
-        "011110": { name: "Trạch Phong Đại Quá", desc: "Cột nhà oằn xuống, sức chịu đựng quá tải. Cần hành động bất thường để thoát hiểm." },
-        "010010": { name: "Bát Thuần Khảm", desc: "Hiểm nguy trùng trùng (nước sâu). Cần giữ tâm kiên định để vượt qua sóng gió." },
-        "101101": { name: "Bát Thuần Ly", desc: "Sáng sủa, chói lọi nhưng dễ bốc đồng. Cần dựa vào nền tảng vững chắc." },
-        "001110": { name: "Trạch Sơn Hàm", desc: "Sự cảm ứng, giao cảm nam nữ. Rất tốt cho tình duyên và hợp tác." },
-        "011100": { name: "Lôi Phong Hằng", desc: "Sự bền bỉ, trường cửu. Cứ giữ nguyên đường lối cũ sẽ thành công." },
-        "001111": { name: "Thiên Sơn Độn", desc: "Rút lui, ẩn nấp. Thời điểm tiểu nhân đang mạnh, lùi lại là thượng sách." },
-        "111100": { name: "Lôi Thiên Đại Tráng", desc: "Sức mạnh đang ở độ sung mãn nhất. Tuyệt đối không được kiêu ngạo, vấp ngã." },
-        "000101": { name: "Hỏa Địa Tấn", desc: "Tiến lên, vinh hiển. Mặt trời mọc, công danh sự nghiệp rạng rỡ." },
-        "101000": { name: "Địa Hỏa Minh Di", desc: "Ánh sáng bị che khuất. Bị hiểu lầm, trù dập. Nên ẩn nhẫn chờ thời." },
-        "101011": { name: "Phong Hỏa Gia Nhân", desc: "Quẻ của gia đạo. Tề gia nội trợ tốt thì mọi việc bên ngoài ắt thành công." },
-        "110101": { name: "Hỏa Trạch Khuê", desc: "Sự trái ngược, bất đồng quan điểm. Nội bộ lục đục, khó làm việc lớn." },
-        "001010": { name: "Thủy Sơn Kiển", desc: "Què quặt, gian nan bế tắc. Phía trước là đầm lầy, tốt nhất là nên dừng lại." },
-        "010100": { name: "Lôi Thủy Giải", desc: "Cởi trói, giải phóng. Mối nguy đã qua, hãy tha thứ và làm lại từ đầu." },
-        "110001": { name: "Sơn Trạch Tổn", desc: "Tổn thất, bớt đi. Chịu thiệt thòi lúc này để đổi lấy lợi ích lâu dài về sau." },
-        "100011": { name: "Phong Lôi Ích", desc: "Thêm vào, được lợi. Thời kỳ vàng để đầu tư và mở rộng." },
-        "111110": { name: "Trạch Thiên Quải", desc: "Quyết đoán, dứt khoát cắt bỏ thành phần độc hại. Cần cẩn trọng thế lực ngầm." },
-        "011111": { name: "Thiên Phong Cấu", desc: "Sự gặp gỡ bất ngờ (thường là tiểu nhân hoặc tình duyên thoáng qua). Chớ tin người." },
-        "000110": { name: "Trạch Địa Tụy", desc: "Nhóm họp, tụ tập nhân tài, của cải. Đang có quý nhân phù trợ." },
-        "011000": { name: "Địa Phong Thăng", desc: "Thăng tiến, vươn lên đều đặn như mầm cây. Tốt cho cầu quan chức, công danh." },
-        "010110": { name: "Trạch Thủy Khốn", desc: "Cùng quẫn, bị vây hãm bốn bề. Không ai tin tưởng, phải tự cứu mình." },
-        "011010": { name: "Thủy Phong Tỉnh", desc: "Giếng nước. Lặng lẽ tu thân, bồi bổ kiến thức. Chớ nôn nóng đổi dời." },
-        "101110": { name: "Trạch Hỏa Cách", desc: "Đổi mới, cách mạng. Đập đi xây lại cấu trúc cũ thì mới có tương lai." },
-        "011101": { name: "Hỏa Phong Đỉnh", desc: "Chiếc vạc vững chãi. Định hình cơ đồ, được giao trọng trách lớn." },
-        "100100": { name: "Bát Thuần Chấn", desc: "Biến động dữ dội, sấm sét kinh hãi nhưng không để lại hậu quả. Cứ giữ bình tĩnh." },
-        "001001": { name: "Bát Thuần Cấn", desc: "Ngưng nghỉ, dừng lại đúng lúc. Việc gì đến tay cũng nên án binh bất động." },
-        "001011": { name: "Phong Sơn Tiệm", desc: "Chậm rãi, tuần tự nhi tiến. Dục tốc bất đạt, cứ thong thả thì chắc thắng." },
-        "110100": { name: "Lôi Trạch Quy Muội", desc: "Lệch pha, kết hợp miễn cưỡng. Mọi việc không như ý nguyện ban đầu." },
-        "101100": { name: "Lôi Hỏa Phong", desc: "Cực thịnh, phồn hoa tột đỉnh. Chú ý luật 'Vật cực tất phản' (thịnh quá sẽ suy)." },
-        "001101": { name: "Hỏa Sơn Lữ", desc: "Lữ khách tha hương. Việc đi lại, xuất ngoại thì được, việc ổn định thì khó." },
-        "011011": { name: "Bát Thuần Tốn", desc: "Thuận theo, thâm nhập dần dần. Cần sự mềm mỏng, linh hoạt như cơn gió." },
-        "110110": { name: "Bát Thuần Đoài", desc: "Hòa nhã, vui vẻ, thuyết phục. Khéo léo trong giao tiếp sẽ thu phục được nhân tâm." },
-        "010011": { name: "Phong Thủy Hoán", desc: "Tan vỡ, phát tán. Cái xấu bị cuốn trôi, chuẩn bị đón nhận cơ hội mới." },
-        "110010": { name: "Thủy Trạch Tiết", desc: "Tiết chế, biết đủ. Giới hạn lại lòng tham, chi tiêu chừng mực thì giữ được lộc." },
-        "110011": { name: "Phong Trạch Trung Phu", desc: "Tín thực. Lấy sự chân thành tuyệt đối để cảm hóa lòng người." },
-        "001100": { name: "Lôi Sơn Tiểu Quá", desc: "Chỉ nên làm việc nhỏ, bay thấp. Việc lớn đầu tư mạnh tay ắt gặp họa." },
-        "101010": { name: "Thủy Hỏa Ký Tế", desc: "Mọi việc đã hoàn thành, trật tự đâu vào đấy. Chú ý phòng ngừa sự suy thoái." },
-        "010101": { name: "Hỏa Thủy Vị Tế", desc: "Mọi sự còn dang dở, chưa xong. Tương lai phía trước vẫn còn vô vàn biến số." }
+        "111111": { 
+            name: "Bát Thuần Càn (Càn Vi Thiên)", 
+            desc: "Vạn sự khởi đầu đại hanh thông, mạnh mẽ, cương quyết.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang ở thế cực thịnh, sức sáng tạo và hành động dồi dào. Tuy nhiên cần tránh kiêu ngạo kẻo gãy đổ.<br><b>• Sự nghiệp:</b> Có quyền hành, được cấp trên nể trọng. Thời điểm tốt để đứng ra nhận việc lớn hoặc khởi nghiệp.<br><b>• Tài lộc:</b> Thu nhập gia tăng mạnh mẽ, dòng tiền hanh thông. Phù hợp đầu tư dài hạn.<br><b>• Tình cảm:</b> Hơi cứng nhắc, thiếu sự mềm mỏng, dễ xảy ra tranh cãi vì ai cũng muốn làm chủ."
+        },
+        "000000": { 
+            name: "Bát Thuần Khôn (Khôn Vi Địa)", 
+            desc: "Nhu thuận, bao dung. Thời điểm cần nhẫn nại, lấy tĩnh chế động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Không nên đi tiên phong. Mọi việc cứ từ từ, lùi một bước biển rộng trời cao, thuận theo tự nhiên sẽ thành tựu.<br><b>• Sự nghiệp:</b> Phù hợp làm người hỗ trợ, phó tướng. Không nên tự mình đứng mũi chịu sào lúc này.<br><b>• Tài lộc:</b> Tích tiểu thành đại, tiền bạc chậm nhưng chắc. Cực kỳ tốt nếu đầu tư liên quan đến bất động sản, đất đai.<br><b>• Tình cảm:</b> Gia đạo êm ấm, người phụ nữ đóng vai trò gìn giữ hòa khí. Tình duyên thuận lợi nếu biết nhường nhịn."
+        },
+        "100010": { 
+            name: "Thủy Lôi Truân", 
+            desc: "Gian nan, trắc trở lúc ban đầu. Cần tích lũy nội lực chờ thời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mầm non mới nhú gặp sương giá, vạn sự khởi đầu nan. Tuyệt đối không được nôn nóng.<br><b>• Sự nghiệp:</b> Đầy rẫy khó khăn, lập kế hoạch dễ bị đình trệ. Cần tìm sự trợ giúp từ những người đi trước.<br><b>• Tài lộc:</b> Hao hụt, khó xoay vòng vốn. Không nên vung tiền đầu tư mạo hiểm lúc này.<br><b>• Tình cảm:</b> Có sự rụt rè, bế tắc hoặc hoàn cảnh chưa cho phép tiến xa. Cần thêm thời gian thử thách."
+        },
+        "010001": { 
+            name: "Sơn Thủy Mông", 
+            desc: "Mờ mịt, thiếu phương hướng. Cần tìm bậc minh sư chỉ lối.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đang bị che mờ như sương sớm. Hành động bốc đồng lúc này sẽ dẫn đến sai lầm tột độ.<br><b>• Sự nghiệp:</b> Thiếu kinh nghiệm, dễ bị tiểu nhân che mắt. Hãy học hỏi, đào tạo thêm trước khi quyết định.<br><b>• Tài lộc:</b> Dễ bị lừa gạt, đầu tư mù quáng. Nên giữ chặt tiền chờ thời cơ rõ ràng hơn.<br><b>• Tình cảm:</b> Mập mờ, chưa thấu hiểu nhau. Đừng vội vàng chốt hạ chuyện trăm năm."
+        },
+        "111010": { 
+            name: "Thủy Thiên Nhu", 
+            desc: "Có hiểm nguy phía trước. Cần bình tâm chờ đợi, dục tốc bất đạt.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang bị mây đen cản lối. Mọi việc cứ giữ nguyên hiện trạng, tĩnh dưỡng tinh thần chờ thời cơ đổi thay.<br><b>• Sự nghiệp:</b> Kế hoạch tạm thời bị nghẽn. Cứ vui vẻ làm tốt việc hiện tại, cơ hội sẽ đến vào phút chót.<br><b>• Tài lộc:</b> Nguồn tiền chưa về ngay được, cần chờ đợi. Tránh vay mượn nóng để đập vào.<br><b>• Tình cảm:</b> Đang trong giai đoạn chờ đợi câu trả lời từ đối phương. Hãy kiên nhẫn, sự chân thành sẽ được đền đáp."
+        },
+        "010111": { 
+            name: "Thiên Thủy Tụng", 
+            desc: "Dễ dính vào kiện tụng, tranh chấp thị phi. Nên dĩ hòa vi quý.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Bất đồng quan điểm, đôi co, thậm chí đưa nhau ra pháp luật. Càng cố chấp càng thiệt thòi.<br><b>• Sự nghiệp:</b> Có tranh chấp về quyền lợi, hợp đồng. Nên tìm người hòa giải trung gian, tránh đối đầu trực diện.<br><b>• Tài lộc:</b> Hao tốn tiền bạc vì kiện cáo, cãi vã. Thà chịu thiệt một chút để đổi lấy bình yên.<br><b>• Tình cảm:</b> Mâu thuẫn gay gắt, dễ dẫn đến chia ly nếu không ai chịu hạ cái tôi xuống."
+        },
+        "010000": { 
+            name: "Địa Thủy Sư", 
+            desc: "Hội tụ lực lượng, xuất quân. Cần sự kỷ luật thép.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sắp phải bước vào một cuộc cạnh tranh khốc liệt. Cần tổ chức lại nội bộ và tuân thủ kỷ luật nghiêm ngặt.<br><b>• Sự nghiệp:</b> Cần người lãnh đạo tài ba cầm trịch. Làm việc nhóm và chia quy trình rõ ràng mới thắng lợi.<br><b>• Tài lộc:</b> Phải chi tiền để thiết lập lại hệ thống hoặc mở rộng thị phần. Có rủi ro nhưng đáng giá.<br><b>• Tình cảm:</b> Thiếu lãng mạn, quá lý trí. Đôi khi quản lý đối phương quá chặt khiến tình cảm ngột ngạt."
+        },
+        "000010": { 
+            name: "Thủy Địa Tỷ", 
+            desc: "Sự gắn kết, gần gũi. Rất tốt cho việc hợp tác, kết giao.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mọi người tìm đến nhau, hòa hợp, hỗ trợ. Vận khí hanh thông nếu đi chung đường.<br><b>• Sự nghiệp:</b> Tìm được đối tác ưng ý hoặc cộng sự đắc lực. Ngoại giao, đàm phán cực kỳ thuận lợi.<br><b>• Tài lộc:</b> Sinh lời từ việc hợp tác kinh doanh. Nên mở rộng mạng lưới khách hàng ngay.<br><b>• Tình cảm:</b> Đẹp đẽ, tâm đầu ý hợp. Hai bên có sự gắn kết mạnh mẽ, là quẻ cát cho hôn nhân."
+        },
+        "111011": { 
+            name: "Phong Thiên Tiểu Súc", 
+            desc: "Tích lũy nhỏ, tạm thời bị kìm hãm. Cần mềm mỏng tiến từng bước.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Năng lượng bị tích tụ, chưa thể bùng nổ ngay. Hãy làm những việc nhỏ, hoàn thiện chi tiết thay vì mưu sự lớn.<br><b>• Sự nghiệp:</b> Gặp tiểu nhân ngáng đường nhưng không đáng kể. Dùng sự khéo léo để lách qua khó khăn.<br><b>• Tài lộc:</b> Tích lũy được từng khoản nhỏ, đừng tham bát bỏ mâm. Chờ thời cơ lớn hơn.<br><b>• Tình cảm:</b> Có chút cãi vã vặt vãnh. Chú ý lời ăn tiếng nói để tránh xích mích không đáng."
+        },
+        "110111": { 
+            name: "Thiên Trạch Lý", 
+            desc: "Đi trên đuôi cọp. Cần hành sự cẩn trọng, giữ đúng lễ nghĩa.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Tình thế nguy hiểm, mạo hiểm. Chỉ có cách cư xử đúng mực, biết kính trên nhường dưới mới thoát hiểm.<br><b>• Sự nghiệp:</b> Đối mặt với sếp khó tính hoặc đối tác ngang ngược. Cần hết sức khéo léo, lễ phép.<br><b>• Tài lộc:</b> Kiếm được tiền nhưng đi kèm rủi ro pháp lý hoặc bị người khác soi mói. Minh bạch là trên hết.<br><b>• Tình cảm:</b> Một người quá lấn lướt, người kia phải chịu đựng. Cần tôn trọng giới hạn của nhau."
+        },
+        "111000": { 
+            name: "Địa Thiên Thái", 
+            desc: "Đại Cát! Âm dương giao hòa, trên dưới đồng lòng, vạn sự hanh thông.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời kỳ may mắn nhất, bế tắc được khơi thông. Nên tranh thủ thực hiện các dự định lớn.<br><b>• Sự nghiệp:</b> Thăng tiến, công danh rạng rỡ, cấp dưới phục tùng, sếp nâng đỡ. Vạn sự như ý.<br><b>• Tài lộc:</b> Thu hoạch lớn, lợi nhuận tăng vọt. Đầu tư đâu trúng đó, lộc lá dồi dào.<br><b>• Tình cảm:</b> Viên mãn, tình duyên như ý. Quẻ cực tốt để tính chuyện cưới xin, sinh con."
+        },
+        "000111": { 
+            name: "Thiên Địa Bĩ", 
+            desc: "Bế tắc, tiểu nhân đắc thế. Nên thu mình lại để bảo toàn lực lượng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trời đất nghẽn mạch, vạn vật đình trệ. Mọi nỗ lực đều như muối bỏ bể. Tốt nhất là ẩn nhẫn.<br><b>• Sự nghiệp:</b> Nội bộ lục đục, sếp không hiểu nhân viên, dễ bị vu oan giáng họa. Nên làm tốt việc của mình, bớt lo chuyện bao đồng.<br><b>• Tài lộc:</b> Thất thoát, làm ăn đình đốn. Chấm dứt các khoản đầu tư rủi ro để bảo toàn vốn.<br><b>• Tình cảm:</b> Lạnh nhạt, không cùng tiếng nói, thậm chí đứng trên bờ vực chia ly."
+        },
+        "101111": { 
+            name: "Thiên Hỏa Đồng Nhân", 
+            desc: "Đồng tâm hiệp lực cùng chí hướng. Ra ngoài kết giao rất thuận lợi.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hòa đồng, cởi mở. Đi ra ngoài giao lưu, kết bạn sẽ mở ra nhiều cơ hội lớn.<br><b>• Sự nghiệp:</b> Sức mạnh tập thể lên ngôi. Cần hội nhóm cùng chung chí hướng để đột phá doanh thu.<br><b>• Tài lộc:</b> Có lộc từ bạn bè, đối tác hoặc tiền hoa hồng. Việc chung dễ sinh lời.<br><b>• Tình cảm:</b> Quan hệ rộng rãi dễ tìm được người tâm đầu ý hợp trong các buổi tụ tập đông người."
+        },
+        "111101": { 
+            name: "Hỏa Thiên Đại Hữu", 
+            desc: "Sở hữu lớn, tài lộc dồi dào. Giai đoạn cực thịnh, công thành danh toại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đạt được đỉnh cao, rực rỡ như mặt trời giữa trưa. Cần giữ tấm lòng trong sáng để phúc lộc bền lâu.<br><b>• Sự nghiệp:</b> Công danh thăng tiến rực rỡ, được giao trọng trách lớn, tiếng tăm vang dội.<br><b>• Tài lộc:</b> Tiền bạc rủng rỉnh, của cải tích lũy nhiều. Một quẻ đại cát cho kinh doanh.<br><b>• Tình cảm:</b> Tốt đẹp, có sự tương trợ lẫn nhau. Tuy nhiên đừng vì mải mê sự nghiệp mà bỏ bê gia đình."
+        },
+        "001000": { 
+            name: "Địa Sơn Khiêm", 
+            desc: "Khiêm tốn, nhún nhường thì việc gì cũng thành. Lấy nhu thắng cương.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Chớ khoe khoang, càng nhún nhường càng được người khác tôn trọng và giúp đỡ.<br><b>• Sự nghiệp:</b> Được lòng đồng nghiệp và lãnh đạo. Bất cứ sự tranh giành nào lúc này cũng đem lại kết quả xấu.<br><b>• Tài lộc:</b> Tiền bạc ổn định. Đừng tham lam chèn ép đối thủ, lộc sẽ tự đến.<br><b>• Tình cảm:</b> Bình yên, thấu hiểu. Sự khiêm nhường giúp hóa giải mọi mâu thuẫn lứa đôi."
+        },
+        "000100": { 
+            name: "Lôi Địa Dự", 
+            desc: "Vui vẻ, hân hoan. Thời cơ đã chín muồi để bắt đầu hành động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đã được chuẩn bị kỹ lưỡng, nay được dịp bùng nổ mang lại niềm vui lớn.<br><b>• Sự nghiệp:</b> Kế hoạch xuất quân thuận lợi. Được mọi người hưởng ứng nhiệt tình, thăng tiến dễ dàng.<br><b>• Tài lộc:</b> Tài vận tốt, thu hoạch như ý muốn. Nhưng cẩn thận ăn chơi quá đà mà hao hụt.<br><b>• Tình cảm:</b> Mối quan hệ thăng hoa, có tin vui, hỷ sự hoặc tiệc tùng linh đình."
+        },
+        "100110": { 
+            name: "Trạch Lôi Tùy", 
+            desc: "Tùy cơ ứng biến, thuận theo thời thế. Làm theo số đông sẽ có lợi.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đừng bảo thủ cố chấp. Hãy linh hoạt xuôi theo dòng chảy của thời đại, nương tựa vào người khác.<br><b>• Sự nghiệp:</b> Không phải lúc làm người đi đầu. Nên tìm một đối tác mạnh để theo gót, học hỏi và phát triển.<br><b>• Tài lộc:</b> Thuận lợi nếu kinh doanh theo xu hướng đám đông. Tránh đầu tư những món quá khác biệt.<br><b>• Tình cảm:</b> Có sự thấu hiểu, chiều chuộng lẫn nhau. Biết lắng nghe đối phương sẽ giữ được hạnh phúc."
+        },
+        "011001": { 
+            name: "Sơn Phong Cổ", 
+            desc: "Bên trong có sự thối nát, hỏng hóc. Cần mạnh tay cải tổ, dọn dẹp lại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự vật đã lâu ngày sinh mọt. Bắt buộc phải phá bỏ cái cũ để xây dựng lại từ đầu.<br><b>• Sự nghiệp:</b> Hệ thống hoặc nhân sự có vấn đề ngầm. Phải thanh lọc đội ngũ, sửa chữa sai lầm ngay lập tức.<br><b>• Tài lộc:</b> Thất thoát không rõ nguyên nhân. Phải kiểm tra lại sổ sách, ngừng các dự án đang trì trệ.<br><b>• Tình cảm:</b> Khủng hoảng âm ỉ bấy lâu nay bùng phát. Phải ngồi lại nói hết ra mới cứu vãn được."
+        },
+        "110000": { 
+            name: "Địa Trạch Lâm", 
+            desc: "Tiến đến, bao trùm. Vận khí đang lên, là lúc nắm quyền lãnh đạo.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời cơ vàng đã tới, uy tín tăng cao. Hãy mạnh dạn tiến lên nắm bắt cơ hội.<br><b>• Sự nghiệp:</b> Nhận được trọng trách, làm quản lý hoặc mở mang thêm chi nhánh mới rất thuận lợi.<br><b>• Tài lộc:</b> Lợi nhuận sinh sôi, có lộc lớn đang tiến đến. Thời điểm chốt lời tuyệt vời.<br><b>• Tình cảm:</b> Có sự tiến triển mạnh mẽ, người ấy đang chủ động bước về phía bạn."
+        },
+        "000011": { 
+            name: "Phong Địa Quán", 
+            desc: "Quan sát, xem xét kỹ lưỡng. Đừng vội quyết định, hãy tĩnh tâm nhìn nhận.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Cần lùi lại một bước để có cái nhìn toàn cảnh. Sự việc phức tạp hơn vẻ bề ngoài.<br><b>• Sự nghiệp:</b> Đánh giá lại thị trường, đừng vội bung sức. Xem xét kỹ đối thủ và nội bộ.<br><b>• Tài lộc:</b> Theo dõi sát sao biến động thị trường, giữ vốn thay vì đầu tư chớp nhoáng.<br><b>• Tình cảm:</b> Đang trong giai đoạn thăm dò lẫn nhau. Hãy dùng trực giác để nhìn thấu đối phương."
+        },
+        "100101": { 
+            name: "Hỏa Lôi Phệ Hạp", 
+            desc: "Có rào cản cần cắn đứt. Cần dùng hình phạt hoặc hành động quyết liệt.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang gặp vật cản, tiểu nhân ngáng đường. Bắt buộc phải mạnh tay trừng trị, dùng pháp luật hoặc biện pháp cứng rắn.<br><b>• Sự nghiệp:</b> Bị cản trở thủ tục, cạnh tranh bẩn. Phải làm rõ trắng đen, không nể nang tình cảm cá nhân.<br><b>• Tài lộc:</b> Tiền bạc bị giam cầm. Phải ráo riết đòi nợ hoặc giải quyết tranh chấp mới thu về được.<br><b>• Tình cảm:</b> Bất đồng gay gắt, có người thứ ba xen vào. Phải cắt đứt sự mập mờ ngay lập tức."
+        },
+        "101001": { 
+            name: "Sơn Hỏa Bí", 
+            desc: "Trang sức, bề ngoài hào nhoáng. Chỉ phù hợp với việc nhỏ, nghệ thuật.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Chú trọng vào hình thức, vẻ bề ngoài. Việc nhỏ thì thuận, nhưng mưu sự lớn dễ bị rỗng tuếch bên trong.<br><b>• Sự nghiệp:</b> Phù hợp làm thương hiệu, marketing, thiết kế. Cẩn trọng dự án 'bánh vẽ' không có thực lực.<br><b>• Tài lộc:</b> Tốn tiền cho việc trang hoàng, mua sắm. Đừng để vẻ hào nhoáng đánh lừa khi đầu tư.<br><b>• Tình cảm:</b> Lãng mạn, bóng bẩy nhưng thiếu chiều sâu. Cần tìm hiểu kỹ tính cách thật của nhau."
+        },
+        "000001": { 
+            name: "Sơn Địa Bác", 
+            desc: "Suy vi, bóc lột, tiểu nhân dồn ép. Chớ nên manh động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nền tảng bị lung lay, lực lượng phe xấu đang áp đảo. Cứ vùng vẫy sẽ càng chìm sâu.<br><b>• Sự nghiệp:</b> Bị chèn ép, hạ bệ, công việc đình trệ. Hãy tạm thời lui về phòng thủ, bảo toàn danh dự.<br><b>• Tài lộc:</b> Hao mòn tột độ, cẩn thận bị lừa đảo trắng tay. Không mua bán lớn lúc này.<br><b>• Tình cảm:</b> Sứt mẻ nghiêm trọng, có sự lừa dối hoặc quay lưng phũ phàng."
+        },
+        "100000": { 
+            name: "Địa Lôi Phục", 
+            desc: "Sự phục hồi. Sau cơn mưa trời lại sáng, bắt đầu chu kỳ tốt đẹp mới.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời kỳ đen tối đã qua, ánh sáng đang dần ló dạng. Một sự khởi đầu mới đầy hy vọng.<br><b>• Sự nghiệp:</b> Bắt tay làm lại từ đầu hoặc khôi phục lại dự án cũ. Mọi thứ đang dần vào guồng trở lại.<br><b>• Tài lộc:</b> Tiền bạc bắt đầu sinh sôi nảy nở. Là lúc gieo hạt giống cho tương lai.<br><b>• Tình cảm:</b> Gương vỡ lại lành, người cũ quay về hoặc tổn thương đã được chữa lành để đón tình yêu mới."
+        },
+        "100111": { 
+            name: "Thiên Lôi Vô Vọng", 
+            desc: "Đừng mưu cầu viển vông. Hãy làm việc thuận theo tự nhiên thì giữ được yên ổn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có tai bay vạ gió hoặc việc xảy ra ngoài ý muốn. Cứ ngay thẳng, vô tư thì họa sẽ hóa giải.<br><b>• Sự nghiệp:</b> Đừng dùng thủ đoạn hay mưu mẹo, sẽ bị gậy ông đập lưng ông. Cứ làm đúng bổn phận.<br><b>• Tài lộc:</b> Lợi ích bất ngờ có thể đến nếu không tham lam. Tính toán quá sâu lại dễ hỏng việc.<br><b>• Tình cảm:</b> Yêu đương thuần khiết, đừng toan tính vụ lợi. Ghen tuông vô cớ sẽ phá hỏng tất cả."
+        },
+        "111001": { 
+            name: "Sơn Thiên Đại Súc", 
+            desc: "Tích lũy tài sản và tri thức lớn lao. Thời điểm bùng nổ sức mạnh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Năng lượng và tài nguyên đã dồi dào, chuẩn bị làm được việc lớn lấp biển vá trời.<br><b>• Sự nghiệp:</b> Kinh nghiệm đã đủ chín, là lúc ra mắt dự án khủng hoặc thăng tiến vượt bậc.<br><b>• Tài lộc:</b> Đại phú quý, tiền bạc tích tụ thành núi. Đầu tư mạnh tay sẽ thu lãi cực kỳ đậm.<br><b>• Tình cảm:</b> Tình cảm nồng hậu, vững chắc. Quá trình vun đắp lâu dài nay đã đơm hoa kết trái."
+        },
+        "100001": { 
+            name: "Sơn Lôi Di", 
+            desc: "Nuôi dưỡng, bồi bổ. Cẩn thận lời ăn tiếng nói và việc ăn uống.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Giai đoạn cần tập trung nuôi dưỡng thể chất và tinh thần. Họa từ miệng mà ra, bệnh từ miệng mà vào.<br><b>• Sự nghiệp:</b> Cần bồi dưỡng thêm kiến thức, tìm người tài giúp sức. Cẩn trọng phát ngôn nơi công sở.<br><b>• Tài lộc:</b> Tiêu xài vừa phải cho việc thiết thực. Có lộc ăn uống, quà tặng.<br><b>• Tình cảm:</b> Dành thời gian chăm sóc đối phương. Lời nói cay độc lúc này có sức tàn phá khủng khiếp."
+        },
+        "011110": { 
+            name: "Trạch Phong Đại Quá", 
+            desc: "Cột nhà oằn xuống, sức chịu đựng quá tải. Cần hành động khác thường.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trọng trách quá lớn, vượt quá sức chịu đựng. Phải có biện pháp mạnh, cực đoan mới chống đỡ nổi.<br><b>• Sự nghiệp:</b> Khối lượng công việc khổng lồ, dễ bị kiệt sức hoặc sụp đổ hệ thống. Phải san sẻ hoặc cắt bỏ bớt.<br><b>• Tài lộc:</b> Nợ nần hoặc đòn bẩy tài chính quá lớn. Cần bán bớt tài sản để giảm gánh nặng.<br><b>• Tình cảm:</b> Áp lực dồn nén đến mức nghẹt thở. Nếu không giải tỏa, mối quan hệ sẽ gãy đổ bất ngờ."
+        },
+        "010010": { 
+            name: "Bát Thuần Khảm (Khảm Vi Thủy)", 
+            desc: "Hiểm nguy trùng trùng (nước sâu). Cần giữ tâm kiên định để vượt qua.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sóng gió liên miên, họa vô đơn chí. Càng vùng vẫy càng chìm. Chỉ có sự chân thành và bình tĩnh mới thoát hiểm.<br><b>• Sự nghiệp:</b> Gian nan, bị vây hãm, công việc bế tắc. Hãy làm từng bước nhỏ, cẩn thận mọi văn bản.<br><b>• Tài lộc:</b> Rỗng túi, nợ nần bủa vây. Tuyệt đối không dính vào vay lãi hay cờ bạc.<br><b>• Tình cảm:</b> Chìm trong nước mắt và sự lừa dối. Đang trong giai đoạn cực kỳ u tối."
+        },
+        "101101": { 
+            name: "Bát Thuần Ly (Ly Vi Hỏa)", 
+            desc: "Sáng sủa, chói lọi nhưng dễ bốc đồng. Cần dựa vào nền tảng vững chắc.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Rực rỡ, tiếng tăm bay xa nhưng bên trong lại trống rỗng. Lửa cần củi mới cháy được, người cần có chỗ dựa.<br><b>• Sự nghiệp:</b> Công danh nổi bật, được ngợi khen. Phải bám sát thực tế, tránh ảo tưởng sức mạnh.<br><b>• Tài lộc:</b> Kiếm nhanh tiêu nhanh. Cần biến dòng tiền thành tài sản tích lũy thực tế.<br><b>• Tình cảm:</b> Cuồng nhiệt, rực rỡ nhưng dễ tàn. Đừng để cảm xúc bốc đồng chi phối các quyết định quan trọng."
+        },
+        "001110": { 
+            name: "Trạch Sơn Hàm", 
+            desc: "Sự cảm ứng, giao cảm nam nữ. Rất tốt cho tình duyên và hợp tác.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Vạn vật giao hòa, có sự đồng điệu tâm hồn. Việc cầu danh, cầu tài, cầu duyên đều toại ý.<br><b>• Sự nghiệp:</b> Rất thuận lợi nếu hợp tác, ký kết. Cấp trên cấp dưới đồng tâm hiệp lực.<br><b>• Tài lộc:</b> Tiền bạc trôi chảy. Làm ăn bằng chữ tín và sự thấu cảm sẽ hái ra tiền.<br><b>• Tình cảm:</b> Quẻ đại cát cho tình yêu! Hai bên tâm linh tương thông, tình cảm mặn nồng thắm thiết."
+        },
+        "011100": { 
+            name: "Lôi Phong Hằng", 
+            desc: "Sự bền bỉ, trường cửu. Cứ giữ nguyên đường lối cũ sẽ thành công.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trạng thái ổn định, bền vững lâu dài. Đừng nghe lời xúi giục mà thay đổi, cứ như cũ mà làm.<br><b>• Sự nghiệp:</b> Công việc vững chắc, không có biến động. Thích hợp làm việc lâu dài, duy trì quan hệ đối tác cũ.<br><b>• Tài lộc:</b> Thu nhập đều đặn, nguồn tiền ổn định. Không nên nhảy sang mảng đầu tư hoàn toàn mới.<br><b>• Tình cảm:</b> Tình vợ chồng sắt son, bền chặt keo sơn qua năm tháng."
+        },
+        "001111": { 
+            name: "Thiên Sơn Độn", 
+            desc: "Rút lui, ẩn nấp. Thời điểm tiểu nhân đang mạnh, lùi lại là thượng sách.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời vận đang đi xuống, tiểu nhân đắc thế. Bỏ đi sự hiếu thắng, lui về ở ẩn để bảo toàn thân mạng.<br><b>• Sự nghiệp:</b> Bị chèn ép, giành giật công lao. Tranh cãi vô ích, nên xin thuyên chuyển hoặc nhượng bộ.<br><b>• Tài lộc:</b> Thất thoát. Hãy rút vốn khỏi thị trường rủi ro ngay lập tức, giữ tiền mặt là vua.<br><b>• Tình cảm:</b> Khoảng cách ngày càng xa. Tốt nhất nên tạm xa nhau một thời gian để bình tâm."
+        },
+        "111100": { 
+            name: "Lôi Thiên Đại Tráng", 
+            desc: "Sức mạnh đang ở độ sung mãn nhất. Tuyệt đối không được kiêu ngạo, vấp ngã.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Dương khí tột đỉnh, thế như chẻ tre. Nhưng tiến quá đà sẽ thành mù quáng, húc đầu vào đá.<br><b>• Sự nghiệp:</b> Năng lực xuất chúng, phá vỡ mọi rào cản. Chú ý thái độ ôn hòa kẻo rước họa ganh ghét.<br><b>• Tài lộc:</b> Tiền vô như nước. Dám nghĩ dám làm sẽ thắng lớn, nhưng cần biết điểm dừng.<br><b>• Tình cảm:</b> Quá áp đặt, gia trưởng khiến đối phương ngột ngạt. Chú ý tính nóng nảy làm tổn thương nhau."
+        },
+        "000101": { 
+            name: "Hỏa Địa Tấn", 
+            desc: "Tiến lên, vinh hiển. Mặt trời mọc, công danh sự nghiệp rạng rỡ.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như mặt trời nhô lên khỏi mặt đất, xóa tan tăm tối. Cơ hội tỏa sáng đã đến.<br><b>• Sự nghiệp:</b> Thăng quan tiến chức, thi cử đỗ đạt, được sếp lớn trọng dụng. Danh tiếng thăng hoa.<br><b>• Tài lộc:</b> Cơ hội làm giàu rõ nét. Rất thuận lợi cho mở mang kinh doanh, ký kết hợp đồng lớn.<br><b>• Tình cảm:</b> Mọi khúc mắc được làm sáng tỏ. Tình yêu rạng rỡ, thăng hoa và đầy lãng mạn."
+        },
+        "101000": { 
+            name: "Địa Hỏa Minh Di", 
+            desc: "Ánh sáng bị che khuất. Bị hiểu lầm, trù dập. Nên ẩn nhẫn chờ thời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mặt trời lặn xuống đất, tăm tối bao trùm. Gặp phải sự bất công, hàm oan. Giả ngu, chịu nhục là thượng sách.<br><b>• Sự nghiệp:</b> Sếp u mê, tiểu nhân dèm pha. Có tài nhưng không được dùng. Cứ âm thầm làm việc, đừng kêu ca.<br><b>• Tài lộc:</b> Dễ bị hao hụt, lừa đảo. Không cho vay mượn, cất kỹ tiền bạc phòng rủi ro.<br><b>• Tình cảm:</b> Đầy rẫy tổn thương và sự dối trá che đậy. Có bí mật khủng khiếp chưa lộ diện."
+        },
+        "101011": { 
+            name: "Phong Hỏa Gia Nhân", 
+            desc: "Quẻ của gia đạo. Tề gia nội trợ tốt thì mọi việc bên ngoài ắt thành công.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hướng về bên trong. Gia đình, nội bộ lục đục thì việc gì cũng hỏng. Êm ấm thì đại cát.<br><b>• Sự nghiệp:</b> Cần củng cố tổ chức nội bộ, làm việc nhóm chặt chẽ. Xây dựng văn hóa công ty là ưu tiên hàng đầu.<br><b>• Tài lộc:</b> Nguồn tài lộc đến từ gia đình, buôn bán nhỏ lẻ cùng người thân rất tốt.<br><b>• Tình cảm:</b> Tình cảm vợ chồng ấm áp. Cùng chung tay chăm lo con cái và gia đình."
+        },
+        "110101": { 
+            name: "Hỏa Trạch Khuê", 
+            desc: "Sự trái ngược, bất đồng quan điểm. Nội bộ lục đục, khó làm việc lớn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lửa bốc lên, nước chảy xuống, hai hướng trái ngược nhau. Việc nhỏ thì thông, việc lớn dễ đổ vỡ.<br><b>• Sự nghiệp:</b> Không tìm được tiếng nói chung với sếp hoặc đối tác. Mâu thuẫn kéo dài, việc ai nấy làm.<br><b>• Tài lộc:</b> Tiền bạc rải rác, khó gom lại làm lớn. Cần rạch ròi tài chính để tránh cãi vã.<br><b>• Tình cảm:</b> Trống đánh xuôi kèn thổi ngược. Có sự hoài nghi, xa cách, không cùng chung chí hướng."
+        },
+        "001010": { 
+            name: "Thủy Sơn Kiển", 
+            desc: "Què quặt, gian nan bế tắc. Phía trước là đầm lầy, tốt nhất là nên dừng lại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Càng tiến tới càng lún sâu vào bùn. Biết khó mà dừng lại, quay về tìm viện binh mới là người trí.<br><b>• Sự nghiệp:</b> Khó khăn chồng chất, bị cản trở tứ bề. Đừng cố chấp vọt lên, hãy lui về củng cố nội lực.<br><b>• Tài lộc:</b> Bế tắc, nợ nần vây hãm. Phải cắt lỗ ngay lập tức, đừng cố vay chỗ này đập chỗ kia.<br><b>• Tình cảm:</b> Đầy ngang trái và thử thách. Gia đình ngăn cấm hoặc khoảng cách địa lý quá xa xôi."
+        },
+        "010100": { 
+            name: "Lôi Thủy Giải", 
+            desc: "Cởi trói, giải phóng. Mối nguy đã qua, hãy tha thứ và làm lại từ đầu.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mưa sấm đã tạnh, gian nguy đã lùi xa. Trạng thái nhẹ nhõm, bao dung vạn vật.<br><b>• Sự nghiệp:</b> Rắc rối được tháo gỡ, gánh nặng được trút bỏ. Bắt tay vào làm việc ngay để tận dụng đà tiến.<br><b>• Tài lộc:</b> Thoát khỏi nợ nần hoặc thu hồi được vốn. Bắt đầu có những khoản thu nhập mới.<br><b>• Tình cảm:</b> Gỡ bỏ được hiểu lầm, tha thứ cho lỗi lầm cũ. Bắt đầu một trang mới hạnh phúc hơn."
+        },
+        "110001": { 
+            name: "Sơn Trạch Tổn", 
+            desc: "Tổn thất, bớt đi. Chịu thiệt thòi lúc này để đổi lấy lợi ích lâu dài về sau.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Phải biết cho đi, chịu thiệt thòi bề ngoài. Bớt cái thừa để bù đắp cái thiếu, đó là đạo lý.<br><b>• Sự nghiệp:</b> Bỏ vốn đầu tư ban đầu hoặc cắt giảm nhân sự thừa. Khởi đầu mất mát nhưng tương lai bền vững.<br><b>• Tài lộc:</b> Hao tài tốn của cho việc cần thiết. Đừng xót tiền, đây là lúc lấy của làm phúc.<br><b>• Tình cảm:</b> Nhường nhịn đối phương, bớt đi sự ích kỷ cá nhân thì tình cảm mới bền lâu."
+        },
+        "100011": { 
+            name: "Phong Lôi Ích", 
+            desc: "Thêm vào, được lợi. Thời kỳ vàng để đầu tư và mở rộng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có sự giúp đỡ từ bên trên, công việc tấn tới. Cơ hội ngàn vàng không thể bỏ lỡ.<br><b>• Sự nghiệp:</b> Có quý nhân nâng đỡ, làm việc gì cũng xuôi chèo mát mái, danh lợi song thu.<br><b>• Tài lộc:</b> Sinh lời mạnh mẽ. Dòng tiền đổ về nhiều nguồn. Hãy mạnh dạn đầu tư mở rộng.<br><b>• Tình cảm:</b> Tình cảm đôi lứa có bước tiến lớn. Giúp đỡ lẫn nhau cùng thăng tiến trong cuộc sống."
+        },
+        "111110": { 
+            name: "Trạch Thiên Quải", 
+            desc: "Quyết đoán, dứt khoát cắt bỏ thành phần độc hại. Cần cẩn trọng thế lực ngầm.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đã đến lúc phải hành động cương quyết loại bỏ tiểu nhân. Nhưng cần liên minh lực lượng, chớ manh động một mình.<br><b>• Sự nghiệp:</b> Thanh trừng nội bộ, sa thải người kém cỏi. Xử lý triệt để các rắc rối tồn đọng bấy lâu.<br><b>• Tài lộc:</b> Cắt lỗ dứt khoát, thanh lý tài sản xấu. Thà đau một lần rồi thôi.<br><b>• Tình cảm:</b> Chia tay dứt khoát mối tình độc hại. Đã đến lúc giải thoát cho bản thân."
+        },
+        "011111": { 
+            name: "Thiên Phong Cấu", 
+            desc: "Sự gặp gỡ bất ngờ (thường là tiểu nhân hoặc tình duyên thoáng qua). Chớ tin người.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Cẩn thận một thế lực âm ty, tiểu nhân đang len lỏi vào. Bề ngoài thì đẹp nhưng bên trong hiểm độc.<br><b>• Sự nghiệp:</b> Có kẻ dòm ngó vị trí, đâm sau lưng. Đừng vội tin những lời xu nịnh, ngon ngọt.<br><b>• Tài lộc:</b> Dễ mất tiền vì bị lừa đảo hoặc mắc bẫy 'việc nhẹ lương cao'. Giữ tiền chặt.<br><b>• Tình cảm:</b> Đề phòng đào hoa sát, kẻ thứ ba xuất hiện. Tình yêu qua đường, chớp nhoáng không có hậu."
+        },
+        "000110": { 
+            name: "Trạch Địa Tụy", 
+            desc: "Nhóm họp, tụ tập nhân tài, của cải. Đang có quý nhân phù trợ.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Tụ hội, sum vầy. Mọi thứ đang hội tụ về một mối, tạo nên sức mạnh to lớn.<br><b>• Sự nghiệp:</b> Tuyển dụng được nhân tài, xây dựng được đội ngũ tinh nhuệ. Nhận được sự tín nhiệm từ đám đông.<br><b>• Tài lộc:</b> Tiền bạc gom về một cục lớn. Có thể kêu gọi vốn đầu tư rất dễ dàng lúc này.<br><b>• Tình cảm:</b> Cực tốt, hòa hợp. Dễ có tin vui tụ họp gia đình, cưới xin."
+        },
+        "011000": { 
+            name: "Địa Phong Thăng", 
+            desc: "Thăng tiến, vươn lên đều đặn như mầm cây. Tốt cho cầu quan chức, công danh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang trên đà phát triển một cách vững chắc. Có quý nhân phù trợ phía nam.<br><b>• Sự nghiệp:</b> Cầu quan chức đắc quan chức, thăng cấp bậc liên tục. Cứ đi đúng đường lối sẽ lên đỉnh vinh quang.<br><b>• Tài lộc:</b> Doanh thu tăng trưởng đều đặn đơm hoa kết trái. Đầu tư dài hạn sinh lời cực lớn.<br><b>• Tình cảm:</b> Tình cảm dần dần đi lên, thấu hiểu nhau hơn qua thời gian. Rất viên mãn."
+        },
+        "010110": { 
+            name: "Trạch Thủy Khốn", 
+            desc: "Cùng quẫn, bị vây hãm bốn bề. Không ai tin tưởng, phải tự cứu mình.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nước trong hồ đã cạn kiệt. Lâm vào cảnh bế tắc, nói không ai nghe. Cần giữ cái tâm thanh tịnh chờ qua nạn.<br><b>• Sự nghiệp:</b> Công việc dậm chân tại chỗ, cấp trên chèn ép, đồng nghiệp quay lưng. Cố gắng im lặng chịu đựng.<br><b>• Tài lộc:</b> Tiền bạc cạn kiệt, khủng hoảng tài chính nghiêm trọng. Không trông cậy được ai giúp đỡ.<br><b>• Tình cảm:</b> Đau khổ tột cùng. Có thể dẫn đến ly thân, ly dị vì áp lực cuộc sống quá vất vả."
+        },
+        "011010": { 
+            name: "Thủy Phong Tỉnh", 
+            desc: "Giếng nước. Lặng lẽ tu thân, bồi bổ kiến thức. Chớ nôn nóng đổi dời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Dù xung quanh đổi thay thế nào, bạn vẫn cứ tĩnh lặng làm việc của mình, nuôi dưỡng bản thân và người khác.<br><b>• Sự nghiệp:</b> Phù hợp làm các việc mang tính chuyên môn sâu, nghiên cứu. Không hợp nhảy việc lúc này.<br><b>• Tài lộc:</b> Tiền bạc ổn định, đủ ăn đủ tiêu, không nghèo cũng không phất lên làm tỷ phú được.<br><b>• Tình cảm:</b> Tình yêu êm đềm, sâu sắc như nước giếng. Không ồn ào lãng mạn nhưng rất thủy chung."
+        },
+        "101110": { 
+            name: "Trạch Hỏa Cách", 
+            desc: "Đổi mới, cách mạng. Đập đi xây lại cấu trúc cũ thì mới có tương lai.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lớp da cũ phải lột bỏ. Không thể dùng cách làm cũ cho bối cảnh hiện tại. Sự lột xác là bắt buộc.<br><b>• Sự nghiệp:</b> Thay máu nhân sự, chuyển hướng kinh doanh, nhảy việc hoàn toàn sang lĩnh vực mới sẽ đại cát.<br><b>• Tài lộc:</b> Mạnh dạn từ bỏ khoản đầu tư thua lỗ, tìm kiếm mỏ vàng mới. Cơ hội đổi đời đang mở ra.<br><b>• Tình cảm:</b> Chấm dứt sự nhàm chán, hâm nóng lại tình yêu hoặc dứt khoát chia tay để bắt đầu hành trình mới."
+        },
+        "011101": { 
+            name: "Hỏa Phong Đỉnh", 
+            desc: "Chiếc vạc vững chãi. Định hình cơ đồ, được giao trọng trách lớn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hình tượng chiếc vạc ba chân quyền lực. Vận khí cực kỳ hanh thông, vững như bàn thạch.<br><b>• Sự nghiệp:</b> Được đứng ở vị trí cao, giao phó trọng trách. Là lúc định hình cơ đồ, xây dựng đế chế riêng.<br><b>• Tài lộc:</b> Cuộc sống ấm no, thịnh vượng. Thu nhập cao và ổn định từ những dự án lớn.<br><b>• Tình cảm:</b> Gia đình nền nếp, sung túc. Người chưa có gia đình dễ gặp được người có chức sắc, quyền lực."
+        },
+        "100100": { 
+            name: "Bát Thuần Chấn (Chấn Vi Lôi)", 
+            desc: "Biến động dữ dội, sấm sét kinh hãi nhưng không để lại hậu quả. Cứ giữ bình tĩnh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có sự việc bất ngờ gây sốc, hoảng loạn. Nhưng nếu tâm bất biến giữa dòng đời vạn biến, mọi chuyện sẽ bình an.<br><b>• Sự nghiệp:</b> Công ty có biến động lớn về thượng tầng, thay đổi chính sách đột ngột. Chớ hoảng sợ, hãy làm tốt việc của mình.<br><b>• Tài lộc:</b> Thị trường lao dốc hoặc biến động mạnh. Bĩnh tĩnh giữ vốn, qua đợt sóng sẽ ổn.<br><b>• Tình cảm:</b> Cãi vã ầm ĩ nhưng giải quyết xong lại làm hòa nhanh chóng, không để lại thù hận."
+        },
+        "001001": { 
+            name: "Bát Thuần Cấn (Cấn Vi Sơn)", 
+            desc: "Ngưng nghỉ, dừng lại đúng lúc. Việc gì đến tay cũng nên án binh bất động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trạng thái núi tĩnh lặng. Khuyên bạn nên dừng mọi hành động, dứt bỏ mọi dục vọng vọng động.<br><b>• Sự nghiệp:</b> Đừng tiến lên nữa, không có kết quả đâu. Hãy dừng lại, suy ngẫm và củng cố vị trí hiện tại.<br><b>• Tài lộc:</b> Đình trệ, tiền không ra cũng không vào. Tuyệt đối cấm đầu tư, mua bán lúc này.<br><b>• Tình cảm:</b> Hai bên như hai ngọn núi, không ai nhường ai, xa cách lạnh nhạt. Đừng cố ép buộc."
+        },
+        "001011": { 
+            name: "Phong Sơn Tiệm", 
+            desc: "Chậm rãi, tuần tự nhi tiến. Dục tốc bất đạt, cứ thong thả thì chắc thắng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như cây trên núi mọc chậm nhưng rễ đâm rất sâu. Tiến từng bước một cách có trật tự.<br><b>• Sự nghiệp:</b> Phải tuân thủ quy trình, đi từ dưới lên trên. Lách luật hay đi cửa sau sẽ thất bại thảm hại.<br><b>• Tài lộc:</b> Tiền bạc tích tụ theo thời gian, không có chuyện làm giàu sau một đêm.<br><b>• Tình cảm:</b> Tìm hiểu kỹ càng, đến với nhau bằng sự tôn trọng. Quẻ rất tốt cho thủ tục dạm ngõ, cưới hỏi."
+        },
+        "110100": { 
+            name: "Lôi Trạch Quy Muội", 
+            desc: "Lệch pha, kết hợp miễn cưỡng. Mọi việc không như ý nguyện ban đầu.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hành động không thuận lẽ phải, tiến hành việc gì cũng xôi hỏng bỏng không. Kết cục buồn thảm.<br><b>• Sự nghiệp:</b> Chọn sai nghề, hợp tác nhầm đối tác, bị lợi dụng công sức. Càng cố tiến càng bế tắc.<br><b>• Tài lộc:</b> Đầu tư sai chỗ, mất tiền oan uổng vì nghe lời xúi giục. Giữ tiền ngay.<br><b>• Tình cảm:</b> Chuyện tình cảm oan trái, không môn đăng hộ đối, hoặc là thân phận lẽ mọn, người thứ ba."
+        },
+        "101100": { 
+            name: "Lôi Hỏa Phong", 
+            desc: "Cực thịnh, phồn hoa tột đỉnh. Chú ý luật 'Vật cực tất phản' (thịnh quá sẽ suy).",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Rực rỡ ánh sáng bủa vây, phước lộc tràn trề. Tuy nhiên cần chuẩn bị tâm lý vì trăng tròn rồi sẽ khuyết.<br><b>• Sự nghiệp:</b> Thành tựu vang dội, đạt được mục tiêu lớn lao nhất. Phải biết thu mình lại sau khi thành công.<br><b>• Tài lộc:</b> Doanh thu đạt đỉnh, lợi nhuận khổng lồ. Đây là lúc chốt lời chứ không phải ném thêm vốn vào.<br><b>• Tình cảm:</b> Hạnh phúc tột độ, đám cưới linh đình. Nhưng cần vun đắp để tránh sự nguội lạnh sau đỉnh cao."
+        },
+        "001101": { 
+            name: "Hỏa Sơn Lữ", 
+            desc: "Lữ khách tha hương. Việc đi lại, xuất ngoại thì được, việc ổn định thì khó.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Bôn ba, trôi dạt, không có chỗ dựa vững chắc. Phải mềm mỏng tùy cơ ứng biến nơi đất khách.<br><b>• Sự nghiệp:</b> Hay phải đi công tác, chuyển đổi công việc liên tục. Đừng mong cầu chức vụ ổn định lúc này.<br><b>• Tài lộc:</b> Kiếm được nhưng cũng tiêu hao vì đi lại. Không thích hợp mua nhà cửa, đất đai lúc này.<br><b>• Tình cảm:</b> Cô đơn, thiếu vắng sự quan tâm. Tình cảm dễ đứt đoạn do xa mặt cách lòng."
+        },
+        "011011": { 
+            name: "Bát Thuần Tốn (Tốn Vi Phong)", 
+            desc: "Thuận theo, thâm nhập dần dần. Cần sự mềm mỏng, linh hoạt như cơn gió.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió len lỏi mọi nơi. Đừng dùng sức mạnh cưỡng ép, hãy dùng sự mềm mỏng, thuyết phục dần dần để đạt mục đích.<br><b>• Sự nghiệp:</b> Ngoại giao, đàm phán rất tốt. Hãy theo dõi và dựa vào những người có quyền lực để tiến thân.<br><b>• Tài lộc:</b> Lợi nhuận gặt hái từ những thương vụ môi giới, buôn bán nhỏ, thông tin nhanh nhạy.<br><b>• Tình cảm:</b> Ôn hòa, uyển chuyển. Tình yêu phát triển chậm rãi qua sự thấu hiểu và nhường nhịn."
+        },
+        "110110": { 
+            name: "Bát Thuần Đoài (Đoài Vi Trạch)", 
+            desc: "Hòa nhã, vui vẻ, thuyết phục. Khéo léo trong giao tiếp sẽ thu phục được nhân tâm.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đầm nước êm đềm, vạn sự hanh thông nhờ lời nói. Họa hay phúc đều từ miệng mà ra.<br><b>• Sự nghiệp:</b> Thành công nhờ tài diễn thuyết, đàm phán, thuyết phục khách hàng. Cần giữ mồm miệng, tránh vạ miệng.<br><b>• Tài lộc:</b> Tốt cho nghề luật sư, giáo viên, bán hàng. Lộc ăn lộc nói cực kỳ vượng.<br><b>• Tình cảm:</b> Ngọt ngào, vui vẻ, nhiều tiếng cười. Cẩn thận những lời hứa suông không thành thật."
+        },
+        "010011": { 
+            name: "Phong Thủy Hoán", 
+            desc: "Tan vỡ, phát tán. Cái xấu bị cuốn trôi, chuẩn bị đón nhận cơ hội mới.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió thổi trên mặt nước, làm tan chảy băng giá. Bệnh tật tiêu tan, muộn phiền bay mất.<br><b>• Sự nghiệp:</b> Vượt qua được giai đoạn khó khăn trì trệ nhất. Đã đến lúc giong buồm ra khơi làm lại từ đầu.<br><b>• Tài lộc:</b> Tiền bạc bị phân tán, hao hụt. Nhưng đây là sự hao tổn để giải quyết hậu quả, chuẩn bị kiếm lại nguồn thu mới.<br><b>• Tình cảm:</b> Cởi bỏ được sự lạnh nhạt, oán hờn. Mở lòng ra để cứu vãn mối quan hệ đang rạn nứt."
+        },
+        "110010": { 
+            name: "Thủy Trạch Tiết", 
+            desc: "Tiết chế, biết đủ. Giới hạn lại lòng tham, chi tiêu chừng mực thì giữ được lộc.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nước trong hồ đầy phải xả bớt. Mọi việc phải có giới hạn, chừng mực, tham thì thâm.<br><b>• Sự nghiệp:</b> Làm việc vừa sức, tuân thủ nghiêm ngặt quy định. Mạo hiểm vượt rào sẽ gánh hậu quả thảm khốc.<br><b>• Tài lộc:</b> Thắt lưng buộc bụng, kiểm soát chi tiêu. Tiết kiệm là cách duy nhất để sinh tồn lúc này.<br><b>• Tình cảm:</b> Cần tạo khoảng không gian riêng cho nhau. Quản lý đối phương quá chặt sẽ sinh ra phản tác dụng."
+        },
+        "110011": { 
+            name: "Phong Trạch Trung Phu", 
+            desc: "Tín thực. Lấy sự chân thành tuyệt đối để cảm hóa lòng người.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió thổi trên mặt hồ lấp lánh. Trái tim chân thành có thể cảm hóa cả loài heo cá (người ngu độn, hung ác).<br><b>• Sự nghiệp:</b> Chữ Tín làm đầu. Giữ đúng lời hứa sẽ thu phục được đối tác và nhân viên trung thành.<br><b>• Tài lộc:</b> Kiếm tiền bằng sự minh bạch và uy tín cá nhân. Không có cửa cho sự lừa lọc dối trá.<br><b>• Tình cảm:</b> Tình yêu trong sáng, chung thủy. Đôi bên hoàn toàn tin tưởng lẫn nhau."
+        },
+        "001100": { 
+            name: "Lôi Sơn Tiểu Quá", 
+            desc: "Chỉ nên làm việc nhỏ, bay thấp. Việc lớn đầu tư mạnh tay ắt gặp họa.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như con chim non đang bay, chỉ nên đậu cành thấp, cất cao cánh sẽ trúng tên.<br><b>• Sự nghiệp:</b> Chỉ nên làm những việc vừa sức, tiểu tiết. Không hợp mưu đồ chức vụ lớn hay khởi nghiệp mạo hiểm.<br><b>• Tài lộc:</b> Thu hoạch nhỏ giọt. Đầu tư lướt sóng nhỏ thì được, tuyệt đối không tất tay.<br><b>• Tình cảm:</b> Nên hạ cái tôi xuống, chiều chuộng và nhẫn nhịn những lỗi lầm nhỏ của đối phương."
+        },
+        "101010": { 
+            name: "Thủy Hỏa Ký Tế", 
+            desc: "Mọi việc đã hoàn thành, trật tự đâu vào đấy. Chú ý phòng ngừa sự suy thoái.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đã đạt được trạng thái lý tưởng nhất. Nhưng sau đỉnh cao luôn là dốc xuống. Cần cẩn trọng bảo vệ thành quả.<br><b>• Sự nghiệp:</b> Dự án thành công rực rỡ, thi cử đỗ đạt. Chớ ngủ quên trên chiến thắng, hãy lập tức đề phòng rủi ro nảy sinh.<br><b>• Tài lộc:</b> Tiền bạc rủng rỉnh, đạt lợi nhuận kỳ vọng. Hãy rút vốn về an toàn.<br><b>• Tình cảm:</b> Đã đi đến bến bờ hạnh phúc. Tuy nhiên cẩn thận sự nhàm chán nảy sinh sau thời gian dài chung sống."
+        },
+        "010101": { 
+            name: "Hỏa Thủy Vị Tế", 
+            desc: "Mọi sự còn dang dở, chưa xong. Tương lai phía trước vẫn còn vô vàn biến số.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lửa cháy trên, nước chảy dưới, không giao nhau. Mọi việc vẫn còn chưa thành, cơ hội vẫn mở ra phía trước.<br><b>• Sự nghiệp:</b> Đang ở lưng chừng đèo. Không được bỏ cuộc, phải dốc toàn lực đi nốt chặng đường cuối cùng mới thấy vinh quang.<br><b>• Tài lộc:</b> Tiền chưa về túi, mọi thứ vẫn nằm ở tiềm năng. Chú ý thận trọng từng khâu giải ngân.<br><b>• Tình cảm:</b> Còn nhiều thử thách phía trước, chưa thể chốt hạ hôn nhân ngay. Cần thêm thời gian vun đắp."
+        }
     };
 
     // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
@@ -817,27 +1081,30 @@
     function showResult() {
         document.getElementById('hexagram-result').style.display = 'block';
         
-        // 1. Tự động ghép 6 Hào thành chuỗi Nhị Phân (Từ dưới lên)
         const binaryCode = hexagramData.map(h => h.val).join('');
-        
-        // 2. Lấy dữ liệu Quẻ từ Database
         const ketQuaQue = QUE_DATA[binaryCode];
         const tenQue = ketQuaQue ? ketQuaQue.name : "Không xác định";
         const yNghiaQue = ketQuaQue ? ketQuaQue.desc : "Đã có lỗi dữ liệu gieo quẻ.";
+        const chiTietQue = ketQuaQue ? (ketQuaQue.CHITIET || "") : ""; // Lấy phần luận chi tiết
 
-        // 3. Tìm các Hào Động
-        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
-        let hienThiDong = dongLines === "" ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
-        
-        // Cập nhật lên Giao Diện
         document.getElementById('res-que').innerText = tenQue;
-        document.getElementById('res-dong').innerText = hienThiDong;
+        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
         
-        // Tôi đã thêm một thẻ p để hiển thị ý nghĩa súc tích của Quẻ ngay dưới tên Quẻ
-        const moTaQueHTML = `<p style="margin: 8px 0 15px 0; font-size: 1rem; color: #555; font-style: italic;">"${yNghiaQue}"</p>`;
+        // Xóa đoạn moTaQueHTML cũ đi và thay bằng đoạn hiển thị phân tích sâu dưới đây:
+        const moTaQueHTML = `
+            <p style="margin: 8px 0 15px 0; font-size: 1.05rem; color: #c5a059; font-style: italic; font-weight: bold;">"${yNghiaQue}"</p>
+            <div class="que-chi-tiet-box" style="font-size: 0.95rem; color: #444; line-height: 1.8; border-top: 1px dashed #e2d9c8; padding-top: 15px; text-align: justify;">
+                ${chiTietQue}
+            </div>
+        `;
+        
+        // Xóa các khối chi tiết cũ nếu có trước khi chèn mới để tránh lặp chữ khi gieo lại nhiều lần
+        const oldBox = document.querySelector('.que-chi-tiet-box');
+        if(oldBox) oldBox.previousElementSibling.remove(); // Xóa dòng ý nghĩa cũ
+        if(oldBox) oldBox.remove(); // Xóa khối chi tiết cũ
+        
         document.getElementById('res-que').insertAdjacentHTML('afterend', moTaQueHTML);
-
-        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1; // Số ứng kỳ vẫn lấy gợi ý
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
         
         document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
     }
