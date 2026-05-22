@@ -7,6 +7,10 @@
     <link rel="icon" type="image/png" href="data/fini-icon.png" sizes="96x96">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
         :root { 
             --primary-color: #5d1a1a; 
             --accent-color: #c5a059; 
@@ -14,15 +18,11 @@
             --text-color: #2c3e50; 
             --card-border: #e2d9c8; /* Màu viền hoài cổ nhẹ */
         }
-        body { 
-            margin: 0; 
-            font-family: 'Arimo', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            line-height: 1.6;
+        body {
             display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Chiều cao tối thiểu bằng màn hình */
+            flex-direction: column; /* Xếp dọc các khối */
+            min-height: 100vh;
+            background-color: var(--bg-color);
         }
         header { background-color: var(--primary-color); color: var(--accent-color); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
         header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 2.8rem; }
@@ -78,11 +78,13 @@
             white-space: nowrap; /* Không cho chữ trong tag xuống dòng */
         }
         .tag-filter.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        .container { 
-            max-width: 1100px; 
-            margin: 0 auto 5rem auto; 
-            padding: 0 1.5rem; 
-            flex: 1; /* Quan trọng: Đẩy footer xuống đáy */
+        .container {
+            flex: 1; /* Đây là chìa khóa: nó sẽ "ăn" mọi khoảng trống còn dư */
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            box-sizing: border-box;
         }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
         /* 1. ĐỔI MỚI THẺ BÀI VIẾT (CARD): Sang trọng, có chiều sâu không gian */
@@ -146,6 +148,10 @@
         /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
         .form-container { background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; display: none; }
         .form-container h2 { font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 2rem; }
+        .form-container, .grid {
+            width: 100%;
+            box-sizing: border-box;
+        }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--primary-color); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
@@ -159,7 +165,9 @@
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
         .page-btn { width: 40px; height: 40px; border: none; background: #e0d5c1; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .page-btn.active { background: var(--primary-color); color: white; }
-        footer { text-align: center; padding: 3rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); }
+        footer { width: 100%;
+                 flex-shrink: 0; 
+                 margin-top: 50px; text-align: center; padding: 3rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); }
         /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
         @media (max-width: 600px) {
             .form-container {
