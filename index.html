@@ -1078,19 +1078,29 @@
     }
 
     // Hàm Nhả Kết Quả Thực Chiến
+    // Hàm Nhả Kết Quả Thực Chiến (Đã vá lỗi hiển thị ...)
     function showResult() {
         document.getElementById('hexagram-result').style.display = 'block';
         
+        // 1. Tự động ghép 6 Hào thành chuỗi Nhị Phân
         const binaryCode = hexagramData.map(h => h.val).join('');
+        
+        // 2. Lấy dữ liệu Quẻ từ Database
         const ketQuaQue = QUE_DATA[binaryCode];
         const tenQue = ketQuaQue ? ketQuaQue.name : "Không xác định";
         const yNghiaQue = ketQuaQue ? ketQuaQue.desc : "Đã có lỗi dữ liệu gieo quẻ.";
-        const chiTietQue = ketQuaQue ? (ketQuaQue.CHITIET || "") : ""; // Lấy phần luận chi tiết
+        const chiTietQue = ketQuaQue ? (ketQuaQue.CHITIET || "") : "";
 
-        document.getElementById('res-que').innerText = tenQue;
-        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
+        // 3. XỬ LÝ HÀO ĐỘNG (Đoạn này lúc nãy bị thiếu khiến code dừng chạy)
+        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
+        let hienThiDong = (dongLines === "") ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
         
-        // Xóa đoạn moTaQueHTML cũ đi và thay bằng đoạn hiển thị phân tích sâu dưới đây:
+        // 4. Cập nhật lên Giao Diện
+        document.getElementById('res-que').innerText = tenQue;
+        document.getElementById('res-dong').innerText = hienThiDong;
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
+        
+        // 5. Hiển thị phần Chi Tiết Quẻ
         const moTaQueHTML = `
             <p style="margin: 8px 0 15px 0; font-size: 1.05rem; color: #c5a059; font-style: italic; font-weight: bold;">"${yNghiaQue}"</p>
             <div class="que-chi-tiet-box" style="font-size: 0.95rem; color: #444; line-height: 1.8; border-top: 1px dashed #e2d9c8; padding-top: 15px; text-align: justify;">
@@ -1098,14 +1108,14 @@
             </div>
         `;
         
-        // Xóa các khối chi tiết cũ nếu có trước khi chèn mới để tránh lặp chữ khi gieo lại nhiều lần
+        // Xóa khối chi tiết cũ nếu khách bấm gieo lại nhiều lần
         const oldBox = document.querySelector('.que-chi-tiet-box');
-        if(oldBox) oldBox.previousElementSibling.remove(); // Xóa dòng ý nghĩa cũ
-        if(oldBox) oldBox.remove(); // Xóa khối chi tiết cũ
+        if(oldBox) {
+            if(oldBox.previousElementSibling) oldBox.previousElementSibling.remove();
+            oldBox.remove();
+        }
         
         document.getElementById('res-que').insertAdjacentHTML('afterend', moTaQueHTML);
-        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
-        
         document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
     }
     // =========================================================
