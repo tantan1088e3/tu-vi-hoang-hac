@@ -160,13 +160,13 @@
                 <h4 style="margin-top: 0; color: var(--primary-color); border-bottom: 1px dashed var(--accent-color); padding-bottom: 8px; font-size: 1.1rem;">📋 HƯỚNG DẪN THỈNH BẢN LUẬN GIẢI</h4>
                 <ul style="padding-left: 20px; color: #444; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
                     <li><strong>Bước 1:</strong> Chọn gói dịch vụ mong muốn ở Form bên dưới.</li>
-                    <li><strong>Bước 2:</strong> Quét mã QR bên cạnh để thanh toán phí (Gói giải Quẻ Lục Hào là 50.000đ).</li>
+                    <li><strong>Bước 2:</strong> Quét mã QR bên cạnh để thanh toán mức phí tương ứng với gói bạn đã chọn.</li>
                     <li><strong style="color: #e74c3c;">Lưu ý quan trọng:</strong> Tại phần nội dung chuyển khoản ngân hàng, quý hữu vui lòng <strong>ghi rõ địa chỉ Email</strong> của mình.</li>
-                    <li><strong>Bước 3:</strong> Điền đầy đủ thông tin vào Form và bấm gửi. Hệ thống sẽ đối chiếu biên lai và gửi File PDF qua Email cho quý hữu.</li>
+                    <li><strong>Bước 3:</strong> Điền đầy đủ thông tin vào Form và bấm gửi. Hệ thống sẽ đối chiếu biên lai và gửi File PDF qua Email.</li>
                 </ul>
             </div>
             <div style="width: 140px; text-align: center; margin: 0 auto; display: flex; flex-direction: column; justify-content: center;">
-                <img src="https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Code Thanh Toán" style="width: 100%; height: auto; border: 2px solid #e2d9c8; border-radius: 8px; padding: 4px; background: white;">
+                <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" onerror="this.src='data/qr.png'" alt="QR Code Thanh Toán" style="width: 100%; height: auto; border: 2px solid #e2d9c8; border-radius: 8px; padding: 4px; background: white;">
                 <span style="display: block; font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: var(--primary-color);">QUÉT MÃ THANH TOÁN</span>
             </div>
         </div>
@@ -174,9 +174,16 @@
         <form id="tuvi-booking-form" onsubmit="submitForm(event)">
             <div class="form-group">
                 <label for="service-type">Gói dịch vụ bạn muốn đăng ký:</label>
-                <select id="service-type" required style="border-color: var(--accent-color); font-weight: bold; color: var(--primary-color); background-color: #fdfaf4;">
-                    <option value="Thỉnh bản luận giải Quẻ Dịch PDF (50K)">Thỉnh bản luận giải Quẻ Dịch PDF (50.000đ)</option>
-                    <option value="Luận giải Lá Số Tử Vi chuyên sâu">Luận giải Lá Số Tử Vi chuyên sâu (Liên hệ)</option>
+                <select id="service-type" required style="border-color: var(--accent-color); font-weight: bold; color: var(--primary-color); background-color: #fdfaf4; padding: 12px; width: 100%; border-radius: 6px;">
+                    <optgroup label="► LỤC HÀO KINH DỊCH">
+                        <option value="Quẻ Dịch PDF (50K)">Thỉnh bản luận giải Quẻ Dịch PDF (50.000đ)</option>
+                    </optgroup>
+                    <optgroup label="► TỬ VI ĐẨU SỐ">
+                        <option value="Tử Vi: Toàn diện 12 cung (250K)">Luận giải Tử Vi: Toàn diện 12 cung (250.000đ)</option>
+                        <option value="Tử Vi: Công danh - Sự nghiệp (50K)">Luận giải Tử Vi: Chuyên sâu Công danh - Tài lộc (50.000đ)</option>
+                        <option value="Tử Vi: Tình duyên - Gia đạo (50K)">Luận giải Tử Vi: Chuyên sâu Tình duyên - Gia đạo (50.000đ)</option>
+                        <option value="Tử Vi: Phân tích Hạn Năm (100K)">Luận giải Tử Vi: Chi tiết Cát - Hung hạn năm nay (100.000đ)</option>
+                    </optgroup>
                 </select>
             </div>
 
