@@ -144,28 +144,32 @@
             }
         }
         /* Chỉ áp dụng cho điện thoại (màn hình nhỏ hơn 600px) */
+
+        
+        
     @media (max-width: 600px) {
     .tabs {
         display: flex;
         flex-wrap: wrap;       /* Cho phép xuống dòng */
-        gap: 8px;              /* Khoảng cách giữa các nút */
+        gap: 10px;              /* Khoảng cách giữa các nút */
         width: 100%;
-        background: #e0d5c1;
+        background: white;
         padding: 8px;
         border-radius: 8px;
         box-sizing: border-box;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
     }
 
     .tab-btn {
         /* Chỉnh 45% để đảm bảo 2 nút/dòng, nếu nút dài quá sẽ tự xuống dòng */
         flex: 1 1 45%;         
         padding: 10px 5px;
-        border: none;
-        background: #d1c4b0;
+        border: 1px solid #ddd;
+        background: white;
         cursor: pointer;
         font-weight: bold;
         color: #5d1a1a;
-        border-radius: 6px;
+        border-radius: 20px;
         text-align: center;
         font-size: 0.85rem;
         white-space: nowrap;
@@ -180,8 +184,7 @@
     }
 
     .tab-btn.active {
-        background: #8b4513 !important; /* Màu nâu đậm khi click */
-        color: #ffffff !important;      /* Chữ trắng khi click */
+        background: var(--accent-color); color: white; border-color: var(--accent-color);
     }
 }
     </style>
