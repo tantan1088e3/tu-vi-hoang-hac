@@ -124,6 +124,9 @@
         .page-btn { width: 40px; height: 40px; border: none; background: #e0d5c1; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .page-btn.active { background: var(--primary-color); color: white; }
         footer { text-align: center; padding: 3rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); }
+
+        #consultation-form-wrapper { display: none; }
+        #search-container-custom { display: none; }
         /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
         @media (max-width: 600px) {
             .form-container {
@@ -421,58 +424,73 @@
         renderUI();
     }
 
-   function switchTab(type, element, event) {
+   // Biến khóa để ngăn click liên tục gây lỗi
+let isSwitching = false;
+
+function switchTab(type, element, event) {
+    if (isSwitching) return; // Nếu đang xử lý, bỏ qua click mới
+    isSwitching = true;
+
     if (event) {
-        event.stopPropagation(); // NGĂN CHẶN NHẢY TAB
-        event.preventDefault();  // Ngăn chặn hành vi mặc định của thẻ (nếu có)
+        event.stopPropagation();
+        event.preventDefault();
     }
-    // 1. Dọn dẹp các thành phần tạm thời
+
+    // 1. Dọn dẹp các thành phần không thuộc giao diện chính
     const oldDonate = document.getElementById('pdf-donate-section');
     if (oldDonate) oldDonate.remove();
 
-    // Reset trạng thái nút bấm
+    // 2. Reset trạng thái nút bấm (Menu)
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    if(element) element.classList.add('active');
+    if (element) element.classList.add('active');
 
-    // Lấy các thành phần giao diện
+    // 3. Lấy tất cả các thành phần giao diện cần điều khiển
     const grid = document.getElementById('post-grid');
     const pagination = document.getElementById('post-pagination');
     const filterBar = document.getElementById('filter-bar');
     const formWrapper = document.getElementById('consultation-form-wrapper');
-    const searchBox = document.getElementById('search-container-custom'); // Khung chứa ô tìm kiếm của bạn
+    const searchBox = document.getElementById('search-container-custom');
 
-    // Mặc định ẩn các thành phần đặc thù
-    grid.style.display = "grid";
-    pagination.style.display = "flex";
-    formWrapper.style.display = "none";
+    // 4. RESET MẠNH: Ẩn tất cả và dọn sạch nội dung cũ
+    // Điều này đảm bảo không có bất kỳ thành phần nào bị "treo" lại từ Tab cũ
+    grid.style.display = "none";
+    pagination.style.display = "none";
     filterBar.style.display = "none";
-    if (searchBox) searchBox.style.display = "none"; // Ẩn ô tìm kiếm mặc định
-    
+    if (searchBox) searchBox.style.display = "none";
+    formWrapper.style.display = "none";
     grid.innerHTML = "";
+    pagination.innerHTML = "";
 
-    // 2. Logic điều hướng
+    // 5. Logic hiển thị riêng cho từng Tab
     if (type === 'posts') {
-        if (searchBox) searchBox.style.display = "block"; // CHỈ HIỆN KHI Ở TAB BÀI VIẾT
+        grid.style.display = "grid";
+        pagination.style.display = "flex";
         filterBar.style.display = "flex";
-        renderTags(); 
+        if (searchBox) searchBox.style.display = "block";
+        renderTags();
         renderUI();
-    } else if (type === 'pdf') {
+    } 
+    else if (type === 'pdf') {
+        grid.style.display = "grid";
         currentPdfPage = 1;
-        pagination.innerHTML = "";
         renderGieoQueUI();
-    } else if (type === 'video') {
-        pagination.innerHTML = "";
+    } 
+    else if (type === 'video') {
+        grid.style.display = "grid";
         grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
         loadVideoLibrary();
-    } else if (type === 'register') {
-        grid.style.display = "none";
-        pagination.style.display = "none";
+    } 
+    else if (type === 'register') {
         formWrapper.style.display = "block";
-    } else if (type === 'books') {
-        pagination.style.display = "none";
+    } 
+    else if (type === 'books') {
+        grid.style.display = "grid";
         grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách...</div>";
         loadAffiliateBooks();
     }
+
+    // Mở khóa sau 300ms
+    setTimeout(() => { isSwitching = false; }, 300);
 }
 
     // 2. TỐI ƯU CACHE CHO TỦ SÁCH (Hàm loadAffiliateBooks)
