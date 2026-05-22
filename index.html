@@ -606,6 +606,7 @@
     const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
 
     // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
+    // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
     function renderGieoQueUI() {
         const grid = document.getElementById('post-grid');
         document.getElementById('post-pagination').innerHTML = ""; // Xóa phân trang
@@ -614,7 +615,7 @@
         currentHao = 1;
         hexagramData = [];
 
-        // Đổi display để form gieo quẻ căn giữa độc lập, không bị ảnh hưởng bởi css dạng lưới (grid)
+        // Đổi display để form gieo quẻ độc lập, không bị ảnh hưởng bởi css dạng lưới (grid)
         grid.style.display = "block"; 
 
         // Bơm nguyên HTML và CSS hiệu ứng vào trong grid
@@ -627,7 +628,9 @@
                 }
                 .coin-tossing { animation: flipCoinAnim 1.2s ease-in-out; }
             </style>
-            <div style="background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; text-align: center;">
+            
+            <div style="background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); width: 100%; box-sizing: border-box; margin: 0 auto; text-align: center;">
+                
                 <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); margin-top: 0; margin-bottom: 1rem; font-size: 1.8rem;">XIN QUẺ LỤC HÀO</h2>
                 <p style="color: #555; font-style: italic; margin-bottom: 20px;">"Đồng thanh tương ứng, đồng khí tương cầu. Hãy tĩnh tâm nghĩ về việc cần hỏi trước khi gieo."</p>
                 
@@ -652,7 +655,7 @@
                         <strong style="color: #c0392b;">💡 Lời khuyên từ chuyên gia:</strong> Máy tính chỉ có thể lấy số ứng kỳ chung (Ngày/Tuần/Tháng). Để biết chính xác <strong>ngày nào nên hành động, giờ nào nên tránh rủi ro</strong>, bạn cần chuyên gia bấm quyết.<br><br>
                         👉 Hãy copy kết quả quẻ này và gửi cho tôi qua <strong>Gói Gỡ Rối 99k</strong> để được phân tích thực chiến.<br>
                     </div>
-                    <button onclick="document.querySelectorAll('.tab-btn')[4].click()" style="background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; text-transform: uppercase;">Đăng ký luận giải chi tiết (99k)</button>
+                    <button onclick="document.querySelectorAll('.tab-btn')[4].click()" style="background: var(--primary-color); color: white; border: none; width: 100%; max-width: 400px; display: block; margin: 15px auto 0 auto; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Đăng ký luận giải chi tiết (99k)</button>
                 </div>
             </div>
         `;
