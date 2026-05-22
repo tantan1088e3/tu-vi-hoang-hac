@@ -153,18 +153,37 @@
 
     <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
     <div id="consultation-form-wrapper" class="form-container">
-        <h2>ĐĂNG KÝ LUẬN GIẢI TỬ VI VIẾT TAY</h2>
-        <div class="notice-box" style="padding: 15px 20px; background: #fffcf6; border-left: 4px solid var(--accent-color); border-radius: 0 8px 8px 0; font-size: 0.95rem; line-height: 1.6;">
-            <strong>Lưu ý từ Hệ thống nghiệm lý:</strong> 
-            <p style="margin: 8px 0;">Bản luận giải được thực hiện tỉ mỉ dưới dạng văn bản (file PDF) gửi qua Email sau 3-5 ngày. Vui lòng cung cấp chính xác giờ sinh để đảm bảo tính chuẩn xác của các cung số.</p>
-            <span style="color: var(--primary-color); font-weight: bold;">💡 Hướng dẫn gửi thông tin:</span> After điền Form và bấm nút gửi, hệ thống sẽ tự động đồng bộ. Nếu dùng Điện thoại máy sẽ tự mở ứng dụng sms, nếu dùng Máy tính (PC) màn hình sẽ hiển thị mã QR để bạn gửi thông tin lập tức.
+        <h2>ĐĂNG KÝ LUẬN GIẢI CHUYÊN SÂU</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; background: #fffcf6; border: 1px solid var(--accent-color); border-radius: 8px; padding: 20px; margin-bottom: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+            <div style="flex: 1; min-width: 250px;">
+                <h4 style="margin-top: 0; color: var(--primary-color); border-bottom: 1px dashed var(--accent-color); padding-bottom: 8px; font-size: 1.1rem;">📋 HƯỚNG DẪN THỈNH BẢN LUẬN GIẢI</h4>
+                <ul style="padding-left: 20px; color: #444; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                    <li><strong>Bước 1:</strong> Chọn gói dịch vụ mong muốn ở Form bên dưới.</li>
+                    <li><strong>Bước 2:</strong> Quét mã QR bên cạnh để thanh toán phí (Gói giải Quẻ Lục Hào là 50.000đ).</li>
+                    <li><strong style="color: #e74c3c;">Lưu ý quan trọng:</strong> Tại phần nội dung chuyển khoản ngân hàng, quý hữu vui lòng <strong>ghi rõ địa chỉ Email</strong> của mình.</li>
+                    <li><strong>Bước 3:</strong> Điền đầy đủ thông tin vào Form và bấm gửi. Hệ thống sẽ đối chiếu biên lai và gửi File PDF qua Email cho quý hữu.</li>
+                </ul>
+            </div>
+            <div style="width: 140px; text-align: center; margin: 0 auto; display: flex; flex-direction: column; justify-content: center;">
+                <img src="https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Code Thanh Toán" style="width: 100%; height: auto; border: 2px solid #e2d9c8; border-radius: 8px; padding: 4px; background: white;">
+                <span style="display: block; font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: var(--primary-color);">QUÉT MÃ THANH TOÁN</span>
+            </div>
         </div>
+
         <form id="tuvi-booking-form" onsubmit="submitForm(event)">
+            <div class="form-group">
+                <label for="service-type">Gói dịch vụ bạn muốn đăng ký:</label>
+                <select id="service-type" required style="border-color: var(--accent-color); font-weight: bold; color: var(--primary-color); background-color: #fdfaf4;">
+                    <option value="Thỉnh bản luận giải Quẻ Dịch PDF (50K)">Thỉnh bản luận giải Quẻ Dịch PDF (50.000đ)</option>
+                    <option value="Luận giải Lá Số Tử Vi chuyên sâu">Luận giải Lá Số Tử Vi chuyên sâu (Liên hệ)</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="fullname">Họ và tên đương số:</label>
                 <input type="text" id="fullname" required placeholder="Ví dụ: Nguyễn Văn A">
             </div>
-            
             <div class="form-group">
                 <label>Giới tính:</label>
                 <div class="radio-group">
@@ -172,7 +191,6 @@
                     <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
                 </div>
             </div>
-
             <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div>
                     <label for="birth-date">Ngày/Tháng/Năm sinh:</label>
@@ -186,9 +204,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group">
-                <label for="birth-time">Giờ sinh chính xác:</label>
+                <label for="birth-time">Giờ sinh chính xác (Chọn ước chừng nếu xem Lục Hào):</label>
                 <select id="birth-time" required>
                     <option value="">-- Chọn khoảng giờ sinh --</option>
                     <option value="Tý (23:00 - 01:00)">Giờ Tý (23:00 - 01:00)</option>
@@ -205,27 +222,23 @@
                     <option value="Hợi (21:00 - 23:00)">Giờ Hợi (21:00 - 23:00)</option>
                 </select>
             </div>
-
             <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div>
                     <label for="email">Địa chỉ Email nhận văn bản:</label>
-                    <input type="email" id="email" required placeholder="name@example.com">
+                    <input type="email" id="email" required placeholder="Ghi trùng Email trong nội dung CK">
                 </div>
                 <div>
-                    <label for="phone">Số điện thoại / Telegram:</label>
+                    <label for="phone">Số điện thoại / Zalo:</label>
                     <input type="tel" id="phone" required placeholder="090xxxxxxx">
                 </div>
             </div>
-
             <div class="form-group">
-                <label for="notes">Vấn đề cốt lõi cần tham vấn (Công danh, Tài lộc, Gia đạo, Hạn trong năm...):</label>
-                <textarea id="notes" rows="4" placeholder="Anh/Chị vui lòng ghi rõ bối cảnh công việc hoặc các câu hỏi cụ thể để nội dung luận giải sát thực tế nhất..."></textarea>
+                <label for="notes">Vấn đề tham vấn (Hoặc ghi Tên Quẻ Dịch bạn vừa gieo được):</label>
+                <textarea id="notes" rows="4" placeholder="Ví dụ: Tôi muốn giải chi tiết Quẻ Hỏa Lôi Phệ Hạp, hỏi về công việc sắp tới..."></textarea>
             </div>
-
-            <button type="submit" class="btn-submit">Gửi thông tin đăng ký</button>
+            <button type="submit" class="btn-submit">XÁC NHẬN ĐÃ CHUYỂN KHOẢN & GỬI FORM</button>
         </form>
     </div>
-</div>
 
 <footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);">
     <p style="margin-bottom: 15px; font-size: 1.05rem; font-weight: bold; color: #aaa;">&copy; 2026 Tử Vi Hoàng Hạc - Lưu giữ di sản cụ Trương Cung Tùng</p>
@@ -1165,54 +1178,41 @@
     }
 
     // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
+    // GỬI FORM ĐĂNG KÝ (Đã bổ sung Loại dịch vụ)
     function submitForm(event) {
         event.preventDefault();
-        
-        const MY_PHONE = '0946712608';          
+        const MY_PHONE = '0946712608'; 
         const TELEGRAM_USERNAME = 'tantan1088a'; 
-
+        
+        // Lấy thêm thông tin loại dịch vụ
+        const serviceType = document.getElementById('service-type').value;
         const fullName = document.getElementById('fullname').value;
         const gender = document.querySelector('input[name="gender"]:checked').value;
-        const birthDate = document.getElementById('birth-date').value.split('-').reverse().join('/');
+        const birthDate = document.getElementById('birth-date').value;
         const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
         const birthTime = document.getElementById('birth-time').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
-        const notes = document.getElementById('notes').value || 'Không có ghi chú thêm';
+        const notes = document.getElementById('notes').value || 'Không có';
 
-        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ XEM TỬ VI\n` +
-                               `• Họ và tên: ${fullName}\n` +
-                               `• Giới tính: ${gender}\n` +
-                               `• Ngày sinh: ${birthDate} (${calendarType})\n` +
-                               `• Giờ sinh: ${birthTime}\n` +
-                               `• Email: ${email}\n` +
-                               `• SĐT liên hệ: ${phone}\n` +
-                               `• Nội dung tham vấn: ${notes}`;
-
-        const messageNoSign = `Dang ky Tu Vi: ${fullName} - ${gender}. Ngay sinh: ${birthDate} (${calendarType}) - Gio: ${birthTime}. Email: ${email}. SDT: ${phone}. Noi dung: ${notes}`;
-
+        // Ghép chuỗi tin nhắn có gói dịch vụ
+        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ DỊCH VỤ\n• Gói: ${serviceType}\n• Tên: ${fullName}\n• GT: ${gender}\n• Sinh: ${birthDate} (${calendarType})\n• Giờ: ${birthTime}\n• Email: ${email}\n• SĐT: ${phone}\n• Vấn đề/Tên Quẻ: ${notes}`;
+        
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            const separator = isIOS ? '&' : '?';
-            const smsMobileUrl = `sms:${MY_PHONE}${separator}body=${encodeURIComponent(messageNoSign)}`;
-            window.location.href = smsMobileUrl;
-            alert("Hệ thống đang mở ứng dụng Tin nhắn SMS...\nThông tin lá số đã được tự động điền sẵn, anh/chị chỉ cần bấm nút 'GỬI' là hoàn tất đăng ký.");
+            window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            alert("Hệ thống đang mở ứng dụng SMS. Vui lòng bấm GỬI để hoàn tất xác nhận.");
         } else {
-            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageNoSign)}`;
+            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
             const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
-
             const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
             const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(messageUnicode).catch(e => console.log(e));
-            }
-
             showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
         }
         
+        // Hiện thông báo cảm ơn
+        alert("Thông tin của bạn đã được ghi nhận. Hệ thống sẽ kiểm tra giao dịch và gửi File PDF qua Email trong thời gian sớm nhất!");
         document.getElementById('tuvi-booking-form').reset();
     }
 
