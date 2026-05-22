@@ -361,12 +361,12 @@
         searchContainer.style.display = "block";
         grid.innerHTML = ""; 
     
-        if (type === 'pdf') {
+       if (type === 'pdf') {
             currentPdfPage = 1;
             filterBar.style.display = "none";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>⏳ Đang kết nối kho dữ liệu Google Drive...</div>";
             pagination.innerHTML = "";
-            loadPDFFromGoogleSheets(); // Gọi hàm load mới từ Google Sheets
+            // CHỈ SỬA DUY NHẤT DÒNG DƯỚI ĐÂY:
+            renderGieoQueUI(); 
         } else if (type === 'video') { 
             filterBar.style.display = "none";
             pagination.innerHTML = "";
@@ -596,140 +596,161 @@
 
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
-    // 🌟 HÀM MỚI: TẢI DANH SÁCH FILE PDF TỪ GOOGLE SHEETS & ĐỒNG BỘ CACHE PHIÊN BẢN
-    // 🌟 ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS (Đã bổ sung cột pdf_author)
-    async function loadPDFFromGoogleSheets() {
+    // =========================================================
+    // 🌟 LÕI MỚI: HỆ THỐNG GIEO QUẺ LỤC HÀO (THAY THẾ PDF)
+    // =========================================================
+    
+    // Biến toàn cục cho Gieo Quẻ
+    let currentHao = 1;
+    let hexagramData = [];
+    const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
+
+    // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
+    function renderGieoQueUI() {
         const grid = document.getElementById('post-grid');
-        const CACHE_PDF_KEY = 'tuvi_pdf_cache';
-        const CACHE_PDF_VERSION_KEY = 'tuvi_pdf_version';
-
-        try {
-            let csv = '';
-            const now = new Date().getTime();
-
-            // 1. Check phiên bản thay đổi từ file cấu hình
-            const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
-            const versionText = await versionRes.text();
-            const firstLine = versionText.split(/\r?\n/)[0];
-            const latestVersion = firstLine.split(',')[1]?.trim() || "0";
-
-            const cachedData = localStorage.getItem(CACHE_PDF_KEY);
-            const cachedVersion = localStorage.getItem(CACHE_PDF_VERSION_KEY);
-
-            // 2. Kiểm tra Cache LocalStorage
-            if (cachedData && cachedVersion && cachedVersion === latestVersion) {
-                csv = cachedData;
-                console.log(`⚡ [Thư viện PDF] Đồng bộ từ LocalStorage (v${latestVersion})`);
-            } else {
-                console.log(`🌐 [Thư viện PDF] Đang tải cấu trúc dữ liệu mới từ Google Sheets...`);
-                const res = await fetch(`${PDF_SHEET_URL}&t=${now}`);
-                csv = await res.text();
-                localStorage.setItem(CACHE_PDF_KEY, csv);
-                localStorage.setItem(CACHE_PDF_VERSION_KEY, latestVersion);
-            }
-
-            // 3. Xử lý cắt chuỗi CSV và định vị các cột
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            if (rows.length === 0 || !rows[0]) {
-                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Thư viện tài liệu hiện chưa có dữ liệu.</p>";
-                return;
-            }
-
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            const idxName = headers.indexOf('pdf_name');
-            const idxLink = headers.indexOf('pdf_link');
-            const idxDesc = headers.indexOf('pdf_desc');
-            const idxAuthor = headers.indexOf('pdf_author'); // Định vị cột tác giả mới thêm
-
-            pdfDb = rows.slice(1).map(r => {
-                if (!r.trim()) return null;
-                const c = parseCSVLine(r);
-                return {
-                    name: c[idxName] ? c[idxName].trim() : "Tài liệu chưa đặt tên",
-                    link: c[idxLink] ? c[idxLink].trim() : "#",
-                    desc: (idxDesc !== -1 && c[idxDesc]) ? c[idxDesc].trim() : "Tài liệu học thuật cổ học được chia sẻ và lưu trữ an toàn trên Google Drive.",
-                    // Lấy dữ liệu cột tác giả, nếu trống thì để mặc định
-                    author: (idxAuthor !== -1 && c[idxAuthor]) ? c[idxAuthor].trim().toUpperCase() : "TÀI LIỆU HỌC THUẬT"
-                };
-            }).filter(file => file && file.link !== "#");
-
-            renderPDFUI();
-        } catch (e) {
-            console.error(e);
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>❌ Lỗi kết nối kho dữ liệu Google Drive.</div>";
-        }
-    }
-
-    // GIAO DIỆN HIỂN THỊ FILE PDF (Hiển thị cột tác giả riêng biệt + Khối QR nằm dưới menu)
-    // GIAO DIỆN HIỂN THỊ FILE PDF (Khối QR kéo giãn rộng tràn 2 bên bằng với lưới Card)
-    function renderPDFUI() {
-        const start = (currentPdfPage - 1) * pdfLimit;
-        const items = pdfDb.slice(start, start + pdfLimit);
-        const grid = document.getElementById('post-grid');
+        document.getElementById('post-pagination').innerHTML = ""; // Xóa phân trang
         
-        if (items.length === 0) {
-            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Chưa có tài liệu nào trong thư mục.</p>";
-            return;
-        }
+        // Reset state mỗi lần mở lại tab
+        currentHao = 1;
+        hexagramData = [];
 
-        // --- XỬ LÝ KHỐI QR DONATE RỘNG TOÀN CHIỀU RỘNG ---
-        // Xóa khối cũ để tránh lặp khi đổi trang
-        const oldDonate = document.getElementById('pdf-donate-section');
-        if (oldDonate) oldDonate.remove();
+        // Đổi display để form gieo quẻ căn giữa độc lập, không bị ảnh hưởng bởi css dạng lưới (grid)
+        grid.style.display = "block"; 
 
-        const QR_IMAGE_URL = 'https://raw.githubusercontent.com/tantan1088a3/tu-vi-hoang-hac/main/data/qr.png';
-        
-        // Thay max-width thành 100% để co giãn khít theo container cha của trang web
-        const donateHtml = `
-            <div class="global-donate-box" style="
-                max-width: 100%; 
-                margin: 0 auto 30px auto; 
-                background: #fffdf9; 
-                border: 1px dashed #e67e22; 
-                border-radius: 8px; 
-                padding: 20px 25px; 
-                display: flex; 
-                align-items: center; 
-                gap: 30px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
-                box-sizing: border-box;
-                width: 100%;
-            ">
-                <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
+        // Bơm nguyên HTML và CSS hiệu ứng vào trong grid
+        grid.innerHTML = `
+            <style>
+                @keyframes flipCoinAnim {
+                    0% { transform: translateY(0) rotateY(0deg) scale(1); }
+                    50% { transform: translateY(-60px) rotateY(720deg) scale(1.2); }
+                    100% { transform: translateY(0) rotateY(1440deg) scale(1); }
+                }
+                .coin-tossing { animation: flipCoinAnim 1.2s ease-in-out; }
+            </style>
+            <div style="background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); max-width: 700px; margin: 0 auto; text-align: center;">
+                <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); margin-top: 0; margin-bottom: 1rem; font-size: 1.8rem;">XIN QUẺ LỤC HÀO</h2>
+                <p style="color: #555; font-style: italic; margin-bottom: 20px;">"Đồng thanh tương ứng, đồng khí tương cầu. Hãy tĩnh tâm nghĩ về việc cần hỏi trước khi gieo."</p>
+                
+                <div id="coin-area" style="display: flex; justify-content: center; gap: 20px; margin: 30px 0; height: 70px; align-items: center;">
+                    <div class="coin-ui" id="coin-1" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
+                    <div class="coin-ui" id="coin-2" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
+                    <div class="coin-ui" id="coin-3" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
                 </div>
                 
-                <div style="text-align: left; flex-grow: 1;">
-                    <h4 style="margin: 0 0 8px 0; color: #d35400; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.3px;">
-                        Đồng Hành Cùng Tử Vi Hoàng Hạc ☕
-                    </h4>
-                    <p style="margin: 0; color: #555; font-size: 0.88rem; line-height: 1.6; text-align: justify;">
-                        Chào anh em đồng đạo! Toàn bộ tài liệu học thuật tại Thư Viện PDF đều được chia sẻ hoàn toàn miễn phí nhằm lưu trữ và lan tỏa di sản cổ học. Nếu thấy kho sách hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
-                    </p>
+                <button id="btn-gieo" onclick="tossCoins()" style="background: var(--primary-color); color: white; border: 2px solid var(--accent-color); padding: 15px 40px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;">Gieo Lần 1</button>
+                
+                <div id="hexagram-draw-area" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 12px; margin: 30px 0; min-height: 200px;">
+                    </div>
+
+                <div id="hexagram-result" style="background: #fffcf6; border: 1px solid var(--accent-color); padding: 25px; border-radius: 8px; margin-top: 20px; display: none; text-align: left;">
+                    <h3 style="color: var(--primary-color); margin-top:0; border-bottom: 1px solid var(--accent-color); padding-bottom: 10px;">☯ KẾT QUẢ QUẺ DỊCH CỦA BẠN</h3>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Quẻ Chủ:</strong> <span id="res-que" style="color: var(--primary-color); font-weight: bold;">Đang tính toán...</span></p>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Hào Động:</strong> <span id="res-dong" style="color: #e74c3c; font-weight: bold;">...</span></p>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Thời gian ứng kỳ:</strong> Gợi ý số <span id="res-ungky" style="color:#e74c3c; font-weight:bold; font-size:1.3rem;">...</span></p>
+                    
+                    <div style="background: #fdf2f2; border-left: 4px solid #e74c3c; padding: 15px; margin-top: 20px; font-size: 0.95rem; border-radius: 0 8px 8px 0;">
+                        <strong style="color: #c0392b;">💡 Lời khuyên từ chuyên gia:</strong> Máy tính chỉ có thể lấy số ứng kỳ chung (Ngày/Tuần/Tháng). Để biết chính xác <strong>ngày nào nên hành động, giờ nào nên tránh rủi ro</strong>, bạn cần chuyên gia bấm quyết.<br><br>
+                        👉 Hãy copy kết quả quẻ này và gửi cho tôi qua <strong>Gói Gỡ Rối 99k</strong> để được phân tích thực chiến.<br>
+                    </div>
+                    <button onclick="document.querySelectorAll('.tab-btn')[4].click()" style="background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; text-transform: uppercase;">Đăng ký luận giải chi tiết (99k)</button>
                 </div>
             </div>
         `;
-
-        // Chèn khối bọc độc lập vào ngay trên lưới grid card sách
-        const donateContainer = document.createElement('div');
-        donateContainer.id = 'pdf-donate-section';
-        donateContainer.style.width = '100%'; // Đảm bảo container ngoài cũng ăn hết đất
-        donateContainer.innerHTML = donateHtml;
-        grid.parentNode.insertBefore(donateContainer, grid);
-        // -----------------------------------------------------------
-        
-        // Đổ danh sách card sách mượt mà của anh vào Grid
-        grid.innerHTML = items.map(file => `
-            <div class="card">
-                <span class="category-tag">${file.author}</span>
-                <h3>${file.name}</h3>
-                <p style="text-align: justify; line-height: 1.5; color: #555; min-height: 72px;">${file.desc.replace(/\n/g, '<br>')}</p>
-                <a href="${file.link}" target="_blank" class="btn-post" style="background: #27ae60; color: white; border: none; text-align: center; font-weight: bold; transition: background 0.2s ease;">Tải xuống PDF ↓</a>
-            </div>
-        `).join('');
-        
-        renderPDFPagination(pdfDb.length);
     }
+
+    // Hàm 2: Thuật toán tung đồng xu & Tính Hào
+    function tossCoins() {
+        const btn = document.getElementById('btn-gieo');
+        const coins = [document.getElementById('coin-1'), document.getElementById('coin-2'), document.getElementById('coin-3')];
+        
+        btn.disabled = true;
+        btn.innerText = "Đang gieo...";
+        btn.style.opacity = "0.7";
+
+        let audio = new Audio(coinSoundUrl);
+        audio.play().catch(e => console.log("Cần click web trước khi phát âm thanh"));
+
+        coins.forEach(c => {
+            c.innerHTML = ""; 
+            c.classList.remove('coin-tossing');
+            void c.offsetWidth; 
+            c.classList.add('coin-tossing');
+        });
+
+        setTimeout(() => {
+            let headsCount = 0;
+            coins.forEach(c => {
+                c.classList.remove('coin-tossing');
+                let isHead = Math.random() > 0.5; 
+                c.innerHTML = isHead ? "SẤP" : "NGỬA";
+                if(isHead) headsCount++;
+            });
+            processHaoResult(headsCount);
+        }, 1200);
+    }
+
+    function processHaoResult(headsCount) {
+        let haoHTML = ''; let isDong = false;
+        
+        // CSS inline cho các Hào
+        const duongStyle = "width: 100%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
+        const amStyle = "width: 100%; height: 100%; display: flex; justify-content: space-between;";
+        const amPill = "width: 45%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
+        const dongMark = "position: absolute; right: -25px; color: #e74c3c; font-weight: bold; font-size: 1.2rem; line-height: 18px;";
+
+        if (headsCount === 0) { // 3 Ngửa -> Âm Động
+            isDong = true; 
+            haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div><span style="${dongMark}">✕</span>`;
+        } else if (headsCount === 1) { // 1 Sấp 2 Ngửa -> Dương Tĩnh
+            haoHTML = `<div style="${duongStyle}"></div>`;
+        } else if (headsCount === 2) { // 2 Sấp 1 Ngửa -> Âm Tĩnh
+            haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div>`;
+        } else if (headsCount === 3) { // 3 Sấp -> Dương Động
+            isDong = true; 
+            haoHTML = `<div style="${duongStyle}"></div><span style="${dongMark}">O</span>`;
+        }
+
+        hexagramData.push({ line: currentHao, isDong: isDong });
+
+        const drawArea = document.getElementById('hexagram-draw-area');
+        const newRow = document.createElement('div');
+        newRow.style = "display: flex; align-items: center; justify-content: center; width: 100%; position: relative;";
+        newRow.innerHTML = `
+            <span style="position: absolute; left: 0; font-size: 0.9rem; color: #888; font-style: italic;">Hào ${currentHao}</span>
+            <div style="width: 180px; height: 18px; display: flex; justify-content: center; position: relative;">${haoHTML}</div>
+        `;
+        drawArea.appendChild(newRow); 
+
+        currentHao++;
+        const btn = document.getElementById('btn-gieo');
+        
+        if (currentHao <= 6) {
+            btn.innerText = `Gieo Lần ${currentHao}`; 
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        } else {
+            btn.innerText = "ĐANG LẬP QUẺ...";
+            setTimeout(() => {
+                btn.style.display = 'none'; 
+                document.getElementById('coin-area').style.display = 'none'; 
+                showResult();
+            }, 1000);
+        }
+    }
+
+    function showResult() {
+        document.getElementById('hexagram-result').style.display = 'block';
+        const mockQue = ["Thủy Lôi Truân", "Địa Lôi Phục", "Hỏa Thiên Đại Hữu", "Trạch Thủy Khốn", "Thiên Phong Cấu", "Địa Thiên Thái"];
+        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
+        
+        document.getElementById('res-que').innerText = mockQue[Math.floor(Math.random() * mockQue.length)];
+        document.getElementById('res-dong').innerText = dongLines === "" ? "Quẻ Tĩnh (Không có hào động)" : "Động ở Hào " + dongLines;
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
+        document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
+    }
+    // =========================================================
+    // KẾT THÚC KHỐI GIEO QUẺ
+    // =========================================================
     
     function renderPDFPagination(total) {
         const pages = Math.ceil(total / pdfLimit);
