@@ -188,11 +188,11 @@
 <div class="control-panel">
     <div class="top-bar">
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('posts', this)">BÀI VIẾT</button>
-            <button class="tab-btn" onclick="switchTab('video', this)">THƯ VIỆN VIDEO</button> 
-            <button class="tab-btn" onclick="switchTab('pdf', this)">GIEO QUẺ LỤC HÀO</button>
-            <button class="tab-btn" onclick="switchTab('books', this)">TỦ SÁCH CỔ HỌC</button>
-            <button class="tab-btn" onclick="switchTab('register', this)" style="font-weight: 700;">ĐĂNG KÝ XEM SỐ ★</button>
+            <button class="tab-btn active" onclick="switchTab('posts',this,event)">BÀI VIẾT</button>
+            <button class="tab-btn" onclick="switchTab('video',this,event)">THƯ VIỆN VIDEO</button>
+            <button class="tab-btn" onclick="switchTab('pdf',this,event)">GIEO QUẺ LỤC HÀO</button>
+            <button class="tab-btn" onclick="switchTab('books',this,event)">TỦ SÁCH CỔ HỌC</button>
+            <button class="tab-btn" onclick="switchTab('register',this,event)">ĐĂNG KÝ XEM SỐ ★</button>
         </div>
     </div>
     <div id="filter-bar" class="filter-bar"></div>
@@ -200,6 +200,14 @@
 
 <div class="container">
     <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
+    <div id="search-container-custom" style="display: none; text-align: center; margin-bottom: 20px; padding: 20px; background: #2c3e50; border-radius: 8px;">
+        <input type="text" id="search-bar" placeholder="🔍 Tìm trong bài viết..." 
+               onkeyup="handleSearch()" 
+               style="padding: 10px 20px; border: none; border-radius: 25px; width: 80%; max-width: 400px;">
+    </div>
+    
+    <div id="filter-bar" class="filter-bar" style="display: none;"></div>
+    
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
 
@@ -427,29 +435,39 @@
         renderUI();
     }
 
-    function switchTab(type, element) {
-    // 1. Dọn dẹp
+   function switchTab(type, element, event) {
+    if (event) {
+        event.stopPropagation(); // NGĂN CHẶN NHẢY TAB
+        event.preventDefault();  // Ngăn chặn hành vi mặc định của thẻ (nếu có)
+    }
+    // 1. Dọn dẹp các thành phần tạm thời
     const oldDonate = document.getElementById('pdf-donate-section');
     if (oldDonate) oldDonate.remove();
 
+    // Reset trạng thái nút bấm
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     if(element) element.classList.add('active');
 
+    // Lấy các thành phần giao diện
     const grid = document.getElementById('post-grid');
     const pagination = document.getElementById('post-pagination');
     const filterBar = document.getElementById('filter-bar');
     const formWrapper = document.getElementById('consultation-form-wrapper');
+    const searchBox = document.getElementById('search-container-custom'); // Khung chứa ô tìm kiếm của bạn
 
-    // Mặc định reset giao diện
+    // Mặc định ẩn các thành phần đặc thù
     grid.style.display = "grid";
     pagination.style.display = "flex";
     formWrapper.style.display = "none";
-    filterBar.style.display = "none"; // Mặc định ẩn thanh lọc
+    filterBar.style.display = "none";
+    if (searchBox) searchBox.style.display = "none"; // Ẩn ô tìm kiếm mặc định
+    
     grid.innerHTML = "";
 
-    // 2. Logic theo từng Tab
+    // 2. Logic điều hướng
     if (type === 'posts') {
-        filterBar.style.display = "flex"; // Hiện thanh chứa Tag + Tìm kiếm
+        if (searchBox) searchBox.style.display = "block"; // CHỈ HIỆN KHI Ở TAB BÀI VIẾT
+        filterBar.style.display = "flex";
         renderTags(); 
         renderUI();
     } else if (type === 'pdf') {
