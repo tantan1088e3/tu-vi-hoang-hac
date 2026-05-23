@@ -326,6 +326,8 @@
     let pdfDb = []; 
     let currentPdfPage = 1;
     const pdfLimit = 6; 
+    let currentVideoPage = 1;
+    const videoLimit = 6;
     
     // CẤU HÌNH CÁC ĐƯỜNG LINK GOOGLE SHEETS CỦA ANH
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
@@ -487,9 +489,11 @@ function switchTab(type, element, event) {
     } 
     else if (type === 'video') {
         grid.style.display = "grid";
+        pagination.style.display = "flex"; // THÊM DÒNG NÀY ĐỂ HIỆN THANH PHÂN TRANG
         grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+        currentVideoPage = 1; // Reset về trang 1 mỗi khi bấm vào tab
         loadVideoLibrary();
-    } 
+    }
     else if (type === 'register') {
         formWrapper.style.display = "block";
     } 
@@ -1244,16 +1248,22 @@ function switchTab(type, element, event) {
         document.getElementById('post-pagination').innerHTML = html;
     }
 
+    // === CODE XỬ LÝ VIDEO CÓ PHÂN TRANG ===
     async function loadVideoLibrary() {
         const grid = document.getElementById('post-grid');
         const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
 
         if (videoPosts.length === 0) {
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
+            document.getElementById('post-pagination').innerHTML = ""; // Ẩn phân trang nếu không có video
             return;
         }
 
-        grid.innerHTML = videoPosts.map(p => `
+        // Lấy danh sách video tương ứng với trang hiện tại
+        const start = (currentVideoPage - 1) * videoLimit;
+        const items = videoPosts.slice(start, start + videoLimit);
+
+        grid.innerHTML = items.map(p => `
             <div class="card">
                 <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
                     <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
@@ -1265,6 +1275,31 @@ function switchTab(type, element, event) {
                 <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
             </div>
         `).join('');
+
+        // Gọi hàm vẽ nút phân trang
+        renderVideoPagination(videoPosts.length);
+    }
+
+    function renderVideoPagination(total) {
+        const pages = Math.ceil(total / videoLimit);
+        let html = '';
+        
+        // Nếu chỉ có 1 trang thì không cần hiện nút phân trang
+        if (pages <= 1) { 
+            document.getElementById('post-pagination').innerHTML = "";
+            return; 
+        }
+        
+        for(let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i === currentVideoPage ? 'active' : ''}" onclick="goToVideoPage(${i})">${i}</button>`;
+        }
+        document.getElementById('post-pagination').innerHTML = html;
+    }
+
+    function goToVideoPage(p) {
+        currentVideoPage = p;
+        loadVideoLibrary();
+        window.scrollTo(0, 0); // Tự động cuộn lên đầu trang khi bấm sang trang mới
     }
     
     function goPdfPage(p) {
