@@ -287,15 +287,39 @@
                             const sCat = getVal(cells, 'category') || "Tham Khảo";
                             const sLink = window.location.pathname + "?id=" + sId; 
                             
-                            // Tự động chọn icon dựa theo tên chuyên mục
-                            let catIcon = "🔮"; // Icon mặc định nếu không khớp từ khóa nào
+                            // Tự động chọn icon dựa theo tên chuyên mục hoặc tên bài viết
+                            let catIcon = "🔮"; // Icon mặc định
                             const catLower = sCat.toLowerCase();
-                            if (catLower.includes('vô chính diệu')) catIcon = "🌌";
+                            const titleLower = sTitle.toLowerCase(); // Quét thêm cả tiêu đề bài viết để bắt tên Sao
+                            
+                            // 1. Bắt theo tên các Sao (quét trong tiêu đề)
+                            if (titleLower.includes('thất sát')) catIcon = "⚔️";
+                            else if (titleLower.includes('phá quân')) catIcon = "🌊";
+                            else if (titleLower.includes('tham lang')) catIcon = "🐺";
+                            else if (titleLower.includes('tử vi')) catIcon = "👑";
+                            else if (titleLower.includes('thiên phủ')) catIcon = "🪙";
+                            else if (titleLower.includes('vũ khúc')) catIcon = "💵";
+                            else if (titleLower.includes('thái dương')) catIcon = "☀️";
+                            else if (titleLower.includes('thái âm')) catIcon = "🌙";
+                            else if (titleLower.includes('thiên cơ')) catIcon = "⚙️";
+                            else if (titleLower.includes('thiên đồng')) catIcon = "👶";
+                            else if (titleLower.includes('liêm trinh')) catIcon = "⚖️";
+                            else if (titleLower.includes('cự môn')) catIcon = "🗣️";
+                            else if (titleLower.includes('thiên lương')) catIcon = "🪵";
+                            else if (titleLower.includes('thiên tướng')) catIcon = "🛡️";
+                            
+                            // 2. Bắt theo tên các Cung (quét trong chuyên mục hoặc tiêu đề)
+                            else if (catLower.includes('tật ách') || titleLower.includes('tật ách')) catIcon = "🏥";
+                            else if (catLower.includes('phu thê') || titleLower.includes('phu thê')) catIcon = "👩‍❤️‍👨";
+                            else if (catLower.includes('tài bạch') || titleLower.includes('tài bạch')) catIcon = "💰";
+                            else if (catLower.includes('quan lộc') || titleLower.includes('quan lộc')) catIcon = "💼";
+                            else if (catLower.includes('điền trạch') || titleLower.includes('điền trạch')) catIcon = "🏡";
+                            else if (catLower.includes('mệnh') || titleLower.includes('mệnh')) catIcon = "⛩️";
+                            
+                            // 3. Bắt các sao phụ, tạp tinh khác như đã làm
+                            else if (catLower.includes('vô chính diệu')) catIcon = "🌌";
                             else if (catLower.includes('thiên không')) catIcon = "🪶";
                             else if (catLower.includes('hỏa') || catLower.includes('linh')) catIcon = "🔥";
-                            else if (catLower.includes('sao') || catLower.includes('tinh')) catIcon = "⭐";
-                            else if (catLower.includes('cung')) catIcon = "⛩️";
-                            else if (catLower.includes('phú')) catIcon = "📜";
 
                             suggestedItemsHtml += `
                                 <a href="${sLink}" class="suggested-item">
