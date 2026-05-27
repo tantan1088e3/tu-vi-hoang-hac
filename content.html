@@ -287,9 +287,22 @@
                             const sCat = getVal(cells, 'category') || "Tham Khảo";
                             const sLink = window.location.pathname + "?id=" + sId; 
                             
+                            // Tự động chọn icon dựa theo tên chuyên mục
+                            let catIcon = "🔮"; // Icon mặc định nếu không khớp từ khóa nào
+                            const catLower = sCat.toLowerCase();
+                            if (catLower.includes('vô chính diệu')) catIcon = "🌌";
+                            else if (catLower.includes('thiên không')) catIcon = "🪶";
+                            else if (catLower.includes('hỏa') || catLower.includes('linh')) catIcon = "🔥";
+                            else if (catLower.includes('sao') || catLower.includes('tinh')) catIcon = "⭐";
+                            else if (catLower.includes('cung')) catIcon = "⛩️";
+                            else if (catLower.includes('phú')) catIcon = "📜";
+
                             suggestedItemsHtml += `
                                 <a href="${sLink}" class="suggested-item">
-                                    <span class="suggested-category">${sCat}</span>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 1.2rem; line-height: 1;">${catIcon}</span>
+                                        <span class="suggested-category" style="margin-bottom: 0;">${sCat}</span>
+                                    </div>
                                     <h4 class="suggested-title">${sTitle}</h4>
                                 </a>
                             `;
