@@ -701,14 +701,58 @@ function switchTab(type, element, event) {
             return;
         }
 
-        grid.innerHTML = items.map(p => `
+        // Bắt đầu vòng lặp tạo bài viết
+        grid.innerHTML = items.map(p => {
+            
+            // --- THUẬT TOÁN GÁN ICON TỰ ĐỘNG ---
+            let catIcon = "🔮"; // Icon mặc định
+            const catLower = (p.category || "").toLowerCase();
+            const titleLower = (p.title || "").toLowerCase();
+
+            // 1. Nhóm Sao
+            if (titleLower.includes('thất sát')) catIcon = "⚔️";
+            else if (titleLower.includes('phá quân')) catIcon = "🌊";
+            else if (titleLower.includes('tham lang')) catIcon = "🐺";
+            else if (titleLower.includes('tử vi')) catIcon = "👑";
+            else if (titleLower.includes('thiên phủ')) catIcon = "🪙";
+            else if (titleLower.includes('vũ khúc')) catIcon = "💵";
+            else if (titleLower.includes('thái dương')) catIcon = "☀️";
+            else if (titleLower.includes('thái âm')) catIcon = "🌙";
+            else if (titleLower.includes('thiên cơ')) catIcon = "⚙️";
+            else if (titleLower.includes('thiên đồng')) catIcon = "👶";
+            else if (titleLower.includes('liêm trinh')) catIcon = "⚖️";
+            else if (titleLower.includes('cự môn')) catIcon = "🗣️";
+            else if (titleLower.includes('thiên lương')) catIcon = "🪵";
+            else if (titleLower.includes('thiên tướng')) catIcon = "🛡️";
+            
+            // 2. Nhóm Cung
+            else if (catLower.includes('tật ách') || titleLower.includes('tật ách')) catIcon = "🏥";
+            else if (catLower.includes('phu thê') || titleLower.includes('phu thê')) catIcon = "👩‍❤️‍👨";
+            else if (catLower.includes('tài bạch') || titleLower.includes('tài bạch')) catIcon = "💰";
+            else if (catLower.includes('quan lộc') || titleLower.includes('quan lộc')) catIcon = "💼";
+            else if (catLower.includes('điền trạch') || titleLower.includes('điền trạch')) catIcon = "🏡";
+            else if (catLower.includes('mệnh') || titleLower.includes('mệnh')) catIcon = "⛩️";
+            
+            // 3. Tạp tinh & Chuyên mục
+            else if (catLower.includes('vô chính diệu')) catIcon = "🌌";
+            else if (catLower.includes('thiên không')) catIcon = "🪶";
+            else if (catLower.includes('hỏa') || catLower.includes('linh')) catIcon = "🔥";
+            else if (catLower.includes('tuyển tập')) catIcon = "📚";
+            else if (catLower.includes('nghiệm lý')) catIcon = "🔍";
+            // ------------------------------------
+
+            // Trả về HTML đã ghép Icon
+            return `
             <div class="card ${p.isFeatured ? 'featured' : ''}">
-                <span class="category-tag">${p.category}</span>
+                <span class="category-tag" style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 1.25em;">${catIcon}</span> ${p.category}
+                </span>
                 <h3>${p.title}</h3>
                 <p>${p.desc}</p>
                 <a href="content.html?id=${p.id}" class="btn-post">Đọc tiếp →</a>
             </div>
-        `).join('');
+            `;
+        }).join('');
 
         renderPagination(filtered.length);
     }
