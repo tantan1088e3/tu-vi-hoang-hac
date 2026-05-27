@@ -67,6 +67,15 @@
         .btn-aff-vip { width: fit-content; margin-top: 10px; padding: 12px 30px; background: #8e2121; color: white !important; text-decoration: none; font-weight: bold; font-size: 0.95rem; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(142,33,33,0.25); }
         .btn-aff-vip:hover { background: #c5a059; box-shadow: 0 4px 15px rgba(197,160,89,0.35); }
 
+        /* BÀI ĐỌC GỢI Ý */
+        .suggested-wrapper { margin-top: 60px; padding-top: 30px; border-top: 1px solid #e0d5c1; }
+        .suggested-heading { font-size: 1.15rem; font-weight: bold; color: #5d1a1a; letter-spacing: 1px; border-bottom: 2px solid #e0d5c1; padding-bottom: 8px; margin-bottom: 25px; text-transform: uppercase; }
+        .suggested-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .suggested-item { background: #fffcf8; border: 1px solid #e0d5c1; border-radius: 8px; padding: 20px; text-decoration: none; transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .suggested-item:hover { border-color: #8e2121; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .suggested-category { font-size: 0.75rem; color: #c5a059; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        .suggested-title { font-size: 1.05rem; color: #34495e; font-weight: bold; line-height: 1.4; margin: 0; }
+
         /* Responsive cho thiết bị di động */
         @media (max-width: 600px) {
             .article-container { padding: 25px; }
@@ -76,6 +85,7 @@
             .aff-gallery-side { width: 100%; align-items: center; }
             .aff-main-img-box { width: 180px; height: 250px; }
             .btn-aff-vip { width: 100%; box-sizing: border-box; text-align: center; }
+            .suggested-list { grid-template-columns: 1fr; }
         }
     </style>
 <script type="text/javascript">
@@ -130,7 +140,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
-        // Thêm link UPDATE để phòng trường hợp người dùng vào thẳng link bài viết (không qua trang chủ)
         const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
 
         function parseLine(text) {
@@ -154,24 +163,16 @@
                 const cachedPosts = localStorage.getItem('tuvi_posts_cache');
 
                 if (cachedPosts) {
-                    // ƯU TIÊN 1: Bật luôn từ LocalStorage do trang chủ chuẩn bị sẵn -> Tốc độ 0.01 giây
                     text = cachedPosts;
-                    console.log("⚡ [Chi tiết] Khởi động thần tốc từ LocalStorage!");
                 } else {
-                    // ƯU TIÊN 2: Vào trực tiếp không qua trang chủ -> Quét phiên bản và kéo dữ liệu mới nhất về lưu cache luôn
-                    console.log("🌐 [Chi tiết] Không thấy bộ nhớ đệm, tiến hành quét phiên bản trực tiếp từ Sheets...");
                     const now = new Date().getTime();
-                    
-                    // Quét nhanh số version hiện tại
                     const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
                     const versionText = await versionRes.text();
                     const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
 
-                    // Tải dữ liệu CSV gốc
                     const res = await fetch(`${SHEET_URL}&t=${now}`);
                     text = await res.text();
                     
-                    // Tiện tay lưu luôn vào LocalStorage cho các lần sau đọc nhanh
                     localStorage.setItem('tuvi_posts_cache', text);
                     localStorage.setItem('tuvi_posts_version', latestVersion);
                 }
@@ -215,11 +216,9 @@
                             </div>`;
                     }
 
-                    // XỬ LÝ ĐỘNG KHU VỰC THƯƠNG MẠI
                     const rawLinks = getVal(d, 'aff_link');
                     const rawImgs = getVal(d, 'aff_img');
                     const rawNames = getVal(d, 'aff_name');
-                    
                     let affHtml = "";
 
                     if (rawLinks && rawNames) {
@@ -229,19 +228,11 @@
 
                         if (bookNames.length > 0) {
                             let itemsHtml = "";
-                            
                             bookNames.forEach((name, index) => {
                                 const link = bookLinks[index] || bookLinks[0];
                                 const imgRow = bookImgRows[index] || "";
-                                
-                                const imgs = imgRow.split(',')
-                                    .map(x => x.trim().replace(/[\r\n]/g, ""))
-                                    .filter(x => x.length > 0);
-
-                                if (imgs.length === 0 || imgs[0] === "") {
-                                    imgs[0] = "data/fini-icon.png";
-                                }
-                                
+                                const imgs = imgRow.split(',').map(x => x.trim().replace(/[\r\n]/g, "")).filter(x => x.length > 0);
+                                if (imgs.length === 0 || imgs[0] === "") imgs[0] = "data/fini-icon.png";
                                 const mainImgId = `img_main_${index}_` + Math.random().toString(36).substr(2, 5);
                                 
                                 let thumbsHtml = "";
@@ -283,7 +274,55 @@
                         }
                     }
 
-                    // Render toàn bộ nội dung hoàn chỉnh lên màn hình
+                    // --- BẮT ĐẦU: LOGIC XỬ LÝ BÀI ĐỌC GỢI Ý ---
+                    let suggestedHtml = "";
+                    // Lọc ra các bài viết khác (trừ bài hiện tại)
+                    let otherPosts = rows.slice(1).filter(r => {
+                        const cells = parseLine(r);
+                        return cells.length > headers.indexOf('id') && 
+                               cells[headers.indexOf('id')] !== idReq && 
+                               cells[headers.indexOf('id')].trim() !== "";
+                    });
+
+                    // Xáo trộn ngẫu nhiên mảng
+                    for (let i = otherPosts.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [otherPosts[i], otherPosts[j]] = [otherPosts[j], otherPosts[i]];
+                    }
+
+                    // Lấy ra tối đa 3 bài viết
+                    const suggestedPosts = otherPosts.slice(0, 3);
+
+                    if (suggestedPosts.length > 0) {
+                        let suggestedItemsHtml = "";
+                        suggestedPosts.forEach(r => {
+                            const cells = parseLine(r);
+                            const sId = getVal(cells, 'id');
+                            const sTitle = getVal(cells, 'title');
+                            const sCat = getVal(cells, 'category') || "Tham Khảo";
+                            // Tự động dùng pathname hiện tại để mở lại bài
+                            const sLink = window.location.pathname + "?id=" + sId; 
+                            
+                            suggestedItemsHtml += `
+                                <a href="${sLink}" class="suggested-item">
+                                    <span class="suggested-category">${sCat}</span>
+                                    <h4 class="suggested-title">${sTitle}</h4>
+                                </a>
+                            `;
+                        });
+
+                        suggestedHtml = `
+                            <div class="suggested-wrapper">
+                                <div class="suggested-heading">📚 Có thể bạn sẽ thích</div>
+                                <div class="suggested-list">
+                                    ${suggestedItemsHtml}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    // --- KẾT THÚC: LOGIC XỬ LÝ BÀI ĐỌC GỢI Ý ---
+
+                    // Render nội dung
                     view.innerHTML = `
                         <span class="meta-info">${getVal(d, 'category')}</span>
                         <h1>${getVal(d, 'title')}</h1>
@@ -296,6 +335,8 @@
                         <div class="section-j">${getVal(d, 'j_footer')}</div>
 
                         ${affHtml}
+
+                        ${suggestedHtml}
                     `;
                 } else {
                     view.innerHTML = "<div style='text-align: center; padding: 60px; color: #8e2121;'>⚠️ Nội dung không tồn tại hoặc đã được di dời.</div>";
@@ -308,6 +349,5 @@
         load();
     });
 </script>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script></body>
 </html>
