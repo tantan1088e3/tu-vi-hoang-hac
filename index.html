@@ -127,6 +127,64 @@
 
         #consultation-form-wrapper { display: none; }
         #search-container-custom { display: none; }
+
+        /* =========================================
+           CSS CHO NÚT MESSENGER TRÔI NỔI 
+           ========================================= */
+        .floating-messenger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00B2FF 0%, #006AFF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 106, 255, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            animation: pulse-msg 2s infinite;
+        }
+        .floating-messenger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 106, 255, 0.6);
+            animation: none; /* Dừng rung khi di chuột vào */
+        }
+        .floating-messenger svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+        @keyframes pulse-msg {
+            0% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 106, 255, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 5px 25px rgba(0, 106, 255, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 106, 255, 0.4); }
+        }
+        .messenger-tooltip {
+            position: absolute;
+            right: 75px;
+            background: white;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
+        .floating-messenger:hover .messenger-tooltip {
+            opacity: 1;
+            right: 80px;
+        }
+
         /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
         @media (max-width: 600px) {
             .form-container {
@@ -142,51 +200,55 @@
             .radio-group {
                 padding: 5px 0 !important;
             }
+            .tabs {
+                display: flex;
+                flex-wrap: wrap;       /* Cho phép xuống dòng */
+                gap: 10px;             /* Khoảng cách giữa các nút */
+                width: 100%;
+                background: white;
+                padding: 8px;
+                border-radius: 8px;
+                box-sizing: border-box;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            }
+            .tab-btn {
+                /* Chỉnh 45% để đảm bảo 2 nút/dòng, nếu nút dài quá sẽ tự xuống dòng */
+                flex: 1 1 45%;         
+                padding: 10px 5px;
+                border: 1px solid #ddd;
+                background: white;
+                cursor: pointer;
+                font-weight: bold;
+                color: #5d1a1a;
+                border-radius: 20px;
+                text-align: center;
+                font-size: 0.85rem;
+                white-space: nowrap;
+                transition: 0.3s;
+            }
+            /* Đưa nút cuối về giống hệt các nút khác */
+            .tab-btn:last-child {
+                flex: 1 1 45%;         /* Giống hệt các nút trên */
+                background: white;   /* Màu nền giống hệt nút trên */
+                color: #5d1a1a;        /* Màu chữ giống hệt nút trên */
+            }
+            .tab-btn.active {
+                background: var(--accent-color); color: white; border-color: var(--accent-color);
+            }
+            .floating-messenger {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            .floating-messenger svg {
+                width: 28px;
+                height: 28px;
+            }
+            .messenger-tooltip {
+                display: none; /* Ẩn tooltip trên điện thoại cho đỡ vướng */
+            }
         }
-        /* Chỉ áp dụng cho điện thoại (màn hình nhỏ hơn 600px) */
-
-        
-        
-    @media (max-width: 600px) {
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;       /* Cho phép xuống dòng */
-        gap: 10px;              /* Khoảng cách giữa các nút */
-        width: 100%;
-        background: white;
-        padding: 8px;
-        border-radius: 8px;
-        box-sizing: border-box;
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .tab-btn {
-        /* Chỉnh 45% để đảm bảo 2 nút/dòng, nếu nút dài quá sẽ tự xuống dòng */
-        flex: 1 1 45%;         
-        padding: 10px 5px;
-        border: 1px solid #ddd;
-        background: white;
-        cursor: pointer;
-        font-weight: bold;
-        color: #5d1a1a;
-        border-radius: 20px;
-        text-align: center;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        transition: 0.3s;
-    }
-
-    /* Đưa nút cuối về giống hệt các nút khác */
-    .tab-btn:last-child {
-        flex: 1 1 45%;         /* Giống hệt các nút trên */
-        background: white;   /* Màu nền giống hệt nút trên */
-        color: #5d1a1a;        /* Màu chữ giống hệt nút trên */
-    }
-
-    .tab-btn.active {
-        background: var(--accent-color); color: white; border-color: var(--accent-color);
-    }
-}
     </style>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -220,12 +282,9 @@
 </div>
 
 <div class="container">
-    <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
- 
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
 
-    <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
     <div id="consultation-form-wrapper" class="form-container">
         <h2>ĐĂNG KÝ LUẬN GIẢI CHUYÊN SÂU</h2>
         
@@ -318,6 +377,11 @@
                 <textarea id="notes" rows="4" placeholder="Ví dụ: Tôi muốn giải chi tiết Quẻ Hỏa Lôi Phệ Hạp, hỏi về công việc sắp tới..."></textarea>
             </div>
             <button type="submit" class="btn-submit">XÁC NHẬN ĐÃ CHUYỂN KHOẢN & GỬI FORM</button>
+            
+            <div style="text-align: center; margin-top: 15px; font-size: 0.95rem; color: #555;">
+                <em>💬 Cần hỗ trợ gấp hoặc gửi biên lai đối chiếu? <br>
+                Vui lòng nhắn tin trực tiếp qua <a href="https://m.me/TEN_FACEBOOK_CUA_BAN" target="_blank" style="color: #006AFF; font-weight: bold; text-decoration: none;">Messenger (Thầy Hoàng Hạc)</a>.</em>
+            </div>
         </form>
     </div>
 
@@ -328,6 +392,13 @@
         <em>* Khuyến nghị: Các nội dung luận giải Tử Vi và Lục Hào Kinh Dịch trên website được tổng hợp từ nền tảng triết học cổ học phương Đông. Mọi phân tích và tài liệu (PDF) chỉ mang tính chất chiêm nghiệm, tham khảo học thuật. Đương số hoàn toàn tự cân nhắc và tự chịu trách nhiệm với mọi quyết định cá nhân trong cuộc sống thực tế.</em>
     </p>
 </footer>
+
+<a href="https://m.me/TEN_FACEBOOK_CUA_BAN" target="_blank" class="floating-messenger" title="Nhắn tin qua Messenger">
+    <span class="messenger-tooltip">Nhắn tin cho Thầy 💬</span>
+    <svg viewBox="0 0 36 36">
+        <path d="M18 2C9.163 2 2 8.795 2 17.18c0 4.793 2.41 9.068 6.16 11.916.29.217.472.56.495.922l.243 3.655c.063.953 1.055 1.547 1.905 1.14l3.968-1.897c.28-.134.598-.163.896-.083 1.11.298 2.302.463 3.533.463 8.837 0 16-6.795 16-15.18C34 8.795 26.837 2 18 2zm4.18 10.97l-4.103 6.53c-.5 .795-1.613 .98-2.34 .39l-3.23-2.62c-.44-.356-1.077-.356-1.517 0l-4.04 3.27c-.6 .485-1.42-.23-.97-.87l4.102-6.53c.5-.795 1.613-.98 2.34-.39l3.23 2.62c.44 .356 1.078 .356 1.518 0l4.04-3.27c.6-.485 1.42 .23 .97 .87z"/>
+    </svg>
+</a>
 
 <script>
     let pdfDb = []; 
@@ -1056,7 +1127,6 @@ function switchTab(type, element, event) {
     };
 
     // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
-    // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
     function renderGieoQueUI() {
         const grid = document.getElementById('post-grid');
         document.getElementById('post-pagination').innerHTML = ""; // Xóa phân trang
@@ -1197,7 +1267,6 @@ function switchTab(type, element, event) {
         }
     }
 
-    // Hàm Nhả Kết Quả Thực Chiến
     // Hàm Nhả Kết Quả Thực Chiến (Đã vá lỗi hiển thị ...)
     function showResult() {
         document.getElementById('hexagram-result').style.display = 'block';
@@ -1211,7 +1280,7 @@ function switchTab(type, element, event) {
         const yNghiaQue = ketQuaQue ? ketQuaQue.desc : "Đã có lỗi dữ liệu gieo quẻ.";
         const chiTietQue = ketQuaQue ? (ketQuaQue.CHITIET || "") : "";
 
-        // 3. XỬ LÝ HÀO ĐỘNG (Đoạn này lúc nãy bị thiếu khiến code dừng chạy)
+        // 3. XỬ LÝ HÀO ĐỘNG
         let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
         let hienThiDong = (dongLines === "") ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
         
@@ -1238,9 +1307,6 @@ function switchTab(type, element, event) {
         document.getElementById('res-que').insertAdjacentHTML('afterend', moTaQueHTML);
         document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
     }
-    // =========================================================
-    // KẾT THÚC KHỐI GIEO QUẺ
-    // =========================================================
     
     function renderPDFPagination(total) {
         const pages = Math.ceil(total / pdfLimit);
@@ -1399,6 +1465,5 @@ function switchTab(type, element, event) {
 
     window.onload = init;
 </script>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script></body>
 </html>
