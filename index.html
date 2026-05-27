@@ -12,7 +12,7 @@
             --accent-color: #c5a059; 
             --bg-color: #fffaf1; 
             --text-color: #2c3e50; 
-            --card-border: #e2d9c8; 
+            --card-border: #e2d9c8; /* Màu viền hoài cổ nhẹ */
         }
         body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
         header { background-color: var(--primary-color); color: var(--accent-color); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
@@ -20,81 +20,93 @@
         header p { margin-top: 10px; opacity: 0.9; font-style: italic; }
         .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        /* TỐI ƯU MENU - Ép vào 1 hàng duy nhất */
         .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; flex-wrap: wrap; }
         .tab-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: #5d1a1a; }
         .tab-btn.active { background: var(--primary-color); color: white; }
         #search-container { display: block; }
         #search-bar {
             padding: 12px;
-            width: 100%;             
-            max-width: 280px;        
+            width: 100%;             /* Luôn chiếm 100% không gian cha */
+            max-width: 280px;        /* Chỉ cho phép tối đa 400px (tùy chỉnh theo ý bạn) */
             border: 1px solid #ccc;
-            border-radius: 25px;     
+            border-radius: 25px;     /* Tôi chỉnh lại thành 25px cho hợp style bo góc mới */
             outline: none;
             font-family: inherit;
-            box-sizing: border-box;  
+            box-sizing: border-box;  /* Quan trọng: giữ padding không làm tràn width */
         }
         .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; padding: 15px; background: white; border-radius: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
         .tag-filter { padding: 6px 18px; background: white; border: 1px solid #ddd; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
         .tag-filter.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
         .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        /* 1. ĐỔI MỚI THẺ BÀI VIẾT (CARD): Sang trọng, có chiều sâu không gian */
         .card { 
             background: white; 
             padding: 2rem; 
-            border-radius: 10px; 
-            border: 1px solid var(--card-border); 
-            border-top: 5px solid var(--primary-color); 
+            border-radius: 10px; /* Bo góc mềm mại quý phái */
+            border: 1px solid var(--card-border); /* Viền vàng cát cổ kính */
+            border-top: 5px solid var(--primary-color); /* Giữ nguyên viền chỉ đỏ thượng hiệu */
             box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
             display: flex; 
             flex-direction: column; 
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
         }
+        /* Hiệu ứng nhấc khung thần thánh khi rà chuột qua bài viết */
         .card:hover { 
             transform: translateY(-5px); 
-            box-shadow: 0 12px 25px rgba(142, 33, 33, 0.08); 
-            border-color: var(--accent-color); 
+            box-shadow: 0 12px 25px rgba(142, 33, 33, 0.08); /* Đổ bóng màu đỏ thẫm huyền bí */
+            border-color: var(--accent-color); /* Đổi viền sang màu vàng đồng khi hovers */
         }
         .card.featured { border-left: 8px solid var(--accent-color); }
+        /* 2. ĐỔI MỚI CHỮ DANH MỤC: Chuyển sang vàng đồng học thuật */
         .category-tag { 
             font-size: 0.8rem; 
             font-weight: 700; 
-            color: var(--accent-color); 
+            color: var(--accent-color); /* Đổi từ màu xám cũ sang màu vàng cát quý phái */
             text-transform: uppercase; 
-            letter-spacing: 1px; 
+            letter-spacing: 1px; /* Tạo khoảng hở chữ phong cách sách cổ */
             margin-bottom: 12px; 
             display: block; 
         }
         .card h3 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.4rem; line-height: 1.35; font-weight: 700; }
         .card p { color: #555; font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; text-align: justify; }
+        /* 3. ĐỔI MỚI NÚT BẤM (ĐỌC TIẾP / ĐẶT MUA): Cân đối và chuyên nghiệp */
         .btn-post { 
             padding: 11px; 
             text-decoration: none; 
             font-weight: 700; 
             text-align: center; 
             border-radius: 4px; 
+            /* Đổi viền sang màu xanh lá tươi */
             border: 1px solid #27ae60; 
+            /* Đổi chữ sang màu xanh lá tươi */
             color: #27ae60; 
             background: transparent;
             transition: all 0.25s ease; 
             cursor: pointer;
-            text-transform: uppercase; 
+            text-transform: uppercase; /* Viết hoa cho lịch lãm */
             letter-spacing: 0.5px;
             font-size: 0.85rem;
         }
+        
+        /* Hiệu ứng nạp đầy màu XANH LÁ CÂY khi rà chuột vào nút bấm */
         .btn-post:hover { 
+            /* Khi di chuột vào, nền chuyển sang màu xanh lá tươi */
             background: #27ae60; 
             color: white; 
+            /* Đổ bóng nhẹ theo tông xanh lá cho sang trọng */
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
         }
+        /* Style chuyên biệt cho Form Đăng Ký xem Tử Vi */
         .form-container {
-            width: 100%;             
-            max-width: 1100px;       
-            margin: 20px auto;       
+            width: 100%;             /* Luôn chiếm 100% không gian container */
+            max-width: 1100px;       /* Bằng đúng kích thước của phần Bài viết */
+            margin: 20px auto;       /* Căn giữa */
             padding: 30px;
             background: #ffffff;
             border-radius: 12px;
-            box-sizing: border-box;  
+            box-sizing: border-box;  /* CHÌA KHÓA: Giúp form không bị tràn hoặc lọt thỏm */
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         .form-container h2 { font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 2rem; }
@@ -115,17 +127,66 @@
 
         #consultation-form-wrapper { display: none; }
         #search-container-custom { display: none; }
-
+        /* Cấu hình tối ưu hiển thị riêng cho thiết bị di động (Màn hình dưới 600px) */
         @media (max-width: 600px) {
-            .form-container { padding: 1.5rem 1rem !important; }
-            .grid { grid-template-columns: 1fr !important; }
-            .form-group[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 15px !important; }
-            .radio-group { padding: 5px 0 !important; }
-            .tabs { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; background: white; padding: 8px; border-radius: 8px; box-sizing: border-box; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
-            .tab-btn { flex: 1 1 45%; padding: 10px 5px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; color: #5d1a1a; border-radius: 20px; text-align: center; font-size: 0.85rem; white-space: nowrap; transition: 0.3s; }
-            .tab-btn:last-child { flex: 1 1 45%; background: white; color: #5d1a1a; }
-            .tab-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+            .form-container {
+                padding: 1.5rem 1rem !important; 
+            }
+            .grid {
+                grid-template-columns: 1fr !important; /* Trên điện thoại bắt buộc xếp 1 cột dọc thẳng đều */
+            }
+            .form-group[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important; 
+                gap: 15px !important;
+            }
+            .radio-group {
+                padding: 5px 0 !important;
+            }
         }
+        /* Chỉ áp dụng cho điện thoại (màn hình nhỏ hơn 600px) */
+
+        
+        
+    @media (max-width: 600px) {
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;       /* Cho phép xuống dòng */
+        gap: 10px;              /* Khoảng cách giữa các nút */
+        width: 100%;
+        background: white;
+        padding: 8px;
+        border-radius: 8px;
+        box-sizing: border-box;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .tab-btn {
+        /* Chỉnh 45% để đảm bảo 2 nút/dòng, nếu nút dài quá sẽ tự xuống dòng */
+        flex: 1 1 45%;         
+        padding: 10px 5px;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+        font-weight: bold;
+        color: #5d1a1a;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+
+    /* Đưa nút cuối về giống hệt các nút khác */
+    .tab-btn:last-child {
+        flex: 1 1 45%;         /* Giống hệt các nút trên */
+        background: white;   /* Màu nền giống hệt nút trên */
+        color: #5d1a1a;        /* Màu chữ giống hệt nút trên */
+    }
+
+    .tab-btn.active {
+        background: var(--accent-color); color: white; border-color: var(--accent-color);
+    }
+}
     </style>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -159,9 +220,12 @@
 </div>
 
 <div class="container">
+    <!-- Khu vực hiển thị danh sách bài viết / video / pdf -->
+ 
     <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
     <div id="post-pagination" class="pagination"></div>
 
+    <!-- Khu vực hiển thị Form đăng ký trực tuyến -->
     <div id="consultation-form-wrapper" class="form-container">
         <h2>ĐĂNG KÝ LUẬN GIẢI CHUYÊN SÂU</h2>
         
@@ -254,16 +318,12 @@
                 <textarea id="notes" rows="4" placeholder="Ví dụ: Tôi muốn giải chi tiết Quẻ Hỏa Lôi Phệ Hạp, hỏi về công việc sắp tới..."></textarea>
             </div>
             <button type="submit" class="btn-submit">XÁC NHẬN ĐÃ CHUYỂN KHOẢN & GỬI FORM</button>
-            
-            <div style="text-align: center; margin-top: 15px; font-size: 0.95rem; color: #555;">
-                <em>💬 Cần hỗ trợ gấp hoặc gửi biên lai đối chiếu? <br>
-                Vui lòng nhắn tin trực tiếp qua <a href="https://m.me/61556658004278" target="_blank" style="color: #006AFF; font-weight: bold; text-decoration: none;">Messenger Cho Tôi </a>.</em>
-            </div>
         </form>
     </div>
 
 <footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color);margin-top: 20px">
     <p style="margin-bottom: 15px; font-size: 1.05rem; font-weight: bold; color: #aaa;">&copy; 2026 Tử Vi Hoàng Hạc</p>
+    
     <p style="font-size: 0.85rem; opacity: 0.6; max-width: 800px; margin: 0 auto; line-height: 1.6; text-align: justify; text-align-last: center;">
         <em>* Khuyến nghị: Các nội dung luận giải Tử Vi và Lục Hào Kinh Dịch trên website được tổng hợp từ nền tảng triết học cổ học phương Đông. Mọi phân tích và tài liệu (PDF) chỉ mang tính chất chiêm nghiệm, tham khảo học thuật. Đương số hoàn toàn tự cân nhắc và tự chịu trách nhiệm với mọi quyết định cá nhân trong cuộc sống thực tế.</em>
     </p>
@@ -276,9 +336,12 @@
     let currentVideoPage = 1;
     const videoLimit = 6;
     
+    // CẤU HÌNH CÁC ĐƯỜNG LINK GOOGLE SHEETS CỦA ANH
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
     const BOOK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1124468701&single=true&output=csv';
     const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
+    
+    // 🛑 CHÚ Ý: Anh dán link đường dẫn CSV của Tab "PDF" mới tạo trên Google Sheets vào đây nhé!
     const PDF_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=1654655134&single=true&output=csv';
 
     let db = [];
@@ -298,6 +361,7 @@
         r.push(c.trim()); return r;
     }
 
+    // 1. TỐI ƯU CACHE THÔNG MINH QUA PHIÊN BẢN (Hàm init)
     async function init() {
         const CACHE_POSTS_KEY = 'tuvi_posts_cache';
         const CACHE_VERSION_KEY = 'tuvi_posts_version';
@@ -305,8 +369,10 @@
         try {
             let csv = '';
             const now = new Date().getTime();
+
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
+            
             const latestVersion = versionText.split('\n')[0].split(',')[1]?.trim() || "0";
             
             const cachedData = localStorage.getItem(CACHE_POSTS_KEY);
@@ -314,7 +380,9 @@
 
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
+                console.log(`⚡ [Trang chủ] Không đổi (v${latestVersion}). Khởi động thần tốc từ LocalStorage!`);
             } else {
+                console.log(`🌐 [Trang chủ] Phát hiện dữ liệu mới (Mới: v${latestVersion} - Cũ: v${cachedVersion}). Tiến hành đồng bộ...`);
                 const res = await fetch(`${SHEET_URL}&t=${now}`);
                 csv = await res.text();
                 localStorage.setItem(CACHE_POSTS_KEY, csv);
@@ -358,6 +426,7 @@
         const tagsHtml = Array.from(tags).map(t => 
             `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
         ).join('');
+    
         document.getElementById('filter-bar').innerHTML =  tagsHtml;
     }
 
@@ -374,67 +443,78 @@
         renderUI();
     }
 
-    let isSwitching = false;
-    function switchTab(type, element, event) {
-        if (isSwitching) return; 
-        isSwitching = true;
+   // Biến khóa để ngăn click liên tục gây lỗi
+let isSwitching = false;
 
-        if (event) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
+function switchTab(type, element, event) {
+    if (isSwitching) return; // Nếu đang xử lý, bỏ qua click mới
+    isSwitching = true;
 
-        const oldDonate = document.getElementById('pdf-donate-section');
-        if (oldDonate) oldDonate.remove();
-
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if (element) element.classList.add('active');
-
-        const grid = document.getElementById('post-grid');
-        const pagination = document.getElementById('post-pagination');
-        const filterBar = document.getElementById('filter-bar');
-        const formWrapper = document.getElementById('consultation-form-wrapper');
-        const searchBox = document.getElementById('search-container-custom');
-
-        grid.style.display = "none";
-        pagination.style.display = "none";
-        filterBar.style.display = "none";
-        if (searchBox) searchBox.style.display = "none";
-        formWrapper.style.display = "none";
-        grid.innerHTML = "";
-        pagination.innerHTML = "";
-
-        if (type === 'posts') {
-            grid.style.display = "grid";
-            pagination.style.display = "flex";
-            filterBar.style.display = "flex";
-            if (searchBox) searchBox.style.display = "block";
-            renderTags();
-            renderUI();
-        } 
-        else if (type === 'pdf') {
-            grid.style.display = "grid";
-            currentPdfPage = 1;
-            renderGieoQueUI();
-        } 
-        else if (type === 'video') {
-            grid.style.display = "grid";
-            pagination.style.display = "flex"; 
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
-            currentVideoPage = 1; 
-            loadVideoLibrary();
-        }
-        else if (type === 'register') {
-            formWrapper.style.display = "block";
-        } 
-        else if (type === 'books') {
-            grid.style.display = "grid";
-            grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách...</div>";
-            loadAffiliateBooks();
-        }
-        setTimeout(() => { isSwitching = false; }, 300);
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
     }
 
+    // 1. Dọn dẹp các thành phần không thuộc giao diện chính
+    const oldDonate = document.getElementById('pdf-donate-section');
+    if (oldDonate) oldDonate.remove();
+
+    // 2. Reset trạng thái nút bấm (Menu)
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if (element) element.classList.add('active');
+
+    // 3. Lấy tất cả các thành phần giao diện cần điều khiển
+    const grid = document.getElementById('post-grid');
+    const pagination = document.getElementById('post-pagination');
+    const filterBar = document.getElementById('filter-bar');
+    const formWrapper = document.getElementById('consultation-form-wrapper');
+    const searchBox = document.getElementById('search-container-custom');
+
+    // 4. RESET MẠNH: Ẩn tất cả và dọn sạch nội dung cũ
+    // Điều này đảm bảo không có bất kỳ thành phần nào bị "treo" lại từ Tab cũ
+    grid.style.display = "none";
+    pagination.style.display = "none";
+    filterBar.style.display = "none";
+    if (searchBox) searchBox.style.display = "none";
+    formWrapper.style.display = "none";
+    grid.innerHTML = "";
+    pagination.innerHTML = "";
+
+    // 5. Logic hiển thị riêng cho từng Tab
+    if (type === 'posts') {
+        grid.style.display = "grid";
+        pagination.style.display = "flex";
+        filterBar.style.display = "flex";
+        if (searchBox) searchBox.style.display = "block";
+        renderTags();
+        renderUI();
+    } 
+    else if (type === 'pdf') {
+        grid.style.display = "grid";
+        currentPdfPage = 1;
+        renderGieoQueUI();
+    } 
+    else if (type === 'video') {
+        grid.style.display = "grid";
+        pagination.style.display = "flex"; // THÊM DÒNG NÀY ĐỂ HIỆN THANH PHÂN TRANG
+        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>🎬 Đang tải danh sách bài giảng...</div>";
+        currentVideoPage = 1; // Reset về trang 1 mỗi khi bấm vào tab
+        loadVideoLibrary();
+    }
+    else if (type === 'register') {
+        formWrapper.style.display = "block";
+    } 
+    else if (type === 'books') {
+        grid.style.display = "grid";
+        grid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px;'>📚 Đang kết nối tủ sách...</div>";
+        loadAffiliateBooks();
+    }
+
+    // Mở khóa sau 300ms
+    setTimeout(() => { isSwitching = false; }, 300);
+}
+
+    // 2. TỐI ƯU CACHE CHO TỦ SÁCH (Hàm loadAffiliateBooks)
     async function loadAffiliateBooks() {
         const grid = document.getElementById('post-grid');
         const CACHE_BOOKS_KEY = 'tuvi_books_cache';
@@ -443,8 +523,10 @@
         try {
             let csv = '';
             const now = new Date().getTime();
+
             const versionRes = await fetch(`${UPDATE_URL}&t=${now}`);
             const versionText = await versionRes.text();
+            
             const firstLine = versionText.split(/\r?\n/)[0];
             const latestVersion = firstLine.split(',')[1]?.trim() || "0";
             
@@ -453,19 +535,23 @@
 
             if (cachedData && cachedVersion && cachedVersion === latestVersion) {
                 csv = cachedData;
+                console.log(`⚡ [Tủ sách] Chạy siêu tốc từ LocalStorage (Phiên bản v${latestVersion})`);
             } else {
+                console.log(`🌐 [Tủ sách] Nâng cấp dữ liệu (Cũ: v${cachedVersion} -> Mới: v${latestVersion}). Đang tải...`);
                 const res = await fetch(`${BOOK_SHEET_URL}&t=${now}`);
                 csv = await res.text();
                 localStorage.setItem(CACHE_BOOKS_KEY, csv);
                 localStorage.setItem(CACHE_BOOKS_VERSION_KEY, latestVersion);
             }
 
+            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             if (rows.length === 0 || !rows[0]) {
                 grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
                 return;
             }
 
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
+            
             const idx = {
                 id: headers.indexOf('id'),
                 type: headers.indexOf('type'),
@@ -482,8 +568,10 @@
                 if (!r.trim()) return null;
                 const c = parseCSVLine(r);
                 if (!c || c.length <= Math.max(...Object.values(idx))) return null;
+
                 const rawImgStr = c[idx.img] || "";
                 const imgList = rawImgStr.split(',').map(img => img.trim()).filter(img => img !== "");
+
                 let rawPrice = c[idx.price] ? c[idx.price].toString().trim() : "";
                 let cleanPrice = "";
                 let isContact = false;
@@ -494,6 +582,7 @@
                     cleanPrice = rawPrice.replace(/[^0-9]/g, "");
                     if (cleanPrice === "") isContact = true;
                 }
+
                 let rawOldPrice = idx.oldPrice !== -1 && c[idx.oldPrice] ? c[idx.oldPrice].toString().trim() : "";
                 let cleanOldPrice = rawOldPrice.replace(/[^0-9]/g, "");
 
@@ -510,6 +599,11 @@
                 };
             }).filter(b => b && b.id && b.name);
 
+            if (books.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Tủ sách di sản hiện đang được cập nhật...</p>";
+                return;
+            }
+
             grid.innerHTML = books.map((b, bIdx) => {
                 const mainImg = b.images.length > 0 ? b.images[0] : "https://via.placeholder.com/250x350?text=No+Image";
                 let thumbnailsHTML = '';
@@ -517,7 +611,11 @@
                     thumbnailsHTML = `
                         <div class="book-thumbnails" style="display: flex; gap: 6px; justify-content: center; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;">
                             ${b.images.map((img, imgIdx) => `
-                                <img src="${img}" class="thumb-img-${bIdx}" style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;" onclick="changeBookImage(this, '${img}', ${bIdx})">
+                                <img src="${img}" 
+                                     alt="Thumb ${imgIdx}" 
+                                     class="thumb-img-${bIdx}"
+                                     style="width: 38px; height: 50px; object-fit: contain; border: 1px solid ${imgIdx === 0 ? 'var(--accent-color)' : '#ddd'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"
+                                     onclick="changeBookImage(this, '${img}', ${bIdx})">
                             `).join('')}
                         </div>
                     `;
@@ -534,7 +632,11 @@
                         </p>
                     `;
                 } else {
-                    priceBlockHTML = `<p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">${displayPrice}</p>`;
+                    priceBlockHTML = `
+                        <p style="color: #c5a059; font-weight: bold; font-size: 1.4rem; margin: 0 0 15px 0;">
+                            ${displayPrice}
+                        </p>
+                    `;
                 }
 
                 return `
@@ -556,7 +658,9 @@
                                     </div>
                                 </div>
                                 <div style="width: 100%; text-align: center; display: flex; justify-content: center; align-items: center; padding-top: 10px;">
-                                    <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 25px; text-decoration: none; display: inline-block; width: 85%; max-width: 240px; margin: 0 auto !important; border-radius: 4px; transition: background 0.2s; text-align: center;">Tìm hiểu & Đặt mua →</a>
+                                    <a href="${b.link}" target="_blank" class="btn-post" style="background: var(--primary-color); color: white; border: none; font-size: 0.95rem; font-weight: bold; padding: 12px 25px; text-decoration: none; display: inline-block; width: 85%; max-width: 240px; margin: 0 auto !important; border-radius: 4px; transition: background 0.2s; text-align: center;">
+                                        Tìm hiểu & Đặt mua →
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -582,6 +686,7 @@
             const matchSearch = (p.title.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery));
             return matchCat && matchSearch;
         });
+
         filtered.sort((a,b) => b.isFeatured - a.isFeatured);
         const start = (currentPage - 1) * limit;
         const items = filtered.slice(start, start + limit);
@@ -591,6 +696,7 @@
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Không tìm thấy nội dung phù hợp.</p>";
             return;
         }
+
         grid.innerHTML = items.map(p => `
             <div class="card ${p.isFeatured ? 'featured' : ''}">
                 <span class="category-tag">${p.category}</span>
@@ -599,6 +705,7 @@
                 <a href="content.html?id=${p.id}" class="btn-post">Đọc tiếp →</a>
             </div>
         `).join('');
+
         renderPagination(filtered.length);
     }
 
@@ -610,53 +717,425 @@
         }
         document.getElementById('post-pagination').innerHTML = html;
     }
+
     function goToPage(p) { currentPage = p; renderUI(); window.scrollTo(0,0); }
 
+    // =========================================================
+    // 🌟 LÕI MỚI: HỆ THỐNG GIEO QUẺ LỤC HÀO (THAY THẾ PDF)
+    // =========================================================
+    
+    // Biến toàn cục cho Gieo Quẻ
     let currentHao = 1;
     let hexagramData = [];
     const coinSoundUrl = 'https://actions.google.com/sounds/v1/foley/coins_dropping_on_table.ogg';
+    // =========================================================
+    // 🌟 KHO DỮ LIỆU 64 QUẺ KINH DỊCH THỰC CHIẾN (FULL VER)
+    // Quy ước mã hóa: 1 = Hào Dương, 0 = Hào Âm (Từ dưới lên)
+    // =========================================================
     const QUE_DATA = {
-        "111111": { name: "Bát Thuần Càn (Càn Vi Thiên)", desc: "Vạn sự khởi đầu đại hanh thông, mạnh mẽ, cương quyết.", CHITIET: "<b>• Vận thế tổng quan:</b> Đang ở thế cực thịnh..."},
-        "000000": { name: "Bát Thuần Khôn (Khôn Vi Địa)", desc: "Nhu thuận, bao dung...", CHITIET: "..."},
-        "101010": { name: "Thủy Hỏa Ký Tế", desc: "Mọi việc đã hoàn thành...", CHITIET: "..."},
-        "010101": { name: "Hỏa Thủy Vị Tế", desc: "Mọi sự còn dang dở...", CHITIET: "..."}
+        "111111": { 
+            name: "Bát Thuần Càn (Càn Vi Thiên)", 
+            desc: "Vạn sự khởi đầu đại hanh thông, mạnh mẽ, cương quyết.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang ở thế cực thịnh, sức sáng tạo và hành động dồi dào. Tuy nhiên cần tránh kiêu ngạo kẻo gãy đổ.<br><b>• Sự nghiệp:</b> Có quyền hành, được cấp trên nể trọng. Thời điểm tốt để đứng ra nhận việc lớn hoặc khởi nghiệp.<br><b>• Tài lộc:</b> Thu nhập gia tăng mạnh mẽ, dòng tiền hanh thông. Phù hợp đầu tư dài hạn.<br><b>• Tình cảm:</b> Hơi cứng nhắc, thiếu sự mềm mỏng, dễ xảy ra tranh cãi vì ai cũng muốn làm chủ."
+        },
+        "000000": { 
+            name: "Bát Thuần Khôn (Khôn Vi Địa)", 
+            desc: "Nhu thuận, bao dung. Thời điểm cần nhẫn nại, lấy tĩnh chế động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Không nên đi tiên phong. Mọi việc cứ từ từ, lùi một bước biển rộng trời cao, thuận theo tự nhiên sẽ thành tựu.<br><b>• Sự nghiệp:</b> Phù hợp làm người hỗ trợ, phó tướng. Không nên tự mình đứng mũi chịu sào lúc này.<br><b>• Tài lộc:</b> Tích tiểu thành đại, tiền bạc chậm nhưng chắc. Cực kỳ tốt nếu đầu tư liên quan đến bất động sản, đất đai.<br><b>• Tình cảm:</b> Gia đạo êm ấm, người phụ nữ đóng vai trò gìn giữ hòa khí. Tình duyên thuận lợi nếu biết nhường nhịn."
+        },
+        "100010": { 
+            name: "Thủy Lôi Truân", 
+            desc: "Gian nan, trắc trở lúc ban đầu. Cần tích lũy nội lực chờ thời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mầm non mới nhú gặp sương giá, vạn sự khởi đầu nan. Tuyệt đối không được nôn nóng.<br><b>• Sự nghiệp:</b> Đầy rẫy khó khăn, lập kế hoạch dễ bị đình trệ. Cần tìm sự trợ giúp từ những người đi trước.<br><b>• Tài lộc:</b> Hao hụt, khó xoay vòng vốn. Không nên vung tiền đầu tư mạo hiểm lúc này.<br><b>• Tình cảm:</b> Có sự rụt rè, bế tắc hoặc hoàn cảnh chưa cho phép tiến xa. Cần thêm thời gian thử thách."
+        },
+        "010001": { 
+            name: "Sơn Thủy Mông", 
+            desc: "Mờ mịt, thiếu phương hướng. Cần tìm bậc minh sư chỉ lối.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đang bị che mờ như sương sớm. Hành động bốc đồng lúc này sẽ dẫn đến sai lầm tột độ.<br><b>• Sự nghiệp:</b> Thiếu kinh nghiệm, dễ bị tiểu nhân che mắt. Hãy học hỏi, đào tạo thêm trước khi quyết định.<br><b>• Tài lộc:</b> Dễ bị lừa gạt, đầu tư mù quáng. Nên giữ chặt tiền chờ thời cơ rõ ràng hơn.<br><b>• Tình cảm:</b> Mập mờ, chưa thấu hiểu nhau. Đừng vội vàng chốt hạ chuyện trăm năm."
+        },
+        "111010": { 
+            name: "Thủy Thiên Nhu", 
+            desc: "Có hiểm nguy phía trước. Cần bình tâm chờ đợi, dục tốc bất đạt.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang bị mây đen cản lối. Mọi việc cứ giữ nguyên hiện trạng, tĩnh dưỡng tinh thần chờ thời cơ đổi thay.<br><b>• Sự nghiệp:</b> Kế hoạch tạm thời bị nghẽn. Cứ vui vẻ làm tốt việc hiện tại, cơ hội sẽ đến vào phút chót.<br><b>• Tài lộc:</b> Nguồn tiền chưa về ngay được, cần chờ đợi. Tránh vay mượn nóng để đập vào.<br><b>• Tình cảm:</b> Đang trong giai đoạn chờ đợi câu trả lời từ đối phương. Hãy kiên nhẫn, sự chân thành sẽ được đền đáp."
+        },
+        "010111": { 
+            name: "Thiên Thủy Tụng", 
+            desc: "Dễ dính vào kiện tụng, tranh chấp thị phi. Nên dĩ hòa vi quý.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Bất đồng quan điểm, đôi co, thậm chí đưa nhau ra pháp luật. Càng cố chấp càng thiệt thòi.<br><b>• Sự nghiệp:</b> Có tranh chấp về quyền lợi, hợp đồng. Nên tìm người hòa giải trung gian, tránh đối đầu trực diện.<br><b>• Tài lộc:</b> Hao tốn tiền bạc vì kiện cáo, cãi vã. Thà chịu thiệt một chút để đổi lấy bình yên.<br><b>• Tình cảm:</b> Mâu thuẫn gay gắt, dễ dẫn đến chia ly nếu không ai chịu hạ cái tôi xuống."
+        },
+        "010000": { 
+            name: "Địa Thủy Sư", 
+            desc: "Hội tụ lực lượng, xuất quân. Cần sự kỷ luật thép.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sắp phải bước vào một cuộc cạnh tranh khốc liệt. Cần tổ chức lại nội bộ và tuân thủ kỷ luật nghiêm ngặt.<br><b>• Sự nghiệp:</b> Cần người lãnh đạo tài ba cầm trịch. Làm việc nhóm và chia quy trình rõ ràng mới thắng lợi.<br><b>• Tài lộc:</b> Phải chi tiền để thiết lập lại hệ thống hoặc mở rộng thị phần. Có rủi ro nhưng đáng giá.<br><b>• Tình cảm:</b> Thiếu lãng mạn, quá lý trí. Đôi khi quản lý đối phương quá chặt khiến tình cảm ngột ngạt."
+        },
+        "000010": { 
+            name: "Thủy Địa Tỷ", 
+            desc: "Sự gắn kết, gần gũi. Rất tốt cho việc hợp tác, kết giao.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mọi người tìm đến nhau, hòa hợp, hỗ trợ. Vận khí hanh thông nếu đi chung đường.<br><b>• Sự nghiệp:</b> Tìm được đối tác ưng ý hoặc cộng sự đắc lực. Ngoại giao, đàm phán cực kỳ thuận lợi.<br><b>• Tài lộc:</b> Sinh lời từ việc hợp tác kinh doanh. Nên mở rộng mạng lưới khách hàng ngay.<br><b>• Tình cảm:</b> Đẹp đẽ, tâm đầu ý hợp. Hai bên có sự gắn kết mạnh mẽ, là quẻ cát cho hôn nhân."
+        },
+        "111011": { 
+            name: "Phong Thiên Tiểu Súc", 
+            desc: "Tích lũy nhỏ, tạm thời bị kìm hãm. Cần mềm mỏng tiến từng bước.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Năng lượng bị tích tụ, chưa thể bùng nổ ngay. Hãy làm những việc nhỏ, hoàn thiện chi tiết thay vì mưu sự lớn.<br><b>• Sự nghiệp:</b> Gặp tiểu nhân ngáng đường nhưng không đáng kể. Dùng sự khéo léo để lách qua khó khăn.<br><b>• Tài lộc:</b> Tích lũy được từng khoản nhỏ, đừng tham bát bỏ mâm. Chờ thời cơ lớn hơn.<br><b>• Tình cảm:</b> Có chút cãi vã vặt vãnh. Chú ý lời ăn tiếng nói để tránh xích mích không đáng."
+        },
+        "110111": { 
+            name: "Thiên Trạch Lý", 
+            desc: "Đi trên đuôi cọp. Cần hành sự cẩn trọng, giữ đúng lễ nghĩa.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Tình thế nguy hiểm, mạo hiểm. Chỉ có cách cư xử đúng mực, biết kính trên nhường dưới mới thoát hiểm.<br><b>• Sự nghiệp:</b> Đối mặt với sếp khó tính hoặc đối tác ngang ngược. Cần hết sức khéo léo, lễ phép.<br><b>• Tài lộc:</b> Kiếm được tiền nhưng đi kèm rủi ro pháp lý hoặc bị người khác soi mói. Minh bạch là trên hết.<br><b>• Tình cảm:</b> Một người quá lấn lướt, người kia phải chịu đựng. Cần tôn trọng giới hạn của nhau."
+        },
+        "111000": { 
+            name: "Địa Thiên Thái", 
+            desc: "Đại Cát! Âm dương giao hòa, trên dưới đồng lòng, vạn sự hanh thông.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời kỳ may mắn nhất, bế tắc được khơi thông. Nên tranh thủ thực hiện các dự định lớn.<br><b>• Sự nghiệp:</b> Thăng tiến, công danh rạng rỡ, cấp dưới phục tùng, sếp nâng đỡ. Vạn sự như ý.<br><b>• Tài lộc:</b> Thu hoạch lớn, lợi nhuận tăng vọt. Đầu tư đâu trúng đó, lộc lá dồi dào.<br><b>• Tình cảm:</b> Viên mãn, tình duyên như ý. Quẻ cực tốt để tính chuyện cưới xin, sinh con."
+        },
+        "000111": { 
+            name: "Thiên Địa Bĩ", 
+            desc: "Bế tắc, tiểu nhân đắc thế. Nên thu mình lại để bảo toàn lực lượng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trời đất nghẽn mạch, vạn vật đình trệ. Mọi nỗ lực đều như muối bỏ bể. Tốt nhất là ẩn nhẫn.<br><b>• Sự nghiệp:</b> Nội bộ lục đục, sếp không hiểu nhân viên, dễ bị vu oan giáng họa. Nên làm tốt việc của mình, bớt lo chuyện bao đồng.<br><b>• Tài lộc:</b> Thất thoát, làm ăn đình đốn. Chấm dứt các khoản đầu tư rủi ro để bảo toàn vốn.<br><b>• Tình cảm:</b> Lạnh nhạt, không cùng tiếng nói, thậm chí đứng trên bờ vực chia ly."
+        },
+        "101111": { 
+            name: "Thiên Hỏa Đồng Nhân", 
+            desc: "Đồng tâm hiệp lực cùng chí hướng. Ra ngoài kết giao rất thuận lợi.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hòa đồng, cởi mở. Đi ra ngoài giao lưu, kết bạn sẽ mở ra nhiều cơ hội lớn.<br><b>• Sự nghiệp:</b> Sức mạnh tập thể lên ngôi. Cần hội nhóm cùng chung chí hướng để đột phá doanh thu.<br><b>• Tài lộc:</b> Có lộc từ bạn bè, đối tác hoặc tiền hoa hồng. Việc chung dễ sinh lời.<br><b>• Tình cảm:</b> Quan hệ rộng rãi dễ tìm được người tâm đầu ý hợp trong các buổi tụ tập đông người."
+        },
+        "111101": { 
+            name: "Hỏa Thiên Đại Hữu", 
+            desc: "Sở hữu lớn, tài lộc dồi dào. Giai đoạn cực thịnh, công thành danh toại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đạt được đỉnh cao, rực rỡ như mặt trời giữa trưa. Cần giữ tấm lòng trong sáng để phúc lộc bền lâu.<br><b>• Sự nghiệp:</b> Công danh thăng tiến rực rỡ, được giao trọng trách lớn, tiếng tăm vang dội.<br><b>• Tài lộc:</b> Tiền bạc rủng rỉnh, của cải tích lũy nhiều. Một quẻ đại cát cho kinh doanh.<br><b>• Tình cảm:</b> Tốt đẹp, có sự tương trợ lẫn nhau. Tuy nhiên đừng vì mải mê sự nghiệp mà bỏ bê gia đình."
+        },
+        "001000": { 
+            name: "Địa Sơn Khiêm", 
+            desc: "Khiêm tốn, nhún nhường thì việc gì cũng thành. Lấy nhu thắng cương.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Chớ khoe khoang, càng nhún nhường càng được người khác tôn trọng và giúp đỡ.<br><b>• Sự nghiệp:</b> Được lòng đồng nghiệp và lãnh đạo. Bất cứ sự tranh giành nào lúc này cũng đem lại kết quả xấu.<br><b>• Tài lộc:</b> Tiền bạc ổn định. Đừng tham lam chèn ép đối thủ, lộc sẽ tự đến.<br><b>• Tình cảm:</b> Bình yên, thấu hiểu. Sự khiêm nhường giúp hóa giải mọi mâu thuẫn lứa đôi."
+        },
+        "000100": { 
+            name: "Lôi Địa Dự", 
+            desc: "Vui vẻ, hân hoan. Thời cơ đã chín muồi để bắt đầu hành động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đã được chuẩn bị kỹ lưỡng, nay được dịp bùng nổ mang lại niềm vui lớn.<br><b>• Sự nghiệp:</b> Kế hoạch xuất quân thuận lợi. Được mọi người hưởng ứng nhiệt tình, thăng tiến dễ dàng.<br><b>• Tài lộc:</b> Tài vận tốt, thu hoạch như ý muốn. Nhưng cẩn thận ăn chơi quá đà mà hao hụt.<br><b>• Tình cảm:</b> Mối quan hệ thăng hoa, có tin vui, hỷ sự hoặc tiệc tùng linh đình."
+        },
+        "100110": { 
+            name: "Trạch Lôi Tùy", 
+            desc: "Tùy cơ ứng biến, thuận theo thời thế. Làm theo số đông sẽ có lợi.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đừng bảo thủ cố chấp. Hãy linh hoạt xuôi theo dòng chảy của thời đại, nương tựa vào người khác.<br><b>• Sự nghiệp:</b> Không phải lúc làm người đi đầu. Nên tìm một đối tác mạnh để theo gót, học hỏi và phát triển.<br><b>• Tài lộc:</b> Thuận lợi nếu kinh doanh theo xu hướng đám đông. Tránh đầu tư những món quá khác biệt.<br><b>• Tình cảm:</b> Có sự thấu hiểu, chiều chuộng lẫn nhau. Biết lắng nghe đối phương sẽ giữ được hạnh phúc."
+        },
+        "011001": { 
+            name: "Sơn Phong Cổ", 
+            desc: "Bên trong có sự thối nát, hỏng hóc. Cần mạnh tay cải tổ, dọn dẹp lại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự vật đã lâu ngày sinh mọt. Bắt buộc phải phá bỏ cái cũ để xây dựng lại từ đầu.<br><b>• Sự nghiệp:</b> Hệ thống hoặc nhân sự có vấn đề ngầm. Phải thanh lọc đội ngũ, sửa chữa sai lầm ngay lập tức.<br><b>• Tài lộc:</b> Thất thoát không rõ nguyên nhân. Phải kiểm tra lại sổ sách, ngừng các dự án đang trì trệ.<br><b>• Tình cảm:</b> Khủng hoảng âm ỉ bấy lâu nay bùng phát. Phải ngồi lại nói hết ra mới cứu vãn được."
+        },
+        "110000": { 
+            name: "Địa Trạch Lâm", 
+            desc: "Tiến đến, bao trùm. Vận khí đang lên, là lúc nắm quyền lãnh đạo.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời cơ vàng đã tới, uy tín tăng cao. Hãy mạnh dạn tiến lên nắm bắt cơ hội.<br><b>• Sự nghiệp:</b> Nhận được trọng trách, làm quản lý hoặc mở mang thêm chi nhánh mới rất thuận lợi.<br><b>• Tài lộc:</b> Lợi nhuận sinh sôi, có lộc lớn đang tiến đến. Thời điểm chốt lời tuyệt vời.<br><b>• Tình cảm:</b> Có sự tiến triển mạnh mẽ, người ấy đang chủ động bước về phía bạn."
+        },
+        "000011": { 
+            name: "Phong Địa Quán", 
+            desc: "Quan sát, xem xét kỹ lưỡng. Đừng vội quyết định, hãy tĩnh tâm nhìn nhận.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Cần lùi lại một bước để có cái nhìn toàn cảnh. Sự việc phức tạp hơn vẻ bề ngoài.<br><b>• Sự nghiệp:</b> Đánh giá lại thị trường, đừng vội bung sức. Xem xét kỹ đối thủ và nội bộ.<br><b>• Tài lộc:</b> Theo dõi sát sao biến động thị trường, giữ vốn thay vì đầu tư chớp nhoáng.<br><b>• Tình cảm:</b> Đang trong giai đoạn thăm dò lẫn nhau. Hãy dùng trực giác để nhìn thấu đối phương."
+        },
+        "100101": { 
+            name: "Hỏa Lôi Phệ Hạp", 
+            desc: "Có rào cản cần cắn đứt. Cần dùng hình phạt hoặc hành động quyết liệt.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang gặp vật cản, tiểu nhân ngáng đường. Bắt buộc phải mạnh tay trừng trị, dùng pháp luật hoặc biện pháp cứng rắn.<br><b>• Sự nghiệp:</b> Bị cản trở thủ tục, cạnh tranh bẩn. Phải làm rõ trắng đen, không nể nang tình cảm cá nhân.<br><b>• Tài lộc:</b> Tiền bạc bị giam cầm. Phải ráo riết đòi nợ hoặc giải quyết tranh chấp mới thu về được.<br><b>• Tình cảm:</b> Bất đồng gay gắt, có người thứ ba xen vào. Phải cắt đứt sự mập mờ ngay lập tức."
+        },
+        "101001": { 
+            name: "Sơn Hỏa Bí", 
+            desc: "Trang sức, bề ngoài hào nhoáng. Chỉ phù hợp với việc nhỏ, nghệ thuật.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Chú trọng vào hình thức, vẻ bề ngoài. Việc nhỏ thì thuận, nhưng mưu sự lớn dễ bị rỗng tuếch bên trong.<br><b>• Sự nghiệp:</b> Phù hợp làm thương hiệu, marketing, thiết kế. Cẩn trọng dự án 'bánh vẽ' không có thực lực.<br><b>• Tài lộc:</b> Tốn tiền cho việc trang hoàng, mua sắm. Đừng để vẻ hào nhoáng đánh lừa khi đầu tư.<br><b>• Tình cảm:</b> Lãng mạn, bóng bẩy nhưng thiếu chiều sâu. Cần tìm hiểu kỹ tính cách thật của nhau."
+        },
+        "000001": { 
+            name: "Sơn Địa Bác", 
+            desc: "Suy vi, bóc lột, tiểu nhân dồn ép. Chớ nên manh động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nền tảng bị lung lay, lực lượng phe xấu đang áp đảo. Cứ vùng vẫy sẽ càng chìm sâu.<br><b>• Sự nghiệp:</b> Bị chèn ép, hạ bệ, công việc đình trệ. Hãy tạm thời lui về phòng thủ, bảo toàn danh dự.<br><b>• Tài lộc:</b> Hao mòn tột độ, cẩn thận bị lừa đảo trắng tay. Không mua bán lớn lúc này.<br><b>• Tình cảm:</b> Sứt mẻ nghiêm trọng, có sự lừa dối hoặc quay lưng phũ phàng."
+        },
+        "100000": { 
+            name: "Địa Lôi Phục", 
+            desc: "Sự phục hồi. Sau cơn mưa trời lại sáng, bắt đầu chu kỳ tốt đẹp mới.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời kỳ đen tối đã qua, ánh sáng đang dần ló dạng. Một sự khởi đầu mới đầy hy vọng.<br><b>• Sự nghiệp:</b> Bắt tay làm lại từ đầu hoặc khôi phục lại dự án cũ. Mọi thứ đang dần vào guồng trở lại.<br><b>• Tài lộc:</b> Tiền bạc bắt đầu sinh sôi nảy nở. Là lúc gieo hạt giống cho tương lai.<br><b>• Tình cảm:</b> Gương vỡ lại lành, người cũ quay về hoặc tổn thương đã được chữa lành để đón tình yêu mới."
+        },
+        "100111": { 
+            name: "Thiên Lôi Vô Vọng", 
+            desc: "Đừng mưu cầu viển vông. Hãy làm việc thuận theo tự nhiên thì giữ được yên ổn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có tai bay vạ gió hoặc việc xảy ra ngoài ý muốn. Cứ ngay thẳng, vô tư thì họa sẽ hóa giải.<br><b>• Sự nghiệp:</b> Đừng dùng thủ đoạn hay mưu mẹo, sẽ bị gậy ông đập lưng ông. Cứ làm đúng bổn phận.<br><b>• Tài lộc:</b> Lợi ích bất ngờ có thể đến nếu không tham lam. Tính toán quá sâu lại dễ hỏng việc.<br><b>• Tình cảm:</b> Yêu đương thuần khiết, đừng toan tính vụ lợi. Ghen tuông vô cớ sẽ phá hỏng tất cả."
+        },
+        "111001": { 
+            name: "Sơn Thiên Đại Súc", 
+            desc: "Tích lũy tài sản và tri thức lớn lao. Thời điểm bùng nổ sức mạnh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Năng lượng và tài nguyên đã dồi dào, chuẩn bị làm được việc lớn lấp biển vá trời.<br><b>• Sự nghiệp:</b> Kinh nghiệm đã đủ chín, là lúc ra mắt dự án khủng hoặc thăng tiến vượt bậc.<br><b>• Tài lộc:</b> Đại phú quý, tiền bạc tích tụ thành núi. Đầu tư mạnh tay sẽ thu lãi cực kỳ đậm.<br><b>• Tình cảm:</b> Tình cảm nồng hậu, vững chắc. Quá trình vun đắp lâu dài nay đã đơm hoa kết trái."
+        },
+        "100001": { 
+            name: "Sơn Lôi Di", 
+            desc: "Nuôi dưỡng, bồi bổ. Cẩn thận lời ăn tiếng nói và việc ăn uống.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Giai đoạn cần tập trung nuôi dưỡng thể chất và tinh thần. Họa từ miệng mà ra, bệnh từ miệng mà vào.<br><b>• Sự nghiệp:</b> Cần bồi dưỡng thêm kiến thức, tìm người tài giúp sức. Cẩn trọng phát ngôn nơi công sở.<br><b>• Tài lộc:</b> Tiêu xài vừa phải cho việc thiết thực. Có lộc ăn uống, quà tặng.<br><b>• Tình cảm:</b> Dành thời gian chăm sóc đối phương. Lời nói cay độc lúc này có sức tàn phá khủng khiếp."
+        },
+        "011110": { 
+            name: "Trạch Phong Đại Quá", 
+            desc: "Cột nhà oằn xuống, sức chịu đựng quá tải. Cần hành động khác thường.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trọng trách quá lớn, vượt quá sức chịu đựng. Phải có biện pháp mạnh, cực đoan mới chống đỡ nổi.<br><b>• Sự nghiệp:</b> Khối lượng công việc khổng lồ, dễ bị kiệt sức hoặc sụp đổ hệ thống. Phải san sẻ hoặc cắt bỏ bớt.<br><b>• Tài lộc:</b> Nợ nần hoặc đòn bẩy tài chính quá lớn. Cần bán bớt tài sản để giảm gánh nặng.<br><b>• Tình cảm:</b> Áp lực dồn nén đến mức nghẹt thở. Nếu không giải tỏa, mối quan hệ sẽ gãy đổ bất ngờ."
+        },
+        "010010": { 
+            name: "Bát Thuần Khảm (Khảm Vi Thủy)", 
+            desc: "Hiểm nguy trùng trùng (nước sâu). Cần giữ tâm kiên định để vượt qua.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sóng gió liên miên, họa vô đơn chí. Càng vùng vẫy càng chìm. Chỉ có sự chân thành và bình tĩnh mới thoát hiểm.<br><b>• Sự nghiệp:</b> Gian nan, bị vây hãm, công việc bế tắc. Hãy làm từng bước nhỏ, cẩn thận mọi văn bản.<br><b>• Tài lộc:</b> Rỗng túi, nợ nần bủa vây. Tuyệt đối không dính vào vay lãi hay cờ bạc.<br><b>• Tình cảm:</b> Chìm trong nước mắt và sự lừa dối. Đang trong giai đoạn cực kỳ u tối."
+        },
+        "101101": { 
+            name: "Bát Thuần Ly (Ly Vi Hỏa)", 
+            desc: "Sáng sủa, chói lọi nhưng dễ bốc đồng. Cần dựa vào nền tảng vững chắc.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Rực rỡ, tiếng tăm bay xa nhưng bên trong lại trống rỗng. Lửa cần củi mới cháy được, người cần có chỗ dựa.<br><b>• Sự nghiệp:</b> Công danh nổi bật, được ngợi khen. Phải bám sát thực tế, tránh ảo tưởng sức mạnh.<br><b>• Tài lộc:</b> Kiếm nhanh tiêu nhanh. Cần biến dòng tiền thành tài sản tích lũy thực tế.<br><b>• Tình cảm:</b> Cuồng nhiệt, rực rỡ nhưng dễ tàn. Đừng để cảm xúc bốc đồng chi phối các quyết định quan trọng."
+        },
+        "001110": { 
+            name: "Trạch Sơn Hàm", 
+            desc: "Sự cảm ứng, giao cảm nam nữ. Rất tốt cho tình duyên và hợp tác.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Vạn vật giao hòa, có sự đồng điệu tâm hồn. Việc cầu danh, cầu tài, cầu duyên đều toại ý.<br><b>• Sự nghiệp:</b> Rất thuận lợi nếu hợp tác, ký kết. Cấp trên cấp dưới đồng tâm hiệp lực.<br><b>• Tài lộc:</b> Tiền bạc trôi chảy. Làm ăn bằng chữ tín và sự thấu cảm sẽ hái ra tiền.<br><b>• Tình cảm:</b> Quẻ đại cát cho tình yêu! Hai bên tâm linh tương thông, tình cảm mặn nồng thắm thiết."
+        },
+        "011100": { 
+            name: "Lôi Phong Hằng", 
+            desc: "Sự bền bỉ, trường cửu. Cứ giữ nguyên đường lối cũ sẽ thành công.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trạng thái ổn định, bền vững lâu dài. Đừng nghe lời xúi giục mà thay đổi, cứ như cũ mà làm.<br><b>• Sự nghiệp:</b> Công việc vững chắc, không có biến động. Thích hợp làm việc lâu dài, duy trì quan hệ đối tác cũ.<br><b>• Tài lộc:</b> Thu nhập đều đặn, nguồn tiền ổn định. Không nên nhảy sang mảng đầu tư hoàn toàn mới.<br><b>• Tình cảm:</b> Tình vợ chồng sắt son, bền chặt keo sơn qua năm tháng."
+        },
+        "001111": { 
+            name: "Thiên Sơn Độn", 
+            desc: "Rút lui, ẩn nấp. Thời điểm tiểu nhân đang mạnh, lùi lại là thượng sách.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Thời vận đang đi xuống, tiểu nhân đắc thế. Bỏ đi sự hiếu thắng, lui về ở ẩn để bảo toàn thân mạng.<br><b>• Sự nghiệp:</b> Bị chèn ép, giành giật công lao. Tranh cãi vô ích, nên xin thuyên chuyển hoặc nhượng bộ.<br><b>• Tài lộc:</b> Thất thoát. Hãy rút vốn khỏi thị trường rủi ro ngay lập tức, giữ tiền mặt là vua.<br><b>• Tình cảm:</b> Khoảng cách ngày càng xa. Tốt nhất nên tạm xa nhau một thời gian để bình tâm."
+        },
+        "111100": { 
+            name: "Lôi Thiên Đại Tráng", 
+            desc: "Sức mạnh đang ở độ sung mãn nhất. Tuyệt đối không được kiêu ngạo, vấp ngã.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Dương khí tột đỉnh, thế như chẻ tre. Nhưng tiến quá đà sẽ thành mù quáng, húc đầu vào đá.<br><b>• Sự nghiệp:</b> Năng lực xuất chúng, phá vỡ mọi rào cản. Chú ý thái độ ôn hòa kẻo rước họa ganh ghét.<br><b>• Tài lộc:</b> Tiền vô như nước. Dám nghĩ dám làm sẽ thắng lớn, nhưng cần biết điểm dừng.<br><b>• Tình cảm:</b> Quá áp đặt, gia trưởng khiến đối phương ngột ngạt. Chú ý tính nóng nảy làm tổn thương nhau."
+        },
+        "000101": { 
+            name: "Hỏa Địa Tấn", 
+            desc: "Tiến lên, vinh hiển. Mặt trời mọc, công danh sự nghiệp rạng rỡ.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như mặt trời nhô lên khỏi mặt đất, xóa tan tăm tối. Cơ hội tỏa sáng đã đến.<br><b>• Sự nghiệp:</b> Thăng quan tiến chức, thi cử đỗ đạt, được sếp lớn trọng dụng. Danh tiếng thăng hoa.<br><b>• Tài lộc:</b> Cơ hội làm giàu rõ nét. Rất thuận lợi cho mở mang kinh doanh, ký kết hợp đồng lớn.<br><b>• Tình cảm:</b> Mọi khúc mắc được làm sáng tỏ. Tình yêu rạng rỡ, thăng hoa và đầy lãng mạn."
+        },
+        "101000": { 
+            name: "Địa Hỏa Minh Di", 
+            desc: "Ánh sáng bị che khuất. Bị hiểu lầm, trù dập. Nên ẩn nhẫn chờ thời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mặt trời lặn xuống đất, tăm tối bao trùm. Gặp phải sự bất công, hàm oan. Giả ngu, chịu nhục là thượng sách.<br><b>• Sự nghiệp:</b> Sếp u mê, tiểu nhân dèm pha. Có tài nhưng không được dùng. Cứ âm thầm làm việc, đừng kêu ca.<br><b>• Tài lộc:</b> Dễ bị hao hụt, lừa đảo. Không cho vay mượn, cất kỹ tiền bạc phòng rủi ro.<br><b>• Tình cảm:</b> Đầy rẫy tổn thương và sự dối trá che đậy. Có bí mật khủng khiếp chưa lộ diện."
+        },
+        "101011": { 
+            name: "Phong Hỏa Gia Nhân", 
+            desc: "Quẻ của gia đạo. Tề gia nội trợ tốt thì mọi việc bên ngoài ắt thành công.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hướng về bên trong. Gia đình, nội bộ lục đục thì việc gì cũng hỏng. Êm ấm thì đại cát.<br><b>• Sự nghiệp:</b> Cần củng cố tổ chức nội bộ, làm việc nhóm chặt chẽ. Xây dựng văn hóa công ty là ưu tiên hàng đầu.<br><b>• Tài lộc:</b> Nguồn tài lộc đến từ gia đình, buôn bán nhỏ lẻ cùng người thân rất tốt.<br><b>• Tình cảm:</b> Tình cảm vợ chồng ấm áp. Cùng chung tay chăm lo con cái và gia đình."
+        },
+        "110101": { 
+            name: "Hỏa Trạch Khuê", 
+            desc: "Sự trái ngược, bất đồng quan điểm. Nội bộ lục đục, khó làm việc lớn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lửa bốc lên, nước chảy xuống, hai hướng trái ngược nhau. Việc nhỏ thì thông, việc lớn dễ đổ vỡ.<br><b>• Sự nghiệp:</b> Không tìm được tiếng nói chung với sếp hoặc đối tác. Mâu thuẫn kéo dài, việc ai nấy làm.<br><b>• Tài lộc:</b> Tiền bạc rải rác, khó gom lại làm lớn. Cần rạch ròi tài chính để tránh cãi vã.<br><b>• Tình cảm:</b> Trống đánh xuôi kèn thổi ngược. Có sự hoài nghi, xa cách, không cùng chung chí hướng."
+        },
+        "001010": { 
+            name: "Thủy Sơn Kiển", 
+            desc: "Què quặt, gian nan bế tắc. Phía trước là đầm lầy, tốt nhất là nên dừng lại.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Càng tiến tới càng lún sâu vào bùn. Biết khó mà dừng lại, quay về tìm viện binh mới là người trí.<br><b>• Sự nghiệp:</b> Khó khăn chồng chất, bị cản trở tứ bề. Đừng cố chấp vọt lên, hãy lui về củng cố nội lực.<br><b>• Tài lộc:</b> Bế tắc, nợ nần vây hãm. Phải cắt lỗ ngay lập tức, đừng cố vay chỗ này đập chỗ kia.<br><b>• Tình cảm:</b> Đầy ngang trái và thử thách. Gia đình ngăn cấm hoặc khoảng cách địa lý quá xa xôi."
+        },
+        "010100": { 
+            name: "Lôi Thủy Giải", 
+            desc: "Cởi trói, giải phóng. Mối nguy đã qua, hãy tha thứ và làm lại từ đầu.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Mưa sấm đã tạnh, gian nguy đã lùi xa. Trạng thái nhẹ nhõm, bao dung vạn vật.<br><b>• Sự nghiệp:</b> Rắc rối được tháo gỡ, gánh nặng được trút bỏ. Bắt tay vào làm việc ngay để tận dụng đà tiến.<br><b>• Tài lộc:</b> Thoát khỏi nợ nần hoặc thu hồi được vốn. Bắt đầu có những khoản thu nhập mới.<br><b>• Tình cảm:</b> Gỡ bỏ được hiểu lầm, tha thứ cho lỗi lầm cũ. Bắt đầu một trang mới hạnh phúc hơn."
+        },
+        "110001": { 
+            name: "Sơn Trạch Tổn", 
+            desc: "Tổn thất, bớt đi. Chịu thiệt thòi lúc này để đổi lấy lợi ích lâu dài về sau.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Phải biết cho đi, chịu thiệt thòi bề ngoài. Bớt cái thừa để bù đắp cái thiếu, đó là đạo lý.<br><b>• Sự nghiệp:</b> Bỏ vốn đầu tư ban đầu hoặc cắt giảm nhân sự thừa. Khởi đầu mất mát nhưng tương lai bền vững.<br><b>• Tài lộc:</b> Hao tài tốn của cho việc cần thiết. Đừng xót tiền, đây là lúc lấy của làm phúc.<br><b>• Tình cảm:</b> Nhường nhịn đối phương, bớt đi sự ích kỷ cá nhân thì tình cảm mới bền lâu."
+        },
+        "100011": { 
+            name: "Phong Lôi Ích", 
+            desc: "Thêm vào, được lợi. Thời kỳ vàng để đầu tư và mở rộng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có sự giúp đỡ từ bên trên, công việc tấn tới. Cơ hội ngàn vàng không thể bỏ lỡ.<br><b>• Sự nghiệp:</b> Có quý nhân nâng đỡ, làm việc gì cũng xuôi chèo mát mái, danh lợi song thu.<br><b>• Tài lộc:</b> Sinh lời mạnh mẽ. Dòng tiền đổ về nhiều nguồn. Hãy mạnh dạn đầu tư mở rộng.<br><b>• Tình cảm:</b> Tình cảm đôi lứa có bước tiến lớn. Giúp đỡ lẫn nhau cùng thăng tiến trong cuộc sống."
+        },
+        "111110": { 
+            name: "Trạch Thiên Quải", 
+            desc: "Quyết đoán, dứt khoát cắt bỏ thành phần độc hại. Cần cẩn trọng thế lực ngầm.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đã đến lúc phải hành động cương quyết loại bỏ tiểu nhân. Nhưng cần liên minh lực lượng, chớ manh động một mình.<br><b>• Sự nghiệp:</b> Thanh trừng nội bộ, sa thải người kém cỏi. Xử lý triệt để các rắc rối tồn đọng bấy lâu.<br><b>• Tài lộc:</b> Cắt lỗ dứt khoát, thanh lý tài sản xấu. Thà đau một lần rồi thôi.<br><b>• Tình cảm:</b> Chia tay dứt khoát mối tình độc hại. Đã đến lúc giải thoát cho bản thân."
+        },
+        "011111": { 
+            name: "Thiên Phong Cấu", 
+            desc: "Sự gặp gỡ bất ngờ (thường là tiểu nhân hoặc tình duyên thoáng qua). Chớ tin người.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Cẩn thận một thế lực âm ty, tiểu nhân đang len lỏi vào. Bề ngoài thì đẹp nhưng bên trong hiểm độc.<br><b>• Sự nghiệp:</b> Có kẻ dòm ngó vị trí, đâm sau lưng. Đừng vội tin những lời xu nịnh, ngon ngọt.<br><b>• Tài lộc:</b> Dễ mất tiền vì bị lừa đảo hoặc mắc bẫy 'việc nhẹ lương cao'. Giữ tiền chặt.<br><b>• Tình cảm:</b> Đề phòng đào hoa sát, kẻ thứ ba xuất hiện. Tình yêu qua đường, chớp nhoáng không có hậu."
+        },
+        "000110": { 
+            name: "Trạch Địa Tụy", 
+            desc: "Nhóm họp, tụ tập nhân tài, của cải. Đang có quý nhân phù trợ.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Tụ hội, sum vầy. Mọi thứ đang hội tụ về một mối, tạo nên sức mạnh to lớn.<br><b>• Sự nghiệp:</b> Tuyển dụng được nhân tài, xây dựng được đội ngũ tinh nhuệ. Nhận được sự tín nhiệm từ đám đông.<br><b>• Tài lộc:</b> Tiền bạc gom về một cục lớn. Có thể kêu gọi vốn đầu tư rất dễ dàng lúc này.<br><b>• Tình cảm:</b> Cực tốt, hòa hợp. Dễ có tin vui tụ họp gia đình, cưới xin."
+        },
+        "011000": { 
+            name: "Địa Phong Thăng", 
+            desc: "Thăng tiến, vươn lên đều đặn như mầm cây. Tốt cho cầu quan chức, công danh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đang trên đà phát triển một cách vững chắc. Có quý nhân phù trợ phía nam.<br><b>• Sự nghiệp:</b> Cầu quan chức đắc quan chức, thăng cấp bậc liên tục. Cứ đi đúng đường lối sẽ lên đỉnh vinh quang.<br><b>• Tài lộc:</b> Doanh thu tăng trưởng đều đặn đơm hoa kết trái. Đầu tư dài hạn sinh lời cực lớn.<br><b>• Tình cảm:</b> Tình cảm dần dần đi lên, thấu hiểu nhau hơn qua thời gian. Rất viên mãn."
+        },
+        "010110": { 
+            name: "Trạch Thủy Khốn", 
+            desc: "Cùng quẫn, bị vây hãm bốn bề. Không ai tin tưởng, phải tự cứu mình.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nước trong hồ đã cạn kiệt. Lâm vào cảnh bế tắc, nói không ai nghe. Cần giữ cái tâm thanh tịnh chờ qua nạn.<br><b>• Sự nghiệp:</b> Công việc dậm chân tại chỗ, cấp trên chèn ép, đồng nghiệp quay lưng. Cố gắng im lặng chịu đựng.<br><b>• Tài lộc:</b> Tiền bạc cạn kiệt, khủng hoảng tài chính nghiêm trọng. Không trông cậy được ai giúp đỡ.<br><b>• Tình cảm:</b> Đau khổ tột cùng. Có thể dẫn đến ly thân, ly dị vì áp lực cuộc sống quá vất vả."
+        },
+        "011010": { 
+            name: "Thủy Phong Tỉnh", 
+            desc: "Giếng nước. Lặng lẽ tu thân, bồi bổ kiến thức. Chớ nôn nóng đổi dời.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Dù xung quanh đổi thay thế nào, bạn vẫn cứ tĩnh lặng làm việc của mình, nuôi dưỡng bản thân và người khác.<br><b>• Sự nghiệp:</b> Phù hợp làm các việc mang tính chuyên môn sâu, nghiên cứu. Không hợp nhảy việc lúc này.<br><b>• Tài lộc:</b> Tiền bạc ổn định, đủ ăn đủ tiêu, không nghèo cũng không phất lên làm tỷ phú được.<br><b>• Tình cảm:</b> Tình yêu êm đềm, sâu sắc như nước giếng. Không ồn ào lãng mạn nhưng rất thủy chung."
+        },
+        "101110": { 
+            name: "Trạch Hỏa Cách", 
+            desc: "Đổi mới, cách mạng. Đập đi xây lại cấu trúc cũ thì mới có tương lai.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lớp da cũ phải lột bỏ. Không thể dùng cách làm cũ cho bối cảnh hiện tại. Sự lột xác là bắt buộc.<br><b>• Sự nghiệp:</b> Thay máu nhân sự, chuyển hướng kinh doanh, nhảy việc hoàn toàn sang lĩnh vực mới sẽ đại cát.<br><b>• Tài lộc:</b> Mạnh dạn từ bỏ khoản đầu tư thua lỗ, tìm kiếm mỏ vàng mới. Cơ hội đổi đời đang mở ra.<br><b>• Tình cảm:</b> Chấm dứt sự nhàm chán, hâm nóng lại tình yêu hoặc dứt khoát chia tay để bắt đầu hành trình mới."
+        },
+        "011101": { 
+            name: "Hỏa Phong Đỉnh", 
+            desc: "Chiếc vạc vững chãi. Định hình cơ đồ, được giao trọng trách lớn.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hình tượng chiếc vạc ba chân quyền lực. Vận khí cực kỳ hanh thông, vững như bàn thạch.<br><b>• Sự nghiệp:</b> Được đứng ở vị trí cao, giao phó trọng trách. Là lúc định hình cơ đồ, xây dựng đế chế riêng.<br><b>• Tài lộc:</b> Cuộc sống ấm no, thịnh vượng. Thu nhập cao và ổn định từ những dự án lớn.<br><b>• Tình cảm:</b> Gia đình nền nếp, sung túc. Người chưa có gia đình dễ gặp được người có chức sắc, quyền lực."
+        },
+        "100100": { 
+            name: "Bát Thuần Chấn (Chấn Vi Lôi)", 
+            desc: "Biến động dữ dội, sấm sét kinh hãi nhưng không để lại hậu quả. Cứ giữ bình tĩnh.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Có sự việc bất ngờ gây sốc, hoảng loạn. Nhưng nếu tâm bất biến giữa dòng đời vạn biến, mọi chuyện sẽ bình an.<br><b>• Sự nghiệp:</b> Công ty có biến động lớn về thượng tầng, thay đổi chính sách đột ngột. Chớ hoảng sợ, hãy làm tốt việc của mình.<br><b>• Tài lộc:</b> Thị trường lao dốc hoặc biến động mạnh. Bĩnh tĩnh giữ vốn, qua đợt sóng sẽ ổn.<br><b>• Tình cảm:</b> Cãi vã ầm ĩ nhưng giải quyết xong lại làm hòa nhanh chóng, không để lại thù hận."
+        },
+        "001001": { 
+            name: "Bát Thuần Cấn (Cấn Vi Sơn)", 
+            desc: "Ngưng nghỉ, dừng lại đúng lúc. Việc gì đến tay cũng nên án binh bất động.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Trạng thái núi tĩnh lặng. Khuyên bạn nên dừng mọi hành động, dứt bỏ mọi dục vọng vọng động.<br><b>• Sự nghiệp:</b> Đừng tiến lên nữa, không có kết quả đâu. Hãy dừng lại, suy ngẫm và củng cố vị trí hiện tại.<br><b>• Tài lộc:</b> Đình trệ, tiền không ra cũng không vào. Tuyệt đối cấm đầu tư, mua bán lúc này.<br><b>• Tình cảm:</b> Hai bên như hai ngọn núi, không ai nhường ai, xa cách lạnh nhạt. Đừng cố ép buộc."
+        },
+        "001011": { 
+            name: "Phong Sơn Tiệm", 
+            desc: "Chậm rãi, tuần tự nhi tiến. Dục tốc bất đạt, cứ thong thả thì chắc thắng.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như cây trên núi mọc chậm nhưng rễ đâm rất sâu. Tiến từng bước một cách có trật tự.<br><b>• Sự nghiệp:</b> Phải tuân thủ quy trình, đi từ dưới lên trên. Lách luật hay đi cửa sau sẽ thất bại thảm hại.<br><b>• Tài lộc:</b> Tiền bạc tích tụ theo thời gian, không có chuyện làm giàu sau một đêm.<br><b>• Tình cảm:</b> Tìm hiểu kỹ càng, đến với nhau bằng sự tôn trọng. Quẻ rất tốt cho thủ tục dạm ngõ, cưới hỏi."
+        },
+        "110100": { 
+            name: "Lôi Trạch Quy Muội", 
+            desc: "Lệch pha, kết hợp miễn cưỡng. Mọi việc không như ý nguyện ban đầu.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Hành động không thuận lẽ phải, tiến hành việc gì cũng xôi hỏng bỏng không. Kết cục buồn thảm.<br><b>• Sự nghiệp:</b> Chọn sai nghề, hợp tác nhầm đối tác, bị lợi dụng công sức. Càng cố tiến càng bế tắc.<br><b>• Tài lộc:</b> Đầu tư sai chỗ, mất tiền oan uổng vì nghe lời xúi giục. Giữ tiền ngay.<br><b>• Tình cảm:</b> Chuyện tình cảm oan trái, không môn đăng hộ đối, hoặc là thân phận lẽ mọn, người thứ ba."
+        },
+        "101100": { 
+            name: "Lôi Hỏa Phong", 
+            desc: "Cực thịnh, phồn hoa tột đỉnh. Chú ý luật 'Vật cực tất phản' (thịnh quá sẽ suy).",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Rực rỡ ánh sáng bủa vây, phước lộc tràn trề. Tuy nhiên cần chuẩn bị tâm lý vì trăng tròn rồi sẽ khuyết.<br><b>• Sự nghiệp:</b> Thành tựu vang dội, đạt được mục tiêu lớn lao nhất. Phải biết thu mình lại sau khi thành công.<br><b>• Tài lộc:</b> Doanh thu đạt đỉnh, lợi nhuận khổng lồ. Đây là lúc chốt lời chứ không phải ném thêm vốn vào.<br><b>• Tình cảm:</b> Hạnh phúc tột độ, đám cưới linh đình. Nhưng cần vun đắp để tránh sự nguội lạnh sau đỉnh cao."
+        },
+        "001101": { 
+            name: "Hỏa Sơn Lữ", 
+            desc: "Lữ khách tha hương. Việc đi lại, xuất ngoại thì được, việc ổn định thì khó.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Bôn ba, trôi dạt, không có chỗ dựa vững chắc. Phải mềm mỏng tùy cơ ứng biến nơi đất khách.<br><b>• Sự nghiệp:</b> Hay phải đi công tác, chuyển đổi công việc liên tục. Đừng mong cầu chức vụ ổn định lúc này.<br><b>• Tài lộc:</b> Kiếm được nhưng cũng tiêu hao vì đi lại. Không thích hợp mua nhà cửa, đất đai lúc này.<br><b>• Tình cảm:</b> Cô đơn, thiếu vắng sự quan tâm. Tình cảm dễ đứt đoạn do xa mặt cách lòng."
+        },
+        "011011": { 
+            name: "Bát Thuần Tốn (Tốn Vi Phong)", 
+            desc: "Thuận theo, thâm nhập dần dần. Cần sự mềm mỏng, linh hoạt như cơn gió.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió len lỏi mọi nơi. Đừng dùng sức mạnh cưỡng ép, hãy dùng sự mềm mỏng, thuyết phục dần dần để đạt mục đích.<br><b>• Sự nghiệp:</b> Ngoại giao, đàm phán rất tốt. Hãy theo dõi và dựa vào những người có quyền lực để tiến thân.<br><b>• Tài lộc:</b> Lợi nhuận gặt hái từ những thương vụ môi giới, buôn bán nhỏ, thông tin nhanh nhạy.<br><b>• Tình cảm:</b> Ôn hòa, uyển chuyển. Tình yêu phát triển chậm rãi qua sự thấu hiểu và nhường nhịn."
+        },
+        "110110": { 
+            name: "Bát Thuần Đoài (Đoài Vi Trạch)", 
+            desc: "Hòa nhã, vui vẻ, thuyết phục. Khéo léo trong giao tiếp sẽ thu phục được nhân tâm.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Đầm nước êm đềm, vạn sự hanh thông nhờ lời nói. Họa hay phúc đều từ miệng mà ra.<br><b>• Sự nghiệp:</b> Thành công nhờ tài diễn thuyết, đàm phán, thuyết phục khách hàng. Cần giữ mồm miệng, tránh vạ miệng.<br><b>• Tài lộc:</b> Tốt cho nghề luật sư, giáo viên, bán hàng. Lộc ăn lộc nói cực kỳ vượng.<br><b>• Tình cảm:</b> Ngọt ngào, vui vẻ, nhiều tiếng cười. Cẩn thận những lời hứa suông không thành thật."
+        },
+        "010011": { 
+            name: "Phong Thủy Hoán", 
+            desc: "Tan vỡ, phát tán. Cái xấu bị cuốn trôi, chuẩn bị đón nhận cơ hội mới.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió thổi trên mặt nước, làm tan chảy băng giá. Bệnh tật tiêu tan, muộn phiền bay mất.<br><b>• Sự nghiệp:</b> Vượt qua được giai đoạn khó khăn trì trệ nhất. Đã đến lúc giong buồm ra khơi làm lại từ đầu.<br><b>• Tài lộc:</b> Tiền bạc bị phân tán, hao hụt. Nhưng đây là sự hao tổn để giải quyết hậu quả, chuẩn bị kiếm lại nguồn thu mới.<br><b>• Tình cảm:</b> Cởi bỏ được sự lạnh nhạt, oán hờn. Mở lòng ra để cứu vãn mối quan hệ đang rạn nứt."
+        },
+        "110010": { 
+            name: "Thủy Trạch Tiết", 
+            desc: "Tiết chế, biết đủ. Giới hạn lại lòng tham, chi tiêu chừng mực thì giữ được lộc.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Nước trong hồ đầy phải xả bớt. Mọi việc phải có giới hạn, chừng mực, tham thì thâm.<br><b>• Sự nghiệp:</b> Làm việc vừa sức, tuân thủ nghiêm ngặt quy định. Mạo hiểm vượt rào sẽ gánh hậu quả thảm khốc.<br><b>• Tài lộc:</b> Thắt lưng buộc bụng, kiểm soát chi tiêu. Tiết kiệm là cách duy nhất để sinh tồn lúc này.<br><b>• Tình cảm:</b> Cần tạo khoảng không gian riêng cho nhau. Quản lý đối phương quá chặt sẽ sinh ra phản tác dụng."
+        },
+        "110011": { 
+            name: "Phong Trạch Trung Phu", 
+            desc: "Tín thực. Lấy sự chân thành tuyệt đối để cảm hóa lòng người.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Gió thổi trên mặt hồ lấp lánh. Trái tim chân thành có thể cảm hóa cả loài heo cá (người ngu độn, hung ác).<br><b>• Sự nghiệp:</b> Chữ Tín làm đầu. Giữ đúng lời hứa sẽ thu phục được đối tác và nhân viên trung thành.<br><b>• Tài lộc:</b> Kiếm tiền bằng sự minh bạch và uy tín cá nhân. Không có cửa cho sự lừa lọc dối trá.<br><b>• Tình cảm:</b> Tình yêu trong sáng, chung thủy. Đôi bên hoàn toàn tin tưởng lẫn nhau."
+        },
+        "001100": { 
+            name: "Lôi Sơn Tiểu Quá", 
+            desc: "Chỉ nên làm việc nhỏ, bay thấp. Việc lớn đầu tư mạnh tay ắt gặp họa.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Như con chim non đang bay, chỉ nên đậu cành thấp, cất cao cánh sẽ trúng tên.<br><b>• Sự nghiệp:</b> Chỉ nên làm những việc vừa sức, tiểu tiết. Không hợp mưu đồ chức vụ lớn hay khởi nghiệp mạo hiểm.<br><b>• Tài lộc:</b> Thu hoạch nhỏ giọt. Đầu tư lướt sóng nhỏ thì được, tuyệt đối không tất tay.<br><b>• Tình cảm:</b> Nên hạ cái tôi xuống, chiều chuộng và nhẫn nhịn những lỗi lầm nhỏ của đối phương."
+        },
+        "101010": { 
+            name: "Thủy Hỏa Ký Tế", 
+            desc: "Mọi việc đã hoàn thành, trật tự đâu vào đấy. Chú ý phòng ngừa sự suy thoái.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Sự việc đã đạt được trạng thái lý tưởng nhất. Nhưng sau đỉnh cao luôn là dốc xuống. Cần cẩn trọng bảo vệ thành quả.<br><b>• Sự nghiệp:</b> Dự án thành công rực rỡ, thi cử đỗ đạt. Chớ ngủ quên trên chiến thắng, hãy lập tức đề phòng rủi ro nảy sinh.<br><b>• Tài lộc:</b> Tiền bạc rủng rỉnh, đạt lợi nhuận kỳ vọng. Hãy rút vốn về an toàn.<br><b>• Tình cảm:</b> Đã đi đến bến bờ hạnh phúc. Tuy nhiên cẩn thận sự nhàm chán nảy sinh sau thời gian dài chung sống."
+        },
+        "010101": { 
+            name: "Hỏa Thủy Vị Tế", 
+            desc: "Mọi sự còn dang dở, chưa xong. Tương lai phía trước vẫn còn vô vàn biến số.",
+            CHITIET: "<b>• Vận thế tổng quan:</b> Lửa cháy trên, nước chảy dưới, không giao nhau. Mọi việc vẫn còn chưa thành, cơ hội vẫn mở ra phía trước.<br><b>• Sự nghiệp:</b> Đang ở lưng chừng đèo. Không được bỏ cuộc, phải dốc toàn lực đi nốt chặng đường cuối cùng mới thấy vinh quang.<br><b>• Tài lộc:</b> Tiền chưa về túi, mọi thứ vẫn nằm ở tiềm năng. Chú ý thận trọng từng khâu giải ngân.<br><b>• Tình cảm:</b> Còn nhiều thử thách phía trước, chưa thể chốt hạ hôn nhân ngay. Cần thêm thời gian vun đắp."
+        }
     };
 
+    // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
+    // Hàm 1: Bơm giao diện Gieo Quẻ vào Grid
     function renderGieoQueUI() {
         const grid = document.getElementById('post-grid');
-        document.getElementById('post-pagination').innerHTML = ""; 
+        document.getElementById('post-pagination').innerHTML = ""; // Xóa phân trang
+        
+        // Reset state mỗi lần mở lại tab
         currentHao = 1;
         hexagramData = [];
+
+        // Đổi display để form gieo quẻ độc lập, không bị ảnh hưởng bởi css dạng lưới (grid)
         grid.style.display = "block"; 
+
+        // Bơm nguyên HTML và CSS hiệu ứng vào trong grid
         grid.innerHTML = `
+            <style>
+                @keyframes flipCoinAnim {
+                    0% { transform: translateY(0) rotateY(0deg) scale(1); }
+                    50% { transform: translateY(-60px) rotateY(720deg) scale(1.2); }
+                    100% { transform: translateY(0) rotateY(1440deg) scale(1); }
+                }
+                .coin-tossing { animation: flipCoinAnim 1.2s ease-in-out; }
+            </style>
+            
             <div style="background: white; padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); width: 100%; box-sizing: border-box; margin: 0 auto; text-align: center;">
+                
                 <h2 style="font-family: 'Playfair Display', serif; color: var(--primary-color); margin-top: 0; margin-bottom: 1rem; font-size: 1.8rem;">XIN QUẺ LỤC HÀO</h2>
+                <p style="color: #555; font-style: italic; margin-bottom: 20px;">"Đồng thanh tương ứng, đồng khí tương cầu. Hãy tĩnh tâm nghĩ về việc cần hỏi trước khi gieo."</p>
+                
                 <div id="coin-area" style="display: flex; justify-content: center; gap: 20px; margin: 30px 0; height: 70px; align-items: center;">
-                    <div class="coin-ui" id="coin-1" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; display: flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
-                    <div class="coin-ui" id="coin-2" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; display: flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
-                    <div class="coin-ui" id="coin-3" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; display: flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
+                    <div class="coin-ui" id="coin-1" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
+                    <div class="coin-ui" id="coin-2" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
+                    <div class="coin-ui" id="coin-3" style="width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #e6c27a 0%, #c5a059 100%); border: 3px solid #8e6d32; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d1a1a; font-size: 1.2rem; font-family: serif;">?</div>
                 </div>
-                <button id="btn-gieo" onclick="tossCoins()" style="background: var(--primary-color); color: white; padding: 15px 40px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer;">Gieo Lần 1</button>
-                <div id="hexagram-draw-area" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 12px; margin: 30px 0; min-height: 200px;"></div>
+                
+                <button id="btn-gieo" onclick="tossCoins()" style="background: var(--primary-color); color: white; border: 2px solid var(--accent-color); padding: 15px 40px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;">Gieo Lần 1</button>
+                
+                <div id="hexagram-draw-area" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 12px; margin: 30px 0; min-height: 200px;">
+                    </div>
+
                 <div id="hexagram-result" style="background: #fffcf6; border: 1px solid var(--accent-color); padding: 25px; border-radius: 8px; margin-top: 20px; display: none; text-align: left;">
-                    <h3 style="color: var(--primary-color); margin-top:0;">☯ KẾT QUẢ QUẺ DỊCH CỦA BẠN</h3>
-                    <p><strong>Quẻ Chủ:</strong> <span id="res-que">Đang tính toán...</span></p>
-                    <p><strong>Hào Động:</strong> <span id="res-dong">...</span></p>
-                    <button onclick="document.querySelectorAll('.tab-btn')[4].click()" style="background: var(--primary-color); color: white; width: 100%; max-width: 450px; display: block; margin: 15px auto 0 auto; padding: 15px; font-size: 1.05rem; font-weight: bold; border-radius: 6px;">THỈNH BẢN LUẬN GIẢI CHI TIẾT PDF (50K)</button>
+                    <h3 style="color: var(--primary-color); margin-top:0; border-bottom: 1px solid var(--accent-color); padding-bottom: 10px;">☯ KẾT QUẢ QUẺ DỊCH CỦA BẠN</h3>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Quẻ Chủ:</strong> <span id="res-que" style="color: var(--primary-color); font-weight: bold;">Đang tính toán...</span></p>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Hào Động:</strong> <span id="res-dong" style="color: #e74c3c; font-weight: bold;">...</span></p>
+                    <p style="margin: 8px 0; font-size: 1.1rem;"><strong>Thời gian ứng kỳ:</strong> Gợi ý số <span id="res-ungky" style="color:#e74c3c; font-weight:bold; font-size:1.3rem;">...</span></p>
+                    
+                    <div style="background: #fdf2f2; border-left: 4px solid #e74c3c; padding: 15px; margin-top: 20px; font-size: 0.95rem; border-radius: 0 8px 8px 0;">
+                    <strong style="color: #c0392b;">💡 Lời khuyên:</strong> Các thông tin trên chỉ là kiến thức tổng quan. Quẻ dịch của bạn xuất hiện biến số (Hào Động), báo hiệu sự việc sẽ có những ngã rẽ bất ngờ.<br><br>
+                    👉 Hệ thống Tử Vi Hoàng Hạc đã biên soạn sẵn <strong>Bản luận giải chi tiết (File PDF)</strong> cho quẻ này, phân tích sâu về: Cơ hội Tài lộc, Rủi ro Công danh và Hướng hóa giải hung họa.<br>
+                    </div>
+                    <button onclick="document.querySelectorAll('.tab-btn')[4].click()" style="background: var(--primary-color); color: white; border: none; width: 100%; max-width: 450px; display: block; margin: 15px auto 0 auto; padding: 15px; font-size: 1.05rem; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">
+                        THỈNH BẢN LUẬN GIẢI CHI TIẾT PDF (50K)
+                    </button>
                 </div>
             </div>
         `;
     }
 
+    // Hàm 2: Thuật toán tung đồng xu & Tính Hào
     function tossCoins() {
         const btn = document.getElementById('btn-gieo');
         const coins = [document.getElementById('coin-1'), document.getElementById('coin-2'), document.getElementById('coin-3')];
+        
         btn.disabled = true;
+        btn.innerText = "Đang gieo...";
+        btn.style.opacity = "0.7";
+
         let audio = new Audio(coinSoundUrl);
-        audio.play().catch(e => {});
+        audio.play().catch(e => console.log("Cần click web trước khi phát âm thanh"));
+
+        coins.forEach(c => {
+            c.innerHTML = ""; 
+            c.classList.remove('coin-tossing');
+            void c.offsetWidth; 
+            c.classList.add('coin-tossing');
+        });
+
         setTimeout(() => {
             let headsCount = 0;
             coins.forEach(c => {
+                c.classList.remove('coin-tossing');
                 let isHead = Math.random() > 0.5; 
                 c.innerHTML = isHead ? "SẤP" : "NGỬA";
                 if(isHead) headsCount++;
@@ -665,50 +1144,261 @@
         }, 1200);
     }
 
+    // Hàm Xử lý từng Hào (Tính cả giá trị Nhị phân)
     function processHaoResult(headsCount) {
         let haoHTML = ''; let isDong = false; let binaryValue = 0;
-        if (headsCount === 0) { isDong = true; binaryValue = 0; haoHTML = `✕`; } 
-        else if (headsCount === 1) { binaryValue = 1; haoHTML = `───`; } 
-        else if (headsCount === 2) { binaryValue = 0; haoHTML = `─ ─`; } 
-        else if (headsCount === 3) { isDong = true; binaryValue = 1; haoHTML = `─O─`; }
+        
+        const duongStyle = "width: 100%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
+        const amStyle = "width: 100%; height: 100%; display: flex; justify-content: space-between;";
+        const amPill = "width: 45%; height: 100%; background-color: var(--primary-color); border-radius: 2px;";
+        const dongMark = "position: absolute; right: -25px; color: #e74c3c; font-weight: bold; font-size: 1.2rem; line-height: 18px;";
 
+        // Logic 3 đồng xu quy chuẩn thành Mã Nhị Phân (0/1)
+        if (headsCount === 0) { // 3 Ngửa -> Âm Động
+            isDong = true; binaryValue = 0;
+            haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div><span style="${dongMark}">✕</span>`;
+        } else if (headsCount === 1) { // 1 Sấp 2 Ngửa -> Dương Tĩnh
+            binaryValue = 1;
+            haoHTML = `<div style="${duongStyle}"></div>`;
+        } else if (headsCount === 2) { // 2 Sấp 1 Ngửa -> Âm Tĩnh
+            binaryValue = 0;
+            haoHTML = `<div style="${amStyle}"><div style="${amPill}"></div><div style="${amPill}"></div></div>`;
+        } else if (headsCount === 3) { // 3 Sấp -> Dương Động
+            isDong = true; binaryValue = 1;
+            haoHTML = `<div style="${duongStyle}"></div><span style="${dongMark}">O</span>`;
+        }
+
+        // Lưu lại dữ liệu từng Hào
         hexagramData.push({ line: currentHao, isDong: isDong, val: binaryValue });
+
+        const drawArea = document.getElementById('hexagram-draw-area');
+        const newRow = document.createElement('div');
+        newRow.style = "display: flex; align-items: center; justify-content: center; width: 100%; position: relative;";
+        newRow.innerHTML = `
+            <span style="position: absolute; left: 0; font-size: 0.9rem; color: #888; font-style: italic;">Hào ${currentHao}</span>
+            <div style="width: 180px; height: 18px; display: flex; justify-content: center; position: relative;">${haoHTML}</div>
+        `;
+        drawArea.appendChild(newRow); 
+
         currentHao++;
         const btn = document.getElementById('btn-gieo');
+        
         if (currentHao <= 6) {
             btn.innerText = `Gieo Lần ${currentHao}`; 
             btn.disabled = false;
+            btn.style.opacity = "1";
         } else {
-            showResult();
+            btn.innerText = "ĐANG DỊCH QUẺ...";
+            setTimeout(() => {
+                btn.style.display = 'none'; 
+                document.getElementById('coin-area').style.display = 'none'; 
+                showResult();
+            }, 1000);
         }
     }
 
+    // Hàm Nhả Kết Quả Thực Chiến
+    // Hàm Nhả Kết Quả Thực Chiến (Đã vá lỗi hiển thị ...)
     function showResult() {
         document.getElementById('hexagram-result').style.display = 'block';
+        
+        // 1. Tự động ghép 6 Hào thành chuỗi Nhị Phân
         const binaryCode = hexagramData.map(h => h.val).join('');
+        
+        // 2. Lấy dữ liệu Quẻ từ Database
         const ketQuaQue = QUE_DATA[binaryCode];
-        document.getElementById('res-que').innerText = ketQuaQue ? ketQuaQue.name : "Quẻ Kinh Dịch";
-        document.getElementById('res-dong').innerText = "Hào động phản ánh biến số.";
+        const tenQue = ketQuaQue ? ketQuaQue.name : "Không xác định";
+        const yNghiaQue = ketQuaQue ? ketQuaQue.desc : "Đã có lỗi dữ liệu gieo quẻ.";
+        const chiTietQue = ketQuaQue ? (ketQuaQue.CHITIET || "") : "";
+
+        // 3. XỬ LÝ HÀO ĐỘNG (Đoạn này lúc nãy bị thiếu khiến code dừng chạy)
+        let dongLines = hexagramData.filter(h => h.isDong).map(h => h.line).join(", ");
+        let hienThiDong = (dongLines === "") ? "Quẻ Tĩnh (Không có biến số)" : `Động ở Hào ${dongLines}`;
+        
+        // 4. Cập nhật lên Giao Diện
+        document.getElementById('res-que').innerText = tenQue;
+        document.getElementById('res-dong').innerText = hienThiDong;
+        document.getElementById('res-ungky').innerText = Math.floor(Math.random() * 9) + 1;
+        
+        // 5. Hiển thị phần Chi Tiết Quẻ
+        const moTaQueHTML = `
+            <p style="margin: 8px 0 15px 0; font-size: 1.05rem; color: #c5a059; font-style: italic; font-weight: bold;">"${yNghiaQue}"</p>
+            <div class="que-chi-tiet-box" style="font-size: 0.95rem; color: #444; line-height: 1.8; border-top: 1px dashed #e2d9c8; padding-top: 15px; text-align: justify;">
+                ${chiTietQue}
+            </div>
+        `;
+        
+        // Xóa khối chi tiết cũ nếu khách bấm gieo lại nhiều lần
+        const oldBox = document.querySelector('.que-chi-tiet-box');
+        if(oldBox) {
+            if(oldBox.previousElementSibling) oldBox.previousElementSibling.remove();
+            oldBox.remove();
+        }
+        
+        document.getElementById('res-que').insertAdjacentHTML('afterend', moTaQueHTML);
+        document.getElementById('hexagram-result').scrollIntoView({ behavior: 'smooth' });
+    }
+    // =========================================================
+    // KẾT THÚC KHỐI GIEO QUẺ
+    // =========================================================
+    
+    function renderPDFPagination(total) {
+        const pages = Math.ceil(total / pdfLimit);
+        let html = '';
+        if (pages <= 1) { 
+            document.getElementById('post-pagination').innerHTML = "";
+            return; 
+        }
+        for(let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i === currentPdfPage ? 'active' : ''}" onclick="goPdfPage(${i})">${i}</button>`;
+        }
+        document.getElementById('post-pagination').innerHTML = html;
     }
 
+    // === CODE XỬ LÝ VIDEO CÓ PHÂN TRANG ===
     async function loadVideoLibrary() {
         const grid = document.getElementById('post-grid');
         const videoPosts = db.filter(p => p.youtubeId && p.youtubeId.trim() !== "");
+
+        if (videoPosts.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Hiện chưa có bài giảng video nào được cập nhật.</p>";
+            document.getElementById('post-pagination').innerHTML = ""; // Ẩn phân trang nếu không có video
+            return;
+        }
+
+        // Lấy danh sách video tương ứng với trang hiện tại
         const start = (currentVideoPage - 1) * videoLimit;
         const items = videoPosts.slice(start, start + videoLimit);
-        grid.innerHTML = items.map(p => `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`).join('');
+
+        grid.innerHTML = items.map(p => `
+            <div class="card">
+                <div style="position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #000;">
+                    <img src="https://img.youtube.com/vi/${p.youtubeId.trim()}/mqdefault.jpg" style="width: 100%; display: block; opacity: 0.8;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2rem; pointer-events: none;">▶</div>
+                </div>
+                <span class="category-tag">VIDEO BÀI GIẢNG</span>
+                <h3>${p.title}</h3>
+                <p>${p.desc}</p>
+                <a href="content.html?id=${p.id}" class="btn-post">Xem Video & Nghiệm lý →</a>
+            </div>
+        `).join('');
+
+        // Gọi hàm vẽ nút phân trang
+        renderVideoPagination(videoPosts.length);
     }
 
+    function renderVideoPagination(total) {
+        const pages = Math.ceil(total / videoLimit);
+        let html = '';
+        
+        // Nếu chỉ có 1 trang thì không cần hiện nút phân trang
+        if (pages <= 1) { 
+            document.getElementById('post-pagination').innerHTML = "";
+            return; 
+        }
+        
+        for(let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i === currentVideoPage ? 'active' : ''}" onclick="goToVideoPage(${i})">${i}</button>`;
+        }
+        document.getElementById('post-pagination').innerHTML = html;
+    }
+
+    function goToVideoPage(p) {
+        currentVideoPage = p;
+        loadVideoLibrary();
+        window.scrollTo(0, 0); // Tự động cuộn lên đầu trang khi bấm sang trang mới
+    }
+    
+    function goPdfPage(p) {
+        currentPdfPage = p;
+        renderPDFUI();
+        window.scrollTo(0, 0);
+    }
+
+    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
+    // GỬI FORM ĐĂNG KÝ (Đã bổ sung Loại dịch vụ)
     function submitForm(event) {
         event.preventDefault();
         const MY_PHONE = '0946712608'; 
+        const TELEGRAM_USERNAME = 'tantan1088a'; 
+        
+        // Lấy thêm thông tin loại dịch vụ
         const serviceType = document.getElementById('service-type').value;
         const fullName = document.getElementById('fullname').value;
-        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ\n• Gói: ${serviceType}\n• Tên: ${fullName}`;
-        window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        const birthDate = document.getElementById('birth-date').value;
+        const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
+        const birthTime = document.getElementById('birth-time').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const notes = document.getElementById('notes').value || 'Không có';
+
+        // Ghép chuỗi tin nhắn có gói dịch vụ
+        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ DỊCH VỤ\n• Gói: ${serviceType}\n• Tên: ${fullName}\n• GT: ${gender}\n• Sinh: ${birthDate} (${calendarType})\n• Giờ: ${birthTime}\n• Email: ${email}\n• SĐT: ${phone}\n• Vấn đề/Tên Quẻ: ${notes}`;
+        
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            alert("Hệ thống đang mở ứng dụng SMS. Vui lòng bấm GỬI để hoàn tất xác nhận.");
+        } else {
+            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
+            const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
+            const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
+            const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
+            showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
+        }
+        
+        // Hiện thông báo cảm ơn
+        alert("Thông tin của bạn đã được ghi nhận. Hệ thống sẽ kiểm tra giao dịch và gửi File PDF qua Email trong thời gian sớm nhất!");
+        document.getElementById('tuvi-booking-form').reset();
+    }
+
+    function showDualQrPopup(qrSms, qrTele, messageText) {
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
+        
+        const modal = document.createElement('div');
+        modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
+        
+        const formattedMessage = messageText.replace(/\n/g, '<br>');
+
+        modal.innerHTML = `
+            <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
+            <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
+                Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
+            </p>
+
+            <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
+                <strong>Nội dung thông tin của bạn:</strong><br>
+                ${formattedMessage}
+            </div>
+
+            <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+                <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
+                    <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
+                    <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động soạn văn bản có dấu trên ứng dụng Telegram</p>
+                </div>
+                <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
+                    <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
+                    <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
+                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động mở ứng dụng tin nhắn SMS của máy điện thoại</p>
+                </div>
+            </div>
+            <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        document.getElementById('close-zalo-popup').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
     }
 
     window.onload = init;
 </script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
