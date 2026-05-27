@@ -13,45 +13,34 @@
     <link rel="icon" type="image/png" href="data/fini-icon.png" sizes="96x96">
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        /* Giao diện nền nhã nhặn, tôn vinh nội dung di sản */
         body { font-family: 'Lora', serif; line-height: 1.8; max-width: 850px; margin: auto; padding: 20px; background: #fdf8f0; color: #2c3e50; }
-        
         .article-container { background: white; padding: 45px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e0d5c1; position: relative; }
         
-        /* Nút quay lại tinh tế */
+        /* Các nút bấm điều hướng */
         .btn-back { display: inline-flex; align-items: center; margin-bottom: 25px; text-decoration: none; color: #8e2121; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
         .btn-back:hover { color: #c5a059; transform: translateX(-5px); }
         
-        .btn-back-bottom { display: block; width: fit-content; margin: 50px auto 20px; padding: 12px 30px; border: 1px solid #8e2121; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #8e2121; transition: 0.3s; }
-        .btn-back-bottom:hover { background: #8e2121; color: white !important; }
+        .bottom-actions { display: flex; justify-content: center; gap: 20px; margin: 40px auto; flex-wrap: wrap; }
+        
+        .btn-back-bottom { display: inline-block; padding: 12px 30px; border: 1px solid #8e2121; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #8e2121; font-weight: bold; transition: 0.3s; }
+        .btn-back-bottom:hover { background: #8e2121; color: white !important; box-shadow: 0 4px 10px rgba(142,33,33,0.2); }
+        
+        .btn-messenger-bottom { display: inline-block; padding: 12px 30px; border: 1px solid #006AFF; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; color: #006AFF; font-weight: bold; transition: 0.3s; background: #f0f7ff; }
+        .btn-messenger-bottom:hover { background: #006AFF; color: white !important; box-shadow: 0 4px 10px rgba(0,106,255,0.2); }
 
-        /* Typography */
         h1 { color: #5d1a1a; font-size: 2.4rem; margin-bottom: 15px; line-height: 1.2; letter-spacing: -0.5px; }
         .meta-info { color: #c5a059; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 25px; display: block; letter-spacing: 1.5px; }
-        
-        /* Phần dẫn nhập (Sapo) - Tối ưu hiển thị xuống dòng tự nhiên */
         .section-h { font-style: italic; color: #4a4a4a; border-left: 5px solid #c5a059; padding: 10px 20px; margin: 30px 0; background: #fffcf8; font-size: 1.1rem; white-space: pre-line; }
-        
-        /* Video Player mượt mà */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 35px 0; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
-        /* Nội dung chính */
         .section-i { font-size: 1.2rem; text-align: justify; color: #34495e; }
-        /* Footer bài viết - Căn lề phải chuẩn hóa khoảng cách */
         .section-j { margin-top: 40px; padding-top: 25px; border-top: 1px dashed #dcdde1; font-style: italic; color: #7f8c8d; text-align: right; font-size: 1rem; white-space: pre-line; }
-        
-        /* Định dạng đầu mục số */
         .heading-number { font-weight: 700; color: #5d1a1a; font-size: 1.4rem; margin-top: 35px; margin-bottom: 15px; display: block; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
         p { margin-bottom: 1.5rem; }
-
-        /* CSS KHU VỰC THƯƠNG MẠI ĐIỆN TỬ - THIẾT KẾ ĐÃ ĐƯỢC PHÓNG TO */
         .aff-wrapper { margin: 50px auto 20px auto; display: flex; flex-direction: column; gap: 25px; width: 100%; }
         .aff-heading { font-size: 1.15rem; font-weight: bold; color: #5d1a1a; letter-spacing: 1px; border-bottom: 2px solid #e0d5c1; padding-bottom: 8px; margin-bottom: 5px; text-transform: uppercase; }
         .aff-container { padding: 30px; border: 1px solid #e0d5c1; background: #fffcf8; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); display: flex; gap: 35px; align-items: flex-start; position: relative; overflow: hidden; transition: 0.3s; }
         .aff-container:hover { box-shadow: 0 10px 30px rgba(142,33,33,0.08); border-color: #c5a059; }
-        
-        /* Khung ảnh gallery phóng to bề thế */
         .aff-gallery-side { width: 220px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
         .aff-main-img-box { width: 220px; height: 300px; border-radius: 8px; box-shadow: 3px 6px 15px rgba(0,0,0,0.15); overflow: hidden; background: #fff; border: 1px solid #eee; }
         .aff-book-main-img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
@@ -59,15 +48,11 @@
         .aff-thumb-item { width: 45px; height: 45px; border: 1px solid #e0d5c1; border-radius: 4px; overflow: hidden; cursor: pointer; opacity: 0.5; background: #fff; transition: 0.2s; }
         .aff-thumb-item:hover, .aff-thumb-item.active { border-color: #8e2121; opacity: 1; transform: scale(1.08); }
         .aff-thumb-item img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Khung thông tin chi tiết bên phải */
         .aff-info { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; padding-top: 5px; }
         .aff-book-title { font-size: 1.4rem; font-weight: 700; color: #5d1a1a; margin: 0; line-height: 1.4; }
         .aff-desc { font-size: 1rem; color: #444; margin: 0; font-style: italic; line-height: 1.6; }
         .btn-aff-vip { width: fit-content; margin-top: 10px; padding: 12px 30px; background: #8e2121; color: white !important; text-decoration: none; font-weight: bold; font-size: 0.95rem; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(142,33,33,0.25); }
         .btn-aff-vip:hover { background: #c5a059; box-shadow: 0 4px 15px rgba(197,160,89,0.35); }
-
-        /* BÀI ĐỌC GỢI Ý */
         .suggested-wrapper { margin-top: 60px; padding-top: 30px; border-top: 1px solid #e0d5c1; }
         .suggested-heading { font-size: 1.15rem; font-weight: bold; color: #5d1a1a; letter-spacing: 1px; border-bottom: 2px solid #e0d5c1; padding-bottom: 8px; margin-bottom: 25px; text-transform: uppercase; }
         .suggested-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
@@ -76,7 +61,6 @@
         .suggested-category { font-size: 0.75rem; color: #c5a059; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
         .suggested-title { font-size: 1.05rem; color: #34495e; font-weight: bold; line-height: 1.4; margin: 0; }
 
-        /* Responsive cho thiết bị di động */
         @media (max-width: 600px) {
             .article-container { padding: 25px; }
             h1 { font-size: 1.8rem; }
@@ -86,6 +70,8 @@
             .aff-main-img-box { width: 180px; height: 250px; }
             .btn-aff-vip { width: 100%; box-sizing: border-box; text-align: center; }
             .suggested-list { grid-template-columns: 1fr; }
+            .bottom-actions { flex-direction: column; width: 100%; }
+            .btn-back-bottom, .btn-messenger-bottom { width: 100%; box-sizing: border-box; text-align: center; }
         }
     </style>
 <script type="text/javascript">
@@ -121,7 +107,7 @@
                 box-sizing: border-box;
                 width: 100%;
             ">
-                <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="width: 110px; height: 110px; flex-shrink: 0; background: white; padding: 6px; border-radius: 6px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center;">
                     <img src="https://raw.githubusercontent.com/tantan1088e3/tu-vi-hoang-hac/main/data/qr.png" alt="QR Donate" style="width: 100%; height: 100%; object-fit: contain; display: block;">
                 </div>
                 
@@ -130,12 +116,15 @@
                         Đồng Hành Cùng Tử Vi Hoàng Hạc ☕
                     </h4>
                     <p style="margin: 0; color: #555; font-size: 0.88rem; line-height: 1.6; text-align: justify;">
-                        Nếu thấy nội dung hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Xin chân thành cảm ơn anh em!
+                        Nếu thấy nội dung hữu ích và muốn đồng hành cùng Admin duy trì, phát triển website, anh em có thể tùy tâm quét mã gửi tặng một ly cafe gieo duyên. Hoặc cần liên hệ trao đổi, giải đáp gấp có thể bấm nhắn tin trực tiếp với tôi qua <a href="https://m.me/61556658004278" target="_blank" style="color: #006AFF; font-weight: bold; text-decoration: none;">Messenger</a>. Xin chân thành cảm ơn!
                     </p>
                 </div>
-            </div>
+    </div>
     
-    <a href="index.html" class="btn-back btn-back-bottom">Quay lại danh sách</a>
+    <div class="bottom-actions">
+        <a href="index.html" class="btn-back-bottom">← Quay lại danh sách</a>
+        <a href="https://m.me/61556658004278" target="_blank" class="btn-messenger-bottom">💬 Nhắn tin cho Tử Vi Hoàng Hạc</a>
+    </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -274,9 +263,7 @@
                         }
                     }
 
-                    // --- BẮT ĐẦU: LOGIC XỬ LÝ BÀI ĐỌC GỢI Ý ---
                     let suggestedHtml = "";
-                    // Lọc ra các bài viết khác (trừ bài hiện tại)
                     let otherPosts = rows.slice(1).filter(r => {
                         const cells = parseLine(r);
                         return cells.length > headers.indexOf('id') && 
@@ -284,13 +271,11 @@
                                cells[headers.indexOf('id')].trim() !== "";
                     });
 
-                    // Xáo trộn ngẫu nhiên mảng
                     for (let i = otherPosts.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [otherPosts[i], otherPosts[j]] = [otherPosts[j], otherPosts[i]];
                     }
 
-                    // Lấy ra tối đa 3 bài viết
                     const suggestedPosts = otherPosts.slice(0, 3);
 
                     if (suggestedPosts.length > 0) {
@@ -300,7 +285,6 @@
                             const sId = getVal(cells, 'id');
                             const sTitle = getVal(cells, 'title');
                             const sCat = getVal(cells, 'category') || "Tham Khảo";
-                            // Tự động dùng pathname hiện tại để mở lại bài
                             const sLink = window.location.pathname + "?id=" + sId; 
                             
                             suggestedItemsHtml += `
@@ -320,22 +304,15 @@
                             </div>
                         `;
                     }
-                    // --- KẾT THÚC: LOGIC XỬ LÝ BÀI ĐỌC GỢI Ý ---
 
-                    // Render nội dung
                     view.innerHTML = `
                         <span class="meta-info">${getVal(d, 'category')}</span>
                         <h1>${getVal(d, 'title')}</h1>
                         <div class="section-h">${getVal(d, 'h_header')}</div>
-                        
                         ${videoHtml} 
-                        
                         <div class="section-i">${formatBody(getVal(d, 'i_body'))}</div>
-                        
                         <div class="section-j">${getVal(d, 'j_footer')}</div>
-
                         ${affHtml}
-
                         ${suggestedHtml}
                     `;
                 } else {
