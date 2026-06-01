@@ -313,7 +313,7 @@
                 <label for="notes">Vấn đề tham vấn (Hoặc ghi Tên Quẻ Dịch bạn vừa gieo được):</label>
                 <textarea id="notes" rows="4" placeholder="Ví dụ: Tôi muốn giải chi tiết Quẻ Hỏa Lôi Phệ Hạp, hỏi về công việc sắp tới..."></textarea>
             </div>
-            <button type="submit" class="btn-submit">XÁC NHẬN ĐÃ CHUYỂN KHOẢN & GỬI FORM</button>
+           
             <div style="text-align: center; margin-top: 15px; font-size: 0.95rem; color: #555;">
                 <em>💬 Cần hỗ trợ? <br>
                 Vui lòng nhắn tin trực tiếp qua <a href="https://m.me/61556658004278" target="_blank" style="color: #006AFF; font-weight: bold; text-decoration: none;">Messenger </a>.</em>
@@ -1357,45 +1357,6 @@ function switchTab(type, element, event) {
         currentPdfPage = p;
         renderPDFUI();
         window.scrollTo(0, 0);
-    }
-
-    // XỬ LÝ DỮ LIỆU FORM ĐĂNG KÝ GỬI ĐI
-    // GỬI FORM ĐĂNG KÝ (Đã bổ sung Loại dịch vụ)
-    function submitForm(event) {
-        event.preventDefault();
-        const MY_PHONE = '0946712608'; 
-        const TELEGRAM_USERNAME = 'tantan1088a'; 
-        
-        // Lấy thêm thông tin loại dịch vụ
-        const serviceType = document.getElementById('service-type').value;
-        const fullName = document.getElementById('fullname').value;
-        const gender = document.querySelector('input[name="gender"]:checked').value;
-        const birthDate = document.getElementById('birth-date').value;
-        const calendarType = document.querySelector('input[name="calendar-type"]:checked').value;
-        const birthTime = document.getElementById('birth-time').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const notes = document.getElementById('notes').value || 'Không có';
-
-        // Ghép chuỗi tin nhắn có gói dịch vụ
-        const messageUnicode = `🔔 ĐƠN ĐĂNG KÝ DỊCH VỤ\n• Gói: ${serviceType}\n• Tên: ${fullName}\n• GT: ${gender}\n• Sinh: ${birthDate} (${calendarType})\n• Giờ: ${birthTime}\n• Email: ${email}\n• SĐT: ${phone}\n• Vấn đề/Tên Quẻ: ${notes}`;
-        
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {
-            window.location.href = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
-            alert("Hệ thống đang mở ứng dụng SMS. Vui lòng bấm GỬI để hoàn tất xác nhận.");
-        } else {
-            const smsLink = `sms:${MY_PHONE}?body=${encodeURIComponent(messageUnicode)}`;
-            const teleLink = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(messageUnicode)}`;
-            const qrSmsUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(smsLink)}`;
-            const qrTeleUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(teleLink)}`;
-            showDualQrPopup(qrSmsUrl, qrTeleUrl, messageUnicode);
-        }
-        
-        // Hiện thông báo cảm ơn
-        alert("Thông tin của bạn đã được ghi nhận. Hệ thống sẽ kiểm tra giao dịch và gửi File PDF qua Email trong thời gian sớm nhất!");
-        document.getElementById('tuvi-booking-form').reset();
     }
 
     function showDualQrPopup(qrSms, qrTele, messageText) {
