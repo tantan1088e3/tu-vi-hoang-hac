@@ -1360,49 +1360,6 @@ function switchTab(type, element, event) {
         window.scrollTo(0, 0);
     }
 
-    function showDualQrPopup(qrSms, qrTele, messageText) {
-        const overlay = document.createElement('div');
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:Arial, sans-serif; padding:15px; box-sizing:border-box;";
-        
-        const modal = document.createElement('div');
-        modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:550px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); box-sizing:border-box;";
-        
-        const formattedMessage = messageText.replace(/\n/g, '<br>');
-
-        modal.innerHTML = `
-            <h3 style="color:#5d1a1a; margin-top:0; border-bottom:2px solid #c5a059; padding-bottom:10px; letter-spacing:1px;">ĐĂNG KÝ HOÀN TẤT</h3>
-            <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:left; line-height:1.4;">
-                Thông tin lá số đã được ghi nhận thành công. Vui lòng sử dụng camera điện thoại hoặc tính năng quét mã trên ứng dụng để quét <b>1 trong 2 mã QR dưới đây</b> để gửi dữ liệu cho Thầy:
-            </p>
-
-            <div style="background:#f9f6f0; border-left:4px solid #c5a059; padding:10px; text-align:left; font-size:12px; color:#555; margin-bottom:20px; border-radius:4px; max-height:110px; overflow-y:auto; line-height:1.5;">
-                <strong>Nội dung thông tin của bạn:</strong><br>
-                ${formattedMessage}
-            </div>
-
-            <div style="display:flex; justify-content:space-around; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
-                <div style="flex:1; min-width:180px; background:#f4f9fc; padding:12px; border-radius:8px; border:1px solid #bde0f5;">
-                    <span style="color:#229ED9; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 1: QUA TELEGRAM</span>
-                    <img src="${qrTele}" alt="Telegram QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
-                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động soạn văn bản có dấu trên ứng dụng Telegram</p>
-                </div>
-                <div style="flex:1; min-width:180px; background:#f5fbf6; padding:12px; border-radius:8px; border:1px solid #bfe9c9;">
-                    <span style="color:#28a745; font-weight:bold; font-size:14px; display:block; margin-bottom:8px;">CÁCH 2: QUA TIN NHẮN SMS</span>
-                    <img src="${qrSms}" alt="SMS QR" style="width:150px; height:150px; background:#fff; padding:3px; border:1px solid #ddd; border-radius:4px;">
-                    <p style="font-size:11px; color:#666; margin:5px 0 0 0; line-height:1.3;">Quét để tự động mở ứng dụng tin nhắn SMS của máy điện thoại</p>
-                </div>
-            </div>
-            <button id="close-zalo-popup" style="background:#5d1a1a; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px; text-transform:uppercase; margin-top:5px;">Đóng cửa sổ</button>
-        `;
-        
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-        
-        document.getElementById('close-zalo-popup').addEventListener('click', () => {
-            document.body.removeChild(overlay);
-        });
-    }
-
     // ===================================================================
 // HÀM XỬ LÝ FORM ĐĂNG KÝ VÀ CHUYỂN SANG MESSENGER
 // ===================================================================
