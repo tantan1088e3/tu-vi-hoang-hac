@@ -1402,6 +1402,100 @@ function switchTab(type, element, event) {
         });
     }
 
+    // ===================================================================
+// HÀM XỬ LÝ FORM ĐĂNG KÝ VÀ CHUYỂN SANG MESSENGER
+// ===================================================================
+function submitForm(event) {
+    event.preventDefault(); // Ngăn form tải lại trang
+
+    // Lấy toàn bộ dữ liệu người dùng nhập
+    const service = document.getElementById('service-type').value;
+    const name = document.getElementById('fullname').value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const birthDate = document.getElementById('birth-date').value;
+    const calendar = document.querySelector('input[name="calendar-type"]:checked').value;
+    const birthTime = document.getElementById('birth-time').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const notes = document.getElementById('notes').value;
+
+    // Tổng hợp thành đoạn văn bản đẹp mắt
+    const messageText = `✨ ĐĂNG KÝ LUẬN GIẢI ✨\n` +
+                        `- Gói dịch vụ: ${service}\n` +
+                        `- Họ và tên: ${name} (${gender})\n` +
+                        `- Ngày sinh: ${birthDate} (${calendar})\n` +
+                        `- Giờ sinh: ${birthTime}\n` +
+                        `- Số điện thoại: ${phone}\n` +
+                        `- Email: ${email}\n` +
+                        `- Vấn đề cần hỏi: ${notes || 'Không có'}`;
+
+    // Gọi hàm hiển thị Popup hướng dẫn gửi Messenger
+    showMessengerPopup(messageText);
+}
+
+function showMessengerPopup(messageText) {
+    // 1. Tạo lớp phủ mờ (Overlay)
+    const overlay = document.createElement('div');
+    overlay.id = "messenger-overlay";
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; padding:15px; box-sizing:border-box;";
+
+    // 2. Tạo hộp thoại (Modal)
+    const modal = document.createElement('div');
+    modal.style = "background:#fff; padding:25px; border-radius:12px; max-width:450px; width:100%; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3);";
+
+    modal.innerHTML = `
+        <h3 style="color:var(--primary-color); margin-top:0; border-bottom:2px solid var(--accent-color); padding-bottom:10px;">XÁC NHẬN GỬI THÔNG TIN</h3>
+        
+        <p style="font-size:14px; color:#333; margin-bottom:15px; text-align:justify; line-height: 1.5;">
+            Vì chính sách bảo mật, Messenger không hỗ trợ tự động điền tin nhắn. Hệ thống đã tổng hợp thông tin của bạn thành văn bản dưới đây.
+        </p>
+        
+        <p style="font-size:14px; color:#d35400; font-weight:bold; margin-bottom:15px; line-height: 1.5;">
+            👉 Vui lòng bấm nút màu xanh bên dưới để Copy và mở Messenger. Sau đó bạn chỉ cần <b>DÁN (Paste)</b> vào khung chat và bấm gửi!
+        </p>
+
+        <textarea id="temp-msg" readonly style="width:100%; height:130px; padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:13px; margin-bottom:15px; background:#f9f9f9; box-sizing:border-box; resize:none;">${messageText}</textarea>
+
+        <button id="btn-copy-send" style="background:#006AFF; color:white; border:none; padding:12px 20px; font-size:15px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-bottom:10px; display:flex; justify-content:center; align-items:center; gap:8px; transition: 0.3s;">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.14 2 11.25c0 2.923 1.557 5.518 4.02 7.17v3.52c0 .484.526.776.945.54l3.606-2.036c.465.068.94.106 1.429.106 5.523 0 10-4.14 10-9.25S17.523 2 12 2zm1.09 11.83l-2.48-2.65-4.83 2.65 5.34-5.69 2.5 2.65 4.8-2.65-5.33 5.69z"/></svg>
+            COPY VÀ MỞ MESSENGER
+        </button>
+        <button id="btn-close-popup" style="background:#eee; color:#333; border:none; padding:10px 20px; font-size:14px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%;">
+            Để sau
+        </button>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // 3. Xử lý sự kiện khi bấm nút Copy & Gửi
+    document.getElementById('btn-copy-send').addEventListener('click', function() {
+        const textArea = document.getElementById('temp-msg');
+        textArea.select();
+        document.execCommand('copy'); // Trình duyệt cũ
+
+        // Trình duyệt mới (Clipboard API)
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(messageText);
+        }
+
+        // Thay đổi giao diện nút để báo hiệu
+        this.innerHTML = "ĐÃ COPY! ĐANG MỞ MESSENGER...";
+        this.style.background = "#28a745";
+
+        // Chuyển hướng tới Link Messenger của bạn sau 1 giây
+        setTimeout(() => {
+            window.open("https://m.me/61556658004278", "_blank");
+            document.body.removeChild(overlay); // Đóng popup
+        }, 1000);
+    });
+
+    // 4. Xử lý nút Đóng
+    document.getElementById('btn-close-popup').addEventListener('click', function() {
+        document.body.removeChild(overlay);
+    });
+}
+
     window.onload = init;
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bf0894a9c1f4b0ca18d0d7b4039b1ae"}'></script><!-- End Cloudflare Web Analytics -->
