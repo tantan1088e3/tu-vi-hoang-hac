@@ -286,14 +286,13 @@
         }
     }
 
-    // Các đoạn script cũ của bạn giữ nguyên bên dưới
     let db = [];
     let currentCategory = 'Tất cả';
     let searchQuery = '';
     let currentPage = 1;
     const limit = 6;
+    
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
-    const UPDATE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=73522833&single=true&output=csv';
 
     function parseCSVLine(text) {
         const r = []; let c = '', q = false;
@@ -312,15 +311,19 @@
             const csv = await res.text();
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            const idx = { id: headers.indexOf('id'), cat: headers.indexOf('category'), title: headers.indexOf('title'), desc: headers.indexOf('desc'), feat: headers.indexOf('featured') };
+            const idx = { 
+                id: headers.indexOf('id'), 
+                cat: headers.indexOf('category'), 
+                title: headers.indexOf('title'), 
+                desc: headers.indexOf('desc'), 
+                feat: headers.indexOf('featured') 
+            };
             
             db = rows.slice(1).map(r => {
                 const c = parseCSVLine(r);
                 return { 
                     id: c[idx.id], 
-                    // Loại bỏ khoảng trắng thừa ở đầu/cuối của category
                     category: (c[idx.cat] || "Chưa phân loại").trim(), 
-                    // Chống lỗi undefined nếu ô trống
                     title: c[idx.title] || "", 
                     desc: c[idx.desc] || "", 
                     isFeatured: String(c[idx.feat]).toLowerCase() === 'true' 
@@ -334,10 +337,10 @@
 
     function renderUI() {
         let filtered = db.filter(p => {
-            // Kiểm tra Category KHÔNG phân biệt chữ hoa/chữ thường để tránh gõ nhầm trong Sheet
+            // So sánh danh mục không phân biệt hoa thường
             let isMatchCategory = (currentCategory === 'Tất cả' || p.category.toLowerCase() === currentCategory.toLowerCase());
             
-            // Xử lý an toàn khi tìm kiếm, tránh lỗi trắng trang nếu title/desc bị trống
+            // Tìm kiếm an toàn
             let safeTitle = p.title.toLowerCase();
             let safeDesc = p.desc.toLowerCase();
             let isMatchSearch = safeTitle.includes(searchQuery) || safeDesc.includes(searchQuery);
@@ -347,31 +350,45 @@
 
         const items = filtered.slice((currentPage - 1) * limit, currentPage * limit);
         
-        // Hiển thị thông báo nếu mảng rỗng để dễ debug
         if (items.length > 0) {
-            document.getElementById('post-grid').innerHTML = items.map(p => `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`).join('');
+            document.getElementById('post-grid').innerHTML = items.map(p => 
+                `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`
+            ).join('');
         } else {
-            document.getElementById('post-grid').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Chưa có dữ liệu hoặc tên Category trong Google Sheet chưa khớp.</div>`;
+            document.getElementById('post-grid').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Chưa có dữ liệu cho chuyên mục này. Vui lòng kiểm tra lại Google Sheet.</div>`;
         }
     }
 
     function renderTags() {
         const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
-        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
+        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => 
+            `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
+        ).join('');
     }
 
-    function filterByTag(tag) { currentCategory = tag; currentPage = 1; renderTags(); renderUI(); }
-    function handleSearch() { searchQuery = document.getElementById('search-bar').value.toLowerCase(); currentPage = 1; renderUI(); }
+    function filterByTag(tag) { 
+        currentCategory = tag; 
+        currentPage = 1; 
+        renderTags(); 
+        renderUI(); 
+    }
+
+    function handleSearch() { 
+        searchQuery = document.getElementById('search-bar').value.toLowerCase(); 
+        currentPage = 1; 
+        renderUI(); 
+    }
 
     function switchTab(type, element, event) {
         if (event) event.preventDefault();
+        
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         if (element) element.classList.add('active');
         
         const grid = document.getElementById('post-grid');
         const pagination = document.getElementById('post-pagination');
         const formWrapper = document.getElementById('consultation-form-wrapper');
-        const filterBar = document.getElementById('filter-bar'); // Thanh chứa các tag
+        const filterBar = document.getElementById('filter-bar'); 
         
         // Ẩn tất cả đi trước khi xử lý
         grid.style.display = "none"; 
@@ -379,12 +396,12 @@
         formWrapper.style.display = "none";
         filterBar.style.display = "none"; 
         
-        // Hiển thị nội dung tương ứng với từng tab
+        // Cập nhật currentCategory để khớp với Google Sheet
         if (type === 'posts') { 
             currentCategory = 'Tất cả'; 
             grid.style.display = "grid"; 
             pagination.style.display = "flex"; 
-            filterBar.style.display = "flex"; // Chỉ hiện thanh filter ở tab Bài Viết
+            filterBar.style.display = "flex"; 
             renderTags(); 
             renderUI(); 
         } 
@@ -395,13 +412,13 @@
             renderUI(); 
         } 
         else if (type === 'books') { 
-            currentCategory = 'Sách'; 
+            currentCategory = 'Sách'; // Google Sheet phải điền Category là "Sách"
             grid.style.display = "grid"; 
             pagination.style.display = "flex";
             renderUI(); 
         } 
         else if (type === 'pdf') { 
-            currentCategory = 'Lục Hào'; 
+            currentCategory = 'Lục Hào'; // Google Sheet phải điền Category là "Lục Hào"
             grid.style.display = "grid"; 
             pagination.style.display = "flex";
             renderUI(); 
@@ -409,12 +426,6 @@
         else if (type === 'register') { 
             formWrapper.style.display = "block"; 
         }
-    }
-
-    function renderUI() {
-        let filtered = db.filter(p => (currentCategory === 'Tất cả' || p.category === currentCategory) && (p.title.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery)));
-        const items = filtered.slice((currentPage - 1) * limit, currentPage * limit);
-        document.getElementById('post-grid').innerHTML = items.map(p => `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`).join('');
     }
 
     function submitForm(event) {
