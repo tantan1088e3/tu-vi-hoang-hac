@@ -334,12 +334,48 @@
         if (event) event.preventDefault();
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         if (element) element.classList.add('active');
+        
         const grid = document.getElementById('post-grid');
         const pagination = document.getElementById('post-pagination');
         const formWrapper = document.getElementById('consultation-form-wrapper');
-        grid.style.display = "none"; pagination.style.display = "none"; formWrapper.style.display = "none";
-        if (type === 'posts') { grid.style.display = "grid"; pagination.style.display = "flex"; renderUI(); }
-        else if (type === 'register') { formWrapper.style.display = "block"; }
+        const filterBar = document.getElementById('filter-bar'); // Thanh chứa các tag
+        
+        // Ẩn tất cả đi trước khi xử lý
+        grid.style.display = "none"; 
+        pagination.style.display = "none"; 
+        formWrapper.style.display = "none";
+        filterBar.style.display = "none"; 
+        
+        // Hiển thị nội dung tương ứng với từng tab
+        if (type === 'posts') { 
+            currentCategory = 'Tất cả'; 
+            grid.style.display = "grid"; 
+            pagination.style.display = "flex"; 
+            filterBar.style.display = "flex"; // Chỉ hiện thanh filter ở tab Bài Viết
+            renderTags(); 
+            renderUI(); 
+        } 
+        else if (type === 'video') { 
+            currentCategory = 'Video'; 
+            grid.style.display = "grid"; 
+            pagination.style.display = "flex"; 
+            renderUI(); 
+        } 
+        else if (type === 'books') { 
+            currentCategory = 'Sách'; 
+            grid.style.display = "grid"; 
+            pagination.style.display = "flex";
+            renderUI(); 
+        } 
+        else if (type === 'pdf') { 
+            currentCategory = 'Lục Hào'; 
+            grid.style.display = "grid"; 
+            pagination.style.display = "flex";
+            renderUI(); 
+        } 
+        else if (type === 'register') { 
+            formWrapper.style.display = "block"; 
+        }
     }
 
     function renderUI() {
