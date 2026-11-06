@@ -313,13 +313,46 @@
             const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
             const idx = { id: headers.indexOf('id'), cat: headers.indexOf('category'), title: headers.indexOf('title'), desc: headers.indexOf('desc'), feat: headers.indexOf('featured') };
+            
             db = rows.slice(1).map(r => {
                 const c = parseCSVLine(r);
-                return { id: c[idx.id], category: c[idx.cat] || "Chưa phân loại", title: c[idx.title], desc: c[idx.desc], isFeatured: String(c[idx.feat]).toLowerCase() === 'true' };
+                return { 
+                    id: c[idx.id], 
+                    // Loại bỏ khoảng trắng thừa ở đầu/cuối của category
+                    category: (c[idx.cat] || "Chưa phân loại").trim(), 
+                    // Chống lỗi undefined nếu ô trống
+                    title: c[idx.title] || "", 
+                    desc: c[idx.desc] || "", 
+                    isFeatured: String(c[idx.feat]).toLowerCase() === 'true' 
+                };
             }).filter(p => p.id);
+            
             renderTags();
             renderUI();
         } catch (e) { console.error(e); }
+    }
+
+    function renderUI() {
+        let filtered = db.filter(p => {
+            // Kiểm tra Category KHÔNG phân biệt chữ hoa/chữ thường để tránh gõ nhầm trong Sheet
+            let isMatchCategory = (currentCategory === 'Tất cả' || p.category.toLowerCase() === currentCategory.toLowerCase());
+            
+            // Xử lý an toàn khi tìm kiếm, tránh lỗi trắng trang nếu title/desc bị trống
+            let safeTitle = p.title.toLowerCase();
+            let safeDesc = p.desc.toLowerCase();
+            let isMatchSearch = safeTitle.includes(searchQuery) || safeDesc.includes(searchQuery);
+            
+            return isMatchCategory && isMatchSearch;
+        });
+
+        const items = filtered.slice((currentPage - 1) * limit, currentPage * limit);
+        
+        // Hiển thị thông báo nếu mảng rỗng để dễ debug
+        if (items.length > 0) {
+            document.getElementById('post-grid').innerHTML = items.map(p => `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`).join('');
+        } else {
+            document.getElementById('post-grid').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Chưa có dữ liệu hoặc tên Category trong Google Sheet chưa khớp.</div>`;
+        }
     }
 
     function renderTags() {
