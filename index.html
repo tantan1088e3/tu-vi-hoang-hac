@@ -195,30 +195,50 @@
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
         /* =========================================
-       NỀN HOA SEN CHÌM (DẠNG OVERLAY TRÊN CÙNG)
+       NỀN LÁ SỐ MÀU PHẤN HỒNG & HOA SEN TRẮNG
        ========================================= */
 
+    /* 1. Đổi toàn bộ nền vỏ lá số thành màu phấn hồng nhạt (Pastel Pink) */
     .result-wrapper { 
-        position: relative; 
+        background-color: #fce4ec !important; 
     }
 
-    /* Phủ hoa sen màu PHẤN HỒNG NHẠT (Pastel Pink) đè lên bảng */
+    /* 2. Hoa sen đổi thành màu TRẮNG TINH đè lên trên */
     .result-wrapper::after {
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         
-        /* Mã SVG đóa sen đổi sang màu Phấn Hồng Nhạt (Mã hex: %23ffb6c1) */
-        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%23ffb6c1' stroke-width='0.3' fill='%23ffb6c1' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%23ffb6c1' stroke-width='0.3' fill='%23ffb6c1' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%23ffb6c1' stroke-width='0.3' fill='%23ffb6c1' fill-opacity='0.05'/%3E%3C/svg%3E");
-        background-position: center 300px;
+        /* Mã SVG đóa sen nét TRẮNG (Mã hex: %23ffffff) */
+        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%23ffffff' stroke-width='0.4' fill='%23ffffff' fill-opacity='0.15'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%23ffffff' stroke-width='0.4' fill='%23ffffff' fill-opacity='0.15'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%23ffffff' stroke-width='0.4' fill='%23ffffff' fill-opacity='0.15'/%3E%3C/svg%3E");
+        background-position: center 300px; /* Căn giữa bảng */
         background-repeat: no-repeat;
         background-size: 85%;
         
-        /* Chỉnh opacity lên 0.3 (30%) để nét phấn hồng hiện lên mượt mà */
-        opacity: 0.3; 
+        opacity: 0.8; /* Hoa trắng hiện rõ 80% trên nền hồng */
         z-index: 10; 
-        pointer-events: none; 
+        pointer-events: none; /* Xuyên qua chuột */
     }
+
+    /* 3. Làm mờ các ô trắng thành dạng "Kính mờ" để ánh hồng hắt lên */
+    .result-body { background: transparent !important; }
+    .result-header { background: rgba(255, 255, 255, 0.4) !important; } /* Đầu bảng mờ nhẹ */
+    
+    /* Khung lưới viền trắng mờ */
+    .t-grid { background: rgba(255, 255, 255, 0.2) !important; border-color: rgba(255, 255, 255, 0.6) !important; }
+    
+    /* Ô chữ mặc định: Trong suốt 50% */
+    .t-cell { background: rgba(255, 255, 255, 0.5) !important; }
+    
+    /* Cột nhãn Dương lịch, Bát tự... mờ hơn một chút */
+    .t-label, .t-label-tangcan { background: rgba(255, 255, 255, 0.3) !important; }
+    
+    /* Cột Nhật chủ: Ánh trắng sáng hơn làm điểm nhấn */
+    .col-day { background: rgba(255, 255, 255, 0.7) !important; }
+    
+    /* Hover vào ô Lưu niên / Đại vận thì trắng lên */
+    .dv-cell:hover, .ln-cell:hover { background: rgba(255, 255, 255, 0.8) !important; }
+    .dv-cell.active { background: rgba(255, 255, 255, 0.95) !important; }
         
         /* Responsive Mobile / Tablet */
         @media (max-width: 1350px) {
