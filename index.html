@@ -234,7 +234,7 @@
                 <!-- Hàng 1: Họ và tên -->
                 <div class="form-group">
                     <label>Họ và tên đương số</label>
-                    <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A" required>
+                    <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A">
                 </div>
                 
                 <!-- Hàng 2: Ngày - Tháng - Năm (Đã chuyển sang dạng Option) -->
@@ -442,7 +442,11 @@
         event.preventDefault(); 
         
         // Lấy dữ liệu từ các ô riêng biệt
-        const name = document.getElementById('name').value || 'Khách';
+        let name = document.getElementById('name').value.trim();
+        //const name = document.getElementById('name').value || 'Khách';
+        if (name === '') {
+            name = 'Vô Danh Khách'; // Ông có thể đổi thành 'Ẩn Danh' hoặc tên gì tùy thích
+        }
         const day = parseInt(document.getElementById('birth_day').value, 10);
         const month = parseInt(document.getElementById('birth_month').value, 10);
         const year = parseInt(document.getElementById('birth_year').value, 10);
