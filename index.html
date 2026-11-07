@@ -167,10 +167,10 @@
         /* Tàng Can, Phó Tinh */
         div[id*="-tangcan"] span, div[id*="-photinh"] span { font-size: 15px !important; font-weight: 600 !important; }
         
-        /* Kẻ lại viền trên của hàng Tàng Can bằng màu xám siêu mờ */
+       /* Tắt viền thừa của Tàng Can để trả lại nét thanh mảnh 1px của lưới Grid */
         div[id*="-tangcan"], .t-label-tangcan {
-            border-top: 1px solid #e5e7eb !important; 
-            padding-top: 6px !important;
+            border-top: none !important; /* Xóa dòng border-top gây nét đậm */
+            padding-top: 6px !important; /* Vẫn giữ padding để chữ không bị sát lề */
         }
 
         .ts-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; border-left: 3px solid var(--accent); padding-left: 10px; text-transform: uppercase; }
