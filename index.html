@@ -181,37 +181,37 @@
                     <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A" required>
                 </div>
                 
-                <!-- Hàng 2: Ngày - Tháng - Năm -->
+                <!-- Hàng 2: Ngày - Tháng - Năm (Đã chuyển sang dạng Option) -->
                 <div class="row-group">
                     <div class="form-group col-third">
                         <label>Ngày</label>
-                        <input type="number" class="form-control" id="birth_day" min="1" max="31" required placeholder="DD">
+                        <select class="form-control" id="birth_day" required></select>
                     </div>
                     <div class="form-group col-third">
                         <label>Tháng</label>
-                        <input type="number" class="form-control" id="birth_month" min="1" max="12" required placeholder="MM">
+                        <select class="form-control" id="birth_month" required></select>
                     </div>
                     <div class="form-group col-third">
                         <label>Năm</label>
-                        <input type="number" class="form-control" id="birth_year" min="1900" max="2100" required placeholder="YYYY">
+                        <select class="form-control" id="birth_year" required></select>
                     </div>
                 </div>
 
-                <!-- Hàng 3: Giờ - Phút - Giới tính -->
+                <!-- Hàng 3: Giờ - Phút - Giới tính (Đã chuyển sang dạng Option) -->
                 <div class="row-group">
                     <div class="form-group col-third">
-                        <label>Giờ (0-23)</label>
-                        <input type="number" class="form-control" id="birth_hour" min="0" max="23" required placeholder="HH">
+                        <label>Giờ</label>
+                        <select class="form-control" id="birth_hour" required></select>
                     </div>
                     <div class="form-group col-third">
-                        <label>Phút (0-59)</label>
-                        <input type="number" class="form-control" id="birth_minute" min="0" max="59" required placeholder="MM">
+                        <label>Phút</label>
+                        <select class="form-control" id="birth_minute" required></select>
                     </div>
                     <div class="form-group col-third">
                         <label>Giới tính</label>
                         <select class="form-control" id="gender">
-                            <option value="Nam">Nam (Càn)</option>
-                            <option value="Nu">Nữ (Khôn)</option>
+                            <option value="Nam">Nam (Càn tạo)</option>
+                            <option value="Nu">Nữ (Khôn tạo)</option>
                         </select>
                     </div>
                 </div>
@@ -404,7 +404,7 @@
         document.getElementById('bazi-result-container').style.display = 'block';
 
         // GỌI API BẢO MẬT (DÙNG KEY CỦA WEB)
-        fetch('http://168.138.107.140:8000/api/bazi', {
+        fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -520,6 +520,50 @@
             lnContainer.appendChild(cell);
         });
     }
+
+    // --- TỰ ĐỘNG TẠO OPTION CHO NGÀY/THÁNG/NĂM/GIỜ/PHÚT ---
+    function populateDropdowns() {
+        // Ngày (1-31)
+        const daySelect = document.getElementById('birth_day');
+        for (let i = 1; i <= 31; i++) {
+            daySelect.add(new Option(i < 10 ? '0' + i : i, i));
+        }
+
+        // Tháng (1-12)
+        const monthSelect = document.getElementById('birth_month');
+        for (let i = 1; i <= 12; i++) {
+            monthSelect.add(new Option(i < 10 ? '0' + i : i, i));
+        }
+
+        // Năm (Từ 1930 đến hiện tại + 10 năm)
+        const yearSelect = document.getElementById('birth_year');
+        const currentYear = new Date().getFullYear();
+        for (let i = 1930; i <= currentYear + 10; i++) {
+            yearSelect.add(new Option(i, i));
+        }
+
+        // Giờ (0-23)
+        const hourSelect = document.getElementById('birth_hour');
+        for (let i = 0; i <= 23; i++) {
+            hourSelect.add(new Option(i < 10 ? '0' + i : i, i));
+        }
+
+        // Phút (0-59)
+        const minSelect = document.getElementById('birth_minute');
+        for (let i = 0; i <= 59; i++) {
+            minSelect.add(new Option(i < 10 ? '0' + i : i, i));
+        }
+
+        // --- Đặt giá trị mặc định cho form (Ví dụ: 22/10/1987 11:00) ---
+        daySelect.value = 22;
+        monthSelect.value = 10;
+        yearSelect.value = 1987;
+        hourSelect.value = 11;
+        minSelect.value = 0;
+    }
+
+    // Chạy hàm tạo dropdown ngay khi trang vừa load xong
+    document.addEventListener("DOMContentLoaded", populateDropdowns);
 </script>
 
 </body>
