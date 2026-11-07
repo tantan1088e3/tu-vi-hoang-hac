@@ -456,35 +456,33 @@
                 elmGod.className = `t-cell font-god ${getColorClass(parsed.can)}`; // Màu Thần theo màu Can
             }
 
-            // Tàng Can (Có màu)
+            // Tàng Can (Có màu, ép nằm ngang)
             const tcArr = data.tang_can[k] || [];
             const elmTangCan = document.getElementById(`val-${k}-tangcan`);
             if (elmTangCan) {
                 if (tcArr.length > 0) {
-                    // Bọc từng Can vào thẻ span có màu tương ứng
-                    const tcHtml = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join(' - ');
-                    elmTangCan.innerHTML = tcHtml;
+                    elmTangCan.style.whiteSpace = 'nowrap'; // Lệnh ép không được xuống dòng
+                    elmTangCan.innerHTML = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join(' - ');
                 } else {
                     elmTangCan.innerText = '-';
                 }
             }
             
-            // Phó Tinh (Lấy màu ăn theo Can Tàng)
+            // Phó Tinh (Có màu, ép nằm ngang)
             const elmPhoTinh = document.getElementById(`val-${k}-photinh`);
             if (elmPhoTinh) {
                 if (tcArr.length > 0) {
-                    const thapThanHtml = tcArr.map(can => {
+                    elmPhoTinh.style.whiteSpace = 'nowrap'; // Lệnh ép không được xuống dòng
+                    elmPhoTinh.innerHTML = tcArr.map(can => {
                         const thapThan = getThapThan(data.nhat_chu, can);
-                        // Bọc Thập Thần bằng chính màu của Can sinh ra nó
                         return `<span class="${getColorClass(can)}">${thapThan}</span>`;
                     }).join(' - ');
-                    elmPhoTinh.innerHTML = thapThanHtml;
                 } else {
                     elmPhoTinh.innerText = '-';
                 }
             }
 
-            // Thần Sát (In đậm nhẹ để dễ nhìn hơn màu xám nhạt)
+            // Thần Sát (Giữ nguyên)
             const elmThanSat = document.getElementById(`ts-${k}`);
             if (elmThanSat) {
                 const tsArr = data.than_sat_nguyen_cuc[k] || [];
@@ -541,32 +539,25 @@
     }
 
     function renderLuuNian(liuNianArr) {
-        const lnContainer = document.getElementById('ln-container'); // Check lại ID container của ông
+        const lnContainer = document.getElementById('ln-container');
         lnContainer.innerHTML = '';
-        const currentYear = new Date().getFullYear(); // Lấy năm 2026
+        const currentYear = new Date().getFullYear(); // Lấy năm nay (2026)
 
         liuNianArr.forEach(ln => {
             const [can, chi] = ln.can_chi.split(' ');
-            const isCurrentYear = (ln.nam === currentYear); // Kiểm tra xem có trúng năm nay không
+            const isCurrentYear = (ln.nam === currentYear);
             
             const cell = document.createElement('div');
-            // Thêm class active hoặc xử lý CSS trực tiếp cho ô của năm nay
-            cell.className = `t-cell ln-cell ${isCurrentYear ? 'active-ln' : ''}`;
+            // Gắn class 'active' nếu là năm nay, nó sẽ tự hiện gạch chân y hệt tab Đại Vận
+            cell.className = `t-cell ln-cell ${isCurrentYear ? 'active' : ''}`;
             
-            // Ép màu nền nổi bật cho năm hiện hành (Ông có thể tùy chỉnh màu hex)
-            if (isCurrentYear) {
-                cell.style.backgroundColor = '#e8f5e9'; // Nền xanh lá mạ nhạt
-                cell.style.border = '1px solid var(--wood)';
-                cell.style.borderRadius = '6px';
-            }
-
             cell.innerHTML = `
                 <div class="ln-tuoi">${ln.tuoi}t</div>
                 <div class="ln-canchi">
                     <span class="${getColorClass(can)}">${can}</span><br>
                     <span class="${getColorClass(chi)}">${chi}</span>
                 </div>
-                <div class="ln-nam" style="${isCurrentYear ? 'font-weight:bold; color:var(--wood);' : ''}">${ln.nam}</div>
+                <div class="ln-nam">${ln.nam}</div>
             `;
             
             lnContainer.appendChild(cell);
