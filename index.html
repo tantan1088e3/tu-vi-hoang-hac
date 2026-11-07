@@ -210,10 +210,17 @@
         top: 0; left: 0; right: 0; bottom: 0; /* Ép ảnh phủ kín toàn khung */
         
         /* CHÚ Ý: Thay tên file ảnh của ông vào đây */
-        background-image: url('nen-web1.png'); 
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        body { 
+            /* Phủ lớp màu #f4e8f0 với độ mờ 0.3 lên trên ảnh nền */
+            background-image: linear-gradient(rgba(244, 232, 240, 0.3), rgba(244, 232, 240, 0.3)), url('nen-web1.png');
+            
+            /* Chế độ hòa trộn tự nhiên */
+            background-blend-mode: multiply; 
+        
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
         
         /* Ép ảnh mờ đi, chỉ giữ lại 20% độ rõ nét để nhìn xuyên xuống chữ */
         opacity: 0.2; 
