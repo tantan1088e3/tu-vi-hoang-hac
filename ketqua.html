@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mệnh Bàn Tứ Trụ - Hoàng Hạc Các</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #1e4d2b; 
+            --accent: #c5a059; 
+            --bg-page: #f4f7f4; 
+            --text-main: #2c3e50; 
+            --text-muted: #5a6b7c; 
+            --border-color: #d8e2d8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Lora', serif; background-color: var(--bg-page); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        
+        .result-container { max-width: 800px; margin: 30px auto; background: #fff; border-radius: 12px; box-shadow: 0 15px 35px rgba(30, 77, 43, 0.08); border: 2px solid var(--accent); overflow: hidden; }
+        .result-header { background: var(--primary); color: #fff; padding: 25px; text-align: center; border-bottom: 4px solid var(--accent); }
+        .result-header h2 { font-family: 'Playfair Display', serif; color: var(--accent); font-size: 1.8rem; margin-bottom: 8px; }
+        .result-header p { font-size: 0.95rem; opacity: 0.95; font-style: italic; }
+        
+        .result-body { padding: 30px; }
+        
+        .info-summary-box { background: #faf6ee; border-left: 4px solid var(--accent); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; font-size: 1rem; }
+        .info-summary-box p { margin-bottom: 6px; }
+        .info-summary-box strong { color: var(--primary); }
+
+        /* Bảng 4 trụ */
+        .pillars-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .pillar-box { background: #f9fbf9; border: 1px solid var(--border-color); border-radius: 8px; text-align: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .pillar-title { background: #e6ede6; color: var(--primary); font-weight: bold; font-size: 0.9rem; padding: 10px; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+        .pillar-content { padding: 20px 10px; }
+        .stem-branch { font-size: 1.4rem; font-weight: bold; color: var(--primary); font-family: 'Playfair Display', serif; margin-bottom: 10px; }
+        .element-info { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+        .ten-god { display: inline-block; background: rgba(197, 160, 89, 0.15); color: #8c6d28; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-top: 8px; }
+
+        .back-btn-container { text-align: center; margin-bottom: 40px; }
+        .btn-back { display: inline-block; padding: 12px 30px; background: var(--primary); color: white; text-decoration: none; font-weight: bold; border-radius: 6px; transition: 0.3s; font-family: 'Playfair Display', serif; letter-spacing: 1px; }
+        .btn-back:hover { background: #14351d; }
+
+        @media (max-width: 768px) {
+            .pillars-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="result-container">
+        <div class="result-header">
+            <h2>MỆNH BÀN TỨ TRỤ - BÁT TỰ</h2>
+            <p id="res-subtitle">Đang tải thông tin đương số...</p>
+        </div>
+        <div class="result-body">
+            <!-- Thông tin tổng quan -->
+            <div class="info-summary-box">
+                <p><strong>Nhật chủ (Thân chủ):</strong> <span id="res-nhat-chu">Đang xác định...</span></p>
+                <p><strong>Cục / Thân vượng suy:</strong> <span id="res-cuc-trangthai">Đang phân tích cấu trúc...</span></p>
+            </div>
+
+            <!-- Bảng 4 trụ -->
+            <div class="pillars-grid">
+                <!-- Trụ Giờ -->
+                <div class="pillar-box">
+                    <div class="pillar-title">Trụ Giờ</div>
+                    <div class="pillar-content">
+                        <div class="stem-branch" id="res-hour">--</div>
+                        <div class="element-info" id="res-hour-element">Ngũ hành</div>
+                        <div class="ten-god" id="res-hour-god">Thập thần</div>
+                    </div>
+                </div>
+                <!-- Trụ Ngày -->
+                <div class="pillar-box" style="border-color: var(--accent); background: #fffdf9;">
+                    <div class="pillar-title" style="background: #f4ecd8; color: #8c6d28;">Trụ Ngày (Mệnh)</div>
+                    <div class="pillar-content">
+                        <div class="stem-branch" id="res-day">--</div>
+                        <div class="element-info" id="res-day-element">Ngũ hành</div>
+                        <div class="ten-god" id="res-day-god">Nhật Chủ</div>
+                    </div>
+                </div>
+                <!-- Trụ Tháng -->
+                <div class="pillar-box">
+                    <div class="pillar-title">Trụ Tháng</div>
+                    <div class="pillar-content">
+                        <div class="stem-branch" id="res-month">--</div>
+                        <div class="element-info" id="res-month-element">Ngũ hành</div>
+                        <div class="ten-god" id="res-month-god">Thập thần</div>
+                    </div>
+                </div>
+                <!-- Trụ Năm -->
+                <div class="pillar-box">
+                    <div class="pillar-title">Trụ Năm</div>
+                    <div class="pillar-content">
+                        <div class="stem-branch" id="res-year">--</div>
+                        <div class="element-info" id="res-year-element">Ngũ hành</div>
+                        <div class="ten-god" id="res-year-god">Thập thần</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-btn-container">
+        <a href="index.html" class="btn-back">← Lập lá số khác</a>
+    </div>
+
+<script>
+    // Tự động đọc dữ liệu từ URL khi người dùng bấm submit bên trang chủ truyền sang
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name') || 'Khách';
+    const gender = urlParams.get('gender') || 'Nam';
+    const birthdate = urlParams.get('birthdate') || '';
+    const birthtime = urlParams.get('birthtime') || '';
+
+    // Hiển thị thông tin cơ bản lên đầu trang
+    document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Ngày sinh: ${birthdate} lúc ${birthtime}`;
+
+    // Gọi API từ VPS Hoàng Hạc của ông để lấy dữ liệu lá số thực tế
+    /*
+    fetch('https://api.tuvihoanghac.id.vn/laptutru', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name, gender, birthdate, birthtime })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('res-nhat-chu').innerText = data.nhatChu;
+        document.getElementById('res-cuc-trangthai').innerText = data.trangThaiVượngSuy;
+        document.getElementById('res-year').innerText = data.yearPillar;
+        document.getElementById('res-month').innerText = data.monthPillar;
+        document.getElementById('res-day').innerText = data.dayPillar;
+        document.getElementById('res-hour').innerText = data.hourPillar;
+    })
+    .catch(err => {
+        console.error("Lỗi kết nối API VPS:", err);
+    });
+    */
+</script>
+
+</body>
+</html>
