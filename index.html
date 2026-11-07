@@ -195,7 +195,14 @@
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
         /* =========================================
-       /* Phủ hoa sen XÁM TRẮNG (BẠC MỜ) đè lên trên tất cả các ô */
+       NỀN HOA SEN CHÌM (DẠNG OVERLAY TRÊN CÙNG)
+       ========================================= */
+
+    .result-wrapper { 
+        position: relative; 
+    }
+
+    /* Phủ hoa sen XÁM TRẮNG (BẠC MỜ) đè lên trên tất cả các ô */
     .result-wrapper::after {
         content: "";
         position: absolute;
