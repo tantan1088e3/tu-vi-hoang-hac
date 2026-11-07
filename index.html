@@ -204,7 +204,7 @@
             <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
             <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để hệ thống an sao và thiết lập cấu trúc Manh Phái.</p>
             
-            <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
+            <form id="bazi-form" onsubmit="(event)">
                 <div class="form-group">
                     <label>Họ và tên đương số</label>
                     <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A" required>
@@ -361,27 +361,13 @@
     function handleBaziSubmit(event) {
         event.preventDefault();
         
-        const name = document.getElementById('name').value;
+        const name = encodeURIComponent(document.getElementById('name').value);
         const gender = document.getElementById('gender').value;
         const birthdate = document.getElementById('birthdate').value;
         const birthtime = document.getElementById('birthtime').value;
 
-        const resultDiv = document.getElementById('bazi-result');
-        resultDiv.style.display = 'block';
-        
-        console.log("Đang gửi API: ", { name, gender, birthdate, birthtime });
-        
-        /* Cấu trúc mẫu gọi API:
-        fetch('https://api.tuvihoanghac.id.vn/laptutru', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name, gender, birthdate, birthtime })
-        })
-        .then(res => res.json())
-        .then(data => {
-            // Render kết quả lá số lên thẻ div bazi-result
-        });
-        */
+        // Chuyển hướng sang trang kết quả riêng biệt
+        window.location.href = `ketqua.html?name=${name}&gender=${gender}&birthdate=${birthdate}&birthtime=${birthtime}`;
     }
 
     // Hàm mở/đóng Modal Chính sách Quyền riêng tư
