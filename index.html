@@ -194,6 +194,47 @@
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
+        /* =========================================
+       1. ĐẶT ẢNH NỀN CHO TOÀN BỘ KHUNG LÁ SỐ
+       ========================================= */
+    .result-wrapper { 
+        /* Ông thay tên file ảnh của ông vào đây nhé */
+        background-image: url('nen-web1.jpg') !important; 
+        background-size: cover !important; /* Ép ảnh phủ kín toàn bộ bảng */
+        background-position: center !important; /* Căn giữa ảnh */
+        background-repeat: no-repeat !important;
+    }
+
+    /* =========================================
+       2. BIẾN CÁC Ô CHỮ THÀNH "KÍNH MỜ" ĐỂ NHÌN XUYÊN THẤU
+       ========================================= */
+    .result-body { 
+        background: transparent !important; 
+    }
+    
+    /* Khung lưới bảng */
+    .t-grid { 
+        /* Lớp nền trắng mờ 30% để hắt ảnh nền lên */
+        background: rgba(255, 255, 255, 0.3) !important; 
+        border-color: rgba(0, 0, 0, 0.1) !important; /* Kẻ viền xám nhạt cho rõ ô */
+    }
+    
+    /* Các ô chứa chữ: Để độ trắng 70% (0.7) giúp chữ đen vẫn đọc rõ nét */
+    .t-cell, .col-day, .t-label, .t-label-tangcan { 
+        background: rgba(255, 255, 255, 0.7) !important; 
+    }
+
+    /* Các ô Đại Vận / Lưu Niên phía dưới */
+    .dv-cell, .ln-cell {
+        background: rgba(255, 255, 255, 0.6) !important;
+    }
+    .dv-cell:hover, .ln-cell:hover { 
+        background: rgba(255, 255, 255, 0.9) !important; 
+    }
+    .dv-cell.active { 
+        background: rgba(255, 240, 243, 0.9) !important; /* Nhấn màu hồng mờ cho năm hiện tại */
+    }
+        
         /* Responsive Mobile / Tablet */
         @media (max-width: 1350px) {
             .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; }
