@@ -61,6 +61,32 @@
         font-weight: 600 !important;
         color: #555 !important;
     }
+
+    /* Style cho nút thả nổi */
+    .floating-btn {
+        position: fixed;
+        bottom: 30px; /* Cách đáy 30px */
+        right: 30px;  /* Cách lề phải 30px */
+        background-color: #1a4f32; /* Xanh lá đậm chuẩn theo màu menu của ông */
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 50px; /* Bo tròn 2 đầu dạng viên thuốc */
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Đổ bóng cho nút nổi lên */
+        z-index: 9999; /* Ép nổi lên trên mọi thành phần khác */
+        transition: all 0.3s ease;
+    }
+
+    /* Hiệu ứng khi di chuột vào nút (hover) */
+    .floating-btn:hover {
+        background-color: #123823;
+        transform: translateY(-3px); /* Nhảy nhẹ lên 3px */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
 </style>
     <style>
         :root { 
@@ -687,9 +713,23 @@
         return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
     }
 
+    function backToForm() {
+        // Cách 1: Cuộn mượt mà lên thẳng đầu trang (nơi để form nhập)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Tùy chọn (Cách 2): Nếu form nhập liệu của ông đang bị ẩn đi khi hiện lá số, 
+        // thì bỏ comment 2 dòng dưới và sửa lại ID cho đúng form của ông nhé:
+        // document.getElementById('id-cua-khung-nhap-lieu').style.display = 'block';
+        // document.getElementById('bazi-result-container').style.display = 'none';
+    }
+    
     // Chạy hàm tạo dropdown ngay khi trang vừa load xong
     document.addEventListener("DOMContentLoaded", populateDropdowns);
+    
 </script>
-
+<!-- Nút thả nổi quay lại form -->
+<button id="btnBackToTop" class="floating-btn" onclick="backToForm()">
+    ← Lập lá số khác
+</button>
 </body>
 </html>
