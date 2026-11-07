@@ -8,21 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@500;700&display=swap" rel="stylesheet">
     <style>
 
-        /* MẪU 1: HOA SEN VÀNG KIM NÉT MẢNH */
-    .result-wrapper::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        /* Mã code tự động vẽ hoa sen, không cần file ảnh */
-        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.2' fill='%23c5a059' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.2' fill='%23c5a059' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.2' fill='%23c5a059' fill-opacity='0.05'/%3E%3C/svg%3E");
-        background-position: center 55%;
-        background-repeat: no-repeat;
-        background-size: 65%; /* Phóng to hoa sen ôm trọn bảng Bát Tự */
-        opacity: 0.8; /* Ông có thể tăng giảm số này (0.1 đến 1.0) để làm hoa rõ hơn hoặc mờ đi */
-        z-index: -1; 
-        pointer-events: none;
-    }
-        
         :root { 
             --primary: #1e4d2b;        
             --primary-hover: #14351d;
@@ -209,6 +194,51 @@
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
+        /* =========================================
+       NỀN HOA SEN CHÌM VÀO TRONG BẢNG LÁ SỐ
+       ========================================= */
+
+    /* 1. Nhốt hoa sen vào trong lớp vỏ của bảng lá số */
+    .result-wrapper { 
+        position: relative; 
+        z-index: 1;
+        background-color: #fff; /* Nền trắng cơ bản cho bảng */
+    }
+
+    /* Vẽ đóa hoa sen mờ ảo ở lớp đáy của khung lá số */
+    .result-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        /* Mã SVG vẽ đóa sen nét mỏng màu Vàng Kim */
+        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.3' fill='%23c5a059' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.3' fill='%23c5a059' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%23c5a059' stroke-width='0.3' fill='%23c5a059' fill-opacity='0.05'/%3E%3C/svg%3E");
+        background-position: center 300px; /* Hạ trọng tâm hoa sen xuống giữa phần Tứ Trụ */
+        background-repeat: no-repeat;
+        background-size: 85%; /* Hoa sen bự, tràn gần hết khung lá số */
+        opacity: 0.15; /* Ép mờ xuống mức 15% để lấp ló huyền ảo */
+        z-index: -1; /* Ép nó chìm sâu dưới cùng */
+        pointer-events: none; 
+    }
+
+    /* 2. ÉP CÁC LỚP BÊN TRÊN TRỞ NÊN TRONG SUỐT (NHÌN XUYÊN THẤU) */
+    .result-body { background: transparent !important; }
+    
+    /* Làm nền bảng xám mờ */
+    .t-grid { background: rgba(226, 232, 240, 0.4) !important; border-color: rgba(226, 232, 240, 0.4) !important; }
+    
+    /* Làm các ô chữ trắng trở thành kính mờ 88% (vừa đủ đọc chữ, vừa thấy sen) */
+    .t-cell { background: rgba(255, 255, 255, 0.88) !important; }
+    
+    /* Ô nhãn (Dương Lịch, Bát Tự...) hơi ánh xám xanh mờ */
+    .t-label, .t-label-tangcan { background: rgba(244, 247, 244, 0.88) !important; }
+    
+    /* Cột Nhật Chủ vàng nhạt mờ */
+    .col-day { background: rgba(255, 252, 245, 0.88) !important; }
+    
+    /* Hover Đại vận / Lưu niên mờ */
+    .dv-cell:hover, .ln-cell:hover { background: rgba(248, 250, 252, 0.88) !important; }
+    .dv-cell.active { background: rgba(255, 252, 248, 0.9) !important; }
+        
         /* Responsive Mobile / Tablet */
         @media (max-width: 1350px) {
             .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; }
