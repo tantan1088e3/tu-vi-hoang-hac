@@ -194,7 +194,7 @@
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
-        /* =========================================
+       /* =========================================
        NỀN HOA SEN CHÌM (DẠNG OVERLAY TRÊN CÙNG)
        ========================================= */
 
@@ -202,20 +202,20 @@
         position: relative; 
     }
 
-    /* Phủ hoa sen XÁM TRẮNG (BẠC MỜ) đè lên trên tất cả các ô */
+    /* Phủ hoa sen TRẮNG SƯƠNG MỜ đè lên trên tất cả các ô */
     .result-wrapper::after {
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         
-        /* Mã SVG đóa sen đổi sang màu Xám Trắng (Mã hex: %2394a3b8) */
-        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%2394a3b8' stroke-width='0.3' fill='%2394a3b8' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%2394a3b8' stroke-width='0.3' fill='%2394a3b8' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%2394a3b8' stroke-width='0.3' fill='%2394a3b8' fill-opacity='0.05'/%3E%3C/svg%3E");
+        /* Mã SVG đóa sen đổi sang màu Gần Như Trắng (Mã hex: %23e5e7eb) */
+        background-image: url("data:image/svg+xml;utf8,%3Csvg width='800' height='800' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 22C12 22 17 18 19 13C21 8 19 4 19 4C19 4 17 5 15 8C13.5 10.2 12 14 12 14C12 14 10.5 10.2 9 8C7 5 5 4 5 4C5 4 3 8 5 13C7 18 12 22 12 22Z' stroke='%23e5e7eb' stroke-width='0.3' fill='%23e5e7eb' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 20 20 22 15C23.5 11 22 8 22 8C22 8 19 10 17 14C15 17 12 22 12 22Z' stroke='%23e5e7eb' stroke-width='0.3' fill='%23e5e7eb' fill-opacity='0.05'/%3E%3Cpath d='M12 22C12 22 4 20 2 15C0.5 11 2 8 2 8C2 8 5 10 7 14C9 17 12 22 12 22Z' stroke='%23e5e7eb' stroke-width='0.3' fill='%23e5e7eb' fill-opacity='0.05'/%3E%3C/svg%3E");
         background-position: center 300px;
         background-repeat: no-repeat;
         background-size: 85%;
         
-        /* Chỉnh opacity lên 0.25 (25%) để nét xám bạc hiện rõ hơn trên nền trắng */
-        opacity: 0.25; 
+        /* Chỉnh opacity lên 0.6 để màu sương nhạt vẫn đủ nhìn thấy hờ hững trên nền trắng */
+        opacity: 0.6; 
         z-index: 10; 
         pointer-events: none; 
     }
