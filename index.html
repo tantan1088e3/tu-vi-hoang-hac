@@ -52,6 +52,8 @@
         .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15); background: #fff; }
         .row-group { display: flex; gap: 20px; }
         .col-half { flex: 1; }
+        .row-group { display: flex; gap: 20px; }
+        .col-half, .col-third { flex: 1; min-width: 0; }
         .btn-submit { display: block; width: 100%; padding: 16px; margin-top: 30px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-submit:hover { background: var(--primary-hover); box-shadow: 0 8px 20px rgba(30, 77, 43, 0.2); transform: translateY(-2px); }
 
@@ -136,6 +138,7 @@
             .t-grid-scroll .t-grid { min-width: 650px; } /* Ép bảng luôn giữ form ngang trên mobile, cho phép vuốt */
             .dv-grid, .ln-grid { min-width: 800px; }
         }
+        @media (max-width: 600px) { .row-group { flex-direction: column; gap: 10px; } }
     </style>
 </head>
 <body>
@@ -178,30 +181,42 @@
                     <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A" required>
                 </div>
                 
-                <!-- Hàng 2: Gom chung Ngày sinh và Giờ sinh lên trước -->
+                <!-- Hàng 2: Ngày - Tháng - Năm -->
                 <div class="row-group">
-                    <div class="form-group col-half">
-                        <label>Ngày tháng năm sinh</label>
-                        <!-- Thêm showPicker() để bấm đâu cũng hiện lịch -->
-                        <input type="date" class="form-control" id="birthdate" required onclick="this.showPicker()">
+                    <div class="form-group col-third">
+                        <label>Ngày</label>
+                        <input type="number" class="form-control" id="birth_day" min="1" max="31" required placeholder="DD">
                     </div>
-                    <div class="form-group col-half">
-                        <label>Giờ sinh</label>
-                        <!-- Thêm showPicker() để bấm đâu cũng hiện đồng hồ -->
-                        <input type="time" class="form-control" id="birthtime" required onclick="this.showPicker()">
+                    <div class="form-group col-third">
+                        <label>Tháng</label>
+                        <input type="number" class="form-control" id="birth_month" min="1" max="12" required placeholder="MM">
+                    </div>
+                    <div class="form-group col-third">
+                        <label>Năm</label>
+                        <input type="number" class="form-control" id="birth_year" min="1900" max="2100" required placeholder="YYYY">
                     </div>
                 </div>
 
-                <!-- Hàng 3: Giới tính đưa xuống dưới -->
-                <div class="form-group">
-                    <label>Giới tính</label>
-                    <select class="form-control" id="gender">
-                        <option value="Nam">Nam (Càn tạo)</option>
-                        <option value="Nu">Nữ (Khôn tạo)</option>
-                    </select>
+                <!-- Hàng 3: Giờ - Phút - Giới tính -->
+                <div class="row-group">
+                    <div class="form-group col-third">
+                        <label>Giờ (0-23)</label>
+                        <input type="number" class="form-control" id="birth_hour" min="0" max="23" required placeholder="HH">
+                    </div>
+                    <div class="form-group col-third">
+                        <label>Phút (0-59)</label>
+                        <input type="number" class="form-control" id="birth_minute" min="0" max="59" required placeholder="MM">
+                    </div>
+                    <div class="form-group col-third">
+                        <label>Giới tính</label>
+                        <select class="form-control" id="gender">
+                            <option value="Nam">Nam (Càn)</option>
+                            <option value="Nu">Nữ (Khôn)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-submit">BẤM ĐỂ LẬP LÁ SỐ</button>
+                <button type="submit" class="btn-submit" style="margin-top: 20px;">BẤM ĐỂ LẬP LÁ SỐ</button>
             </form>
         </div>
 
@@ -369,26 +384,31 @@
     // --- XỬ LÝ SỰ KIỆN NÚT LẬP LÁ SỐ ---
     function handleBaziSubmit(event) {
         event.preventDefault(); 
+        
+        // Lấy dữ liệu từ các ô riêng biệt
         const name = document.getElementById('name').value || 'Khách';
+        const day = parseInt(document.getElementById('birth_day').value, 10);
+        const month = parseInt(document.getElementById('birth_month').value, 10);
+        const year = parseInt(document.getElementById('birth_year').value, 10);
+        const hour = parseInt(document.getElementById('birth_hour').value, 10);
+        const minute = parseInt(document.getElementById('birth_minute').value, 10);
         const gender = document.getElementById('gender').value;
-        const birthdate = document.getElementById('birthdate').value;
-        const birthtime = document.getElementById('birthtime').value;
-
-        const [year, month, day] = birthdate.split('-').map(Number);
-        const [hour, minute] = birthtime.split(':').map(Number);
         const genderInt = gender === 'Nam' ? 1 : 0;
 
-        document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdate} lúc ${birthtime}`;
+        // Định dạng lại chuỗi để hiển thị trên Subtitle
+        const birthdateStr = `${day}/${month}/${year}`;
+        const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
+
+        document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
         document.getElementById('bazi-form-container').style.display = 'none';
         document.getElementById('bazi-result-container').style.display = 'block';
 
-        // Gọi API
         // GỌI API BẢO MẬT (DÙNG KEY CỦA WEB)
         fetch('http://168.138.107.140:8000/api/bazi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': 'HoangHac_Web_Public_2026' // Đổi sang dùng Key riêng của Web
+                'x-api-key': 'HoangHac_Web_Public_2026'
             },
             body: JSON.stringify({ year, month, day, hour, minute, gender: genderInt })
         })
