@@ -7,6 +7,43 @@
     <!-- Cập nhật thêm font Inter (số liệu nét) và Noto Serif (chữ Can Chi có chân sang trọng) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@500;700&display=swap" rel="stylesheet">
     <style>
+    /* 1. Làm toàn bộ chữ trong các ô của bảng to và dày dặn hơn */
+    .t-cell {
+        font-size: 15px !important; 
+        font-weight: 600 !important; /* Độ dày 600 (Semi-bold) giúp chữ hết bị mảnh */
+    }
+
+    /* 2. Riêng hàng Can Chi (Bát Tự) thì cho to hẳn và in đậm bự nhất */
+    .font-canchi {
+        font-size: 24px !important; 
+        font-weight: 700 !important; /* Bold */
+    }
+
+    /* 3. Hàng Chủ Tinh trên cùng */
+    .font-god {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+    }
+
+    /* 4. Phần Tàng Can & Phó Tinh */
+    div[id*="-tangcan"], div[id*="-photinh"] {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+    }
+
+    /* 5. Chữ Can Chi trong Đại Vận và Lưu Niên */
+    .dv-canchi span, .ln-canchi span {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+    }
+
+    /* 6. Các mốc tuổi và năm ở dưới Đại Vận / Lưu Niên */
+    .dv-tuoi, .ln-tuoi, .ln-nam {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+    }
+</style>
+    <style>
         :root { 
             --primary: #1e4d2b;        
             --primary-hover: #14351d;
