@@ -456,23 +456,40 @@
                 elmGod.className = `t-cell font-god ${getColorClass(parsed.can)}`; // Màu Thần theo màu Can
             }
 
-            // Tàng Can
-            const tcArr = data.tang_can[k] || []; // Khai báo biến tcArr ở đây
-            document.getElementById(`val-${k}-tangcan`).innerText = tcArr.join(' - ');
+            // Tàng Can (Có màu)
+            const tcArr = data.tang_can[k] || [];
+            const elmTangCan = document.getElementById(`val-${k}-tangcan`);
+            if (elmTangCan) {
+                if (tcArr.length > 0) {
+                    // Bọc từng Can vào thẻ span có màu tương ứng
+                    const tcHtml = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join(' - ');
+                    elmTangCan.innerHTML = tcHtml;
+                } else {
+                    elmTangCan.innerText = '-';
+                }
+            }
             
-            // Phó Tinh (Thập Thần của Tàng Can xếp ngang)
+            // Phó Tinh (Lấy màu ăn theo Can Tàng)
             const elmPhoTinh = document.getElementById(`val-${k}-photinh`);
             if (elmPhoTinh) {
                 if (tcArr.length > 0) {
-                    // Gọi hàm tính Thập Thần dựa vào Nhật Chủ
-                    const thapThanArr = tcArr.map(can => getThapThan(data.nhat_chu, can));
-                    elmPhoTinh.innerText = thapThanArr.join(' - '); 
+                    const thapThanHtml = tcArr.map(can => {
+                        const thapThan = getThapThan(data.nhat_chu, can);
+                        // Bọc Thập Thần bằng chính màu của Can sinh ra nó
+                        return `<span class="${getColorClass(can)}">${thapThan}</span>`;
+                    }).join(' - ');
+                    elmPhoTinh.innerHTML = thapThanHtml;
                 } else {
                     elmPhoTinh.innerText = '-';
                 }
             }
-            // Thần Sát
-            document.getElementById(`ts-${k}`).innerHTML = data.than_sat_nguyen_cuc[k].length > 0 ? data.than_sat_nguyen_cuc[k].join('<br>') : '-';
+
+            // Thần Sát (In đậm nhẹ để dễ nhìn hơn màu xám nhạt)
+            const elmThanSat = document.getElementById(`ts-${k}`);
+            if (elmThanSat) {
+                const tsArr = data.than_sat_nguyen_cuc[k] || [];
+                elmThanSat.innerHTML = tsArr.length > 0 ? tsArr.map(ts => `<span style="font-weight:500; color:#444;">${ts}</span>`).join('<br>') : '-';
+            }
         });
 
         // 3. Render Khung Đại Vận
@@ -523,24 +540,35 @@
         }
     }
 
-    // --- HÀM RENDER LƯU NIÊN ---
-    function renderLuuNian(liuNianList) {
-        const lnContainer = document.getElementById('ln-container');
+    function renderLuuNian(liuNianArr) {
+        const lnContainer = document.getElementById('ln-container'); // Check lại ID container của ông
         lnContainer.innerHTML = '';
+        const currentYear = new Date().getFullYear(); // Lấy năm 2026
 
-        liuNianList.forEach(ln => {
+        liuNianArr.forEach(ln => {
             const [can, chi] = ln.can_chi.split(' ');
-            const cell = document.createElement('div');
-            cell.className = 't-cell ln-cell';
+            const isCurrentYear = (ln.nam === currentYear); // Kiểm tra xem có trúng năm nay không
             
+            const cell = document.createElement('div');
+            // Thêm class active hoặc xử lý CSS trực tiếp cho ô của năm nay
+            cell.className = `t-cell ln-cell ${isCurrentYear ? 'active-ln' : ''}`;
+            
+            // Ép màu nền nổi bật cho năm hiện hành (Ông có thể tùy chỉnh màu hex)
+            if (isCurrentYear) {
+                cell.style.backgroundColor = '#e8f5e9'; // Nền xanh lá mạ nhạt
+                cell.style.border = '1px solid var(--wood)';
+                cell.style.borderRadius = '6px';
+            }
+
             cell.innerHTML = `
-                <div class="font-small">${ln.tuoi}t</div>
+                <div class="ln-tuoi">${ln.tuoi}t</div>
                 <div class="ln-canchi">
                     <span class="${getColorClass(can)}">${can}</span><br>
                     <span class="${getColorClass(chi)}">${chi}</span>
                 </div>
-                <div class="ln-nam">${ln.nam}</div>
+                <div class="ln-nam" style="${isCurrentYear ? 'font-weight:bold; color:var(--wood);' : ''}">${ln.nam}</div>
             `;
+            
             lnContainer.appendChild(cell);
         });
     }
