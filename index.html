@@ -198,19 +198,38 @@
        NỀN HOA SEN CHÌM (DẠNG OVERLAY TRÊN CÙNG)
        ========================================= */
 
+    /* 1. Thiết lập ảnh nền cho khung bao ngoài */
     .result-wrapper { 
         position: relative; 
+        background-color: #fff5f6 !important; /* Hồng cực nhạt lót phòng hờ */
+        background-image: url('nen-web.png') !important; /* Đường dẫn file ảnh của ông */
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important; /* Phủ kín bảng lá số */
+        z-index: 1;
     }
 
-    /* Nền phấn hồng cực nhạt chứa hoa sen trắng chìm */
-    .result-wrapper { 
-        position: relative; 
-        background-color: #fff5f6; /* Đổi màu lót thành hồng cực nhạt */
-        background-image: url('nen-web.png'); /* Lưu ảnh mới này đè lên file cũ */
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover; /* Phủ kín bảng lá số */
-        z-index: 1;
+    /* 2. Làm trong suốt phần thân để nhìn thấy ảnh nền */
+    .result-body { 
+        background: transparent !important; 
+    }
+
+    /* 3. Khử màu đặc của bảng, biến các ô thành "kính mờ" sương sương */
+    .t-grid { 
+        background: rgba(255, 255, 255, 0.4) !important; 
+        border-color: rgba(255, 255, 255, 0.5) !important; 
+    }
+    
+    .t-cell { 
+        background: rgba(255, 255, 255, 0.75) !important; /* Độ mờ 75% vừa đủ nhìn rõ chữ vừa thấy hoa sen chìm */
+    }
+    
+    .t-label, .t-label-tangcan { 
+        background: rgba(244, 247, 244, 0.75) !important; 
+    }
+    
+    .col-day { 
+        background: rgba(255, 252, 245, 0.8) !important; 
     }
         
         /* Responsive Mobile / Tablet */
