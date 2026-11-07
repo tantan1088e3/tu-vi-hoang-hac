@@ -212,7 +212,72 @@
         /* =========================================
        BẢN VÁ LỖI CUỐI CÙNG CHO BẢNG ĐẠI VẬN & LƯU NIÊN
        ========================================= */
+
+    /* =========================================
+       KHẮC PHỤC TRIỆT ĐỂ VIỀN LƯỚI ĐẠI VẬN, LƯU NIÊN
+       ========================================= */
+
+    /* 1. Lưới Đại Vận: Thêm nền xám (#e2e8f0) và viền bo ngoài */
+    .dv-grid { 
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); 
+        margin-bottom: 25px; 
+        gap: 1px; /* Tạo khe hở 1px giữa các ô */
+        background: #e2e8f0; /* Nền xám lộ qua khe hở làm đường kẻ dọc/ngang */
+        border: 1px solid #e2e8f0; /* Viền bao quanh nguyên cái bảng */
+        border-radius: 6px;
+        overflow: hidden;
+    }
     
+    .dv-cell { 
+        cursor: pointer; 
+        transition: 0.2s; 
+        padding: 12px 2px; 
+        background: #ffffff; /* Nền trắng cho các ô bình thường */
+        border: none !important; /* Dọn sạch mọi border để gap lưới hoạt động */
+    }
+    .dv-cell:hover { background: #f8fafc; }
+    
+    /* Xử lý ô Đại Vận đang chọn */
+    .dv-cell.active { 
+        background: #fffcf8 !important; 
+        border: none !important; 
+        /* Viền chìm inset vẽ vạch xanh lá cây ở đáy, viền chìm vàng bên trên */
+        box-shadow: inset 0 -3px 0 var(--primary), inset 0 -5px 15px rgba(197, 160, 89, 0.05) !important; 
+    }
+    
+    .dv-canchi { margin-bottom: 4px; }
+    .dv-canchi span, .ln-canchi span { font-family: Arial, Helvetica, sans-serif !important; font-size: 19px !important; font-weight: 700 !important; }
+    .dv-tuoi, .ln-tuoi, .ln-nam { font-size: 15px !important; font-weight: 600 !important; color: #555 !important; }
+    
+    /* 2. Lưới Lưu Niên: Tương tự Đại Vận */
+    .ln-grid { 
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); 
+        gap: 1px; 
+        background: #e2e8f0; /* Hắt màu xám lên thành đường kẻ */
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .ln-cell { 
+        padding: 10px 2px; 
+        background: #ffffff; 
+        border: none !important; 
+    }
+    
+    .ln-canchi { margin: 4px 0; }
+
+    /* Xử lý ô Lưu Niên hiện tại sinh ra từ JS */
+    .ln-cell[style*="background-color"] {
+        border: none !important; 
+        /* Không cần ghi đè background vì JS đã set đúng */
+        /* Chỉ ghi đè cái vạch xanh lá cây chìm */
+        box-shadow: inset 0 -3px 0 #1a4f32 !important; 
+    }
+
+        
     /* 1. Tắt khe hở lưới dễ vỡ, bo viền cứng bên trái và bên trên cho toàn bảng */
     #dv-container, #ln-container {
         gap: 0 !important; 
