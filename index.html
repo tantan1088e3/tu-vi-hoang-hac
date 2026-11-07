@@ -3,247 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tử Vi Hoàng Hạc - Hệ Thống Di Sản</title>
-    <link rel="icon" type="image/png" href="data/fini-icon.png" sizes="96x96">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <title>Hoàng Hạc Các - Lập Lá Số Bát Tự</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --primary-color: #5d1a1a; 
-            --accent-color: #c5a059; 
-            --bg-color: #fffaf1; 
-            --text-color: #2c3e50; 
-            --card-border: #e2d9c8;
-        }
-        body { margin: 0; font-family: 'Arimo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-        header { background-color: var(--primary-color); color: var(--accent-color); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-color); }
-        header h1 { font-family: 'Playfair Display', serif; margin: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 2.8rem; }
-        header p { margin-top: 10px; opacity: 0.9; font-style: italic; }
-        .control-panel { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-        .tabs { display: flex; gap: 5px; background: #e0d5c1; padding: 5px; border-radius: 8px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px; transition: 0.3s; text-decoration: none; color: #5d1a1a; }
-        .tab-btn.active { background: var(--primary-color); color: white; }
-        #search-container { display: block; }
-        #search-bar {
-            padding: 12px;
-            width: 100%;
-            max-width: 280px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            outline: none;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; padding: 15px; background: white; border-radius: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
-        .tag-filter { padding: 6px 18px; background: white; border: 1px solid #ddd; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
-        .tag-filter.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        .container { max-width: 1100px; margin: 0 auto 5rem auto; padding: 0 1.5rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
-        .card { 
-            background: white; 
-            padding: 2rem; 
-            border-radius: 10px; 
-            border: 1px solid var(--card-border); 
-            border-top: 5px solid var(--primary-color); 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
-            display: flex; 
-            flex-direction: column; 
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
-        }
-        .card:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 12px 25px rgba(142, 33, 33, 0.08); 
-            border-color: var(--accent-color); 
-        }
-        .card.featured { border-left: 8px solid var(--accent-color); }
-        .category-tag { 
-            font-size: 0.8rem; 
-            font-weight: 700; 
-            color: var(--accent-color); 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-bottom: 12px; 
-            display: block; 
-        }
-        .card h3 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.4rem; line-height: 1.35; font-weight: 700; }
-        .card p { color: #555; font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; text-align: justify; }
-        .btn-post { 
-            padding: 11px; 
-            text-decoration: none; 
-            font-weight: 700; 
-            text-align: center; 
-            border-radius: 4px; 
-            border: 1px solid #27ae60; 
-            color: #27ae60; 
-            background: transparent;
-            transition: all 0.25s ease; 
-            cursor: pointer;
-            text-transform: uppercase; 
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-        .btn-post:hover { 
-            background: #27ae60; 
-            color: white; 
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-        }
-        .form-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .form-container h2 { font-family: 'Playfair Display', serif; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 2rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--primary-color); }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary-color); outline: none; }
-        .radio-group { display: flex; gap: 20px; padding: 10px 0; }
-        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .radio-group input { width: auto; }
-        .btn-submit { background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 1rem; text-transform: uppercase; letter-spacing: 1px;}
-        .btn-submit:hover { background: #3d1010; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
-        .page-btn { width: 40px; height: 40px; border: none; background: #e0d5c1; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .page-btn.active { background: var(--primary-color); color: white; }
+    :root { 
+        --primary: #1e4d2b;        /* Xanh rêu đậm (Forest Green) */
+        --primary-hover: #14351d;
+        --accent: #c5a059;         /* Vàng đồng sang trọng */
+        --bg-page: #f4f7f4;        /* Nền xám ngọc nhẹ nhàng */
+        --bg-card: #ffffff;
+        --text-main: #2c3e50;
+        --text-muted: #5a6b7c;
+        --border-color: #d8e2d8;
+    }
 
-        #consultation-form-wrapper { display: none; }
-        #search-container-custom { display: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Lora', serif; background-color: var(--bg-page); color: var(--text-main); line-height: 1.6; }
 
-        /* CSS cho Modal Chính sách quyền riêng tư */
-        .privacy-modal {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .privacy-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 700px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            text-align: left;
-            color: #333;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        }
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #aaa;
-            cursor: pointer;
-        }
-        .close-modal:hover { color: #000; }
+    /* --- HEADER --- */
+    header { 
+        background: linear-gradient(135deg, #1e4d2b 0%, #0f2615 100%);
+        color: var(--accent); 
+        padding: 3rem 1rem 1.5rem; 
+        text-align: center; 
+        border-bottom: 4px solid var(--accent);
+    }
+    header h1 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 4px; font-size: 2.2rem; margin-bottom: 0.5rem; }
+    header p { font-style: italic; color: #e8d0a5; font-size: 1rem; }
 
-        @media (max-width: 600px) {
-            .form-container { padding: 1.5rem 1rem !important; }
-            .grid { grid-template-columns: 1fr !important; }
-            .tabs { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; background: white; padding: 8px; border-radius: 8px; box-sizing: border-box; }
-            .tab-btn { flex: 1 1 45%; padding: 10px 5px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; color: #5d1a1a; border-radius: 20px; text-align: center; font-size: 0.85rem; white-space: nowrap; }
-            .tab-btn:last-child { flex: 1 1 45%; background: white; color: #5d1a1a; }
-            .tab-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        }
-    </style>
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "wxfst35cf4");
-</script>
+    /* --- MENU TẦNG 1 --- */
+    .main-nav { background: var(--primary); border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 100; }
+    .main-menu-list { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .main-menu-list::-webkit-scrollbar { display: none; }
+    .main-tab { padding: 15px 25px; color: rgba(255,255,255,0.75); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1rem; border: none; background: transparent; cursor: pointer; transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; }
+    .main-tab:hover { color: white; }
+    .main-tab.active { color: var(--accent); background: rgba(0,0,0,0.2); }
+
+    /* --- MENU TẦNG 2 --- */
+    .sub-nav { background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-bottom: 1px solid var(--border-color); }
+    .sub-menu-list { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; padding: 0 15px; overflow-x: auto; white-space: nowrap; }
+    .sub-tab { padding: 15px 0; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: transparent; border-bottom: 2px solid transparent; transition: 0.2s; }
+    .sub-tab:hover { color: var(--primary); }
+    .sub-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* --- CONTAINER --- */
+    .container { max-width: 1200px; margin: 2.5rem auto 5rem; padding: 0 1.5rem; }
+
+    /* --- FORM LẬP LÁ SỐ --- */
+    .tool-section { display: none; }
+    .tool-section.active { display: block; animation: fadeIn 0.5s ease; }
+    .form-card {
+        max-width: 750px; margin: 0 auto; background: #fff; padding: 40px;
+        border-radius: 12px; box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06);
+        border: 1px solid var(--border-color); position: relative; overflow: hidden;
+    }
+    .form-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+        background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+    }
+    .form-card h2 { text-align: center; color: var(--primary); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px; }
+    .form-card p.subtitle { text-align: center; color: var(--text-muted); font-style: italic; margin-bottom: 30px; font-size: 0.95rem; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: bold; color: var(--primary); margin-bottom: 8px; font-size: 0.95rem; }
+    .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 1rem; transition: 0.3s; background: #fafbfc; }
+    .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15); background: #fff; }
+    .row-group { display: flex; gap: 20px; }
+    .col-half { flex: 1; }
+    .btn-submit {
+        display: block; width: 100%; padding: 16px; margin-top: 30px;
+        background: var(--primary); color: #fff; border: none; border-radius: 6px;
+        font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px;
+        cursor: pointer; transition: 0.3s; text-transform: uppercase;
+    }
+    .btn-submit:hover { background: var(--primary-hover); box-shadow: 0 8px 20px rgba(30, 77, 43, 0.2); transform: translateY(-2px); }
+
+    /* --- DANH SÁCH BÀI VIẾT (DẠNG DIỄN ĐÀN) --- */
+    .article-section { display: none; }
+    .article-section.active { display: block; animation: fadeIn 0.5s ease; }
+    
+    .article-list {
+        background: var(--bg-card);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        overflow: hidden;
+    }
+    .list-item {
+        display: flex; align-items: center; padding: 18px 25px;
+        border-bottom: 1px dashed var(--border-color); text-decoration: none; transition: background 0.2s ease;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: #f0f5f0; }
+
+    .item-tag {
+        min-width: 140px; font-size: 0.75rem; font-weight: 700;
+        color: var(--accent); text-transform: uppercase; letter-spacing: 1px;
+    }
+    .item-title {
+        flex-grow: 1; font-family: 'Playfair Display', serif;
+        font-size: 1.15rem; color: var(--primary); line-height: 1.4; margin: 0 15px; transition: color 0.2s ease;
+    }
+    .list-item:hover .item-title { color: #0066cc; text-decoration: underline; }
+    .item-meta { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; font-style: italic; }
+
+    /* --- MODAL CHÍNH SÁCH QUYỀN RIÊNG TƯ --- */
+    .privacy-modal {
+        display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 20px;
+    }
+    .privacy-content {
+        background: #fff; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;
+        padding: 30px; border-radius: 10px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .close-modal {
+        position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; color: #888; cursor: pointer;
+    }
+    .close-modal:hover { color: var(--primary); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+        .main-tab { padding: 12px 20px; font-size: 0.9rem; }
+        .row-group { flex-direction: column; gap: 0; }
+        .form-card { padding: 25px 20px; }
+        .list-item { flex-direction: column; align-items: flex-start; padding: 15px; }
+        .item-tag { min-width: auto; margin-bottom: 5px; }
+        .item-title { margin: 0 0 10px 0; font-size: 1.1rem; }
+    }
+	/* --- FOOTER CHUNG --- */
+	/* --- FOOTER XANH NGỌC BÍCH --- */
+	/* --- FOOTER MÀU ĐEN TỐI GIẢN --- */
+	.site-footer {
+		text-align: center;
+		padding: 3rem 1.5rem;
+		background: #1a1a1a; /* Màu đen than lịch sự */
+		color: #888;
+		border-top: 4px solid var(--accent);
+		margin-top: 40px;
+	}
+
+	.site-footer p {
+		margin-bottom: 15px;
+		line-height: 1.6;
+	}
+
+	.site-footer p:first-child {
+		font-size: 1.05rem;
+		font-weight: bold;
+		color: #aaa;
+	}
+
+	.site-footer a {
+		color: var(--accent);
+		text-decoration: underline;
+		font-weight: bold;
+	}
+
+	.site-footer p:last-child {
+		font-size: 0.85rem;
+		opacity: 0.6;
+		max-width: 800px;
+		margin: 0 auto;
+		text-align: justify;
+		text-align-last: center;
+	}
+</style>
 </head>
 <body>
 
 <header>
-    <h1>TỬ VI HOÀNG HẠC</h1>
-    <p>Hệ Thống Di Sản & Nghiệm Lý 2026</p>
+    <h1>Hoàng Hạc Các</h1>
+    <p>Hệ Thống Di Sản Thuật Số & Luận Mệnh 2026</p>
 </header>
 
-<div class="control-panel">
-    <div class="top-bar">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('posts',this,event)">BÀI VIẾT</button>
-            <button class="tab-btn" onclick="switchTab('video',this,event)">THƯ VIỆN VIDEO</button>
-            <button class="tab-btn" onclick="switchTab('books',this,event)">TỦ SÁCH CỔ HỌC</button>
-            <button class="tab-btn" onclick="switchTab('pdf',this,event)">GIEO QUẺ LỤC HÀO</button>
-            <button class="tab-btn" onclick="switchTab('register',this,event)">ĐĂNG KÝ XEM SỐ ★</button>
-        </div>
-        <div id="search-container">
-            <input type="text" id="search-bar" placeholder="Tìm kiếm nội dung..." onkeyup="handleSearch()">
-        </div>
+<!-- MENU TẦNG 1 -->
+<nav class="main-nav">
+    <div class="main-menu-list">
+        <button class="main-tab active" onclick="switchMainTab('congcu', this)">LẬP LÁ SỐ</button>
+        <button class="main-tab" onclick="switchMainTab('tutru', this)">TỨ TRỤ BÁT TỰ</button>
+        <button class="main-tab" onclick="switchMainTab('tuvi', this)">TỬ VI ĐẨU SỐ</button>
+        <button class="main-tab" onclick="switchMainTab('app', this)">TẢI APP</button>
+        <button class="main-tab" onclick="switchMainTab('tuvan', this)">TƯ VẤN ★</button>
     </div>
-    <div id="filter-bar" class="filter-bar"></div>
-</div>
+</nav>
+
+<!-- MENU TẦNG 2 -->
+<nav class="sub-nav" id="sub-nav-container">
+    <div class="sub-menu-list" id="sub-menu-congcu">
+        <button class="sub-tab active" onclick="switchToolTab('tutru', this)">Tứ Trụ (Bát Tự)</button>
+        <button class="sub-tab" onclick="switchToolTab('tuvi', this)">Tử Vi Đẩu Số</button>
+        <button class="sub-tab" onclick="switchToolTab('luchao', this)">Gieo Quẻ Lục Hào</button>
+    </div>
+</nav>
 
 <div class="container">
-    <div class="grid" id="post-grid">Đang kết nối kho di sản...</div>
-    <div id="post-pagination" class="pagination"></div>
-
-    <div id="consultation-form-wrapper" class="form-container">
-        <h2>ĐĂNG KÝ LUẬN GIẢI CHUYÊN SÂU</h2>
-        <form id="tuvi-booking-form" onsubmit="submitForm(event)">
-            <div class="form-group">
-                <label for="service-type">Gói dịch vụ bạn muốn đăng ký:</label>
-                <select id="service-type" required style="border-color: var(--accent-color); font-weight: bold; color: var(--primary-color); background-color: #fdfaf4; padding: 12px; width: 100%; border-radius: 6px;">
-                    <option value="Quẻ Dịch PDF (Tùy tâm)">Thỉnh bản luận giải Quẻ Dịch PDF (Phí tùy tâm)</option>
-                    <option value="Tử Vi: Toàn diện 12 cung (Tùy tâm)">Luận giải Tử Vi: Toàn diện 12 cung (Phí tùy tâm)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="fullname">Họ và tên đương số:</label>
-                <input type="text" id="fullname" required placeholder="Ví dụ: Nguyễn Văn A">
-            </div>
-            <div class="form-group">
-                <label>Giới tính:</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="gender" value="Nam" checked> Nam</label>
-                    <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+    
+    <!-- KHU VỰC 1: FORM LẬP LÁ SỐ -->
+    <div id="section-tools" class="tool-section active">
+        <div class="form-card">
+            <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
+            <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để hệ thống an sao và thiết lập cấu trúc Manh Phái.</p>
+            
+            <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
+                <div class="form-group">
+                    <label>Họ và tên đương số</label>
+                    <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A" required>
                 </div>
+                
+                <div class="row-group">
+                    <div class="form-group col-half">
+                        <label>Giới tính</label>
+                        <select class="form-control" id="gender">
+                            <option value="Nam">Nam (Càn tạo)</option>
+                            <option value="Nu">Nữ (Khôn tạo)</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-half">
+                        <label>Năm sinh</label>
+                        <input type="date" class="form-control" id="birthdate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Giờ sinh</label>
+                    <input type="time" class="form-control" id="birthtime" required>
+                </div>
+
+                <button type="submit" class="btn-submit">BẤM ĐỂ LẬP LÁ SỐ</button>
+            </form>
+            
+            <div id="bazi-result" style="display:none; margin-top: 30px; padding: 20px; background: var(--bg-page); border-radius: 8px; border: 1px dashed var(--accent); text-align: center;">
+                <p>Đang gọi API VPS Hoàng Hạc và tính toán lá số...</p>
             </div>
-            <div class="form-group">
-                <label for="birth-date">Ngày/Tháng/Năm sinh:</label>
-                <input type="date" id="birth-date" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Địa chỉ Email nhận văn bản:</label>
-                <input type="email" id="email" required placeholder="Email của bạn">
-            </div>
-            <div class="form-group">
-                <label for="phone">Số điện thoại / Zalo:</label>
-                <input type="tel" id="phone" required placeholder="090xxxxxxx">
-            </div>
-            <button type="submit" class="btn-submit">GỬI THÔNG TIN ĐĂNG KÝ</button>
-        </form>
+        </div>
+    </div>
+
+    <!-- KHU VỰC 2: DANH SÁCH BÀI VIẾT -->
+    <div id="section-articles" class="article-section">
+        <div class="article-list" id="content-list">
+            <a href="#" class="list-item">
+                <div class="item-tag">[ MANH PHÁI ]</div>
+                <div class="item-title">Luận Dần Mộc là Phế Thần trong hệ thống Bát Tự</div>
+                <div class="item-meta">Nghiệm lý thực chiến</div>
+            </a>
+            <a href="#" class="list-item">
+                <div class="item-tag">[ CÙNG THÔNG ]</div>
+                <div class="item-title">Đánh giá mức độ can thiệp của các phần bình chú đời sau</div>
+                <div class="item-meta">Khảo cứu văn bản</div>
+            </a>
+            <a href="#" class="list-item">
+                <div class="item-tag">[ THẬP THẦN ]</div>
+                <div class="item-title">Bản chất của Thương Quan kiến Quan trong đương đại</div>
+                <div class="item-meta">Luận giải chi tiết</div>
+            </a>
+            <a href="#" class="list-item">
+                <div class="item-tag">[ ĐẠO GIA ]</div>
+                <div class="item-title">Ngụ ngôn "Cơ giới sinh cơ tâm" và lời đáp của Tử Cống</div>
+                <div class="item-meta">Triết học</div>
+            </a>
+        </div>
     </div>
 </div>
 
-<footer style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent-color); margin-top: 20px;">
-    <p style="margin-bottom: 15px; font-size: 1.05rem; font-weight: bold; color: #aaa;">&copy; 2026 Tử Vi Hoàng Hạc</p>
+<footer class="site-footer">
+    <p>&copy; 2026 Tử Vi Hoàng Hạc</p>
     
-    <!-- NÚT MỞ CHÍNH SÁCH QUYỀN RIÊNG TƯ ĐỂ DÁN LINK LÊN GOOGLE PLAY -->
-    <p style="margin-bottom: 15px;">
-        <a href="javascript:void(0)" onclick="openPrivacyPolicy()" style="color: var(--accent-color); text-decoration: underline; font-weight: bold;">Chính sách Quyền riêng tư (Privacy Policy)</a>
+    <p>
+        <a href="javascript:void(0)" onclick="openPrivacyPolicy()">Chính sách Quyền riêng tư (Privacy Policy)</a>
     </p>
 
-    <p style="font-size: 0.85rem; opacity: 0.6; max-width: 800px; margin: 0 auto; line-height: 1.6; text-align: justify; text-align-last: center;">
+    <p>
         <em>* Khuyến nghị: Các nội dung luận giải Tử Vi và Lục Hào Kinh Dịch trên website được tổng hợp từ nền tảng triết học cổ học phương Đông.</em>
     </p>
 </footer>
@@ -252,26 +281,109 @@
 <div id="privacyModal" class="privacy-modal">
     <div class="privacy-content">
         <span class="close-modal" onclick="closePrivacyPolicy()">&times;</span>
-        <h2 style="color: #5d1a1a; margin-top: 0;">Chính sách Quyền riêng tư</h2>
+        <h2 style="color: var(--primary); margin-top: 0; font-family: 'Playfair Display', serif;">Chính sách Quyền riêng tư</h2>
         <p><em>Cập nhật lần cuối: Tháng 03 năm 2026</em></p>
-        
+        <br>
         <p>Ứng dụng <strong>Tử Vi Hoàng Hạc</strong> tôn trọng và cam kết bảo vệ quyền riêng tư của bạn. Chính sách quyền riêng tư này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin khi bạn sử dụng ứng dụng của chúng tôi.</p>
-        
+        <br>
         <h3>1. Thu thập và Sử dụng Thông tin</h3>
         <p>Ứng dụng của chúng tôi cung cấp các nội dung về tử vi, phong thủy và dịch vụ đăng ký tư vấn. Khi bạn sử dụng biểu mẫu đăng ký, chúng tôi chỉ thu thập các thông tin bạn chủ động cung cấp (như Họ tên, Ngày sinh, Email, Số điện thoại) nhằm mục đích duy nhất là phục vụ việc luận giải theo yêu cầu của bạn.</p>
-
+        <br>
         <h3>2. Dịch vụ Quảng cáo (Google AdMob)</h3>
-        <p>Chúng tôi sử dụng dịch vụ quảng cáo <strong>Google AdMob</strong> để hiển thị quảng cáo trong ứng dụng. AdMob có thể sử dụng mã định danh thiết bị và dữ liệu vị trí không định danh để cung cấp các quảng cáo phù hợp với sở thích của bạn. Bạn có thể tìm hiểu thêm về cách Google sử dụng dữ liệu tại <a href="https://policies.google.com/technologies/ads" target="_blank">Chính sách quảng cáo của Google</a>.</p>
-
+        <p>Chúng tôi sử dụng dịch vụ quảng cáo <strong>Google AdMob</strong> để hiển thị quảng cáo trong ứng dụng. AdMob có thể sử dụng mã định danh thiết bị và dữ liệu vị trí không định danh để cung cấp các quảng cáo phù hợp với sở thích của bạn. Bạn có thể tìm hiểu thêm về cách Google sử dụng dữ liệu tại <a href="https://policies.google.com/technologies/ads" target="_blank" style="color: var(--primary);">Chính sách quảng cáo của Google</a>.</p>
+        <br>
         <h3>3. Chia sẻ Thông tin</h3>
         <p>Chúng tôi tuyệt đối không bán, trao đổi hoặc chia sẻ thông tin cá nhân của bạn với bất kỳ bên thứ ba nào khác, ngoại trừ các dịch vụ cốt lõi hỗ trợ vận hành ứng dụng dưới sự ràng buộc bảo mật nghiêm ngặt.</p>
-
+        <br>
         <h3>4. Liên hệ</h3>
         <p>Nếu bạn có bất kỳ câu hỏi nào về Chính sách quyền riêng tư này, vui lòng liên hệ với chúng tôi qua trang chủ hoặc qua kênh hỗ trợ trực tuyến.</p>
     </div>
 </div>
 
 <script>
+    // Dữ liệu Sub-menu tương ứng cho từng mục Tầng 1
+    const subMenus = {
+        'congcu': `
+            <button class="sub-tab active" onclick="switchToolTab('tutru', this)">Tứ Trụ (Bát Tự)</button>
+            <button class="sub-tab" onclick="switchToolTab('tuvi', this)">Tử Vi Đẩu Số</button>
+            <button class="sub-tab" onclick="switchToolTab('luchao', this)">Gieo Quẻ Lục Hào</button>
+        `,
+        'tutru': `
+            <button class="sub-tab active">Tất cả bài viết</button>
+            <button class="sub-tab">Manh Phái</button>
+            <button class="sub-tab">Thập Thần</button>
+            <button class="sub-tab">Cùng Thông Bảo Giám</button>
+        `,
+        'tuvi': `
+            <button class="sub-tab active">Tất cả bài viết</button>
+            <button class="sub-tab">Vô Chính Diệu</button>
+            <button class="sub-tab">Tràng Sinh & Mệnh Chủ</button>
+            <button class="sub-tab">Nghiệm Lý</button>
+        `,
+        'app': `
+            <button class="sub-tab active">Tải App Android (APK/Google Play)</button>
+            <button class="sub-tab">Hướng dẫn cài đặt</button>
+        `,
+        'tuvan': `
+            <button class="sub-tab active">Đăng ký Luận Mệnh 1-1</button>
+            <button class="sub-tab">Liên hệ Zalo / Telegram</button>
+        `
+    };
+
+    // Hàm chuyển Menu Tầng 1
+    function switchMainTab(topic, element) {
+        document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+
+        const subMenuContainer = document.getElementById('sub-nav-container');
+        subMenuContainer.innerHTML = `<div class="sub-menu-list">${subMenus[topic] || ''}</div>`;
+
+        const sectionTools = document.getElementById('section-tools');
+        const sectionArticles = document.getElementById('section-articles');
+
+        if (topic === 'congcu') {
+            sectionTools.classList.add('active');
+            sectionArticles.classList.remove('active');
+        } else {
+            sectionTools.classList.remove('active');
+            sectionArticles.classList.add('active');
+        }
+    }
+
+    // Hàm chuyển đổi sub-tab trong công cụ lập lá số
+    function switchToolTab(toolType, element) {
+        document.querySelectorAll('.sub-tab').forEach(tab => tab.classList.remove('active'));
+        element.classList.add('active');
+        // Có thể mở rộng logic đổi form lập lá số tương ứng (Tứ Trụ / Tử Vi / Lục Hào) ở đây
+    }
+
+    // Xử lý sự kiện khi ấn nút "LẬP LÁ SỐ"
+    function handleBaziSubmit(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const gender = document.getElementById('gender').value;
+        const birthdate = document.getElementById('birthdate').value;
+        const birthtime = document.getElementById('birthtime').value;
+
+        const resultDiv = document.getElementById('bazi-result');
+        resultDiv.style.display = 'block';
+        
+        console.log("Đang gửi API: ", { name, gender, birthdate, birthtime });
+        
+        /* Cấu trúc mẫu gọi API:
+        fetch('https://api.tuvihoanghac.id.vn/laptutru', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name, gender, birthdate, birthtime })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Render kết quả lá số lên thẻ div bazi-result
+        });
+        */
+    }
+
     // Hàm mở/đóng Modal Chính sách Quyền riêng tư
     function openPrivacyPolicy() {
         document.getElementById('privacyModal').style.display = 'flex';
@@ -285,155 +397,7 @@
             modal.style.display = 'none';
         }
     }
-
-    let db = [];
-    let currentCategory = 'Tất cả';
-    let searchQuery = '';
-    let currentPage = 1;
-    const limit = 6;
-    
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLZA2IK9KlB335IHmfHYMDrW3TYRsV68Cu9E5rpKqar6n0dxYXUFl-WydtW4glFTg-f-OQGesLC_Me/pub?gid=0&single=true&output=csv';
-
-    function parseCSVLine(text) {
-        const r = []; let c = '', q = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i];
-            if (char === '"') { if (q && text[i+1] === '"') { c += '"'; i++; } else q = !q; }
-            else if (char === ',' && !q) { r.push(c.trim()); c = ''; }
-            else c += char;
-        }
-        r.push(c.trim()); return r;
-    }
-
-    async function init() {
-        try {
-            const res = await fetch(SHEET_URL);
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            const headers = parseCSVLine(rows[0]).map(h => h.toLowerCase().trim());
-            const idx = { 
-                id: headers.indexOf('id'), 
-                cat: headers.indexOf('category'), 
-                title: headers.indexOf('title'), 
-                desc: headers.indexOf('desc'), 
-                feat: headers.indexOf('featured') 
-            };
-            
-            db = rows.slice(1).map(r => {
-                const c = parseCSVLine(r);
-                return { 
-                    id: c[idx.id], 
-                    category: (c[idx.cat] || "Chưa phân loại").trim(), 
-                    title: c[idx.title] || "", 
-                    desc: c[idx.desc] || "", 
-                    isFeatured: String(c[idx.feat]).toLowerCase() === 'true' 
-                };
-            }).filter(p => p.id);
-            
-            renderTags();
-            renderUI();
-        } catch (e) { console.error(e); }
-    }
-
-    function renderUI() {
-        let filtered = db.filter(p => {
-            // So sánh danh mục không phân biệt hoa thường
-            let isMatchCategory = (currentCategory === 'Tất cả' || p.category.toLowerCase() === currentCategory.toLowerCase());
-            
-            // Tìm kiếm an toàn
-            let safeTitle = p.title.toLowerCase();
-            let safeDesc = p.desc.toLowerCase();
-            let isMatchSearch = safeTitle.includes(searchQuery) || safeDesc.includes(searchQuery);
-            
-            return isMatchCategory && isMatchSearch;
-        });
-
-        const items = filtered.slice((currentPage - 1) * limit, currentPage * limit);
-        
-        if (items.length > 0) {
-            document.getElementById('post-grid').innerHTML = items.map(p => 
-                `<div class="card"><h3>${p.title}</h3><p>${p.desc}</p></div>`
-            ).join('');
-        } else {
-            document.getElementById('post-grid').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Chưa có dữ liệu cho chuyên mục này. Vui lòng kiểm tra lại Google Sheet.</div>`;
-        }
-    }
-
-    function renderTags() {
-        const tags = new Set(['Tất cả', ...db.map(p => p.category)]);
-        document.getElementById('filter-bar').innerHTML = Array.from(tags).map(t => 
-            `<span class="tag-filter ${t === currentCategory ? 'active' : ''}" onclick="filterByTag('${t}')">${t}</span>`
-        ).join('');
-    }
-
-    function filterByTag(tag) { 
-        currentCategory = tag; 
-        currentPage = 1; 
-        renderTags(); 
-        renderUI(); 
-    }
-
-    function handleSearch() { 
-        searchQuery = document.getElementById('search-bar').value.toLowerCase(); 
-        currentPage = 1; 
-        renderUI(); 
-    }
-
-    function switchTab(type, element, event) {
-        if (event) event.preventDefault();
-        
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if (element) element.classList.add('active');
-        
-        const grid = document.getElementById('post-grid');
-        const pagination = document.getElementById('post-pagination');
-        const formWrapper = document.getElementById('consultation-form-wrapper');
-        const filterBar = document.getElementById('filter-bar'); 
-        
-        // Ẩn tất cả đi trước khi xử lý
-        grid.style.display = "none"; 
-        pagination.style.display = "none"; 
-        formWrapper.style.display = "none";
-        filterBar.style.display = "none"; 
-        
-        // Cập nhật currentCategory để khớp với Google Sheet
-        if (type === 'posts') { 
-            currentCategory = 'Tất cả'; 
-            grid.style.display = "grid"; 
-            pagination.style.display = "flex"; 
-            filterBar.style.display = "flex"; 
-            renderTags(); 
-            renderUI(); 
-        } 
-        else if (type === 'video') { 
-            currentCategory = 'Video'; 
-            grid.style.display = "grid"; 
-            pagination.style.display = "flex"; 
-            renderUI(); 
-        } 
-        else if (type === 'books') { 
-            currentCategory = 'Sách'; // Google Sheet phải điền Category là "Sách"
-            grid.style.display = "grid"; 
-            pagination.style.display = "flex";
-            renderUI(); 
-        } 
-        else if (type === 'pdf') { 
-            currentCategory = 'Lục Hào'; // Google Sheet phải điền Category là "Lục Hào"
-            grid.style.display = "grid"; 
-            pagination.style.display = "flex";
-            renderUI(); 
-        } 
-        else if (type === 'register') { 
-            formWrapper.style.display = "block"; 
-        }
-    }
-
-    function submitForm(event) {
-        event.preventDefault();
-        alert('Thông tin đã được tổng hợp!');
-    }
-
-    window.onload = init;
 </script>
+
 </body>
 </html>
