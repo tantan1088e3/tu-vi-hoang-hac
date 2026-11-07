@@ -7,88 +7,6 @@
     <!-- Cập nhật thêm font Inter (số liệu nét) và Noto Serif (chữ Can Chi có chân sang trọng) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@500;700&display=swap" rel="stylesheet">
     <style>
-
-    /* 1. Ép chữ Can Chi co đáy lại một chút, không cho đè lấp xuống viền */
-    .font-canchi {
-        padding-bottom: 4px !important;
-    }
-        
-    /* 1. Thiết lập font chữ học thuật cho toàn bộ bảng */
-    #bazi-result-container {
-        font-family: 'Times New Roman', Times, serif !important; /* Dùng font có chân cho sang trọng */
-    }
-
-    /* 2. Làm mọi chữ trong bảng đậm đà hơn */
-    .t-cell {
-        font-size: 16px !important; 
-        font-weight: 600 !important; 
-        color: #333 !important; /* Tránh màu xám nhạt */
-    }
-
-    /* 3. Tứ Trụ Bát Tự (Chữ to chà bá, in đậm tuyệt đối) */
-    /* Tứ Trụ Bát Tự (Chữ to, ép viết hoa toàn bộ để vuông vức, bằng nhau tăm tắp) */
-    /* Tứ Trụ Bát Tự (Ép font chuẩn tiếng Việt, không bị lỗi chữ mảnh) */
-    .font-canchi {
-        font-family: Tahoma, Arial, sans-serif !important; /* Dùng font chuẩn quốc dân để không lỗi dấu */
-        font-size: 26px !important; 
-        font-weight: 900 !important; /* Độ đậm tối đa */
-        text-transform: uppercase !important; 
-        line-height: 1.4 !important;
-        display: block !important;
-        -webkit-text-stroke: 0.5px currentColor !important; /* Mẹo: Ép thêm 1 viền siêu mỏng cùng màu để mọi chữ đều béo bằng nhau */
-    }
-
-    /* 4. Chủ Tinh trên cùng */
-    .font-god {
-        font-size: 18px !important;
-        font-weight: 700 !important;
-    }
-
-    /* 5. Tàng Can & Phó Tinh (To và dễ đọc hơn) */
-    div[id*="-tangcan"] span, div[id*="-photinh"] span {
-        font-size: 15px !important;
-        font-weight: 600 !important;
-    }
-
-    /* 6. Đại Vận & Lưu Niên */
-    .dv-canchi span, .ln-canchi span {
-        font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 19px !important;
-        font-weight: 700 !important;
-    }
-    .dv-tuoi, .ln-tuoi, .ln-nam {
-        font-size: 15px !important;
-        font-weight: 600 !important;
-        color: #555 !important;
-    }
-
-    /* Style cho nút thả nổi */
-    .floating-btn {
-        position: fixed;
-        bottom: 30px; /* Cách đáy 30px */
-        right: 30px;  /* Cách lề phải 30px */
-        background-color: #1a4f32; /* Xanh lá đậm chuẩn theo màu menu của ông */
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 50px; /* Bo tròn 2 đầu dạng viên thuốc */
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Đổ bóng cho nút nổi lên */
-        z-index: 9999; /* Ép nổi lên trên mọi thành phần khác */
-        transition: all 0.3s ease;
-    }
-
-    /* Hiệu ứng khi di chuột vào nút (hover) */
-    .floating-btn:hover {
-        background-color: #123823;
-        transform: translateY(-3px); /* Nhảy nhẹ lên 3px */
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    }
-</style>
-    <style>
         :root { 
             --primary: #1e4d2b;        
             --primary-hover: #14351d;
@@ -103,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Lora', serif; background-color: var(--bg-page); color: var(--text-main); line-height: 1.6; }
 
-        /* --- HEADER & MENU (Giữ nguyên) --- */
+        /* --- HEADER & MENU --- */
         header { background: linear-gradient(135deg, #1e4d2b 0%, #0f2615 100%); color: var(--accent); padding: 3rem 1rem 1.5rem; text-align: center; border-bottom: 4px solid var(--accent); }
         header h1 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 4px; font-size: 2.2rem; margin-bottom: 0.5rem; }
         header p { font-style: italic; color: #e8d0a5; font-size: 1rem; }
@@ -119,7 +37,8 @@
         .sub-tab:hover { color: var(--primary); }
         .sub-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-        .container { max-width: 1200px; margin: 2.5rem auto 5rem; padding: 0 1.5rem; }
+        /* Nới rộng container để đủ chỗ cho 3 cột */
+        .container { max-width: 1500px; margin: 2.5rem auto 5rem; padding: 0 1.5rem; }
 
         /* --- FORM LẬP LÁ SỐ --- */
         .tool-section { display: none; }
@@ -133,15 +52,33 @@
         .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 1rem; transition: 0.3s; background: #fafbfc; }
         .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15); background: #fff; }
         .row-group { display: flex; gap: 20px; }
-        .col-half { flex: 1; }
-        .row-group { display: flex; gap: 20px; }
         .col-half, .col-third { flex: 1; min-width: 0; }
         .btn-submit { display: block; width: 100%; padding: 16px; margin-top: 30px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-submit:hover { background: var(--primary-hover); box-shadow: 0 8px 20px rgba(30, 77, 43, 0.2); transform: translateY(-2px); }
 
         /* =======================================================
-           PHẦN KẾT QUẢ LÁ SỐ (GIAO DIỆN BẢNG LIỀN KHỐI CHUYÊN NGHIỆP)
+           PHẦN KẾT QUẢ LÁ SỐ VÀ LUẬN GIẢI VƯỢNG SUY (CSS GRID)
            ======================================================= */
+        
+        /* 1. Lệnh Grid chia 3 cột: Trái (trống) - Giữa (Lá số) - Phải (Luận giải) */
+        .main-layout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr max-content 1fr; 
+            gap: 30px;
+            align-items: start;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .center-bazi-column { width: 100%; }
+        
+        .right-analysis-column {
+            width: 100%;
+            max-width: 380px; 
+            padding-right: 15px; 
+        }
+
+        /* 2. Khung Bảng Lá Số Chính */
         .result-wrapper { 
             max-width: 950px; margin: 0 auto; background: #fff; border-radius: 8px; 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); 
@@ -151,50 +88,89 @@
         .result-header { background: #fff; padding: 25px 20px 20px; text-align: center; border-bottom: 2px solid var(--accent); position: relative; }
         .result-header h3 { font-family: 'Playfair Display', serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
         .result-header p { font-size: 0.95rem; color: var(--text-muted); font-family: 'Lora', serif; font-style: italic; }
-
         .result-body { padding: 25px 20px; background: #fdfdfd; }
 
-        /* Bảng lưới (Table Grid) liền mạch - Dùng Trick gap 1px để tạo viền mỏng */
+        /* Khung Luận Giải (Trôi Sticky bên phải) */
+        .box-luan-giai {
+            border: 1px solid var(--primary); 
+            border-radius: 8px; 
+            background-color: #fcfdfc; 
+            position: sticky; 
+            top: 80px; /* Tránh bị menu đè */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+        .luan-giai-title {
+            background-color: var(--primary); 
+            color: #ffffff; 
+            padding: 12px 15px;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .luan-giai-content {
+            padding: 20px;
+            font-family: 'Times New Roman', Times, serif; 
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* 3. Style Chi tiết trong Bảng */
         .t-grid { 
             display: grid; gap: 1px; background: #e2e8f0; 
             border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; margin-bottom: 25px; 
         }
+        .t-cell { background: #fff; padding: 10px 4px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.4; font-size: 16px !important; font-weight: 600 !important; color: #333 !important;}
+        .t-label { background: #f4f7f4; color: var(--primary) !important; font-size: 0.75rem !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .t-cell { background: #fff; padding: 10px 4px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.4; }
-        
-        /* Cột Nhãn (Label) dẫn hướng bên trái */
-        .t-label { background: #f4f7f4; color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* Highlight cột Nhật Chủ (Ngày) - Đã sửa lỗi viền */
         .col-day { background: #fffcf5; } 
         .badge-nhatchu { background: var(--accent); color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 2px 4px rgba(197, 160, 89, 0.2); }
 
-        /* Bố cục lưới 4 Trụ (1 Nhãn + 4 Trụ = 5 cột) */
         .bazi-main-grid { grid-template-columns: 85px repeat(4, 1fr); }
         
-        /* Chi tiết font chữ trong bảng Bát Tự */
-        .font-canchi { font-family: 'Noto Serif', serif; font-size: 1.7rem; font-weight: 700; line-height: 1.2; }
-        .font-god { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+        /* Chữ Can Chi (In hoa, font tiếng việt, dày) */
+        .font-canchi { 
+            font-family: Tahoma, Arial, sans-serif !important; 
+            font-size: 26px !important; 
+            font-weight: 900 !important; 
+            text-transform: uppercase !important; 
+            line-height: 1.4 !important;
+            display: block !important;
+            -webkit-text-stroke: 0.5px currentColor !important;
+            padding-bottom: 4px !important;
+        }
+        
+        .font-god { font-size: 18px !important; font-weight: 700 !important; color: #64748b; }
         .font-time { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .font-small { font-size: 0.75rem; color: #64748b; }
         
-        /* Bảng Thần Sát Nguyên Cục */
+        /* Tàng Can, Phó Tinh */
+        div[id*="-tangcan"] span, div[id*="-photinh"] span { font-size: 15px !important; font-weight: 600 !important; }
+        
+        /* Kẻ lại viền trên của hàng Tàng Can bằng màu xám siêu mờ */
+        div[id*="-tangcan"], .t-label-tangcan {
+            border-top: 1px solid #e5e7eb !important; 
+            padding-top: 6px !important;
+        }
+
         .ts-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; border-left: 3px solid var(--accent); padding-left: 10px; text-transform: uppercase; }
         .ts-grid { grid-template-columns: 85px repeat(4, 1fr); }
 
-        /* Bảng Đại Vận (Dải băng liền mạch 10 cột) */
+        /* Bảng Đại Vận, Lưu Niên */
         .dv-grid { grid-template-columns: repeat(10, 1fr); margin-bottom: 25px; }
         .dv-cell { cursor: pointer; transition: 0.2s; padding: 12px 2px; }
         .dv-cell:hover { background: #f8fafc; }
         .dv-cell.active { background: #fffcf8; border-bottom: 3px solid var(--primary); box-shadow: inset 0 -5px 15px rgba(197, 160, 89, 0.05); }
-        .dv-canchi { font-family: 'Noto Serif', serif; font-size: 1.05rem; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
-        .dv-tuoi { font-size: 0.7rem; color: #64748b; font-weight: 500; }
+        .dv-canchi { margin-bottom: 4px; }
+        .dv-canchi span, .ln-canchi span { font-family: Arial, Helvetica, sans-serif !important; font-size: 19px !important; font-weight: 700 !important; }
+        .dv-tuoi, .ln-tuoi, .ln-nam { font-size: 15px !important; font-weight: 600 !important; color: #555 !important; }
         
-        /* Bảng Lưu Niên 10 Năm (10 cột liền mạch) */
         .ln-grid { grid-template-columns: repeat(10, 1fr); }
         .ln-cell { padding: 10px 2px; }
-        .ln-canchi { font-family: 'Noto Serif', serif; font-size: 0.9rem; font-weight: 700; margin: 4px 0; }
-        .ln-nam { font-size: 0.7rem; color: var(--primary); font-weight: 600; }
+        .ln-canchi { margin: 4px 0; }
 
         /* Nút chức năng */
         .action-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; border-top: 1px dashed var(--border-color); padding-top: 25px; }
@@ -202,22 +178,31 @@
         .btn-action:hover { background: #f4f7f4; border-color: var(--primary-hover); }
         .btn-action.highlight { background: var(--primary); color: #fff; }
         .btn-action.highlight:hover { background: var(--primary-hover); }
-
         .btn-back-form { display: inline-block; padding: 12px 30px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: 'Playfair Display', serif; letter-spacing: 1px; margin: 20px auto 0; }
         .btn-back-form:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
 
-       /* Bảng màu ngũ hành - TƯƠI SÁNG & RỰC RỠ */
-        .color-moc { color: #16a34a !important; }  /* Xanh lá tươi rực */
-        .color-hoa { color: #dc2626 !important; }  /* Đỏ tươi sáng */
-        .color-tho { color: #d97706 !important; }  /* Vàng cam đất tươi */
-        .color-kim { color: #6b7280 !important; }  /* Xám sáng, thanh thoát */
-        .color-thuy { color: #2563eb !important; } /* Xanh dương tươi (Blue) */
-        .color-nhat { color: #ca8a04 !important; } /* Vàng kim sáng rực rỡ */
+        /* Bảng màu ngũ hành - TƯƠI SÁNG & RỰC RỠ */
+        .color-moc { color: #16a34a !important; }  
+        .color-hoa { color: #dc2626 !important; }  
+        .color-tho { color: #d97706 !important; }  
+        .color-kim { color: #6b7280 !important; }  
+        .color-thuy { color: #2563eb !important; } 
+        .color-nhat { color: #ca8a04 !important; } 
 
-        /* Responsive */
+        /* Style Nút Floating */
+        .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
+        .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
+
+        /* Responsive Mobile / Tablet */
+        @media (max-width: 1350px) {
+            .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; }
+            .spacer-left { display: none; }
+            .right-analysis-column { max-width: 950px; padding-right: 0; margin-top: 20px; }
+            .box-luan-giai { position: relative; top: 0; }
+        }
         @media (max-width: 850px) {
             .t-grid-scroll { overflow-x: auto; padding-bottom: 10px; }
-            .t-grid-scroll .t-grid { min-width: 650px; } /* Ép bảng luôn giữ form ngang trên mobile, cho phép vuốt */
+            .t-grid-scroll .t-grid { min-width: 650px; }
             .dv-grid, .ln-grid { min-width: 800px; }
         }
         @media (max-width: 600px) { .row-group { flex-direction: column; gap: 10px; } }
@@ -257,13 +242,11 @@
             <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
             <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để thiết lập cấu trúc Manh Phái & Cùng Thông.</p>
             <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
-                <!-- Hàng 1: Họ và tên -->
                 <div class="form-group">
                     <label>Họ và tên đương số</label>
                     <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A">
                 </div>
                 
-                <!-- Hàng 2: Ngày - Tháng - Năm (Đã chuyển sang dạng Option) -->
                 <div class="row-group">
                     <div class="form-group col-third">
                         <label>Ngày</label>
@@ -279,7 +262,6 @@
                     </div>
                 </div>
 
-                <!-- Hàng 3: Giờ - Phút - Giới tính (Đã chuyển sang dạng Option) -->
                 <div class="row-group">
                     <div class="form-group col-third">
                         <label>Giờ</label>
@@ -302,117 +284,132 @@
             </form>
         </div>
         
-        <!-- KHUNG 1B: KẾT QUẢ LÁ SỐ (Hiển thị Bảng liền khối) -->
+        <!-- KHUNG 1B: KẾT QUẢ LÁ SỐ & LUẬN GIẢI (3 CỘT) -->
         <div id="bazi-result-container" style="display: none;">
-            <div class="result-wrapper">
-                <div class="result-header">
-                    <h3>TỨ TRỤ MỆNH BÀN</h3>
-                    <p id="res-subtitle">Đương số: Nguyễn Văn A (Càn tạo) - Ngày sinh: ...</p>
-                </div>
-            <div class="result-body">
-                    <!-- Box Scroll ngang cho Mobile -->
-                    <div class="t-grid-scroll">
-                        
-                        <!-- BẢNG 1: BÁT TỰ CƠ BẢN -->
-                        <div class="t-grid bazi-main-grid">
-                            <!-- Hàng 1: Thời gian -->
-                            <div class="t-cell t-label">Dương Lịch</div>
-                            <div class="t-cell font-time" id="val-nam-time">--</div>
-                            <div class="t-cell font-time" id="val-thang-time">--</div>
-                            <div class="t-cell font-time col-day" id="val-ngay-time">--</div>
-                            <div class="t-cell font-time" id="val-gio-time">--</div>
+            <div class="main-layout-wrapper">
+                
+                <!-- CỘT 1: Chống lề trái -->
+                <div class="spacer-left"></div>
+                
+                <!-- CỘT 2: Bảng Lá Số -->
+                <div class="center-bazi-column">
+                    <div class="result-wrapper">
+                        <div class="result-header">
+                            <h3>TỨ TRỤ MỆNH BÀN</h3>
+                            <p id="res-subtitle">Đương số: Nguyễn Văn A (Càn tạo) - Ngày sinh: ...</p>
+                        </div>
+                        <div class="result-body">
+                            <div class="t-grid-scroll">
+                                <!-- BẢNG 1: BÁT TỰ -->
+                                <div class="t-grid bazi-main-grid">
+                                    <div class="t-cell t-label">Dương Lịch</div>
+                                    <div class="t-cell font-time" id="val-nam-time">--</div>
+                                    <div class="t-cell font-time" id="val-thang-time">--</div>
+                                    <div class="t-cell font-time col-day" id="val-ngay-time">--</div>
+                                    <div class="t-cell font-time" id="val-gio-time">--</div>
+                                    
+                                    <div class="t-cell t-label">Chủ Tinh</div>
+                                    <div class="t-cell font-god" id="val-nam-god">--</div>
+                                    <div class="t-cell font-god" id="val-thang-god">--</div>
+                                    <div class="t-cell col-day"><span class="badge-nhatchu">NHẬT CHỦ</span></div>
+                                    <div class="t-cell font-god" id="val-gio-god">--</div>
+
+                                    <div class="t-cell t-label" style="padding: 20px 0;">Bát Tự</div>
+                                    <div class="t-cell">
+                                        <div class="font-canchi" id="val-nam-can">--</div>
+                                        <div class="font-canchi" id="val-nam-chi">--</div>
+                                    </div>
+                                    <div class="t-cell">
+                                        <div class="font-canchi" id="val-thang-can">--</div>
+                                        <div class="font-canchi" id="val-thang-chi">--</div>
+                                    </div>
+                                    <div class="t-cell col-day">
+                                        <div class="font-canchi" id="val-ngay-can">--</div>
+                                        <div class="font-canchi" id="val-ngay-chi">--</div>
+                                    </div>
+                                    <div class="t-cell">
+                                        <div class="font-canchi" id="val-gio-can">--</div>
+                                        <div class="font-canchi" id="val-gio-chi">--</div>
+                                    </div>
+
+                                    <div class="t-cell t-label t-label-tangcan">T.CAN</div>
+                                    <div class="t-cell font-small" id="val-nam-tangcan">--</div>
+                                    <div class="t-cell font-small" id="val-thang-tangcan">--</div>
+                                    <div class="t-cell font-small col-day" id="val-ngay-tangcan">--</div>
+                                    <div class="t-cell font-small" id="val-gio-tangcan">--</div>
+
+                                    <div class="t-cell t-label">P.TINH</div>
+                                    <div class="t-cell font-small" id="val-nam-photinh">-</div>
+                                    <div class="t-cell font-small" id="val-thang-photinh">-</div>
+                                    <div class="t-cell font-small col-day" id="val-ngay-photinh">-</div>
+                                    <div class="t-cell font-small" id="val-gio-photinh">-</div>
+                                </div>
+
+                                <!-- BẢNG 2: THẦN SÁT -->
+                                <div class="ts-title">Bảng Thần Sát Nguyên Cục</div>
+                                <div class="t-grid ts-grid">
+                                    <div class="t-cell t-label">Trụ</div>
+                                    <div class="t-cell t-label" style="background:#fff;">Niên Thần</div>
+                                    <div class="t-cell t-label" style="background:#fff;">Nguyệt Thần</div>
+                                    <div class="t-cell t-label col-day" style="background:#fffdf8;">Nhật Thần</div>
+                                    <div class="t-cell t-label" style="background:#fff;">Thời Thần</div>
+
+                                    <div class="t-cell t-label">T.SÁT</div>
+                                    <div class="t-cell font-small" id="ts-nam">-</div>
+                                    <div class="t-cell font-small" id="ts-thang">-</div>
+                                    <div class="t-cell font-small col-day" id="ts-ngay">-</div>
+                                    <div class="t-cell font-small" id="ts-gio">-</div>
+                                </div>
+
+                                <!-- BẢNG 3 & 4: ĐẠI VẬN, LƯU NIÊN -->
+                                <div class="ts-title" style="margin-top: 20px;">Đại Vận (Click để xem Lưu Niên)</div>
+                                <div class="t-grid dv-grid" id="dv-container"></div>
+
+                                <div class="ts-title">Lưu Niên (10 Năm Trong Vận)</div>
+                                <div class="t-grid ln-grid" id="ln-container"></div>
+                            </div> 
                             
-                            <!-- Hàng 2: Chủ Tinh (Thần của Thiên Can) -->
-                            <div class="t-cell t-label">Chủ Tinh</div>
-                            <div class="t-cell font-god" id="val-nam-god">--</div>
-                            <div class="t-cell font-god" id="val-thang-god">--</div>
-                            <div class="t-cell col-day"><span class="badge-nhatchu">NHẬT CHỦ</span></div>
-                            <div class="t-cell font-god" id="val-gio-god">--</div>
-
-                            <!-- Hàng 3: Bát Tự (Can Chi chính) -->
-                            <div class="t-cell t-label" style="padding: 20px 0;">Bát Tự</div>
-                            <div class="t-cell">
-                                <div class="font-canchi" id="val-nam-can">--</div>
-                                <div class="font-canchi" id="val-nam-chi">--</div>
+                            <div class="action-buttons">
+                                <button class="btn-action highlight" onclick="scrollToAnalysis()">Phân Tích Vượng Suy</button>
+                                <button class="btn-action">Phân Tích Manh Phái</button>
                             </div>
-                            <div class="t-cell">
-                                <div class="font-canchi" id="val-thang-can">--</div>
-                                <div class="font-canchi" id="val-thang-chi">--</div>
-                            </div>
-                            <div class="t-cell col-day">
-                                <div class="font-canchi" id="val-ngay-can">--</div>
-                                <div class="font-canchi" id="val-ngay-chi">--</div>
-                            </div>
-                            <div class="t-cell">
-                                <div class="font-canchi" id="val-gio-can">--</div>
-                                <div class="font-canchi" id="val-gio-chi">--</div>
-                            </div>
-
-                            <!-- Hàng 4: Tàng Can -->
-                            <div class="t-cell t-label">T.CAN</div>
-                            <div class="t-cell font-small" id="val-nam-tangcan">--</div>
-                            <div class="t-cell font-small" id="val-thang-tangcan">--</div>
-                            <div class="t-cell font-small col-day" id="val-ngay-tangcan">--</div>
-                            <div class="t-cell font-small" id="val-gio-tangcan">--</div>
-
-                            <!-- Hàng 5: Phó Tinh (Thập thần của Tàng Can) -->
-                            <div class="t-cell t-label">P.TINH</div>
-                            <div class="t-cell font-small" id="val-nam-photinh">-</div>
-                            <div class="t-cell font-small" id="val-thang-photinh">-</div>
-                            <div class="t-cell font-small col-day" id="val-ngay-photinh">-</div>
-                            <div class="t-cell font-small" id="val-gio-photinh">-</div>
                         </div>
-
-                        <!-- BẢNG 2: THẦN SÁT NGUYÊN CỤC -->
-                        <div class="ts-title">Bảng Thần Sát Nguyên Cục</div>
-                        <div class="t-grid ts-grid">
-                            <div class="t-cell t-label">Trụ</div>
-                            <div class="t-cell t-label" style="background:#fff;">Niên Thần</div>
-                            <div class="t-cell t-label" style="background:#fff;">Nguyệt Thần</div>
-                            <div class="t-cell t-label col-day" style="background:#fffdf8;">Nhật Thần</div>
-                            <div class="t-cell t-label" style="background:#fff;">Thời Thần</div>
-
-                            <div class="t-cell t-label">T.SÁT</div>
-                            <div class="t-cell font-small" id="ts-nam">-</div>
-                            <div class="t-cell font-small" id="ts-thang">-</div>
-                            <div class="t-cell font-small col-day" id="ts-ngay">-</div>
-                            <div class="t-cell font-small" id="ts-gio">-</div>
-                        </div>
-
-                        <!-- BẢNG 3: ĐẠI VẬN -->
-                        <div class="ts-title" style="margin-top: 20px;">Đại Vận (Click để xem Lưu Niên)</div>
-                        <div class="t-grid dv-grid" id="dv-container">
-                            <!-- Dữ liệu JS sẽ tự động bơm vào đây -->
-                        </div>
-
-                        <!-- BẢNG 4: LƯU NIÊN -->
-                        <div class="ts-title">Lưu Niên (10 Năm Trong Vận)</div>
-                        <div class="t-grid ln-grid" id="ln-container">
-                            <!-- Dữ liệu JS sẽ tự động bơm vào đây -->
-                        </div>
-                    </div> 
+                    </div>
                     
-                    <!-- Nút chức năng cuối bảng -->
-                    <div class="action-buttons">
-                        <button class="btn-action highlight">Phân Tích Vượng Suy</button>
-                        <button class="btn-action">Phân Tích Manh Phái</button>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn-back-form" onclick="resetBaziForm()">← Lập lá số khác</button>
                     </div>
                 </div>
-            </div>
-            
-            <div style="text-align: center;">
-                <button class="btn-back-form" onclick="resetBaziForm()">← Lập lá số khác</button>
+
+                <!-- CỘT 3: Khung Luận Giải (Trôi bên phải) -->
+                <div class="right-analysis-column">
+                    <div class="box-luan-giai" id="box-luan-giai">
+                        <div class="luan-giai-title">PHÂN TÍCH VƯỢNG SUY</div>
+                        <div class="luan-giai-content" id="noidung-vuongsuy">
+                            Nhật chủ sinh vào tháng thất lệnh, căn khí suy yếu. Trong trụ Tỷ Kiếp Ấn Tinh thấu xuất, có thể trợ giúp thân nhược. Tổng quan Nguyên cục mộc khô, kim vượng.<br><br>
+                            <strong>Kết luận:</strong> Thân Nhược.<br>
+                            <strong>Dụng thần:</strong> Thủy (Ấn tinh) hóa sát sinh thân.<br>
+                            <strong>Hỷ thần:</strong> Mộc (Tỷ kiếp) trợ thân chống sát.
+                            <br><br>
+                            <em>(Nội dung luận giải mẫu sẽ được API trả về và cập nhật tự động tại đây)</em>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-</div>
-
 </div>
 
 <footer class="site-footer" style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent); margin-top: 40px;">
     <p style="font-size: 1.05rem; font-weight: bold; color: #aaa; margin-bottom: 15px;">&copy; 2026 Tử Vi Hoàng Hạc</p>
     <p><em>* Khuyến nghị: Nội dung luận giải Bát Tự được tổng hợp từ nền tảng triết học phương Đông.</em></p>
 </footer>
+
+<!-- Nút thả nổi quay lại form -->
+<button id="btnBackToTop" class="floating-btn" onclick="resetBaziForm()">
+    ← Lập lá số khác
+</button>
 
 <script>
     function switchMainTab(topic, element) {
@@ -431,12 +428,19 @@
         element.classList.add('active');
     }
 
+    // Hàm Reset Form làm gộp nhiệm vụ trượt lên và tải lại (hoặc ẩn bảng)
     function resetBaziForm() {
         document.getElementById('bazi-form-container').style.display = 'block';
         document.getElementById('bazi-result-container').style.display = 'none';
+        document.getElementById('btnBackToTop').style.display = 'none'; // Ẩn nút thả nổi khi ở Form
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- HÀM TỰ ĐỘNG LẤY MÀU THEO NGŨ HÀNH CAN CHI ---
+    function scrollToAnalysis() {
+        document.getElementById('box-luan-giai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Tự động gán màu
     function getColorClass(text) {
         const moc = ['Giáp', 'Ất', 'Dần', 'Mão'];
         const hoa = ['Bính', 'Đinh', 'Tỵ', 'Ngọ'];
@@ -452,28 +456,22 @@
         return '';
     }
 
-    // --- HÀM PHÂN TÁCH CHUỖI VÍ DỤ: "Đinh Mão (Thương Quan)" ---
     function parsePillarString(str) {
-        // Trả về object: { can: "Đinh", chi: "Mão", god: "Thương Quan" }
         const match = str.match(/^(.*?)\s+(.*?)\s*\((.*?)\)$/);
         if (match) {
             let god = match[3];
-            if (god.includes("Nhật Chủ")) god = "Nhật Chủ"; // Lọc phần Nhật Chủ
+            if (god.includes("Nhật Chủ")) god = "Nhật Chủ";
             return { can: match[1], chi: match[2], god: god };
         }
         return { can: "", chi: "", god: "" };
     }
 
-    // --- XỬ LÝ SỰ KIỆN NÚT LẬP LÁ SỐ ---
     function handleBaziSubmit(event) {
         event.preventDefault(); 
         
-        // Lấy dữ liệu từ các ô riêng biệt
         let name = document.getElementById('name').value.trim();
-        //const name = document.getElementById('name').value || 'Khách';
-        if (name === '') {
-            name = 'Vô Danh Khách'; // Ông có thể đổi thành 'Ẩn Danh' hoặc tên gì tùy thích
-        }
+        if (name === '') name = 'Vô Danh Khách';
+        
         const day = parseInt(document.getElementById('birth_day').value, 10);
         const month = parseInt(document.getElementById('birth_month').value, 10);
         const year = parseInt(document.getElementById('birth_year').value, 10);
@@ -482,15 +480,17 @@
         const gender = document.getElementById('gender').value;
         const genderInt = gender === 'Nam' ? 1 : 0;
 
-        // Định dạng lại chuỗi để hiển thị trên Subtitle
         const birthdateStr = `${day}/${month}/${year}`;
         const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
 
         document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
+        
+        // Chuyển đổi trạng thái hiển thị
         document.getElementById('bazi-form-container').style.display = 'none';
         document.getElementById('bazi-result-container').style.display = 'block';
+        document.getElementById('btnBackToTop').style.display = 'block'; // Hiện nút thả nổi
 
-        // GỌI API BẢO MẬT (DÙNG KEY CỦA WEB)
+        // GỌI API
         fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
             method: 'POST',
             headers: {
@@ -503,6 +503,7 @@
         .then(response => {
             if(response.status === "success") {
                 renderBaziResult(response.data, { year, month, day, hour, minute });
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // Trượt mượt mà lên đầu bảng lá số
             } else {
                 alert("Lỗi từ máy chủ: " + JSON.stringify(response));
                 resetBaziForm();
@@ -515,20 +516,16 @@
         });
     }
 
-    // --- HÀM BƠM DỮ LIỆU JSON VÀO GIAO DIỆN ---
     function renderBaziResult(data, inputTime) {
-        // 1. Điền Thời Gian Lịch Dương
         document.getElementById('val-nam-time').innerText = inputTime.year;
         document.getElementById('val-thang-time').innerText = inputTime.month;
         document.getElementById('val-ngay-time').innerText = inputTime.day;
         document.getElementById('val-gio-time').innerText = `${inputTime.hour}:${inputTime.minute < 10 ? '0'+inputTime.minute : inputTime.minute}`;
 
-        // 2. Điền Bát Tự & Chủ Tinh
         const keys = ['nam', 'thang', 'ngay', 'gio'];
         keys.forEach(k => {
             const parsed = parsePillarString(data.tu_tru[k]);
             
-            // Can Chi
             const elmCan = document.getElementById(`val-${k}-can`);
             const elmChi = document.getElementById(`val-${k}-chi`);
             elmCan.innerText = parsed.can;
@@ -536,19 +533,16 @@
             elmChi.innerText = parsed.chi;
             elmChi.className = `font-canchi ${getColorClass(parsed.chi)}`;
 
-            // Chủ Tinh (Bỏ qua cột Ngày vì đã có Tem NHẬT CHỦ)
             if(k !== 'ngay') {
                 const elmGod = document.getElementById(`val-${k}-god`);
                 elmGod.innerText = parsed.god;
-                elmGod.className = `t-cell font-god ${getColorClass(parsed.can)}`; // Màu Thần theo màu Can
+                elmGod.className = `t-cell font-god ${getColorClass(parsed.can)}`; 
             }
 
-            // Tàng Can (Có màu, ép nằm ngang)
             const tcArr = data.tang_can[k] || [];
             const elmTangCan = document.getElementById(`val-${k}-tangcan`);
             if (elmTangCan) {
                 if (tcArr.length > 0) {
-                    // Dùng Flexbox với flex-wrap: nowrap để ép hàng ngang tuyệt đối
                     const tcHtml = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join('<span style="margin: 0 4px; color: #ccc;">-</span>');
                     elmTangCan.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap; width: 100%; white-space: nowrap;">${tcHtml}</div>`;
                 } else {
@@ -556,7 +550,6 @@
                 }
             }
             
-            // Phó Tinh (Có màu, ép nằm ngang)
             const elmPhoTinh = document.getElementById(`val-${k}-photinh`);
             if (elmPhoTinh) {
                 if (tcArr.length > 0) {
@@ -570,7 +563,6 @@
                 }
             }
 
-            // Thần Sát (Giữ nguyên)
             const elmThanSat = document.getElementById(`ts-${k}`);
             if (elmThanSat) {
                 const tsArr = data.than_sat_nguyen_cuc[k] || [];
@@ -578,30 +570,20 @@
             }
         });
 
-        // 3. Render Khung Đại Vận
         const dvContainer = document.getElementById('dv-container');
         dvContainer.innerHTML = '';
         const daiVanList = data.dai_van_chi_tiet;
-
-        // BƯỚC THÊM MỚI: Dò tìm vị trí Đại Vận chứa năm hiện tại
         const currentYear = new Date().getFullYear();
-        let activeIndex = 0; // Mặc định là 0 (Tiểu Vận) nếu không tìm thấy
+        let activeIndex = 0; 
         
         daiVanList.forEach((dv, index) => {
-            if (currentYear >= dv.nam_bat_dau && currentYear <= dv.nam_ket_thuc) {
-                activeIndex = index; // Chốt được vị trí Đại Vận hiện hành
-            }
+            if (currentYear >= dv.nam_bat_dau && currentYear <= dv.nam_ket_thuc) activeIndex = index; 
         });
 
-        // Vẽ danh sách Đại Vận
         daiVanList.forEach((dv, index) => {
-            const [can, chi] = dv.can_chi.split(' '); // Ví dụ: Kỷ Dậu
-            const isTieuVan = dv.can_chi === "Tiểu Vận";
-            
+            const [can, chi] = dv.can_chi.split(' '); 
             const cell = document.createElement('div');
-            // THAY ĐỔI: So sánh với activeIndex thay vì số 0
             cell.className = `t-cell dv-cell ${index === activeIndex ? 'active' : ''}`;
-            
             cell.innerHTML = `
                 <div class="dv-canchi">
                     <span class="${getColorClass(can || dv.can_chi)}">${can || dv.can_chi}</span><br>
@@ -609,18 +591,14 @@
                 </div>
                 <div class="dv-tuoi">${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t<br>${dv.nam_bat_dau}</div>
             `;
-            
-            // Sự kiện bấm vào Đại Vận
             cell.onclick = () => {
                 document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
                 cell.classList.add('active');
                 renderLuuNian(dv.liu_nian);
             };
-
             dvContainer.appendChild(cell);
         });
 
-        // BƯỚC THÊM MỚI: Tự động đổ dữ liệu Lưu Niên của Đại Vận hiện tại ngay khi load xong
         if (daiVanList.length > 0) {
             renderLuuNian(daiVanList[activeIndex].liu_nian);
         }
@@ -629,7 +607,7 @@
     function renderLuuNian(liuNianArr) {
         const lnContainer = document.getElementById('ln-container');
         lnContainer.innerHTML = '';
-        const currentYear = new Date().getFullYear(); // Lấy năm nay (2026)
+        const currentYear = new Date().getFullYear();
 
         liuNianArr.forEach(ln => {
             const [can, chi] = ln.can_chi.split(' ');
@@ -637,11 +615,9 @@
             
             const cell = document.createElement('div');
             cell.className = 't-cell ln-cell';
-            
-            // BẮT BUỘC TẠO GẠCH CHÂN DÀY MÀU XANH CHO NĂM HIỆN TẠI (GIỐNG ĐẠI VẬN)
             if (isCurrentYear) {
-                cell.style.borderBottom = '3px solid #1a4f32'; // Màu xanh đậm giống tab Đại Vận
-                cell.style.backgroundColor = '#f4f9f5'; // Tô nền xám xanh cực nhẹ để làm nổi bật ô
+                cell.style.borderBottom = '3px solid #1a4f32'; 
+                cell.style.backgroundColor = '#f4f9f5'; 
             }
             
             cell.innerHTML = `
@@ -652,50 +628,24 @@
                 </div>
                 <div class="ln-nam" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.nam}</div>
             `;
-            
             lnContainer.appendChild(cell);
         });
     }
 
-    // --- TỰ ĐỘNG TẠO OPTION CHO NGÀY/THÁNG/NĂM/GIỜ/PHÚT ---
     function populateDropdowns() {
-        // Ngày (1-31)
         const daySelect = document.getElementById('birth_day');
-        for (let i = 1; i <= 31; i++) {
-            daySelect.add(new Option(i < 10 ? '0' + i : i, i));
-        }
-
-        // Tháng (1-12)
+        for (let i = 1; i <= 31; i++) daySelect.add(new Option(i < 10 ? '0' + i : i, i));
         const monthSelect = document.getElementById('birth_month');
-        for (let i = 1; i <= 12; i++) {
-            monthSelect.add(new Option(i < 10 ? '0' + i : i, i));
-        }
-
-        // Năm (Từ 1930 đến hiện tại + 10 năm)
+        for (let i = 1; i <= 12; i++) monthSelect.add(new Option(i < 10 ? '0' + i : i, i));
         const yearSelect = document.getElementById('birth_year');
         const currentYear = new Date().getFullYear();
-        for (let i = 1930; i <= currentYear + 10; i++) {
-            yearSelect.add(new Option(i, i));
-        }
-
-        // Giờ (0-23)
+        for (let i = 1930; i <= currentYear + 10; i++) yearSelect.add(new Option(i, i));
         const hourSelect = document.getElementById('birth_hour');
-        for (let i = 0; i <= 23; i++) {
-            hourSelect.add(new Option(i < 10 ? '0' + i : i, i));
-        }
-
-        // Phút (0-59)
+        for (let i = 0; i <= 23; i++) hourSelect.add(new Option(i < 10 ? '0' + i : i, i));
         const minSelect = document.getElementById('birth_minute');
-        for (let i = 0; i <= 59; i++) {
-            minSelect.add(new Option(i < 10 ? '0' + i : i, i));
-        }
+        for (let i = 0; i <= 59; i++) minSelect.add(new Option(i < 10 ? '0' + i : i, i));
 
-        // --- Đặt giá trị mặc định cho form (Ví dụ: 22/10/1987 11:00) ---
-        daySelect.value = 20;
-        monthSelect.value = 10;
-        yearSelect.value = 1987;
-        hourSelect.value = 3;
-        minSelect.value = 0;
+        daySelect.value = 22; monthSelect.value = 10; yearSelect.value = 1987; hourSelect.value = 11; minSelect.value = 0;
     }
 
     function getThapThan(nhatChu, canKiemTra) {
@@ -713,24 +663,9 @@
         };
         return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
     }
-
-    function backToForm() {
-        // Cách 1: Cuộn mượt mà lên thẳng đầu trang (nơi để form nhập)
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Tùy chọn (Cách 2): Nếu form nhập liệu của ông đang bị ẩn đi khi hiện lá số, 
-        // thì bỏ comment 2 dòng dưới và sửa lại ID cho đúng form của ông nhé:
-        // document.getElementById('id-cua-khung-nhap-lieu').style.display = 'block';
-        // document.getElementById('bazi-result-container').style.display = 'none';
-    }
     
-    // Chạy hàm tạo dropdown ngay khi trang vừa load xong
     document.addEventListener("DOMContentLoaded", populateDropdowns);
     
 </script>
-<!-- Nút thả nổi quay lại form -->
-<button id="btnBackToTop" class="floating-btn" onclick="resetBaziForm()">
-    ← Lập lá số khác
-</button>
 </body>
 </html>
