@@ -480,12 +480,24 @@
         dvContainer.innerHTML = '';
         const daiVanList = data.dai_van_chi_tiet;
 
+        // BƯỚC THÊM MỚI: Dò tìm vị trí Đại Vận chứa năm hiện tại
+        const currentYear = new Date().getFullYear();
+        let activeIndex = 0; // Mặc định là 0 (Tiểu Vận) nếu không tìm thấy
+        
+        daiVanList.forEach((dv, index) => {
+            if (currentYear >= dv.nam_bat_dau && currentYear <= dv.nam_ket_thuc) {
+                activeIndex = index; // Chốt được vị trí Đại Vận hiện hành
+            }
+        });
+
+        // Vẽ danh sách Đại Vận
         daiVanList.forEach((dv, index) => {
             const [can, chi] = dv.can_chi.split(' '); // Ví dụ: Kỷ Dậu
             const isTieuVan = dv.can_chi === "Tiểu Vận";
             
             const cell = document.createElement('div');
-            cell.className = `t-cell dv-cell ${index === 0 ? 'active' : ''}`;
+            // THAY ĐỔI: So sánh với activeIndex thay vì số 0
+            cell.className = `t-cell dv-cell ${index === activeIndex ? 'active' : ''}`;
             
             cell.innerHTML = `
                 <div class="dv-canchi">
@@ -505,9 +517,9 @@
             dvContainer.appendChild(cell);
         });
 
-        // 4. Mặc định render Lưu Niên của Đại Vận đầu tiên
+        // BƯỚC THÊM MỚI: Tự động đổ dữ liệu Lưu Niên của Đại Vận hiện tại ngay khi load xong
         if (daiVanList.length > 0) {
-            renderLuuNian(daiVanList[0].liu_nian);
+            renderLuuNian(daiVanList[activeIndex].liu_nian);
         }
     }
 
@@ -576,16 +588,16 @@
 
     function getThapThan(nhatChu, canKiemTra) {
         const thapThanMap = {
-            "Giáp": {"Giáp":"Tỷ Kiên", "Ất":"Kiếp Tài", "Bính":"Thực Thần", "Đinh":"Thương Quan", "Mậu":"Thiên Tài", "Kỷ":"Chính Tài", "Canh":"Thất Sát", "Tân":"Chính Quan", "Nhâm":"Thiên Ấn", "Quý":"Chính Ấn"},
-            "Ất": {"Giáp":"Kiếp Tài", "Ất":"Tỷ Kiên", "Bính":"Thương Quan", "Đinh":"Thực Thần", "Mậu":"Chính Tài", "Kỷ":"Thiên Tài", "Canh":"Chính Quan", "Tân":"Thất Sát", "Nhâm":"Chính Ấn", "Quý":"Thiên Ấn"},
-            "Bính": {"Giáp":"Thiên Ấn", "Ất":"Chính Ấn", "Bính":"Tỷ Kiên", "Đinh":"Kiếp Tài", "Mậu":"Thực Thần", "Kỷ":"Thương Quan", "Canh":"Thiên Tài", "Tân":"Chính Tài", "Nhâm":"Thất Sát", "Quý":"Chính Quan"},
-            "Đinh": {"Giáp":"Chính Ấn", "Ất":"Thiên Ấn", "Bính":"Kiếp Tài", "Đinh":"Tỷ Kiên", "Mậu":"Thương Quan", "Kỷ":"Thực Thần", "Canh":"Chính Tài", "Tân":"Thiên Tài", "Nhâm":"Chính Quan", "Quý":"Thất Sát"},
-            "Mậu": {"Giáp":"Thất Sát", "Ất":"Chính Quan", "Bính":"Thiên Ấn", "Đinh":"Chính Ấn", "Mậu":"Tỷ Kiên", "Kỷ":"Kiếp Tài", "Canh":"Thực Thần", "Tân":"Thương Quan", "Nhâm":"Thiên Tài", "Quý":"Chính Tài"},
-            "Kỷ": {"Giáp":"Chính Quan", "Ất":"Thất Sát", "Bính":"Chính Ấn", "Đinh":"Thiên Ấn", "Mậu":"Kiếp Tài", "Kỷ":"Tỷ Kiên", "Canh":"Thương Quan", "Tân":"Thực Thần", "Nhâm":"Chính Tài", "Quý":"Thiên Tài"},
-            "Canh": {"Giáp":"Thiên Tài", "Ất":"Chính Tài", "Bính":"Thất Sát", "Đinh":"Chính Quan", "Mậu":"Thiên Ấn", "Kỷ":"Chính Ấn", "Canh":"Tỷ Kiên", "Tân":"Kiếp Tài", "Nhâm":"Thực Thần", "Quý":"Thương Quan"},
-            "Tân": {"Giáp":"Chính Tài", "Ất":"Thiên Tài", "Bính":"Chính Quan", "Đinh":"Thất Sát", "Mậu":"Chính Ấn", "Kỷ":"Thiên Ấn", "Canh":"Kiếp Tài", "Tân":"Tỷ Kiên", "Nhâm":"Thương Quan", "Quý":"Thực Thần"},
-            "Nhâm": {"Giáp":"Thực Thần", "Ất":"Thương Quan", "Bính":"Thiên Tài", "Đinh":"Chính Tài", "Mậu":"Thất Sát", "Kỷ":"Chính Quan", "Canh":"Thiên Ấn", "Tân":"Chính Ấn", "Nhâm":"Tỷ Kiên", "Quý":"Kiếp Tài"},
-            "Quý": {"Giáp":"Thương Quan", "Ất":"Thực Thần", "Bính":"Chính Tài", "Đinh":"Thiên Tài", "Mậu":"Chính Quan", "Kỷ":"Thất Sát", "Canh":"Chính Ấn", "Tân":"Thiên Ấn", "Nhâm":"Kiếp Tài", "Quý":"Tỷ Kiên"}
+            "Giáp": {"Giáp":"Tỷ", "Ất":"Kiếp", "Bính":"Thực", "Đinh":"Thương", "Mậu":"T.Tài", "Kỷ":"C.Tài", "Canh":"Sát", "Tân":"Quan", "Nhâm":"Kiêu", "Quý":"Ấn"},
+            "Ất": {"Giáp":"Kiếp", "Ất":"Tỷ", "Bính":"Thương", "Đinh":"Thực", "Mậu":"C.Tài", "Kỷ":"T.Tài", "Canh":"Quan", "Tân":"Sát", "Nhâm":"Ấn", "Quý":"Kiêu"},
+            "Bính": {"Giáp":"Kiêu", "Ất":"Ấn", "Bính":"Tỷ", "Đinh":"Kiếp", "Mậu":"Thực", "Kỷ":"Thương", "Canh":"T.Tài", "Tân":"C.Tài", "Nhâm":"Sát", "Quý":"Quan"},
+            "Đinh": {"Giáp":"Ấn", "Ất":"Kiêu", "Bính":"Kiếp", "Đinh":"Tỷ", "Mậu":"Thương", "Kỷ":"Thực", "Canh":"C.Tài", "Tân":"T.Tài", "Nhâm":"Quan", "Quý":"Sát"},
+            "Mậu": {"Giáp":"Sát", "Ất":"Quan", "Bính":"Kiêu", "Đinh":"Ấn", "Mậu":"Tỷ", "Kỷ":"Kiếp", "Canh":"Thực", "Tân":"Thương", "Nhâm":"T.Tài", "Quý":"C.Tài"},
+            "Kỷ": {"Giáp":"Quan", "Ất":"Sát", "Bính":"Ấn", "Đinh":"Kiêu", "Mậu":"Kiếp", "Kỷ":"Tỷ", "Canh":"Thương", "Tân":"Thực", "Nhâm":"C.Tài", "Quý":"T.Tài"},
+            "Canh": {"Giáp":"T.Tài", "Ất":"C.Tài", "Bính":"Sát", "Đinh":"Quan", "Mậu":"Kiêu", "Kỷ":"Ấn", "Canh":"Tỷ", "Tân":"Kiếp", "Nhâm":"Thực", "Quý":"Thương"},
+            "Tân": {"Giáp":"C.Tài", "Ất":"T.Tài", "Bính":"Quan", "Đinh":"Sát", "Mậu":"Ấn", "Kỷ":"Kiêu", "Canh":"Kiếp", "Tân":"Tỷ", "Nhâm":"Thương", "Quý":"Thực"},
+            "Nhâm": {"Giáp":"Thực", "Ất":"Thương", "Bính":"T.Tài", "Đinh":"C.Tài", "Mậu":"Sát", "Kỷ":"Quan", "Canh":"Kiêu", "Tân":"Ấn", "Nhâm":"Tỷ", "Quý":"Kiếp"},
+            "Quý": {"Giáp":"Thương", "Ất":"Thực", "Bính":"C.Tài", "Đinh":"T.Tài", "Mậu":"Quan", "Kỷ":"Sát", "Canh":"Ấn", "Tân":"Kiêu", "Nhâm":"Kiếp", "Quý":"Tỷ"}
         };
         return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
     }
