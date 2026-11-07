@@ -160,18 +160,35 @@
         .ts-grid { grid-template-columns: 85px repeat(4, 1fr); }
 
        /* =========================================
-       SỬA LỖI PHÌNH VIỀN BẰNG BOX-SHADOW INSET
+       KHẮC PHỤC TRIỆT ĐỂ VIỀN LƯỚI ĐẠI VẬN, LƯU NIÊN
        ========================================= */
-    /* Bảng Đại Vận, Lưu Niên */
-    .dv-grid { grid-template-columns: repeat(10, 1fr); margin-bottom: 25px; }
-    .dv-cell { cursor: pointer; transition: 0.2s; padding: 12px 2px; border: none !important; }
+
+    /* 1. Lưới Đại Vận: Thêm nền xám (#e2e8f0) và viền bo ngoài */
+    .dv-grid { 
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); 
+        margin-bottom: 25px; 
+        gap: 1px; /* Tạo khe hở 1px giữa các ô */
+        background: #e2e8f0; /* Nền xám lộ qua khe hở làm đường kẻ dọc/ngang */
+        border: 1px solid #e2e8f0; /* Viền bao quanh nguyên cái bảng */
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .dv-cell { 
+        cursor: pointer; 
+        transition: 0.2s; 
+        padding: 12px 2px; 
+        background: #ffffff; /* Nền trắng cho các ô bình thường */
+        border: none !important; /* Dọn sạch mọi border để gap lưới hoạt động */
+    }
     .dv-cell:hover { background: #f8fafc; }
     
+    /* Xử lý ô Đại Vận đang chọn */
     .dv-cell.active { 
         background: #fffcf8 !important; 
-        /* Bắt buộc phải tắt border-bottom vật lý để không làm vỡ lưới */
-        border-bottom: none !important; 
-        /* Dùng viền chìm inset để vẽ vạch xanh lá cây ở đáy */
+        border: none !important; 
+        /* Viền chìm inset vẽ vạch xanh lá cây ở đáy, viền chìm vàng bên trên */
         box-shadow: inset 0 -3px 0 var(--primary), inset 0 -5px 15px rgba(197, 160, 89, 0.05) !important; 
     }
     
@@ -179,13 +196,30 @@
     .dv-canchi span, .ln-canchi span { font-family: Arial, Helvetica, sans-serif !important; font-size: 19px !important; font-weight: 700 !important; }
     .dv-tuoi, .ln-tuoi, .ln-nam { font-size: 15px !important; font-weight: 600 !important; color: #555 !important; }
     
-    .ln-grid { grid-template-columns: repeat(10, 1fr); }
-    .ln-cell { padding: 10px 2px; border: none !important; }
+    /* 2. Lưới Lưu Niên: Tương tự Đại Vận */
+    .ln-grid { 
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); 
+        gap: 1px; 
+        background: #e2e8f0; /* Hắt màu xám lên thành đường kẻ */
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .ln-cell { 
+        padding: 10px 2px; 
+        background: #ffffff; 
+        border: none !important; 
+    }
+    
     .ln-canchi { margin: 4px 0; }
 
-    /* Khắc chế thẻ style inline từ JS sinh ra cho Lưu Niên */
-    .ln-cell[style*="border-bottom"] {
-        border-bottom: none !important; 
+    /* Xử lý ô Lưu Niên hiện tại sinh ra từ JS */
+    .ln-cell[style*="background-color"] {
+        border: none !important; 
+        /* Không cần ghi đè background vì JS đã set đúng */
+        /* Chỉ ghi đè cái vạch xanh lá cây chìm */
         box-shadow: inset 0 -3px 0 #1a4f32 !important; 
     }
 
