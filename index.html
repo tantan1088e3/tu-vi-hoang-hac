@@ -457,20 +457,20 @@
             }
 
             // Tàng Can
-            document.getElementById(`val-${k}-tangcan`).innerText = data.tang_can[k].join(' - ');
-
-            // ---> THÊM MỚI: PHÓ TINH (Thập Thần của Tàng Can) <---
-            const elmPhoTinh = document.getElementById(`val-${k}-photinh`); // Đảm bảo HTML của ông có ID này
+            const tcArr = data.tang_can[k] || []; // Khai báo biến tcArr ở đây
+            document.getElementById(`val-${k}-tangcan`).innerText = tcArr.join(' - ');
+            
+            // Phó Tinh (Thập Thần của Tàng Can xếp ngang)
+            const elmPhoTinh = document.getElementById(`val-${k}-photinh`);
             if (elmPhoTinh) {
-                if (tcArr && tcArr.length > 0) {
+                if (tcArr.length > 0) {
                     // Gọi hàm tính Thập Thần dựa vào Nhật Chủ
                     const thapThanArr = tcArr.map(can => getThapThan(data.nhat_chu, can));
-                    elmPhoTinh.innerHTML = thapThanArr.join('<br>'); // Mỗi phó tinh xuống 1 dòng cho đẹp
+                    elmPhoTinh.innerText = thapThanArr.join(' - '); 
                 } else {
-                    elmPhoTinh.innerHTML = '-';
+                    elmPhoTinh.innerText = '-';
                 }
             }
-            
             // Thần Sát
             document.getElementById(`ts-${k}`).innerHTML = data.than_sat_nguyen_cuc[k].length > 0 ? data.than_sat_nguyen_cuc[k].join('<br>') : '-';
         });
