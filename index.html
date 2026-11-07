@@ -461,8 +461,9 @@
             const elmTangCan = document.getElementById(`val-${k}-tangcan`);
             if (elmTangCan) {
                 if (tcArr.length > 0) {
-                    elmTangCan.style.whiteSpace = 'nowrap'; // Lệnh ép không được xuống dòng
-                    elmTangCan.innerHTML = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join(' - ');
+                    // Dùng Flexbox với flex-wrap: nowrap để ép hàng ngang tuyệt đối
+                    const tcHtml = tcArr.map(can => `<span class="${getColorClass(can)}">${can}</span>`).join('<span style="margin: 0 4px; color: #ccc;">-</span>');
+                    elmTangCan.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap; width: 100%; white-space: nowrap;">${tcHtml}</div>`;
                 } else {
                     elmTangCan.innerText = '-';
                 }
@@ -472,11 +473,11 @@
             const elmPhoTinh = document.getElementById(`val-${k}-photinh`);
             if (elmPhoTinh) {
                 if (tcArr.length > 0) {
-                    elmPhoTinh.style.whiteSpace = 'nowrap'; // Lệnh ép không được xuống dòng
-                    elmPhoTinh.innerHTML = tcArr.map(can => {
+                    const thapThanHtml = tcArr.map(can => {
                         const thapThan = getThapThan(data.nhat_chu, can);
                         return `<span class="${getColorClass(can)}">${thapThan}</span>`;
-                    }).join(' - ');
+                    }).join('<span style="margin: 0 4px; color: #ccc;">-</span>');
+                    elmPhoTinh.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap; width: 100%; white-space: nowrap;">${thapThanHtml}</div>`;
                 } else {
                     elmPhoTinh.innerText = '-';
                 }
