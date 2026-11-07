@@ -7,33 +7,6 @@
     <!-- Cập nhật thêm font Inter (số liệu nét) và Noto Serif (chữ Can Chi có chân sang trọng) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        /* 1. Giữ nguyên toàn bộ bảng lá số (không cần làm mờ bất kỳ ô nào) */
-    .result-wrapper {
-        position: relative;
-    }
-
-    /* 2. Đưa ảnh đè lên trên cùng và làm mờ nó */
-    .result-wrapper::after {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0; /* Ép ảnh phủ kín toàn khung */
-        
-        /* CHÚ Ý: Thay tên file ảnh của ông vào đây */
-        background-image: url('nen-web1.png'); 
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        
-        /* Ép ảnh mờ đi, chỉ giữ lại 20% độ rõ nét để nhìn xuyên xuống chữ */
-        opacity: 0.2; 
-        
-        /* Đưa ảnh nổi lên trên mọi thứ */
-        z-index: 999; 
-        
-        /* TÍNH NĂNG QUAN TRỌNG NHẤT: Bỏ qua tương tác chuột. 
-           Giúp ông vẫn bôi đen chữ, click nút, hover xem lưu niên bình thường xuyên qua ảnh */
-        pointer-events: none; 
-    }
         :root { 
             --primary: #1e4d2b;        
             --primary-hover: #14351d;
@@ -220,6 +193,34 @@
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
         .floating-btn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); }
 
+         /* 1. Giữ nguyên toàn bộ bảng lá số (không cần làm mờ bất kỳ ô nào) */
+    .result-wrapper {
+        position: relative;
+    }
+
+    /* 2. Đưa ảnh đè lên trên cùng và làm mờ nó */
+    .result-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0; /* Ép ảnh phủ kín toàn khung */
+        
+        /* CHÚ Ý: Thay tên file ảnh của ông vào đây */
+        background-image: url('nen-web1.png'); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        
+        /* Ép ảnh mờ đi, chỉ giữ lại 20% độ rõ nét để nhìn xuyên xuống chữ */
+        opacity: 0.2; 
+        
+        /* Đưa ảnh nổi lên trên mọi thứ */
+        z-index: 999; 
+        
+        /* TÍNH NĂNG QUAN TRỌNG NHẤT: Bỏ qua tương tác chuột. 
+           Giúp ông vẫn bôi đen chữ, click nút, hover xem lưu niên bình thường xuyên qua ảnh */
+        pointer-events: none; 
+    }
+        
         /* Responsive Mobile / Tablet */
         @media (max-width: 1350px) {
             .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; }
