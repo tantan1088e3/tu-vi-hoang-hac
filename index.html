@@ -20,11 +20,14 @@
     }
 
     /* 3. Tứ Trụ Bát Tự (Chữ to chà bá, in đậm tuyệt đối) */
+    /* Tứ Trụ Bát Tự (Chữ to, ép viết hoa toàn bộ để vuông vức, bằng nhau tăm tắp) */
     .font-canchi {
-        font-family: Arial, Helvetica, sans-serif !important; /* Bát tự nên dùng font không chân cho rõ nét */
-        font-size: 28px !important; /* Phóng to lên hẳn 28px */
-        font-weight: 800 !important; /* Độ đậm tối đa */
-        line-height: 1.3 !important;
+        font-family: Arial, Helvetica, sans-serif !important; 
+        font-size: 26px !important; 
+        font-weight: 800 !important; 
+        text-transform: uppercase !important; /* Lệnh ép viết hoa toàn bộ */
+        line-height: 1.4 !important;
+        display: block !important;
     }
 
     /* 4. Chủ Tinh trên cùng */
@@ -169,13 +172,12 @@
         .btn-back-form { display: inline-block; padding: 12px 30px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: 'Playfair Display', serif; letter-spacing: 1px; margin: 20px auto 0; }
         .btn-back-form:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
 
-       /* Bảng màu ngũ hành chuẩn học thuật (Đậm, sâu, rõ nét) */
-        .color-moc { color: #007020 !important; }  /* Xanh lục sậm, mạnh mẽ và dịu mắt */
-        .color-hoa { color: #c80000 !important; }  /* Đỏ đô trầm, dứt khoát, không bị hồng/cam */
-        .color-tho { color: #996600 !important; }  /* Nâu vàng sậm, bám nền trắng cực tốt */
-        .color-kim { color: #4a4a4a !important; }  /* Xám chì đậm, nhìn uy lực hơn */
-        .color-thuy { color: #0033b3 !important; } /* Xanh biển sâu, độ tương phản tuyệt đối */
-        .color-nhat { color: #b8860b !important; } /* Vàng đồng đậm (DarkGoldenRod) tôn Nhật Chủ */
+       .color-moc { color: #007020 !important; }  
+        .color-hoa { color: #c80000 !important; }  
+        .color-tho { color: #996600 !important; }  
+        .color-kim { color: #888888 !important; }  /* Đã chuyển sang xám sáng (Gray) */
+        .color-thuy { color: #0033b3 !important; } 
+        .color-nhat { color: #b8860b !important; }
 
         /* Responsive */
         @media (max-width: 850px) {
