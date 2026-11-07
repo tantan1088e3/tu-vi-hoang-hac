@@ -167,11 +167,11 @@
     .dv-cell { cursor: pointer; transition: 0.2s; padding: 12px 2px; border: none !important; }
     .dv-cell:hover { background: #f8fafc; }
     
-    /* Xử lý ô Đại Vận đang chọn */
     .dv-cell.active { 
-        background: #fffcf8; 
-        border: none !important; 
-        /* Dùng viền chìm để không làm vỡ lưới Grid */
+        background: #fffcf8 !important; 
+        /* Bắt buộc phải tắt border-bottom vật lý để không làm vỡ lưới */
+        border-bottom: none !important; 
+        /* Dùng viền chìm inset để vẽ vạch xanh lá cây ở đáy */
         box-shadow: inset 0 -3px 0 var(--primary), inset 0 -5px 15px rgba(197, 160, 89, 0.05) !important; 
     }
     
@@ -661,7 +661,9 @@
             const cell = document.createElement('div');
             cell.className = 't-cell ln-cell';
             if (isCurrentYear) {
-                cell.style.borderBottom = '3px solid #1a4f32'; 
+                // Xóa border-bottom vật lý, thay bằng box-shadow chìm vào trong
+                cell.style.borderBottom = 'none'; 
+                cell.style.boxShadow = 'inset 0 -3px 0 #1a4f32'; 
                 cell.style.backgroundColor = '#f4f9f5'; 
             }
             
