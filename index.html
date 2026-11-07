@@ -7,6 +7,18 @@
     <!-- Cập nhật thêm font Inter (số liệu nét) và Noto Serif (chữ Can Chi có chân sang trọng) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@500;700&display=swap" rel="stylesheet">
     <style>
+
+    /* 1. Ép chữ Can Chi co đáy lại một chút, không cho đè lấp xuống viền */
+    .font-canchi {
+        padding-bottom: 4px !important;
+    }
+
+    /* 2. Kẻ lại viền trên của hàng Tàng Can thật nét */
+    div[id*="-tangcan"] {
+        border-top: 1px solid #94a3b8 !important; /* Màu xám viền nét liền */
+        padding-top: 6px !important;
+    }
+        
     /* 1. Thiết lập font chữ học thuật cho toàn bộ bảng */
     #bazi-result-container {
         font-family: 'Times New Roman', Times, serif !important; /* Dùng font có chân cho sang trọng */
@@ -21,13 +33,15 @@
 
     /* 3. Tứ Trụ Bát Tự (Chữ to chà bá, in đậm tuyệt đối) */
     /* Tứ Trụ Bát Tự (Chữ to, ép viết hoa toàn bộ để vuông vức, bằng nhau tăm tắp) */
+    /* Tứ Trụ Bát Tự (Ép font chuẩn tiếng Việt, không bị lỗi chữ mảnh) */
     .font-canchi {
-        font-family: Arial, Helvetica, sans-serif !important; 
+        font-family: Tahoma, Arial, sans-serif !important; /* Dùng font chuẩn quốc dân để không lỗi dấu */
         font-size: 26px !important; 
-        font-weight: 800 !important; 
-        text-transform: uppercase !important; /* Lệnh ép viết hoa toàn bộ */
+        font-weight: 900 !important; /* Độ đậm tối đa */
+        text-transform: uppercase !important; 
         line-height: 1.4 !important;
         display: block !important;
+        -webkit-text-stroke: 0.5px currentColor !important; /* Mẹo: Ép thêm 1 viền siêu mỏng cùng màu để mọi chữ đều béo bằng nhau */
     }
 
     /* 4. Chủ Tinh trên cùng */
@@ -172,12 +186,13 @@
         .btn-back-form { display: inline-block; padding: 12px 30px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: 'Playfair Display', serif; letter-spacing: 1px; margin: 20px auto 0; }
         .btn-back-form:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
 
-       .color-moc { color: #007020 !important; }  
-        .color-hoa { color: #c80000 !important; }  
-        .color-tho { color: #996600 !important; }  
-        .color-kim { color: #888888 !important; }  /* Đã chuyển sang xám sáng (Gray) */
-        .color-thuy { color: #0033b3 !important; } 
-        .color-nhat { color: #b8860b !important; }
+       /* Bảng màu ngũ hành - TƯƠI SÁNG & RỰC RỠ */
+        .color-moc { color: #16a34a !important; }  /* Xanh lá tươi rực */
+        .color-hoa { color: #dc2626 !important; }  /* Đỏ tươi sáng */
+        .color-tho { color: #d97706 !important; }  /* Vàng cam đất tươi */
+        .color-kim { color: #6b7280 !important; }  /* Xám sáng, thanh thoát */
+        .color-thuy { color: #2563eb !important; } /* Xanh dương tươi (Blue) */
+        .color-nhat { color: #ca8a04 !important; } /* Vàng kim sáng rực rỡ */
 
         /* Responsive */
         @media (max-width: 850px) {
@@ -315,7 +330,7 @@
                             </div>
 
                             <!-- Hàng 4: Tàng Can -->
-                            <div class="t-cell t-label">T.Can</div>
+                            <div class="t-cell t-label" style="border-top: 1px solid #94a3b8;">T.CAN</div>
                             <div class="t-cell font-small" id="val-nam-tangcan">--</div>
                             <div class="t-cell font-small" id="val-thang-tangcan">--</div>
                             <div class="t-cell font-small col-day" id="val-ngay-tangcan">--</div>
