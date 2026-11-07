@@ -220,6 +220,13 @@
            Giúp ông vẫn bôi đen chữ, click nút, hover xem lưu niên bình thường xuyên qua ảnh */
         pointer-events: none; 
     }
+        /* Ép hiện lại đường kẻ dọc hai bên cho các ô đang được chọn (active) */
+    .dv-cell.active, .ln-cell.active {
+        border-left: 1px solid #e2e8f0 !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-top: 1px solid #e2e8f0 !important;
+        /* Cố tình không ép border-bottom để ông vẫn giữ được cái vạch xanh lá cây */
+    }
         
         /* Responsive Mobile / Tablet */
         @media (max-width: 1350px) {
