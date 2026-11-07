@@ -125,6 +125,23 @@
         }
         .t-cell { background: #fff; padding: 10px 4px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.4; font-size: 16px !important; font-weight: 600 !important; color: #333 !important;}
         .t-label { background: #f4f7f4; color: var(--primary) !important; font-size: 0.75rem !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* =========================================
+       THU GỌN KHOẢNG CÁCH DÒNG BẢNG THẦN SÁT
+       ========================================= */
+        /* Target thẳng vào các ô chứa nội dung Thần Sát (ví dụ id="ts-nam", "ts-thang"...) */
+        div[id^="ts-"] {
+            line-height: 1.1 !important; /* Ép khoảng cách dòng ngắn lại */
+            padding: 8px 4px !important; /* Giảm padding trên/dưới một chút */
+        }
+    
+        /* Tăng nhẹ size chữ và làm màu sắc đậm hơn để dễ đọc */
+        div[id^="ts-"] span {
+            font-size: 13px !important; 
+            color: #334155 !important; /* Màu xám đậm sang trọng */
+            display: inline-block; /* Giúp các thẻ span không bị vỡ bố cục */
+            margin-bottom: 2px; /* Khoảng cách siêu nhỏ giữa các dòng chữ */
+        }
         
         .col-day { background: #fffcf5; } 
         .badge-nhatchu { background: var(--accent); color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 2px 4px rgba(197, 160, 89, 0.2); }
