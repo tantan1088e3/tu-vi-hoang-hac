@@ -294,14 +294,17 @@
         border-top: none !important;
     }
 
-    /* 3. Khóa viền khi ô được chọn (Vô hiệu hóa việc JS tự xóa viền đáy) */
+    /* 3. Khóa viền khi ô được chọn (Ép hiện đầy đủ cả viền phải và viền dưới) */
     .dv-cell.active, 
     .ln-cell[style*="box-shadow"], 
     .ln-cell[style*="border-bottom"] {
-        /* !important sẽ đè chết lệnh borderBottom='none' của JS, giữ lại đường kẻ đáy */
+        /* Đảm bảo viền dưới không bị JS xóa */
         border-bottom: 1px solid #e2e8f0 !important; 
         
-        /* Dùng viền chìm để vẽ vạch xanh lá cây vào trong ô, không làm phình kích thước */
+        /* BỔ SUNG: Ép cứng viền bên phải cho các ô đang active, chống bị mất nét */
+        border-right: 1px solid #e2e8f0 !important;
+        
+        /* Viền chìm (vạch xanh) */
         box-shadow: inset 0 -4px 0 var(--primary) !important; 
     }
   
