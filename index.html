@@ -549,16 +549,21 @@
             const isCurrentYear = (ln.nam === currentYear);
             
             const cell = document.createElement('div');
-            // Gắn class 'active' nếu là năm nay, nó sẽ tự hiện gạch chân y hệt tab Đại Vận
-            cell.className = `t-cell ln-cell ${isCurrentYear ? 'active' : ''}`;
+            cell.className = 't-cell ln-cell';
+            
+            // BẮT BUỘC TẠO GẠCH CHÂN DÀY MÀU XANH CHO NĂM HIỆN TẠI (GIỐNG ĐẠI VẬN)
+            if (isCurrentYear) {
+                cell.style.borderBottom = '3px solid #1a4f32'; // Màu xanh đậm giống tab Đại Vận
+                cell.style.backgroundColor = '#f4f9f5'; // Tô nền xám xanh cực nhẹ để làm nổi bật ô
+            }
             
             cell.innerHTML = `
-                <div class="ln-tuoi">${ln.tuoi}t</div>
+                <div class="ln-tuoi" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.tuoi}t</div>
                 <div class="ln-canchi">
                     <span class="${getColorClass(can)}">${can}</span><br>
                     <span class="${getColorClass(chi)}">${chi}</span>
                 </div>
-                <div class="ln-nam">${ln.nam}</div>
+                <div class="ln-nam" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.nam}</div>
             `;
             
             lnContainer.appendChild(cell);
