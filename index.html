@@ -875,45 +875,7 @@
             renderLuuNian(daiVanList[activeIndex].liu_nian);
         }
 
-        // =========================================================
-        // BỔ SUNG MỚI: RENDER DỮ LIỆU PHÂN TÍCH VƯỢNG SUY BÊN CỘT 3
-        // =========================================================
-        if (data.phan_tich_vuong_suy && data.phan_tich_vuong_suy.hien_thi_ui) {
-            const vuongSuy = data.phan_tich_vuong_suy.hien_thi_ui;
-            
-            // 1. Quét mảng phân tích chi tiết để tạo list gạch đầu dòng
-            let htmlChiTiet = "";
-            if (vuongSuy.phan_tich_chi_tiet && vuongSuy.phan_tich_chi_tiet.length > 0) {
-                vuongSuy.phan_tich_chi_tiet.forEach(dong => {
-                    htmlChiTiet += `<div style="margin-bottom: 6px;">• ${dong}</div>`;
-                });
-            }
-
-            // 2. Lắp ráp HTML thành một khối hoàn chỉnh
-            const htmlHoanChinh = `
-                <div style="font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 15px;">
-                    ${htmlChiTiet}
-                </div>
-                
-                <div style="margin-bottom: 15px; font-size: 15px;">
-                    <strong>Kết luận:</strong> <span style="color: #c0392b; font-weight: bold;">${vuongSuy.tong_quan.trang_thai}</span>
-                </div>
-                
-                <div style="background: #f4f8f6; padding: 12px; border-radius: 6px; border-left: 4px solid #1e4b41; font-size: 14px; line-height: 1.5;">
-                    <div style="margin-bottom: 4px;"><strong>Dụng thần:</strong> <span style="color: #2980b9;">${vuongSuy.cai_van.dung_than}</span></div>
-                    <div style="margin-bottom: 4px;"><strong>Hỷ thần:</strong> <span style="color: #27ae60;">${vuongSuy.cai_van.hy_than}</span></div>
-                    <div style="margin-bottom: 6px;"><strong>Kỵ thần:</strong> <span style="color: #d35400;">${vuongSuy.cai_van.ky_than}</span></div>
-                    <div style="font-style: italic; color: #555; border-top: 1px dashed #ccc; padding-top: 6px; margin-top: 6px;">
-                        <strong>Giải pháp:</strong> ${vuongSuy.cai_van.giai_phap}
-                    </div>
-                </div>
-            `;
-
-            // 3. Đẩy dữ liệu vào thẻ div box-luan-giai bên cột phải
-            const elmVuongSuy = document.getElementById("noidung-vuongsuy");
-            if (elmVuongSuy) {
-                elmVuongSuy.innerHTML = htmlHoanChinh;
-            }
+        
     }
 
     function renderLuuNian(liuNianArr) {
