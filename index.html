@@ -517,39 +517,45 @@
     }
     /* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
 @media screen and (max-width: 768px) {
-    /* 1. Thu nhỏ padding tổng thể của khung form để tiết kiệm không gian */
+    /* 1. Thu gọn padding và khoảng cách form chung */
     #bazi-form-container {
         padding: 12px 15px !important;
         margin: 5px auto !important;
     }
 
-    /* 2. Tiêu đề và mô tả gọn hơn một chút */
     #bazi-form-container h2 {
-        font-size: 20px !important;
-        margin-bottom: 5px !important;
+        font-size: 18px !important;
+        margin-bottom: 4px !important;
     }
     #bazi-form-container .subtitle {
-        font-size: 13px !important;
-        margin-bottom: 12px !important;
+        font-size: 12px !important;
+        margin-bottom: 10px !important;
     }
 
-    /* 3. Chuyển các nhóm dòng (.row-group) thành dạng 2 cột trên 1 hàng ngang */
+    /* 2. Xử lý các nhóm dòng (.row-group) */
     .row-group {
         display: flex !important;
-        gap: 8px !important; /* Khoảng cách giữa các ô trong cùng 1 hàng */
+        flex-wrap: wrap !important; /* Cho phép xuống dòng có kiểm soát nếu quá chật */
+        gap: 8px !important;
         margin-bottom: 6px !important;
     }
 
-    /* Ép các ô con (.col-third) chia đều không gian trên mobile */
+    /* 3. Ép các ô (.col-third) trên mobile chia làm 2 ô mỗi hàng cho thoáng (50% chiều rộng trừ gap) */
     .row-group .col-third {
-        flex: 1 !important;
-        min-width: 0 !important;
+        flex: 0 0 calc(50% - 4px) !important; /* Mỗi ô chiếm gần đúng 50% hàng */
+        max-width: calc(50% - 4px) !important;
         margin-bottom: 0 !important;
     }
 
-    /* 4. Thu nhỏ chiều cao input/select và chữ trong nhãn (label) */
+    /* Riêng ô cuối cùng (Giới tính hoặc Phút) nếu muốn cho nó tràn hết hàng cho cân đối thì dùng nth-child */
+    .row-group .col-third:nth-child(3) {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* 4. Thu nhỏ kích thước ô input, select và chữ cho vừa khít */
     .form-control, input[type="text"], select {
-        height: 36px !important;
+        height: 35px !important;
         padding: 4px 6px !important;
         font-size: 13px !important;
     }
@@ -559,11 +565,11 @@
         margin-bottom: 2px !important;
     }
 
-    /* 5. Nút bấm submit gọn gàng ngay tầm với */
+    /* 5. Nút submit gọn gàng ngay trong tầm nhìn */
     .btn-submit {
-        margin-top: 10px !important;
+        margin-top: 8px !important;
         padding: 10px !important;
-        font-size: 15px !important;
+        font-size: 14px !important;
     }
 }
     </style>
