@@ -972,34 +972,34 @@
     }
 
     function renderLuuNian(liuNianArr) {
-        const lnContainer = document.getElementById('ln-container');
-        lnContainer.innerHTML = '';
-        const currentYear = new Date().getFullYear();
+    const lnContainer = document.getElementById('ln-container');
+    lnContainer.innerHTML = '';
+    const currentYear = new Date().getFullYear();
 
-        liuNianArr.forEach(ln => {
-            const [can, chi] = ln.can_chi.split(' ');
-            const isCurrentYear = (ln.nam === currentYear);
-            
-            const cell = document.createElement('div');
-            cell.className = 't-cell ln-cell';
-            if (isCurrentYear) {
-                // Xóa border-bottom vật lý, thay bằng box-shadow chìm vào trong
-                cell.style.borderBottom = 'none'; 
-                cell.style.boxShadow = 'inset 0 -3px 0 #1a4f32'; 
-                cell.style.backgroundColor = '#f4f9f5'; 
-            }
-            
-            cell.innerHTML = `
-                <div class="ln-tuoi" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.tuoi}t</div>
-                <div class="ln-canchi">
-                    <span class="${(can)}">${can}</span><br>
-                    <span class="${(chi)}">${chi}</span>
-                </div>
-                <div class="ln-nam" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.nam}</div>
-            `;
-            lnContainer.appendChild(cell);
-        });
-    }
+    liuNianArr.forEach(ln => {
+        const [can, chi] = ln.can_chi.split(' '); 
+        const isCurrentYear = (ln.nam === currentYear);
+        
+        const cell = document.createElement('div');
+        cell.className = 't-cell ln-cell';
+        if (isCurrentYear) {
+            cell.style.borderBottom = 'none'; 
+            cell.style.boxShadow = 'inset 0 -3px 0 #1a4f32'; 
+            cell.style.backgroundColor = '#f4f9f5'; 
+        }
+        
+        // ĐÃ SỬA: Thêm getColorClass() vào cho Can và Chi
+        cell.innerHTML = `
+            <div class="ln-tuoi" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.tuoi}t</div>
+            <div class="ln-canchi">
+                <span class="${getColorClass(can)}">${can}</span><br>
+                <span class="${getColorClass(chi)}">${chi}</span>
+            </div>
+            <div class="ln-nam" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.nam}</div>
+        `;
+        lnContainer.appendChild(cell);
+    });
+}
 
     function populateDropdowns() {
         const daySelect = document.getElementById('birth_day');
