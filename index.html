@@ -188,9 +188,26 @@
         }
 
         .ts-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; border-left: 3px solid var(--accent); padding-left: 10px; text-transform: uppercase; }
-        .ts-grid { grid-template-columns: 85px repeat(4, 1fr); }
+        /* 1. Đồng bộ cấu trúc chia cột cho CẢ HAI bảng Bát Tự và Thần Sát */
+        .bazi-main-grid, 
+        .ts-grid {
+            display: grid !important;
+            grid-template-columns: 110px repeat(4, 1fr) !important; /* Cả 2 cùng dùng chung 110px */
+            border: 1px solid #d0d0d0;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        
+        /* 2. Đồng bộ style cho tất cả các ô trong cả 2 bảng */
+        .bazi-main-grid .t-cell,
+        .ts-grid .t-cell {
+            border-right: 1px solid #e0e0e0 !important; 
+            border-bottom: 1px solid #e0e0e0 !important;
+            word-break: break-word; 
+            overflow: hidden;
+            box-sizing: border-box;
+        }
 
-       
         /* Nút chức năng */
         .action-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; border-top: 1px dashed var(--border-color); padding-top: 25px; }
         .btn-action { padding: 10px 24px; border-radius: 6px; border: 1px solid var(--primary); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.3s; background: #fff; color: var(--primary); }
@@ -444,7 +461,7 @@
 
     @media (max-width: 850px) {
         /* BẮT BUỘC: Xóa bỏ min-width để bảng được phép co nhỏ lại theo màn hình */
-        .bazi-main-grid, .ts-grid { min-width: 100% !important; }
+        .bazi-main-grid, . { min-width: 100% !important; }
         #dv-container, #ln-container { min-width: 100% !important; }
         
         /* Sửa lỗi Menu lộn xộn */
@@ -465,7 +482,7 @@
 
         /* --- ÉP SIZE BẢNG LÁ SỐ CHÍNH (BÁT TỰ) --- */
         /* Cột Tiêu đề (nhãn) bóp hẹp từ 85px xuống còn 45px để nhường chỗ cho 4 Trụ */
-        .bazi-main-grid, .ts-grid { grid-template-columns: 45px repeat(4, 1fr) !important; }
+        .bazi-main-grid, . { grid-template-columns: 45px repeat(4, 1fr) !important; }
         
         .t-cell { padding: 6px 2px !important; }
         .t-label { font-size: 8px !important; letter-spacing: 0; padding: 4px 1px !important; }
