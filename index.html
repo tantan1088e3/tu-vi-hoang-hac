@@ -404,6 +404,36 @@
     text-decoration: none;
 }
 
+    /* Phủ kín màn hình, làm mờ phía sau */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85); /* Trắng đục */
+    z-index: 9999; /* Đè lên tất cả mọi thứ */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hiệu ứng vòng xoay */
+.loader {
+    border: 5px solid #f3f3f3; 
+    border-top: 5px solid #0F3F2B; /* Màu xanh của nút bấm */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
     /* 2. Tablet & Menu */
     @media (max-width: 1350px) {
         .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; width: 100%; }
@@ -471,7 +501,11 @@
     </style>
 </head>
 <body>
-
+<!-- Màn hình Loading ẩn -->
+<div id="loadingOverlay" style="display: none;">
+    <div class="loader"></div>
+    <p style="margin-top: 15px; font-weight: bold; color: #0F3F2B;">Đang phân tích cấu trúc Tứ Trụ...</p>
+</div>
 <header>
     <h1>Hoàng Hạc Các</h1>
     <p>Hệ Thống Di Sản Thuật Số & Luận Mệnh 2026</p>
@@ -733,55 +767,76 @@
         return { can: "", chi: "", god: "" };
     }
 
-    function handleBaziSubmit(event) {
-        event.preventDefault(); 
-        
-        let name = document.getElementById('name').value.trim();
-        if (name === '') name = 'Vô Danh Khách';
-        
-        const day = parseInt(document.getElementById('birth_day').value, 10);
-        const month = parseInt(document.getElementById('birth_month').value, 10);
-        const year = parseInt(document.getElementById('birth_year').value, 10);
-        const hour = parseInt(document.getElementById('birth_hour').value, 10);
-        const minute = parseInt(document.getElementById('birth_minute').value, 10);
-        const gender = document.getElementById('gender').value;
-        const genderInt = gender === 'Nam' ? 1 : 0;
+    async function handleBaziSubmit(event) {
+    event.preventDefault(); 
+    
+    // 1. LẤY DỮ LIỆU ĐẦU VÀO
+    let name = document.getElementById('name').value.trim();
+    if (name === '') name = 'Vô Danh Khách';
+    
+    const day = parseInt(document.getElementById('birth_day').value, 10);
+    const month = parseInt(document.getElementById('birth_month').value, 10);
+    const year = parseInt(document.getElementById('birth_year').value, 10);
+    const hour = parseInt(document.getElementById('birth_hour').value, 10);
+    const minute = parseInt(document.getElementById('birth_minute').value, 10);
+    const gender = document.getElementById('gender').value;
+    const genderInt = gender === 'Nam' ? 1 : 0;
 
-        const birthdateStr = `${day}/${month}/${year}`;
-        const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
+    const birthdateStr = `${day}/${month}/${year}`;
+    const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
 
-        document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
+    const loadingScreen = document.getElementById("loadingOverlay");
+    
+    try {
+        // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI API
+        if (loadingScreen) {
+            loadingScreen.style.display = "flex";
+        }
         
-        // Chuyển đổi trạng thái hiển thị
-        document.getElementById('bazi-form-container').style.display = 'none';
-        document.getElementById('bazi-result-container').style.display = 'block';
-        document.getElementById('btnBackToTop').style.display = 'block'; // Hiện nút thả nổi
-
-        // GỌI API
-        fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
+        // 3. GỌI API VÀ ĐỢI (AWAIT) DATA TRẢ VỀ
+        const res = await fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': 'HoangHac_Web_Public_2026'
             },
             body: JSON.stringify({ year, month, day, hour, minute, gender: genderInt })
-        })
-        .then(res => res.json())
-        .then(response => {
-            if(response.status === "success") {
-                renderBaziResult(response.data, { year, month, day, hour, minute });
-                window.scrollTo({ top: 0, behavior: 'smooth' }); // Trượt mượt mà lên đầu bảng lá số
-            } else {
-                alert("Lỗi từ máy chủ: " + JSON.stringify(response));
-                resetBaziForm();
-            }
-        })
-        .catch(err => {
-            console.error("Lỗi:", err);
-            alert("Lỗi kết nối API. Vui lòng kiểm tra lại mạng hoặc VPS.");
-            resetBaziForm();
         });
+        
+        const response = await res.json();
+
+        // 4. KHI API ĐÃ CHẠY XONG -> TẮT MÀN HÌNH LOADING
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+
+        // 5. XỬ LÝ KẾT QUẢ VÀ ĐỔI GIAO DIỆN
+        if (response.status === "success") {
+            // Chỉ khi có data xịn mới bắt đầu ghi text và ẩn/hiện div
+            document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
+            
+            document.getElementById('bazi-form-container').style.display = 'none';
+            document.getElementById('bazi-result-container').style.display = 'block';
+            document.getElementById('btnBackToTop').style.display = 'block';
+
+            // Vẽ data lên màn hình
+            renderBaziResult(response.data, { year, month, day, hour, minute });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        } else {
+            alert("Lỗi từ máy chủ: " + JSON.stringify(response));
+            resetBaziForm();
+        }
+
+    } catch (err) {
+        // TẮT MÀN HÌNH LOADING NẾU CÓ LỖI MẠNG
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+        console.error("Lỗi:", err);
+        alert("Lỗi kết nối API. Vui lòng kiểm tra lại mạng hoặc VPS.");
+        resetBaziForm();
     }
+}
 
     function renderBaziResult(data, inputTime) {
         document.getElementById('val-nam-time').innerText = inputTime.year;
