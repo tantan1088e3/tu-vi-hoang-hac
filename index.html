@@ -517,58 +517,64 @@
     }
     /* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
 @media screen and (max-width: 768px) {
-    /* 1. Thu gọn lề và khoảng cách form */
+    /* 1. Thu gọn lề và khung form */
     #bazi-form-container {
-        padding: 10px 14px !important;
+        padding: 10px 12px !important;
         margin: 5px auto !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
-    
+
     #bazi-form-container h2 {
         font-size: 18px !important;
         margin-bottom: 2px !important;
     }
-    
     #bazi-form-container .subtitle {
         font-size: 11px !important;
         margin-bottom: 8px !important;
     }
 
-    /* 2. Biến các dòng thành flex và ép mỗi ô chiếm đúng 50% chiều ngang (2 ô một hàng) */
+    /* 2. Dùng CSS Grid để chia chính xác 2 cột trên 1 hàng, không bao giờ sợ rớt dòng */
     .row-group {
-        display: flex !important;
-        flex-wrap: wrap !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Chia đều thành 2 cột tuyệt đối */
         gap: 8px !important;
         margin-bottom: 6px !important;
     }
 
+    /* Đảm bảo các ô con bên trong không bị dính style cũ */
     .row-group .col-third {
-        flex: 0 0 calc(50% - 4px) !important;
-        max-width: calc(50% - 4px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: none !important;
         margin-bottom: 0 !important;
     }
 
-    /* 3. Ô cuối cùng (ô thứ 3 trong nhóm) cho nó bung ra full 100% hàng cho cân đối */
-    .row-group .col-third:nth-child(3) {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
+    /* Riêng ô thứ 3 trong nhóm (ví dụ ô Năm hoặc ô Giới tính) nếu nằm lẻ loi ở dòng cuối thì cho nó tràn full 2 cột */
+    .row-group .col-third:nth-child(3):last-child {
+        grid-column: span 2 !important;
     }
 
-    /* 4. Thu nhỏ chiều cao ô nhập liệu cho đỡ bị thô */
+    /* 3. Thu nhỏ chiều cao ô input, select và chữ */
     .form-control, input[type="text"], select {
         height: 34px !important;
         padding: 2px 6px !important;
         font-size: 13px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     label, .form-group label {
         font-size: 11px !important;
         margin-bottom: 1px !important;
+        display: block !important;
     }
 
     .btn-submit {
         margin-top: 6px !important;
-        padding: 8px !important;
+        padding: 9px !important;
         font-size: 14px !important;
+        width: 100% !important;
     }
 }
     </style>
