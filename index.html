@@ -1092,7 +1092,15 @@
         const minSelect = document.getElementById('birth_minute');
         for (let i = 0; i <= 59; i++) minSelect.add(new Option(i < 10 ? '0' + i : i, i));
 
-        daySelect.value = 22; monthSelect.value = 10; yearSelect.value = 1987; hourSelect.value = 11; minSelect.value = 0;
+        // Lấy thời điểm hiện tại của hệ thống máy người dùng
+        const now = new Date();
+        
+        // Gán giá trị tự động cho các select box
+        daySelect.value = now.getDate();                  // Ngày hiện tại
+        monthSelect.value = now.getMonth() + 1;           // Tháng (JavaScript tính từ 0 nên phải +1)
+        yearSelect.value = now.getFullYear();             // Năm hiện tại
+        hourSelect.value = now.getHours();                // Giờ hiện tại (0 - 23)
+        minSelect.value = now.getMinutes();               // Phút hiện tại
     }
 
     function getThapThan(nhatChu, canKiemTra) {
