@@ -146,7 +146,21 @@
         .col-day { background: #fffcf5; } 
         .badge-nhatchu { background: var(--accent); color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 2px 4px rgba(197, 160, 89, 0.2); }
 
-        .bazi-main-grid { grid-template-columns: 85px repeat(4, 1fr); }
+        .bazi-main-grid {
+            display: grid;
+            /* Tăng độ rộng cột nhãn bên trái lên 110px để chứa chữ "Dương Lịch", 4 cột còn lại chia đều */
+            grid-template-columns: 110px repeat(4, 1fr) !important; 
+            border: 1px solid #d0d0d0;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        
+        .bazi-main-grid .t-cell {
+            border-right: 1px solid #e0e0e0 !important; /* Buộc phải hiện đường kẻ dọc */
+            border-bottom: 1px solid #e0e0e0 !important;
+            word-break: break-word; /* Chống tràn chữ */
+            overflow: hidden;
+        }
         
         /* Chữ Can Chi (In hoa, font tiếng việt, dày) */
         .font-canchi { 
