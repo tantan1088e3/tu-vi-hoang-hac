@@ -451,7 +451,7 @@
     100% { transform: rotate(360deg); }
 }
 
-    /* 2. Tablet & Menu */
+   /* 2. Tablet & Menu */
     @media (max-width: 1350px) {
         .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; width: 100%; }
         .spacer-left { display: none; }
@@ -460,8 +460,8 @@
     }
 
     @media (max-width: 850px) {
-        /* BẮT BUỘC: Xóa bỏ min-width để bảng được phép co nhỏ lại theo màn hình */
-        .bazi-main-grid, . { min-width: 100% !important; }
+        /* ĐÃ SỬA: Thay dấu chấm lẻ loi thành .ts-grid */
+        .bazi-main-grid, .ts-grid { min-width: 100% !important; }
         #dv-container, #ln-container { min-width: 100% !important; }
         
         /* Sửa lỗi Menu lộn xộn */
@@ -480,9 +480,9 @@
         .result-body { padding: 12px 6px; }
         .result-header h3 { font-size: 1.25rem; }
 
-        /* --- ÉP SIZE BẢNG LÁ SỐ CHÍNH (BÁT TỰ) --- */
-        /* Cột Tiêu đề (nhãn) bóp hẹp từ 85px xuống còn 45px để nhường chỗ cho 4 Trụ */
-        .bazi-main-grid, . { grid-template-columns: 45px repeat(4, 1fr) !important; }
+        /* --- ÉP SIZE BẢNG LÁ SỐ CHÍNH (BÁT TỰ & THẦN SÁT) --- */
+        /* ĐÃ SỬA: Đồng bộ cả 2 bảng Bát Tự và Thần Sát, sửa lỗi dấu chấm độc lập */
+        .bazi-main-grid, .ts-grid { grid-template-columns: 45px repeat(4, 1fr) !important; }
         
         .t-cell { padding: 6px 2px !important; }
         .t-label { font-size: 8px !important; letter-spacing: 0; padding: 4px 1px !important; }
@@ -499,7 +499,6 @@
         div[id^="ts-"] span { font-size: 9px !important; margin-bottom: 2px !important; }
 
         /* --- ÉP SIZE ĐẠI VẬN & LƯU NIÊN (10 CỘT) --- */
-        /* Đây là phần chật nhất, chữ phải thu cỡ nhỏ nhắn để vừa khít 10 cột */
         .dv-cell, .ln-cell { padding: 6px 1px !important; }
         .dv-canchi span, .ln-canchi span { font-size: 12px !important; }
         .dv-tuoi, .ln-tuoi, .ln-nam { font-size: 9px !important; }
