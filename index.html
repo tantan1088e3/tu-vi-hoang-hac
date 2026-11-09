@@ -217,13 +217,39 @@
         .btn-back-form { display: inline-block; padding: 12px 30px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: 'Playfair Display', serif; letter-spacing: 1px; margin: 20px auto 0; }
         .btn-back-form:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
 
-        /* Bảng màu ngũ hành - TƯƠI SÁNG & RỰC RỠ */
+        /* Bảng màu ngũ hành - TƯƠI SÁNG & RỰC RỠ 
         .color-moc { color: #16a34a !important; }  
         .color-hoa { color: #dc2626 !important; }  
         .color-tho { color: #d97706 !important; }  
         .color-kim { color: #6b7280 !important; }  
         .color-thuy { color: #2563eb !important; } 
-        .color-nhat { color: #ca8a04 !important; } 
+        .color-nhat { color: #ca8a04 !important; } */
+
+        /* Tinh chỉnh mã màu Ngũ Hành & Nhật Chủ */
+        .color-moc { 
+            color: #15803d !important; /* Xanh lục đậm - Sâu hơn màu cũ, sắc nét trên nền sáng */
+        }  
+        .color-hoa { 
+            color: #b91c1c !important; /* Đỏ thẫm/Đỏ đô - Cổ điển, đậm đà, không bị chóe */
+        }  
+        .color-tho { 
+            color: #9a3412 !important; /* Cam đất/Nâu đỏ - Khắc phục hoàn toàn lỗi chìm màu của Thổ */
+        }  
+        .color-kim { 
+            color: #374151 !important; /* Xám than đậm - Chắc nét, tương phản cao hơn xám nhạt */
+        }  
+        .color-thuy { 
+            color: #1d4ed8 !important; /* Xanh dương sâu - Giữ độ tươi tắn vốn có nhưng thêm phần sắc sảo */
+        } 
+        .color-nhat { 
+            color: #b45309 !important; /* Vàng đồng đậm - Nhấn mạnh Nhật chủ, tách biệt rạch ròi với màu Thổ */
+        }
+        
+        /* Thêm lớp hiệu ứng UI để đánh bật chữ khỏi nền hoa văn */
+        .color-moc, .color-hoa, .color-tho, .color-kim, .color-thuy, .color-nhat {
+            font-weight: 600 !important; /* Tăng độ dày nét chữ lên Semi-bold giúp màu bắt mắt hơn */
+            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.9) !important; /* Tạo lớp sương mờ trắng lót dưới chân chữ */
+        }
 
         /* Style Nút Floating */
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); z-index: 9999; transition: all 0.3s ease; display: none; }
