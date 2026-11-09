@@ -517,58 +517,57 @@
     }
     /* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
 @media screen and (max-width: 768px) {
-    /* 1. Thu gọn padding và khoảng cách form chung */
+    /* 1. Thu gọn lề và khoảng cách form */
     #bazi-form-container {
-        padding: 12px 15px !important;
+        padding: 10px 14px !important;
         margin: 5px auto !important;
     }
-
+    
     #bazi-form-container h2 {
         font-size: 18px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
+    
     #bazi-form-container .subtitle {
-        font-size: 12px !important;
-        margin-bottom: 10px !important;
+        font-size: 11px !important;
+        margin-bottom: 8px !important;
     }
 
-    /* 2. Xử lý các nhóm dòng (.row-group) */
+    /* 2. Biến các dòng thành flex và ép mỗi ô chiếm đúng 50% chiều ngang (2 ô một hàng) */
     .row-group {
         display: flex !important;
-        flex-wrap: wrap !important; /* Cho phép xuống dòng có kiểm soát nếu quá chật */
+        flex-wrap: wrap !important;
         gap: 8px !important;
         margin-bottom: 6px !important;
     }
 
-    /* 3. Ép các ô (.col-third) trên mobile chia làm 2 ô mỗi hàng cho thoáng (50% chiều rộng trừ gap) */
     .row-group .col-third {
-        flex: 0 0 calc(50% - 4px) !important; /* Mỗi ô chiếm gần đúng 50% hàng */
+        flex: 0 0 calc(50% - 4px) !important;
         max-width: calc(50% - 4px) !important;
         margin-bottom: 0 !important;
     }
 
-    /* Riêng ô cuối cùng (Giới tính hoặc Phút) nếu muốn cho nó tràn hết hàng cho cân đối thì dùng nth-child */
+    /* 3. Ô cuối cùng (ô thứ 3 trong nhóm) cho nó bung ra full 100% hàng cho cân đối */
     .row-group .col-third:nth-child(3) {
         flex: 0 0 100% !important;
         max-width: 100% !important;
     }
 
-    /* 4. Thu nhỏ kích thước ô input, select và chữ cho vừa khít */
+    /* 4. Thu nhỏ chiều cao ô nhập liệu cho đỡ bị thô */
     .form-control, input[type="text"], select {
-        height: 35px !important;
-        padding: 4px 6px !important;
+        height: 34px !important;
+        padding: 2px 6px !important;
         font-size: 13px !important;
     }
 
     label, .form-group label {
-        font-size: 12px !important;
-        margin-bottom: 2px !important;
+        font-size: 11px !important;
+        margin-bottom: 1px !important;
     }
 
-    /* 5. Nút submit gọn gàng ngay trong tầm nhìn */
     .btn-submit {
-        margin-top: 8px !important;
-        padding: 10px !important;
+        margin-top: 6px !important;
+        padding: 8px !important;
         font-size: 14px !important;
     }
 }
