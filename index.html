@@ -333,6 +333,77 @@
     .result-wrapper { width: 100%; max-width: 100%; }
     .t-grid-scroll { width: 100%; overflow-x: hidden; /* Tắt hẳn cuộn ngang */ }
 
+    .author-profile-card {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e1e8e5; /* Viền xanh nhạt hợp tone với web */
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px; /* Khoảng cách với hộp Vượng Suy bên dưới */
+    /* Tổng chiều cao của thẻ này + margin-bottom sẽ xấp xỉ bằng cái header bên trái */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.author-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #1e4b41; /* Viền avatar màu xanh đậm */
+}
+
+.author-info {
+    margin-left: 12px;
+}
+
+.author-info .author-name {
+    margin: 0;
+    font-size: 15px;
+    color: #1e4b41;
+    font-weight: bold;
+}
+
+.author-info .author-title {
+    margin: 2px 0;
+    font-size: 12px;
+    color: #c28b4d; /* Màu nâu vàng hợp phong thủy */
+    font-weight: 600;
+}
+
+.author-info .author-desc {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #718096;
+    line-height: 1.3;
+}
+
+/* Đảm bảo tên khi là thẻ link <a> không bị đổi màu mặc định của trình duyệt */
+.author-info .author-name a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.author-info .author-name a:hover {
+    color: #c28b4d; /* Đổi sang màu vàng nâu khi di chuột vào */
+}
+
+/* Style cho dòng chữ Kết nối Facebook */
+.fb-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #1877F2; /* Màu xanh biển đặc trưng của Facebook */
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.fb-link:hover {
+    text-decoration: underline;
+    color: #165eab;
+}
+
     /* 2. Tablet & Menu */
     @media (max-width: 1350px) {
         .main-layout-wrapper { grid-template-columns: 1fr; justify-items: center; width: 100%; }
@@ -575,19 +646,37 @@
                 <!-- CỘT 3: Khung Luận Giải (Trôi bên phải) -->
                 <div class="right-analysis-column">
                     
-                    <!-- KHỐI MỚI THÊM VÀO ĐỂ CÂN BẰNG VỚI HEADER BÊN TRÁI -->
-                    <div style="height: 122px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 2px solid transparent;">
-                        <h3 style="margin: 0; font-size: 18px; color: #1e4b41; text-transform: uppercase;">CHI TIẾT LUẬN GIẢI</h3>
-                        <p style="margin: 5px 0 0; font-size: 13px; color: #718096;">Hỗ trợ phân tích mệnh lý</p>
+                    <!-- KHỐI GIỚI THIỆU TÁC GIẢ (Thay thế khoảng trống) -->
+                    <!-- KHỐI GIỚI THIỆU TÁC GIẢ -->
+                    <div class="author-profile-card">
+                        <div class="author-avatar">
+                            <!-- Ảnh đại diện bấm vào được -->
+                            <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank" title="Theo dõi Facebook Bùi Quang Tân">
+                                <img src="https://via.placeholder.com/60" alt="Bùi Quang Tân">
+                            </a>
+                        </div>
+                        <div class="author-info">
+                            <h4 class="author-name">
+                                <!-- Tên bấm vào được -->
+                                <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank">Bùi Quang Tân</a>
+                            </h4>
+                            <p class="author-title">Chuyên gia Mệnh Lý</p>
+                            <p class="author-desc">Phân tích chuyên sâu Tử Vi & Bát Tự</p>
+                            <!-- Nút liên kết phụ -->
+                            <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank" class="fb-link">
+                                Kết nối Facebook ↗
+                            </a>
+                        </div>
                     </div>
-                    <!-- KẾT THÚC KHỐI MỚI THÊM -->
                 
+                    <!-- HỘP PHÂN TÍCH VƯỢNG SUY (Được đẩy xuống tự nhiên) -->
                     <div class="box-luan-giai" id="box-luan-giai">
                         <div class="luan-giai-title">PHÂN TÍCH VƯỢNG SUY</div>
                         <div class="luan-giai-content" id="noidung-vuongsuy">
-                            Nhật chủ sinh vào tháng thất lệnh...
+                            Nhật chủ sinh vào tháng thất lệnh, căn khí suy yếu...
                         </div>
                     </div>
+                    
                 </div>
 
             </div>
