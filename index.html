@@ -515,6 +515,30 @@
         .btn-submit { font-size: 1rem; padding: 12px; margin-top: 15px; }
         .btn-back-form { width: 100%; padding: 12px; margin-top: 15px; }
     }
+    @media screen and (max-width: 768px) {
+    /* 1. Thu nhỏ khoảng cách giữa các nhóm form trên mobile */
+    .form-group, div[style*="margin"] {
+        margin-bottom: 8px !important; /* Giảm khoảng cách giữa các dòng */
+    }
+
+    /* 2. Thu nhỏ chiều cao của các ô input và ô chọn (select) cho gọn */
+    input[type="text"], select {
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+        height: 38px !important;
+    }
+
+    /* 3. Thu nhỏ tiêu đề form và khung chứa để vừa khít màn hình */
+    #bazi-form-container {
+        padding: 10px 15px !important;
+        max-width: 100% !important;
+    }
+    
+    .result-header h3, h3 {
+        font-size: 20px !important;
+        margin-bottom: 5px !important;
+    }
+}
     </style>
 </head>
 <body>
