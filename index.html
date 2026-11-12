@@ -546,29 +546,28 @@
 /*--------lich su la so------------ */
 /* Bao bọc chia 2 cột */
 .bazi-layout-wrapper {
-    display: flex;
-    gap: 20px;
-    align-items: stretch; /* Ép 2 cột cao bằng nhau */
-    max-width: 1000px;
-    margin: 0 auto;
+    display: flex;          /* Kích hoạt Flexbox */
+    gap: 20px;            /* Khoảng cách giữa 2 cột */
+    align-items: flex-start; /* Giúp các cột không bị kéo giãn chiều cao trừ khi cần thiết */
+    max-width: 1200px;      /* Độ rộng tối đa của toàn bộ layout */
+    margin: 0 auto;         /* Căn giữa layout */
 }
 
 /* Cột trái 60% */
 .form-card {
-    flex: 6;
-    /* (Giữ nguyên các css cũ của form-card của bạn) */
+    flex: 6;              /* Chiếm 6 phần không gian */
 }
 
 /* Cột phải 40% - MÀU SÁCH CŨ */
 .history-card {
-    flex: 4;
-    background-color: #f4ecd8; /* Màu giấy ố vàng / sách cũ */
+    flex: 4;              /* Chiếm 4 phần không gian */
+    background-color: #f4ecd8; /* Màu giấy cũ */
     border: 1px solid #d3c5a3;
     border-radius: 8px;
     padding: 20px;
-    display: flex;
-    flex-direction: column; /* Để vùng list giãn chiếm hết chiều cao còn lại */
-    box-shadow: inset 0 0 15px rgba(139, 69, 19, 0.05); /* Tạo độ sâu mộc mạc */
+    /* Tùy chọn: Thêm chiều cao tối đa và scroll nếu danh sách quá dài */
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 .history-title {
@@ -636,10 +635,7 @@
 /* Responsive cho Điện thoại: Trượt xuống thành 1 cột */
 @media (max-width: 768px) {
     .bazi-layout-wrapper {
-        flex-direction: column;
-    }
-    .history-card {
-        height: 400px; /* Cố định chiều cao khi nằm dưới form trên Mobile */
+        flex-direction: column; /* Đặt lại thành dạng cột dọc */
     }
 }
         
@@ -739,7 +735,7 @@
 <div class="container">
     
     <div id="section-tools" class="tool-section active">
-        
+        <div class="bazi-layout-wrapper">
         <!-- KHUNG 1A: FORM NHẬP THÔNG TIN -->
         <div class="form-card" id="bazi-form-container">
             <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
@@ -801,6 +797,7 @@
             </div>
         </div>
     </div> <!-- Hết wrapper -->
+        </div>
 </div>
         
         <!-- KHUNG 1B: KẾT QUẢ LÁ SỐ & LUẬN GIẢI (3 CỘT) -->
