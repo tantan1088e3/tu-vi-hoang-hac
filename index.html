@@ -838,6 +838,24 @@
 .btn-delete-hi:hover { color: #cc0000; transform: scale(1.1); }
 
 /* =========================================
+   BỘ MÀU NHÃN THEO NGŨ HÀNH (KIM - MỘC - THỦY - HỎA - THỔ)
+========================================= */
+/* Mộc (Màu Xanh lá) */
+.badge-moc { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+
+/* Kim (Màu Vàng kim / Cam đất) */
+.badge-kim { background: #fef08a; color: #b45309; border: 1px solid #fde047; }
+
+/* Thủy (Màu Xanh dương) */
+.badge-thuy { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+
+/* Hỏa (Màu Đỏ rực) */
+.badge-hoa { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+
+/* Thổ (Màu Nâu đất) */
+.badge-tho { background: #f3e8d6; color: #8b4513; border: 1px solid #e0c8a0; }
+        
+/* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
 @media (max-width: 1024px) {
@@ -1462,58 +1480,94 @@
     // HÀM MỚI BỔ SUNG: RENDER CHI TIẾT ĐẠI VẬN CỘT PHẢI
     // =========================================================
     function renderChiTietDaiVan(dv) {
-        const titleEl = document.getElementById("title-luan-giai-dai-van");
-        const contentEl = document.getElementById("noidung-dai-van");
-        if (!titleEl || !contentEl) return;
+    const titleEl = document.getElementById("title-luan-giai-dai-van");
+    const contentEl = document.getElementById("noidung-dai-van");
+    if (!titleEl || !contentEl) return;
+
+    // Đổi tiêu đề
+    titleEl.innerHTML = `LUẬN GIẢI ĐẠI VẬN 10 NĂM: ${dv.can_chi.toUpperCase()}`;
     
-        // Đổi tiêu đề
-        titleEl.innerHTML = `LUẬN GIẢI VẬN TRÌNH: ${dv.can_chi.toUpperCase()}`;
-        
-        const phanTich = dv.phan_tich_sau;
-        
-        // Xử lý chặn nếu là Tiểu Vận
-        if (!phanTich || Object.keys(phanTich).length === 0) {
-            contentEl.innerHTML = `<div style="font-size: 15.5px; line-height: 1.6; color: #666; font-style: italic; text-align: justify; padding: 10px;">Giai đoạn Tiểu Vận (trước khi lên Đại Vận), năng lượng còn phụ thuộc nhiều vào cha mẹ. Hãy chọn các Đại Vận tiếp theo.</div>`;
-            return;
-        }
+    const phanTich = dv.phan_tich_sau;
     
-        // Xử lý Đánh Giá Số Sao
-        let saoHtml = "";
-        if (phanTich.sao_dai_van === "🔒") {
-            saoHtml = `<span style="color:#d32f2f; font-weight:bold;">🔒 Khóa (VIP)</span>`;
-        } else {
-            const soSao = parseInt(phanTich.sao_dai_van) || 3;
-            const iconSao = "⭐".repeat(soSao);
-            const textDanhGia = soSao >= 4 ? "Cát Hưng" : (soSao <= 2 ? "Thử Thách" : "Bình Hòa");
-            saoHtml = `<span style="color:#f57c00; font-size:16px;">${iconSao}</span> <span style="font-weight:bold; color: #444;">(${textDanhGia})</span>`;
-        }
-    
-        // Xử lý Các mục tương tác (thính chốt sale)
-        let tuongTacHtml = "";
-        if (phanTich.chi_tiet_tuong_tac && phanTich.chi_tiet_tuong_tac.length > 0) {
-            phanTich.chi_tiet_tuong_tac.forEach(item => {
-                // Sử dụng màu viền đồng bộ với box Vượng Suy (#1e4b41)
-                tuongTacHtml += `
-                    <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid #1e4b41; border-radius: 4px;">
-                        <div style="font-weight: bold; color: #1e4b41; font-size: 15px;">🔸 ${item.loai}</div>
-                        <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
-                    </div>
-                `;
-            });
-        } else {
-            tuongTacHtml = `<div style="margin-top: 15px; font-size: 15.5px; line-height: 1.6; color: #666; text-align: justify;">Giai đoạn này vận khí bình ổn, ít chịu sự tác động mạnh từ ngoại cảnh.</div>`;
-        }
-    
-        // Bắn HTML vào giao diện
-        contentEl.innerHTML = `
-            <div style="margin-bottom: 15px; font-size: 16px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
-                <b>Đánh giá:</b> ${saoHtml}
-            </div>
-            <div>
-                ${tuongTacHtml}
-            </div>
-        `;
+    // Xử lý chặn nếu là Tiểu Vận
+    if (!phanTich || Object.keys(phanTich).length === 0) {
+        contentEl.innerHTML = `<div style="font-size: 15.5px; line-height: 1.6; color: #666; font-style: italic; text-align: justify; padding: 10px;">Giai đoạn Tiểu Vận (trước khi lên Đại Vận), năng lượng còn phụ thuộc nhiều vào cha mẹ. Hãy chọn các Đại Vận tiếp theo.</div>`;
+        return;
     }
+
+    // Xử lý Đánh Giá Số Sao
+    let saoHtml = "";
+    if (phanTich.sao_dai_van === "🔒") {
+        saoHtml = `<span style="color:#d32f2f; font-weight:bold;">🔒 Khóa (VIP)</span>`;
+    } else {
+        const soSao = parseInt(phanTich.sao_dai_van) || 3;
+        const iconSao = "⭐".repeat(soSao);
+        const textDanhGia = soSao >= 4 ? "Cát Hưng" : (soSao <= 2 ? "Thử Thách" : "Bình Hòa");
+        saoHtml = `<span style="color:#f57c00; font-size:16px;">${iconSao}</span> <span style="font-weight:bold; color: #444;">(${textDanhGia})</span>`;
+    }
+
+    // Xử lý Các mục tương tác
+    let tuongTacHtml = "";
+    if (phanTich.chi_tiet_tuong_tac && phanTich.chi_tiet_tuong_tac.length > 0) {
+        phanTich.chi_tiet_tuong_tac.forEach(item => {
+            
+            // ==========================================
+            // AUTO BẮT TỪ KHÓA VÀ NGŨ HÀNH ĐỂ GẮN BADGE
+            // ==========================================
+            let loaiText = item.loai;
+            
+            // 1. Quét các Hợp / Hội có mang theo Ngũ Hành (VD: Bán hợp Mộc, Tam hợp Kim...)
+            loaiText = loaiText.replace(/(Tam Hội|Tam Hợp|Bán Hợp|Lục Hợp|Hợp Hóa|Hợp)\s*(Mộc|Kim|Thủy|Hỏa|Thổ)?/gi, (match, kieuHop, nguHanh) => {
+                let badgeClass = 'badge-hop'; // Màu mặc định nếu chỉ ghi "Hợp"
+                
+                if (nguHanh) {
+                    // Nếu dò thấy Ngũ Hành phía sau, ép màu theo Ngũ Hành
+                    const nh = nguHanh.toLowerCase();
+                    if (nh === 'mộc') badgeClass = 'badge-moc';
+                    if (nh === 'kim') badgeClass = 'badge-kim';
+                    if (nh === 'thủy') badgeClass = 'badge-thuy';
+                    if (nh === 'hỏa') badgeClass = 'badge-hoa';
+                    if (nh === 'thổ') badgeClass = 'badge-tho';
+                } else {
+                    // Nếu không có ngũ hành, phân loại theo tính chất Hợp/Hội
+                    const kh = kieuHop.toLowerCase();
+                    if (kh.includes('hội')) badgeClass = 'badge-hoi';
+                    if (kh.includes('tam hợp')) badgeClass = 'badge-tamhop';
+                }
+                
+                // Trả về HTML đã bọc đúng màu
+                return `<span class="badge-tuvi ${badgeClass}">${match}</span>`;
+            });
+
+            // 2. Nhóm Cảnh báo (Màu đỏ/cam) - Giữ nguyên như cũ
+            loaiText = loaiText.replace(/(Tương Xung|Trực Xung|Xung)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hình|Tự Hình|Hình)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hại|Hại)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Phá|Phá)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            // ==========================================
+
+            // Sử dụng loaiText đã được bọc span badge thay vì item.loai gốc
+            tuongTacHtml += `
+                <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid #1e4b41; border-radius: 4px;">
+                    <div style="font-weight: bold; color: #1e4b41; font-size: 15px;">🔸 ${loaiText}</div>
+                    <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
+                </div>
+            `;
+        });
+    } else {
+        tuongTacHtml = `<div style="margin-top: 15px; font-size: 15.5px; line-height: 1.6; color: #666; text-align: justify;">Giai đoạn này vận khí bình ổn, ít chịu sự tác động mạnh từ ngoại cảnh.</div>`;
+    }
+
+    // Bắn HTML vào giao diện
+    contentEl.innerHTML = `
+        <div style="margin-bottom: 15px; font-size: 16px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+            <b>Đánh giá:</b> ${saoHtml}
+        </div>
+        <div>
+            ${tuongTacHtml}
+        </div>
+    `;
+}
 
     function renderLuuNian(liuNianArr) {
     const lnContainer = document.getElementById('ln-container');
