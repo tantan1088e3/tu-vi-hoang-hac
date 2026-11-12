@@ -362,21 +362,29 @@
         z-index: 1;
     }
     
-    /* Dải màu gradient xoay tròn liền mạch (không đứt đoạn) */
+    /* Dải màu gradient xoay tròn liền mạch (Fix lỗi đứt viền trên Mobile) */
     .dv-cell.active::before {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
         
-        /* CHỈ DÙNG DẢI MÀU, BỎ PHẦN TRONG SUỐT ĐI */
+        /* 1. Đặt điểm neo vào chính giữa ô Đại Vận */
+        top: 50%;
+        left: 50%;
+        
+        /* 2. Ép thành hình vuông khổng lồ để dư sức phủ kín mọi góc nhọn */
+        width: 1000px;
+        height: 1000px;
+        
+        /* 3. Kéo ngược lại bằng 1 nửa kích thước để tâm hình vuông trùng với tâm ô */
+        margin-top: -500px;
+        margin-left: -500px;
+        
+        /* Dải màu cầu vồng liền mạch */
         background: conic-gradient(
             red, orange, yellow, green, cyan, blue, violet, red
         );
         
-        animation: rotateBorder 5s linear infinite; /* Tốc độ quay chậm 5s */
+        animation: rotateBorder 5s linear infinite;
         z-index: -2;
     }
     
