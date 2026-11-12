@@ -428,53 +428,127 @@
         font-weight: 600 !important; 
         color: #555 !important; 
     }
-    /* 2. Lưới Lưu Niên: Tương tự Đại Vận */
+    /* =========================================
+   1. CẤU TRÚC LƯỚI & VIỀN CỐ ĐỊNH (CHUNG)
+    ========================================= */
     .ln-grid { 
         display: grid;
         grid-template-columns: repeat(10, 1fr); 
-        gap: 1px; 
-        background: #e2e8f0; /* Hắt màu xám lên thành đường kẻ */
+        background: #e2e8f0; 
         border: 1px solid #e2e8f0;
         border-radius: 6px;
         overflow: hidden;
     }
+    
     .ln-cell { 
         padding: 10px 2px; 
         background: #ffffff; 
         border: none !important; 
+        position: relative;
+        overflow: hidden;
     }
     .ln-canchi { margin: 4px 0; }
-    /* Xử lý ô Lưu Niên hiện tại sinh ra từ JS */
-    .ln-cell[style*="background-color"] {
-        border: none !important; 
-        /* Không cần ghi đè background vì JS đã set đúng */
-        /* Chỉ ghi đè cái vạch xanh lá cây chìm */
-        box-shadow: inset 0 -3px 0 #1a4f32 !important; 
-    }
-    /* 1. Tắt khe hở lưới dễ vỡ, bo viền cứng bên trái và bên trên cho toàn bảng */
+    
+    /* Tắt khe hở lưới, bo viền cứng bên trái và bên trên */
     #dv-container, #ln-container {
         gap: 0 !important; 
         border-left: 1px solid #e2e8f0 !important; 
         border-top: 1px solid #e2e8f0 !important;
         background: transparent !important;
     }
-    /* 2. Ép viền cứng bên phải và bên dưới cho 100% các ô (không bao giờ mất) */
+    
+    /* Ép viền cứng bên phải và bên dưới cho 100% các ô */
     .dv-cell, .ln-cell {
         border-right: 1px solid #e2e8f0 !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-left: none !important;
         border-top: none !important;
     }
-    /* 3. Khóa viền khi ô được chọn (Ép hiện đầy đủ cả viền phải và viền dưới) */
-    .dv-cell.active, 
+    
+    /* =========================================
+       2. HIỆU ỨNG VIỀN CẦU VỒNG CHO ĐẠI VẬN
+    ========================================= */
+    .dv-cell.active {
+        background: transparent !important;
+        border-bottom: 1px solid #e2e8f0 !important; 
+        border-right: 1px solid #e2e8f0 !important;
+        z-index: 1;
+    }
+    
+    .dv-cell.active::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 1000px; height: 1000px;
+        margin-top: -500px; margin-left: -500px;
+        background: conic-gradient(red, orange, yellow, green, cyan, blue, violet, red);
+        animation: rotateBorder 5s linear infinite;
+        z-index: -2;
+    }
+    
+    .dv-cell.active::after {
+        content: '';
+        position: absolute;
+        top: 2px; left: 2px; right: 2px; bottom: 2px;
+        background: #fffcf8; 
+        border-radius: 4px;
+        box-shadow: inset 0 -4px 0 var(--primary) !important; 
+        z-index: -1;
+    }
+    
+    .dv-cell.active * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* =========================================
+       3. HIỆU ỨNG VIỀN CẦU VỒNG CHO LƯU NIÊN
+    ========================================= */
+    .ln-cell.active,
+    .ln-cell[style*="background-color"],
     .ln-cell[style*="box-shadow"], 
     .ln-cell[style*="border-bottom"] {
-        /* Đảm bảo viền dưới không bị JS xóa */
+        background: transparent !important; 
         border-bottom: 1px solid #e2e8f0 !important; 
-        /* BỔ SUNG: Ép cứng viền bên phải cho các ô đang active, chống bị mất nét */
         border-right: 1px solid #e2e8f0 !important;
-        /* Viền chìm (vạch xanh) */
-        box-shadow: inset 0 -4px 0 var(--primary) !important; 
+        z-index: 1;
+    }
+    
+    .ln-cell.active::before,
+    .ln-cell[style*="background-color"]::before,
+    .ln-cell[style*="box-shadow"]::before, 
+    .ln-cell[style*="border-bottom"]::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 1000px; height: 1000px;
+        margin-top: -500px; margin-left: -500px;
+        /* Bạn có thể đổi màu cầu vồng của Lưu Niên khác với Đại Vận ở đây nếu muốn */
+        background: conic-gradient(red, orange, yellow, green, cyan, blue, violet, red);
+        animation: rotateBorder 5s linear infinite;
+        z-index: -2;
+    }
+    
+    .ln-cell.active::after,
+    .ln-cell[style*="background-color"]::after,
+    .ln-cell[style*="box-shadow"]::after, 
+    .ln-cell[style*="border-bottom"]::after {
+        content: '';
+        position: absolute;
+        top: 2px; left: 2px; right: 2px; bottom: 2px;
+        background: #fffcf8; 
+        border-radius: 4px;
+        /* Lưu niên dùng vạch xanh chìm mã màu riêng như bạn thiết lập trước đó */
+        box-shadow: inset 0 -3px 0 #1a4f32 !important; 
+        z-index: -1;
+    }
+    
+    .ln-cell.active *,
+    .ln-cell[style*="background-color"] *,
+    .ln-cell[style*="box-shadow"] *, 
+    .ln-cell[style*="border-bottom"] * {
+        position: relative;
+        z-index: 2;
     }
   
         /* =========================================
