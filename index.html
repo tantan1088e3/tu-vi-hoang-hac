@@ -938,7 +938,7 @@
                 // =======================================
                 // 3. LƯU LÁ SỐ VÀO LOCAL STORAGE
                 // ======================================
-                ChartStorage.save(userInput, result.data);
+                ChartStorage.save(userInput, response.data);
                 console.log("Đã lưu lá số thành công!");
                 // Chỉ khi có data xịn mới bắt đầu ghi text và ẩn/hiện div
                 document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
