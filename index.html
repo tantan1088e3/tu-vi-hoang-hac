@@ -43,10 +43,54 @@
         /* --- FORM LẬP LÁ SỐ --- */
         .tool-section { display: none; }
         .tool-section.active { display: block; animation: fadeIn 0.5s ease; }
-        .form-card {margin-left: 20px; max-width: 750px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06); border: 1px solid var(--border-color); position: relative; overflow: hidden; }
-        .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary)); }
-        .form-card h2 { text-align: center; color: var(--primary); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px; }
-        .form-card p.subtitle { text-align: center; color: var(--text-muted); font-style: italic; margin-bottom: 30px; font-size: 0.95rem; }
+        /* =========================================
+           THIẾT KẾ KHỐI FORM NHẬP LIỆU
+        ========================================= */
+        .form-card {
+            /* 1. Phần Layout (Kết hợp với Flexbox 3 cột để làm to form) */
+            flex: 0 1 800px; /* Tăng tối đa lên 800px cho rộng rãi */
+            width: 100%;
+            margin: 0 20px; /* Căn cách đều hai bên để không đụng lịch sử */
+            box-sizing: border-box; /* Ép viền/padding không làm phình kích thước */
+        
+            /* 2. Phần UI (Giữ nguyên toàn bộ thiết kế cũ của bạn) */
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06); 
+            border: 1px solid var(--border-color); 
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        /* Hiệu ứng thanh viền gradient phía trên */
+        .form-card::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 6px; 
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary)); 
+        }
+        
+        /* Tiêu đề H2 */
+        .form-card h2 { 
+            text-align: center; 
+            color: var(--primary); 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.8rem; 
+            margin-bottom: 10px; 
+        }
+        
+        /* Dòng chữ Subtitle */
+        .form-card p.subtitle { 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-style: italic; 
+            margin-bottom: 30px; 
+            font-size: 0.95rem; 
+        }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: bold; color: var(--primary); margin-bottom: 8px; font-size: 0.95rem; }
         .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 1rem; transition: 0.3s; background: #fafbfc; }
@@ -938,7 +982,7 @@
                     </div>
                     
                     <div style="text-align: center; margin-top: 20px;">
-                        <button class="btn-back-form" onclick="resetBaziForm()">← Lập lá số khác</button>
+                        <button class="btn-back-form" onclick="()">← Lập lá số khác</button>
                     </div>
                 </div>
 
@@ -977,7 +1021,7 @@
 </footer>
 
 <!-- Nút thả nổi quay lại form -->
-<button id="btnBackToTop" class="floating-btn" onclick="resetBaziForm()">
+<button id="btnBackToTop" class="floating-btn" onclick="()">
     ← Lập lá số khác
 </button>
 <script src="storage.js"></script>
@@ -987,7 +1031,7 @@
         element.classList.add('active');
         if (topic === 'congcu') {
             document.getElementById('section-tools').style.display = 'block';
-            resetBaziForm(); 
+            (); 
         } else {
             document.getElementById('section-tools').style.display = 'none';
         }
@@ -1003,7 +1047,15 @@
         document.getElementById('bazi-form-container').style.display = 'block';
         document.getElementById('bazi-result-container').style.display = 'none';
         document.getElementById('btnBackToTop').style.display = 'none'; // Ẩn nút thả nổi khi ở Form
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 2. ẨN KHU VỰC LỊCH SỬ
+        document.getElementById('bazi-history-container').style.display = 'block';
+        // Nếu bạn có dùng thẻ bọc cột .history-col ở ngoài, hãy ẩn luôn nó để xóa sạch khoảng trống
+        const historyCol = document.querySelector('.history-col');
+        if (historyCol) historyCol.style.display = 'block';
+        
+        // 3. Ẩn cột trống bên trái (nếu có dùng ở layout 3 cột)
+        const emptyCol = document.querySelector('.empty-col');
+        if (emptyCol) emptyCol.style.display = 'block';
     }
 
     function scrollToAnalysis() {
