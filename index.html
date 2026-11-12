@@ -1057,6 +1057,7 @@
                 // ======================================
                 ChartStorage.save(userInput);
                 console.log("Đã lưu lá số thành công!");
+                renderHistoryList();
                 // Chỉ khi có data xịn mới bắt đầu ghi text và ẩn/hiện div
                 document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
                 document.getElementById('bazi-form-container').style.display = 'none';
@@ -1329,6 +1330,81 @@
         minSelect.value = now.getMinutes();               // Phút hiện tại
     }
 
+    // Hàm vẽ danh sách lá số (Có hỗ trợ tìm kiếm)
+function renderHistoryList(searchTerm = "") {
+    const historyListDiv = document.getElementById('historyList');
+    const charts = ChartStorage.getAll(); // Lấy từ LocalStorage
+
+    if (charts.length === 0) {
+        historyListDiv.innerHTML = "<p style='text-align:center; color:#888; font-style:italic; margin-top:20px;'>Chưa có lá số nào.</p>";
+        return;
+    }
+
+    // Lọc theo tên nếu có nhập ô tìm kiếm
+    const filteredCharts = charts.filter(c => 
+        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filteredCharts.length === 0) {
+        historyListDiv.innerHTML = "<p style='text-align:center; color:#888; margin-top:20px;'>Không tìm thấy.</p>";
+        return;
+    }
+
+    // Tạo HTML
+    let html = "";
+    filteredCharts.forEach(chart => {
+        html += `
+            <div class="history-item" onclick="loadSavedChart('${chart.id}')">
+                <div class="hi-info">
+                    <strong>${chart.name}</strong> <small>(${chart.gender === 1 ? 'Nam' : 'Nữ'})</small><br>
+                    <small>📅 ${chart.dob_string}</small>
+                </div>
+                <button class="btn-delete-hi" title="Xóa lá số" onclick="event.stopPropagation(); deleteSavedChart('${chart.id}')">×</button>
+            </div>
+        `;
+    });
+    
+    historyListDiv.innerHTML = html;
+}
+
+// Bắt sự kiện gõ phím ở ô Tìm kiếm
+function filterHistory() {
+    const term = document.getElementById('searchHistory').value;
+    renderHistoryList(term);
+}
+
+// Hàm XÓA lá số
+function deleteSavedChart(id) {
+    if(confirm("Bạn có chắc muốn xóa lá số này khỏi lịch sử?")) {
+        ChartStorage.remove(id);
+        filterHistory(); // Vẽ lại danh sách giữ nguyên từ khóa đang tìm
+    }
+}
+
+// Hàm LOAD lại lá số (Bấm vào là tự động điền form và chạy API)
+function loadSavedChart(id) {
+    const chart = ChartStorage.getAll().find(c => c.id === id);
+    if (chart) {
+        const p = chart.request_payload;
+        // Điền lại vào form
+        document.getElementById('name').value = chart.name;
+        document.getElementById('gender').value = p.gender === 1 ? 'Nam' : 'Nu';
+        document.getElementById('birth_day').value = p.day;
+        document.getElementById('birth_month').value = p.month;
+        document.getElementById('birth_year').value = p.year;
+        document.getElementById('birth_hour').value = p.hour;
+        document.getElementById('birth_minute').value = p.minute;
+
+        // Tự động bấm nút Submit
+        document.getElementById('bazi-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+}
+
+// Tự động load danh sách khi trang web vừa mở lên
+document.addEventListener("DOMContentLoaded", () => {
+    renderHistoryList();
+});
+    
     function getThapThan(nhatChu, canKiemTra) {
         const thapThanMap = {
             "Giáp": {"Giáp":"Tỷ", "Ất":"Kiếp", "Bính":"Thực", "Đinh":"Thương", "Mậu":"T.Tài", "Kỷ":"C.Tài", "Canh":"Sát", "Tân":"Quan", "Nhâm":"Kiêu", "Quý":"Ấn"},
