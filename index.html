@@ -370,9 +370,16 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        /* Dùng luôn biến --primary của bạn làm màu tia sáng */
-        background: conic-gradient(transparent, transparent, transparent, var(--primary));
-        animation: rotateBorder 2s linear infinite;
+        
+        /* 1. ĐỔI SANG MÀU CẦU VỒNG (Red -> Violet -> Red để nối viền mượt) */
+        background: conic-gradient(
+            transparent 30%, /* Giữ một phần trong suốt để tạo cảm giác tia sáng đang "đuổi" */
+            red, orange, yellow, green, cyan, blue, violet, red
+        );
+        
+        /* 2. GIẢM TỐC ĐỘ: Tăng từ 2s lên 5s (số s càng to thì chạy càng chậm) */
+        animation: rotateBorder 5s linear infinite;
+        
         z-index: -2;
     }
     
