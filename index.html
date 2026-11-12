@@ -542,7 +542,108 @@
         .btn-submit { font-size: 1rem; padding: 12px; margin-top: 15px; }
         .btn-back-form { width: 100%; padding: 12px; margin-top: 15px; }
     }
-    /* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
+
+/*--------lich su la so------------ */
+/* Bao bọc chia 2 cột */
+.bazi-layout-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* Ép 2 cột cao bằng nhau */
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cột trái 60% */
+.form-card {
+    flex: 6;
+    /* (Giữ nguyên các css cũ của form-card của bạn) */
+}
+
+/* Cột phải 40% - MÀU SÁCH CŨ */
+.history-card {
+    flex: 4;
+    background-color: #f4ecd8; /* Màu giấy ố vàng / sách cũ */
+    border: 1px solid #d3c5a3;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Để vùng list giãn chiếm hết chiều cao còn lại */
+    box-shadow: inset 0 0 15px rgba(139, 69, 19, 0.05); /* Tạo độ sâu mộc mạc */
+}
+
+.history-title {
+    text-align: center;
+    color: #5c4a3d;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 1px dashed #d3c5a3;
+    padding-bottom: 10px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #c2b280;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    font-family: inherit;
+    outline: none;
+}
+
+/* Khung cuộn danh sách */
+.history-list-scroll {
+    flex: 1; /* Chiếm toàn bộ khoảng trống còn lại */
+    overflow-y: auto; /* Tạo thanh cuộn dọc */
+    margin-top: 15px;
+    padding-right: 5px;
+}
+
+/* Custom thanh cuộn cho hợp tone màu sách cũ */
+.history-list-scroll::-webkit-scrollbar { width: 6px; }
+.history-list-scroll::-webkit-scrollbar-track { background: transparent; }
+.history-list-scroll::-webkit-scrollbar-thumb { background: #c2b280; border-radius: 4px; }
+
+/* Từng dòng lá số */
+.history-item {
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid #e0d5b7;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+.hi-info strong { color: #333; font-size: 15px; }
+.hi-info small { color: #666; font-size: 12px; }
+.btn-delete-hi {
+    background: transparent;
+    color: #ff4d4f;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+.btn-delete-hi:hover { color: #cc0000; }
+
+/* Responsive cho Điện thoại: Trượt xuống thành 1 cột */
+@media (max-width: 768px) {
+    .bazi-layout-wrapper {
+        flex-direction: column;
+    }
+    .history-card {
+        height: 400px; /* Cố định chiều cao khi nằm dưới form trên Mobile */
+    }
+}
+        
+/* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
 @media screen and (max-width: 768px) {
     /* 1. Thu gọn lề và khung form */
     #bazi-form-container {
@@ -642,7 +743,7 @@
         <!-- KHUNG 1A: FORM NHẬP THÔNG TIN -->
         <div class="form-card" id="bazi-form-container">
             <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
-            <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để thiết lập cấu trúc Manh Phái & Cùng Thông.</p>
+            <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để thiết lập lá số</p>
             <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
                 <div class="form-group">
                     <label>Họ và tên đương số</label>
@@ -685,6 +786,22 @@
                 <button type="submit" class="btn-submit" style="margin-top: 20px;">BẤM ĐỂ LẬP LÁ SỐ</button>
             </form>
         </div>
+        <!-- CỘT PHẢI: LỊCH SỬ LÁ SỐ (Nền sách cũ) -->
+        <div class="history-card" id="bazi-history-container">
+            <h3 class="history-title">Lịch Sử Lá Số</h3>
+            
+            <!-- Ô tìm kiếm -->
+            <div class="search-box">
+                <input type="text" id="searchHistory" placeholder="🔍 Tìm tên đương số..." onkeyup="filterHistory()">
+            </div>
+            
+            <!-- Vùng chứa danh sách (Sẽ cuộn nếu quá dài) -->
+            <div id="historyList" class="history-list-scroll">
+                <!-- Javascript sẽ tự động nhét các lá số vào đây -->
+            </div>
+        </div>
+    </div> <!-- Hết wrapper -->
+</div>
         
         <!-- KHUNG 1B: KẾT QUẢ LÁ SỐ & LUẬN GIẢI (3 CỘT) -->
         <div id="bazi-result-container" style="display: none;">
