@@ -43,7 +43,7 @@
         /* --- FORM LẬP LÁ SỐ --- */
         .tool-section { display: none; }
         .tool-section.active { display: block; animation: fadeIn 0.5s ease; }
-        .form-card { max-width: 750px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06); border: 1px solid var(--border-color); position: relative; overflow: hidden; }
+        .form-card {margin-left: 20px; max-width: 750px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06); border: 1px solid var(--border-color); position: relative; overflow: hidden; }
         .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary)); }
         .form-card h2 { text-align: center; color: var(--primary); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px; }
         .form-card p.subtitle { text-align: center; color: var(--text-muted); font-style: italic; margin-bottom: 30px; font-size: 0.95rem; }
@@ -556,46 +556,117 @@
     flex: 1; /* Chiếm 1 phần không gian linh hoạt */
 }
 
-/* CỘT 3 (PHẢI): Chiếm không gian bằng Cột 1 để giữ Form ở tâm */
 .history-col {
-    flex: 1; /* Đối trọng bằng đúng Cột 1 */
+    flex: 1;
     display: flex;
-    justify-content: flex-start; /* Ép thẻ lịch sử nằm nép sát về phía Form */
+    justify-content: flex-start;
+    min-width: 0; /* Chống tràn layout */
 }
 
-/* Định dạng thẻ Lịch sử bên trong Cột 3 */
+/* =========================================
+   2. SỬA LỖI KHUNG LỊCH SỬ
+========================================= */
 .history-card {
-    width: 300px; /* Khóa cứng chiều rộng thẻ Lịch sử */
+    width: 100%;
+    max-width: 320px; /* Khóa chiều rộng lịch sử ở mức vừa đẹp */
     background-color: #f4ecd8; 
     border: 1px solid #d3c5a3;
     border-radius: 8px;
-    padding: 20px;
+    padding: 15px;
     box-shadow: inset 0 0 15px rgba(139, 69, 19, 0.05);
+    box-sizing: border-box; /* QUAN TRỌNG: Sửa lỗi tràn viền */
+    display: flex;
+    flex-direction: column;
+    max-height: 550px; /* Giới hạn chiều cao để có thanh cuộn */
 }
 
-/* Responsive: Thu về 1 cột trên màn hình điện thoại/tablet */
+.history-title {
+    text-align: center;
+    color: #5c4a3d;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    border-bottom: 1px dashed #d3c5a3;
+    padding-bottom: 10px;
+}
+
+/* Sửa lỗi ô tìm kiếm tràn viền */
+.search-box {
+    margin-bottom: 15px;
+}
+.search-box input {
+    width: 100%;
+    box-sizing: border-box; /* Ép input nằm gọn trong thẻ cha */
+    padding: 8px 12px;
+    border: 1px solid #c2b280;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    outline: none;
+}
+
+.history-list-scroll {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
+}
+
+/* Sửa lỗi nút Xóa (x) bị rớt dòng */
+.history-item {
+    display: flex;
+    justify-content: space-between; /* Đẩy Text sang trái, Nút xóa sang phải */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid #e0d5b7;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    gap: 10px; /* Tạo khoảng cách an toàn giữa text và nút xóa */
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.hi-info {
+    flex: 1;
+    overflow: hidden; /* Cắt phần text nếu dài quá */
+}
+.hi-info strong { 
+    display: block;
+    color: #333; 
+    font-size: 15px; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; /* Hiện dấu ... nếu tên quá dài */
+}
+.hi-info small { color: #666; font-size: 12px; display: block; margin-top: 3px; }
+
+.btn-delete-hi {
+    flex-shrink: 0; /* Cấm nút xóa bị bóp méo */
+    background: transparent;
+    color: #ff4d4f;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 18px; /* Tăng size chữ x lên cho dễ bấm */
+    line-height: 1;
+}
+.btn-delete-hi:hover { color: #cc0000; transform: scale(1.1); }
+
+/* =========================================
+   3. HIỂN THỊ ĐIỆN THOẠI
+========================================= */
 @media (max-width: 1024px) {
     .bazi-layout-wrapper {
         flex-direction: column;
         align-items: center;
     }
-    .empty-col {
-        display: none; /* Giấu cột trống trên Mobile */
-    }
-    .form-card {
-        flex: auto;
-        width: 100%;
-        max-width: 600px;
-        margin: 0 0 20px 0;
-    }
-    .history-col {
-        width: 100%;
-        max-width: 600px;
-        justify-content: center; /* Đưa lịch sử ra giữa trên Mobile */
-    }
-    .history-card {
-        width: 100%; /* Lịch sử bung đầy form trên Mobile */
-    }
+    .empty-col { display: none; }
+    .form-card { flex: auto; max-width: 100%; margin: 0 0 20px 0; }
+    .history-col { justify-content: center; width: 100%; max-width: 100%; }
+    .history-card { max-width: 100%; }
 }
     
 /* Chỉ áp dụng riêng cho màn hình điện thoại (Dưới 768px) */
@@ -1025,6 +1096,15 @@
                 document.getElementById('bazi-form-container').style.display = 'none';
                 document.getElementById('bazi-result-container').style.display = 'block';
                 document.getElementById('btnBackToTop').style.display = 'block';
+                // 2. ẨN KHU VỰC LỊCH SỬ
+                document.getElementById('bazi-history-container').style.display = 'none';
+                // Nếu bạn có dùng thẻ bọc cột .history-col ở ngoài, hãy ẩn luôn nó để xóa sạch khoảng trống
+                const historyCol = document.querySelector('.history-col');
+                if (historyCol) historyCol.style.display = 'none';
+                
+                // 3. Ẩn cột trống bên trái (nếu có dùng ở layout 3 cột)
+                const emptyCol = document.querySelector('.empty-col');
+                if (emptyCol) emptyCol.style.display = 'none';
                 // Vẽ data lên màn hình
                 renderBaziResult(response.data, { year, month, day, hour, minute });
                 window.scrollTo({ top: 0, behavior: 'smooth' }); 
