@@ -1425,28 +1425,41 @@
         minSelect.value = now.getMinutes();               // Phút hiện tại
     }
 
-    // Hàm vẽ danh sách lá số (Có hỗ trợ tìm kiếm)
+    // 1. HÀM HỖ TRỢ BỎ DẤU TIẾNG VIỆT
+function removeVietnameseTones(str) {
+    if (!str) return "";
+    return str.normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+}
+
+// 2. CẬP NHẬT LẠI HÀM RENDER LỊCH SỬ
 function renderHistoryList(searchTerm = "") {
     const historyListDiv = document.getElementById('historyList');
-    const charts = ChartStorage.getAll(); // Lấy từ LocalStorage
+    const charts = ChartStorage.getAll(); 
 
     if (charts.length === 0) {
         historyListDiv.innerHTML = "<p style='text-align:center; color:#888; font-style:italic; margin-top:20px;'>Chưa có lá số nào.</p>";
         return;
     }
 
-    // Lọc theo tên nếu có nhập ô tìm kiếm
-    const filteredCharts = charts.filter(c => 
-        c.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Xử lý từ khóa tìm kiếm: Bỏ khoảng trắng 2 đầu, chuyển chữ thường, bỏ dấu tiếng Việt
+    const normalizedSearchTerm = removeVietnameseTones(searchTerm.toLowerCase().trim());
+
+    // Lọc danh sách thông minh
+    const filteredCharts = charts.filter(c => {
+        // Chuyển tên gốc của lá số về chữ thường và bỏ dấu
+        const normalizedName = removeVietnameseTones(c.name.toLowerCase());
+        // Kiểm tra xem tên có chứa từ khóa không
+        return normalizedName.includes(normalizedSearchTerm);
+    });
 
     if (filteredCharts.length === 0) {
         historyListDiv.innerHTML = "<p style='text-align:center; color:#888; margin-top:20px;'>Không tìm thấy.</p>";
         return;
     }
 
-    // Tạo HTML
-    // Tạo HTML (Gộp thành 1 dòng)
+    // Tạo HTML (Gộp thành 1 dòng siêu gọn như thiết kế trước đó)
     let html = "";
     filteredCharts.forEach(chart => {
         html += `
