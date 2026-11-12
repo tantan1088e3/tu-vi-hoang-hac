@@ -1446,13 +1446,14 @@ function renderHistoryList(searchTerm = "") {
     }
 
     // Tạo HTML
+    // Tạo HTML (Gộp thành 1 dòng)
     let html = "";
     filteredCharts.forEach(chart => {
         html += `
             <div class="history-item" onclick="loadSavedChart('${chart.id}')">
-                <div class="hi-info">
-                    <strong>${chart.name}</strong> <small>(${chart.gender === 1 ? 'Nam' : 'Nữ'})</small><br>
-                    <small>📅 ${chart.dob_string}</small>
+                <div class="hi-info" title="${chart.name} - ${chart.dob_string}">
+                    <span class="hi-name">${chart.name}</span>
+                    <span class="hi-meta">(${chart.gender === 1 ? 'Nam' : 'Nữ'}) - ${chart.dob_string}</span>
                 </div>
                 <button class="btn-delete-hi" title="Xóa lá số" onclick="event.stopPropagation(); deleteSavedChart('${chart.id}')">×</button>
             </div>
