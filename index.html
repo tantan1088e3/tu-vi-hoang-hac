@@ -830,7 +830,7 @@
 <button id="btnBackToTop" class="floating-btn" onclick="resetBaziForm()">
     ← Lập lá số khác
 </button>
-
+<script src="storage.js"></script>
 <script>
     function switchMainTab(topic, element) {
         document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
@@ -901,6 +901,18 @@
         const birthdateStr = `${day}/${month}/${year}`;
         const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
         const loadingScreen = document.getElementById("loadingOverlay");
+
+        // Tạo object userInput để truyền vào LocalStorage
+        const userInput = {
+            name: name,
+            gender: genderInt,
+            year: year,
+            month: month,
+            day: day,
+            hour: hour,
+            minute: minute
+        };
+        
         try {
             // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI API
             if (loadingScreen) {
