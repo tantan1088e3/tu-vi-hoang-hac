@@ -100,10 +100,6 @@
         .btn-submit { display: block; width: 100%; padding: 16px; margin-top: 30px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-submit:hover { background: var(--primary-hover); box-shadow: 0 8px 20px rgba(30, 77, 43, 0.2); transform: translateY(-2px); }
 
-        /* =======================================================
-           PHẦN KẾT QUẢ LÁ SỐ VÀ LUẬN GIẢI VƯỢNG SUY (CSS GRID)
-           ======================================================= */
-        
         /* 1. Lệnh Grid chia 3 cột: Trái (trống) - Giữa (Lá số) - Phải (Luận giải) */
         .main-layout-wrapper {
             display: grid;
@@ -1044,18 +1040,26 @@
 
     // Hàm Reset Form làm gộp nhiệm vụ trượt lên và tải lại (hoặc ẩn bảng)
     function resetBaziForm() {
+        // 1. HIỆN LẠI FORM NHẬP LIỆU
         document.getElementById('bazi-form-container').style.display = 'block';
-        document.getElementById('bazi-result-container').style.display = 'none';
-        document.getElementById('btnBackToTop').style.display = 'none'; // Ẩn nút thả nổi khi ở Form
-        // 2. ẨN KHU VỰC LỊCH SỬ
-        document.getElementById('bazi-history-container').style.display = 'block';
-        // Nếu bạn có dùng thẻ bọc cột .history-col ở ngoài, hãy ẩn luôn nó để xóa sạch khoảng trống
-        const historyCol = document.querySelector('.history-col');
-        if (historyCol) historyCol.style.display = 'block';
         
-        // 3. Ẩn cột trống bên trái (nếu có dùng ở layout 3 cột)
+        // 2. ẨN MỆNH BÀN KẾT QUẢ VÀ NÚT LÊN ĐẦU TRANG
+        document.getElementById('bazi-result-container').style.display = 'none';
+        document.getElementById('btnBackToTop').style.display = 'none'; 
+        
+        // 3. HIỆN LẠI KHU VỰC LỊCH SỬ
+        document.getElementById('bazi-history-container').style.display = 'block';
+        
+        const historyCol = document.querySelector('.history-col');
+        if (historyCol) {
+            historyCol.style.display = 'flex'; // Dùng 'flex' thay vì 'block' để giữ đúng CSS chia cột
+        }
+        
+        // 4. HIỆN LẠI CỘT TRỐNG BÊN TRÁI (Để cân bằng Form vào giữa)
         const emptyCol = document.querySelector('.empty-col');
-        if (emptyCol) emptyCol.style.display = 'block';
+        if (emptyCol) {
+            emptyCol.style.display = 'block';
+        }
     }
 
     function scrollToAnalysis() {
