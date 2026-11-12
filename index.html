@@ -544,30 +544,33 @@
     }
 
 /*--------lich su la so------------ */
-/* Bao bọc chia 2 cột */
+/* Cụm bao bọc: Bóp nhỏ tổng thể và đẩy tất cả vào giữa */
 .bazi-layout-wrapper {
-    display: flex;          /* Kích hoạt Flexbox */
-    gap: 20px;            /* Khoảng cách giữa 2 cột */
-    align-items: flex-start; /* Giúp các cột không bị kéo giãn chiều cao trừ khi cần thiết */
-    max-width: 1200px;      /* Độ rộng tối đa của toàn bộ layout */
-    margin: 0 auto;         /* Căn giữa layout */
+    display: flex;
+    gap: 30px; /* Tăng khoảng cách giữa 2 cột cho thoáng */
+    align-items: flex-start;
+    justify-content: center; /* Ép toàn bộ khối vào chính giữa màn hình */
+    max-width: 1000px; /* Bóp tổng chiều rộng lại cho gọn mắt */
+    margin: 0 auto;
 }
 
-/* Cột trái 60% */
+/* Cột trái (Form): Cố định kích thước vừa đẹp */
 .form-card {
-    flex: 6;              /* Chiếm 6 phần không gian */
+    flex: 0 1 600px; /* Ép form không được to quá 600px */
+    width: 100%;
 }
 
-/* Cột phải 40% - MÀU SÁCH CŨ */
+/* Cột phải (Lịch sử): Thu nhỏ và ép cứng kích thước */
 .history-card {
-    flex: 4;              /* Chiếm 4 phần không gian */
-    background-color: #f4ecd8; /* Màu giấy cũ */
+    flex: 0 0 300px; /* Ép cứng lịch sử chỉ rộng đúng 300px */
+    width: 300px;
+    
+    /* Giữ nguyên các định dạng nền cũ của bạn bên dưới */
+    background-color: #f4ecd8; 
     border: 1px solid #d3c5a3;
     border-radius: 8px;
     padding: 20px;
-    /* Tùy chọn: Thêm chiều cao tối đa và scroll nếu danh sách quá dài */
-    max-height: 500px;
-    overflow-y: auto;
+    box-shadow: inset 0 0 15px rgba(139, 69, 19, 0.05);
 }
 
 .history-title {
@@ -632,10 +635,16 @@
 }
 .btn-delete-hi:hover { color: #cc0000; }
 
-/* Responsive cho Điện thoại: Trượt xuống thành 1 cột */
+/* Responsive: Xử lý khi xem trên Điện thoại */
 @media (max-width: 768px) {
     .bazi-layout-wrapper {
-        flex-direction: column; /* Đặt lại thành dạng cột dọc */
+        flex-direction: column;
+        align-items: center;
+    }
+    .history-card {
+        flex: auto;
+        width: 100%;
+        max-width: 600px; /* Trả lại độ rộng cho lịch sử trên mobile */
     }
 }
         
