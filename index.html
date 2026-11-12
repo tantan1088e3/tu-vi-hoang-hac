@@ -888,11 +888,9 @@
 
     async function handleBaziSubmit(event) {
         event.preventDefault(); 
-        
         // 1. LẤY DỮ LIỆU ĐẦU VÀO
         let name = document.getElementById('name').value.trim();
         if (name === '') name = 'Vô Danh Khách';
-        
         const day = parseInt(document.getElementById('birth_day').value, 10);
         const month = parseInt(document.getElementById('birth_month').value, 10);
         const year = parseInt(document.getElementById('birth_year').value, 10);
@@ -900,29 +898,14 @@
         const minute = parseInt(document.getElementById('birth_minute').value, 10);
         const gender = document.getElementById('gender').value;
         const genderInt = gender === 'Nam' ? 1 : 0;
-    
         const birthdateStr = `${day}/${month}/${year}`;
         const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
-    
-        // Tạo object userInput để truyền vào LocalStorage
-        const userInput = {
-            name: name,
-            gender: genderInt,
-            year: year,
-            month: month,
-            day: day,
-            hour: hour,
-            minute: minute
-        };
-    
         const loadingScreen = document.getElementById("loadingOverlay");
-        
         try {
             // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI API
             if (loadingScreen) {
                 loadingScreen.style.display = "flex";
             }
-            
             // 3. GỌI API VÀ ĐỢI (AWAIT) DATA TRẢ VỀ
             const res = await fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
                 method: 'POST',
@@ -932,9 +915,7 @@
                 },
                 body: JSON.stringify({ year, month, day, hour, minute, gender: genderInt })
             });
-            
             const response = await res.json();
-    
             // 4. KHI API ĐÃ CHẠY XONG -> TẮT MÀN HÌNH LOADING
             if (loadingScreen) {
                 loadingScreen.style.display = "none";
@@ -942,20 +923,16 @@
     
             // 5. XỬ LÝ KẾT QUẢ VÀ ĐỔI GIAO DIỆN
             if (response.status === "success") {
-    
                 // =======================================
-                // LƯU LÁ SỐ VÀO LOCAL STORAGE (ĐÃ SỬA LỖI BIẾN)
-                // =======================================
-                ChartStorage.save(userInput, response.data);
+                // 3. LƯU LÁ SỐ VÀO LOCAL STORAGE
+                // ======================================
+                ChartStorage.save(userInput, result.data);
                 console.log("Đã lưu lá số thành công!");
-    
                 // Chỉ khi có data xịn mới bắt đầu ghi text và ẩn/hiện div
                 document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
-                
                 document.getElementById('bazi-form-container').style.display = 'none';
                 document.getElementById('bazi-result-container').style.display = 'block';
                 document.getElementById('btnBackToTop').style.display = 'block';
-    
                 // Vẽ data lên màn hình
                 renderBaziResult(response.data, { year, month, day, hour, minute });
                 window.scrollTo({ top: 0, behavior: 'smooth' }); 
@@ -973,6 +950,7 @@
             alert("Lỗi kết nối API. Vui lòng kiểm tra lại mạng hoặc VPS.");
             resetBaziForm();
         }
+    
     }
 
     function renderBaziResult(data, inputTime) {
