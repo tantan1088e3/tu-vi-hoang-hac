@@ -362,7 +362,7 @@
         z-index: 1;
     }
     
-    /* Dải màu gradient xoay tròn phía sau */
+    /* Dải màu gradient xoay tròn liền mạch (không đứt đoạn) */
     .dv-cell.active::before {
         content: '';
         position: absolute;
@@ -371,15 +371,12 @@
         width: 200%;
         height: 200%;
         
-        /* 1. ĐỔI SANG MÀU CẦU VỒNG (Red -> Violet -> Red để nối viền mượt) */
+        /* CHỈ DÙNG DẢI MÀU, BỎ PHẦN TRONG SUỐT ĐI */
         background: conic-gradient(
-            transparent 30%, /* Giữ một phần trong suốt để tạo cảm giác tia sáng đang "đuổi" */
             red, orange, yellow, green, cyan, blue, violet, red
         );
         
-        /* 2. GIẢM TỐC ĐỘ: Tăng từ 2s lên 5s (số s càng to thì chạy càng chậm) */
-        animation: rotateBorder 5s linear infinite;
-        
+        animation: rotateBorder 5s linear infinite; /* Tốc độ quay chậm 5s */
         z-index: -2;
     }
     
