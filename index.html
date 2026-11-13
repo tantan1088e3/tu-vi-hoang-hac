@@ -1524,68 +1524,97 @@
         }
     }
 
-    // Hàm sinh danh sách Accordion cột trái
-function renderAllDaiVanAccordion(daiVanList, activeIndex) {
-    // Tìm container ở cột trái (Ông thay ID bằng ID thực tế cột trái của ông)
-    const container = document.getElementById('container-cot-trai'); 
-    container.innerHTML = '<h4 class="text-center mb-3">LUẬN GIẢI CÁC ĐẠI VẬN</h4>';
+    // =========================================================
+    // HÀM MỚI BỔ SUNG: RENDER CHI TIẾT ĐẠI VẬN CỘT PHẢI
+    // =========================================================
+    function renderChiTietDaiVan(dv) {
+    const titleEl = document.getElementById("title-luan-giai-dai-van");
+    const contentEl = document.getElementById("noidung-dai-van");
+    if (!titleEl || !contentEl) return;
 
-    const accordionWrapper = document.createElement('div');
-    accordionWrapper.className = 'dv-accordion-container';
+    // Đổi tiêu đề
+    titleEl.innerHTML = `LUẬN GIẢI ĐẠI VẬN 10 NĂM: ${dv.can_chi.toUpperCase()}`;
+    
+    const phanTich = dv.phan_tich_sau;
+    
+    // Xử lý chặn nếu là Tiểu Vận
+    if (!phanTich || Object.keys(phanTich).length === 0) {
+        contentEl.innerHTML = `<div style="font-size: 15.5px; line-height: 1.6; color: #666; font-style: italic; text-align: justify; padding: 10px;">Giai đoạn Tiểu Vận (trước khi lên Đại Vận), năng lượng còn phụ thuộc nhiều vào cha mẹ. Hãy chọn các Đại Vận tiếp theo.</div>`;
+        return;
+    }
 
-    daiVanList.forEach((dv, index) => {
-        // TỰ ĐỘNG TÍNH TOÁN: Ông gọi logic cũ ở đây để lấy Số Sao và HTML chi tiết
-        // (Giả sử ông đã tách hàm để lấy dữ liệu)
-        const saoHTML = getSaoDaiVan(dv); // VD: "⭐⭐ (Thử thách)"
-        const htmlChiTiet = getHTMLChiTietDaiVan(dv); // Toàn bộ HTML luận giải Thiên can, Địa chi...
+    // Xử lý Đánh Giá Số Sao
+    let saoHtml = "";
+    if (phanTich.sao_dai_van === "🔒") {
+        saoHtml = `<span style="color:#d32f2f; font-weight:bold;">🔒 Khóa (VIP)</span>`;
+    } else {
+        const soSao = parseInt(phanTich.sao_dai_van) || 3;
+        const iconSao = "⭐".repeat(soSao);
+        const textDanhGia = soSao >= 4 ? "Cát Hưng" : (soSao <= 2 ? "Thử Thách" : "Bình Hòa");
+        saoHtml = `<span style="color:#f57c00; font-size:16px;">${iconSao}</span> <span style="font-weight:bold; color: #444;">(${textDanhGia})</span>`;
+    }
 
-        const item = document.createElement('div');
-        item.className = `dv-accordion-item ${index === activeIndex ? 'expanded' : ''}`;
-        item.id = `dv-accordion-${index}`; // Gắn ID để dễ gọi từ bên ngoài
-
-        // 1. HEADER (Dòng hiển thị rút gọn)
-        const header = document.createElement('div');
-        header.className = 'dv-accordion-header';
-        header.innerHTML = `
-            <span>${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
-            <span>Đánh giá: ${saoHTML} <span class="toggle-icon">▼</span></span>
-        `;
-
-        // 2. BODY (Nội dung chi tiết xổ xuống)
-        const body = document.createElement('div');
-        body.className = 'dv-accordion-body';
-        body.style.display = index === activeIndex ? 'block' : 'none';
-        body.innerHTML = htmlChiTiet;
-
-        // 3. SỰ KIỆN CLICK VÀO HEADER
-        header.onclick = () => {
-            const isExpanded = item.classList.contains('expanded');
-
-            // Đóng tất cả lại
-            document.querySelectorAll('.dv-accordion-item').forEach(el => {
-                el.classList.remove('expanded');
-                el.querySelector('.dv-accordion-body').style.display = 'none';
+    // Xử lý Các mục tương tác
+    let tuongTacHtml = "";
+    if (phanTich.chi_tiet_tuong_tac && phanTich.chi_tiet_tuong_tac.length > 0) {
+        phanTich.chi_tiet_tuong_tac.forEach(item => {
+            
+            // ==========================================
+            // AUTO BẮT TỪ KHÓA VÀ NGŨ HÀNH ĐỂ GẮN BADGE
+            // ==========================================
+            let loaiText = item.loai;
+            
+            // 1. Quét các Hợp / Hội có mang theo Ngũ Hành (VD: Bán hợp Mộc, Tam hợp Kim...)
+            loaiText = loaiText.replace(/(Tam Hội|Tam Hợp|Bán Hợp|Lục Hợp|Hợp Hóa|Hợp)\s*(Mộc|Kim|Thủy|Hỏa|Thổ)?/gi, (match, kieuHop, nguHanh) => {
+                let badgeClass = 'badge-hop'; // Màu mặc định nếu chỉ ghi "Hợp"
+                
+                if (nguHanh) {
+                    // Nếu dò thấy Ngũ Hành phía sau, ép màu theo Ngũ Hành
+                    const nh = nguHanh.toLowerCase();
+                    if (nh === 'mộc') badgeClass = 'badge-moc';
+                    if (nh === 'kim') badgeClass = 'badge-kim';
+                    if (nh === 'thủy') badgeClass = 'badge-thuy';
+                    if (nh === 'hỏa') badgeClass = 'badge-hoa';
+                    if (nh === 'thổ') badgeClass = 'badge-tho';
+                } else {
+                    // Nếu không có ngũ hành, phân loại theo tính chất Hợp/Hội
+                    const kh = kieuHop.toLowerCase();
+                    if (kh.includes('hội')) badgeClass = 'badge-hoi';
+                    if (kh.includes('tam hợp')) badgeClass = 'badge-tamhop';
+                }
+                
+                // Trả về HTML đã bọc đúng màu
+                return `<span class="badge-tuvi ${badgeClass}">${match}</span>`;
             });
 
-            // Mở cái vừa click (nếu nó đang đóng)
-            if (!isExpanded) {
-                item.classList.add('expanded');
-                body.style.display = 'block';
+            // 2. Nhóm Cảnh báo (Màu đỏ/cam) - Giữ nguyên như cũ
+            loaiText = loaiText.replace(/(Tương Xung|Trực Xung|Xung)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hình|Tự Hình|Hình)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hại|Hại)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Phá|Phá)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            // ==========================================
 
-                // ĐỒNG BỘ NGƯỢC: Sáng màu ô tương ứng ở bảng Lưu niên bên dưới
-                document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
-                const targetCell = document.querySelectorAll('.dv-cell')[index];
-                if(targetCell) targetCell.classList.add('active');
-                renderLuuNian(dv.liu_nian); // Render lại bảng 10 năm lưu niên
-            }
-        };
+            // Sử dụng loaiText đã được bọc span badge thay vì item.loai gốc
+            tuongTacHtml += `
+                <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid #1e4b41; border-radius: 4px;">
+                    <div style="font-weight: bold; color: #1e4b41; font-size: 15px;">🔸 ${loaiText}</div>
+                    <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
+                </div>
+            `;
+        });
+    } else {
+        tuongTacHtml = `<div style="margin-top: 15px; font-size: 15.5px; line-height: 1.6; color: #666; text-align: justify;">Giai đoạn này vận khí bình ổn, ít chịu sự tác động mạnh từ ngoại cảnh.</div>`;
+    }
 
-        item.appendChild(header);
-        item.appendChild(body);
-        accordionWrapper.appendChild(item);
-    });
-
-    container.appendChild(accordionWrapper);
+    // Bắn HTML vào giao diện
+    contentEl.innerHTML = `
+        <div style="margin-bottom: 15px; font-size: 16px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+            <b>Đánh giá:</b> ${saoHtml}
+        </div>
+        <div>
+            ${tuongTacHtml}
+        </div>
+    `;
 }
 
     function renderLuuNian(liuNianArr) {
