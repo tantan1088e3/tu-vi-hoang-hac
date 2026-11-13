@@ -1452,102 +1452,31 @@
             if (currentYear >= dv.nam_bat_dau && currentYear <= dv.nam_ket_thuc) activeIndex = index; 
         });
 
-        // 1. Chuẩn bị khu vực chứa danh sách Accordion (Thay 'id-cot-luan-giai' bằng ID thật của cột trái)
-        const luanGiaiContainer = document.getElementById('box-luan-giai-dai-van'); 
-        luanGiaiContainer.innerHTML = '<h4 class="text-center mb-3">LUẬN GIẢI CÁC ĐẠI VẬN</h4>';
-
-    const accordionWrapper = document.createElement('div');
-    accordionWrapper.className = 'dv-accordion-container';
-
-    // VÒNG LẶP DUY NHẤT ĐỂ XỬ LÝ CẢ 2 NƠI (BẢNG DƯỚI & CỘT LUẬN GIẢI)
-    daiVanList.forEach((dv, index) => {
-        // ==========================================
-        // PHẦN A: TẠO Ô ĐẠI VẬN Ở BẢNG NGANG BÊN DƯỚI (Code cũ của ông)
-        // ==========================================
-        const [can, chi] = dv.can_chi.split(' '); 
-        const cell = document.createElement('div');
-        cell.className = `t-cell dv-cell ${index === activeIndex ? 'active' : ''}`;
-        cell.innerHTML = `
-            <div class="dv-canchi">
-                <span class="${getColorClass(can || dv.can_chi)}">${can || dv.can_chi}</span><br>
-                <span class="${getColorClass(chi || '')}">${chi || ''}</span>
-            </div>
-            <div class="dv-tuoi">${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t<br>${dv.nam_bat_dau}</div>
-        `;
-    
-        // ==========================================
-        // PHẦN B: TẠO GIAO DIỆN ACCORDION Ở CỘT LUẬN GIẢI
-        // ==========================================
-        const item = document.createElement('div');
-        item.className = `dv-accordion-item ${index === activeIndex ? 'expanded' : ''}`;
-        
-        // Header hiển thị Tên Đại Vận & Đánh giá sao (Mặc định luôn hiện)
-        const header = document.createElement('div');
-        header.className = 'dv-accordion-header';
-        // LƯU Ý: Thay dv.danh_gia_sao bằng field thực tế trả về từ API của ông
-        const sao = dv.danh_gia_sao || 'Đang cập nhật'; 
-        header.innerHTML = `
-            <span>Đại vận: ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
-            <span>Đánh giá: ${sao} <span class="toggle-icon">▼</span></span>
-        `;
-    
-        // Body chứa chi tiết luận giải (Ẩn đi, chỉ hiện khi được active)
-        const body = document.createElement('div');
-        body.className = 'dv-accordion-body';
-        body.style.display = index === activeIndex ? 'block' : 'none';
-        
-        // QUAN TRỌNG: Đổ dữ liệu HTML luận giải vào đây. 
-        // Ông cần tạo hàm getHTMLChiTietDaiVan(dv) để trả về chuỗi HTML thay vì ghi đè trực tiếp vào DOM như hàm cũ.
-        body.innerHTML = getHTMLChiTietDaiVan(dv); 
-    
-        // ==========================================
-        // PHẦN C: ĐỒNG BỘ SỰ KIỆN CLICK HAI CHIỀU
-        // ==========================================
-        
-        // 1. Click vào ô ở bảng ngang -> Gọi lệnh click cho thẻ Header ở trên
-        cell.onclick = () => {
-            header.click(); 
-        };
-    
-        // 2. Click vào thẻ Header ở cột luận giải -> Xử lý đóng/mở & load Lưu niên
-        header.onclick = () => {
-            const isExpanded = item.classList.contains('expanded');
-    
-            // Đóng tất cả Accordion và gỡ bỏ 'active' ở tất cả các ô cell
-            document.querySelectorAll('.dv-accordion-item').forEach(el => {
-                el.classList.remove('expanded');
-                el.querySelector('.dv-accordion-body').style.display = 'none';
-            });
-            document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
-    
-            // Mở Accordion hiện tại nếu nó đang đóng
-            if (!isExpanded) {
-                item.classList.add('expanded');
-                body.style.display = 'block';
-                cell.classList.add('active'); // Sáng đèn ô ở bảng ngang
-                
-                // Render 10 năm lưu niên tương ứng với đại vận này
+        daiVanList.forEach((dv, index) => {
+            const [can, chi] = dv.can_chi.split(' '); 
+            const cell = document.createElement('div');
+            cell.className = `t-cell dv-cell ${index === activeIndex ? 'active' : ''}`;
+            cell.innerHTML = `
+                <div class="dv-canchi">
+                    <span class="${getColorClass(can || dv.can_chi)}">${can || dv.can_chi}</span><br>
+                    <span class="${getColorClass(chi || '')}">${chi || ''}</span>
+                </div>
+                <div class="dv-tuoi">${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t<br>${dv.nam_bat_dau}</div>
+            `;
+            cell.onclick = () => {
+                document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
+                cell.classList.add('active');
                 renderLuuNian(dv.liu_nian);
-            }
-        };
-    
-        // Gắn các phần tử vào DOM
-        item.appendChild(header);
-        item.appendChild(body);
-        accordionWrapper.appendChild(item);
-        dvContainer.appendChild(cell); // Gắn cell vào bảng ngang
-    });
-    
-    // Chèn toàn bộ bộ Accordion vào cột luận giải
-    luanGiaiContainer.appendChild(accordionWrapper);
-    
-    // ==========================================
-    // KHỞI TẠO LẦN ĐẦU TIÊN TẢI TRANG
-    // ==========================================
-    if (daiVanList.length > 0) {
-        renderLuuNian(daiVanList[activeIndex].liu_nian);
-        // Không cần gọi renderChiTietDaiVan nữa, vì mọi nội dung chi tiết đã được sinh ra và giấu sẵn trong biến `body` rồi.
-    }
+                // --- KÍCH HOẠT ĐỔ DỮ LIỆU ĐẠI VẬN SANG CỘT PHẢI ---
+                renderChiTietDaiVan(dv);
+            };
+            dvContainer.appendChild(cell);
+        });
+
+        if (daiVanList.length > 0) {
+            renderLuuNian(daiVanList[activeIndex].liu_nian);
+            renderChiTietDaiVan(daiVanList[activeIndex]);
+        }
 
         // =========================================================
         // BỔ SUNG MỚI: RENDER DỮ LIỆU PHÂN TÍCH VƯỢNG SUY BÊN CỘT 3
@@ -1657,89 +1586,6 @@ function renderAllDaiVanAccordion(daiVanList, activeIndex) {
     });
 
     container.appendChild(accordionWrapper);
-}
-
-    function getHTMLChiTietDaiVan(dv) {
-    // Bắt đầu chuỗi HTML bao bọc nội dung
-    let html = `<div class="dv-chi-tiet-content" style="padding-top: 10px;">`;
-
-    // 1. LUẬN GIẢI THIÊN CAN (Dựa theo ảnh UI của ông)
-    if (dv.luan_giai_can) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <h6 style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Thiên can đại vận
-                </h6>
-                <p style="font-size: 13px; color: #444; margin: 0; line-height: 1.5;">
-                    ${dv.luan_giai_can}
-                </p>
-            </div>
-        `;
-    }
-
-    // 2. LUẬN GIẢI ĐỊA CHI
-    if (dv.luan_giai_chi) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <h6 style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Địa chi đại vận
-                </h6>
-                <p style="font-size: 13px; color: #444; margin: 0; line-height: 1.5;">
-                    ${dv.luan_giai_chi}
-                </p>
-            </div>
-        `;
-    }
-
-    // 3. CÁC TƯƠNG TÁC XUNG/HỢP/HÌNH/PHÁ CỦA ĐẠI VẬN
-    // Giả sử API trả về mảng các dòng tương tác
-    if (dv.tuong_tac_list && dv.tuong_tac_list.length > 0) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <h6 style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Tương tác Đại vận
-                </h6>
-                <ul style="font-size: 13px; color: #444; margin: 0; padding-left: 20px; line-height: 1.5;">
-        `;
-        
-        dv.tuong_tac_list.forEach(tuong_tac => {
-            html += `<li>${tuong_tac}</li>`;
-        });
-        
-        html += `</ul></div>`;
-    }
-
-    // Nếu Đại vận này API chưa có dữ liệu trả về
-    if (!dv.luan_giai_can && !dv.luan_giai_chi && (!dv.tuong_tac_list || dv.tuong_tac_list.length === 0)) {
-         html += `
-            <p style="font-size: 13px; color: #666; font-style: italic; text-align: center;">
-                Chưa có dữ liệu luận giải chi tiết cho Đại vận này.
-            </p>
-         `;
-    }
-
-    // Đóng thẻ wrap
-    html += `</div>`;
-    
-    // Trả về toàn bộ chuỗi HTML để nhét vào body của Accordion
-    return html;
-}
-
-// Bổ sung thêm hàm lấy Sao Đánh giá (nếu nãy ông chưa có)
-function getSaoDaiVan(dv) {
-    // Tùy vào API của ông trả về số sao (ví dụ: dv.so_sao = 2, dv.danh_gia = "Thử thách")
-    // Nếu API trả về chuỗi sẵn như "⭐⭐ (Thử Thách)" thì chỉ cần return dv.danh_gia_sao;
-    
-    if (dv.danh_gia_sao) return dv.danh_gia_sao; 
-
-    // Nếu tự build từ số:
-    let saoStr = '';
-    let soSao = dv.so_sao || 0; 
-    for(let i=0; i < soSao; i++) saoStr += '⭐';
-    
-    let textDanhGia = dv.text_danh_gia ? `(${dv.text_danh_gia})` : '';
-    
-    return saoStr ? `${saoStr} ${textDanhGia}` : 'Đang cập nhật';
 }
 
     function renderLuuNian(liuNianArr) {
