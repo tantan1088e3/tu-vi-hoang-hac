@@ -1570,93 +1570,67 @@
     container.innerHTML = html; 
 }
 
-// Hàm chuyển đổi dữ liệu Đại Vận thành chuỗi HTML chi tiết để nhét vào Accordion
 function getHTMLChiTietDaiVan(dv) {
-    let html = `<div class="dv-chi-tiet-content" style="padding-top: 10px;">`;
+    const phanTich = dv.phan_tich_sau;
 
-    // ==========================================
-    // 1. LUẬN GIẢI THIÊN CAN
-    // LƯU Ý QUAN TRỌNG: Hãy sửa biến `dv.luan_giai_can` thành ĐÚNG tên trường (field) 
-    // mà API của ông trả về (VD: dv.loi_giai.thien_can, dv.thien_can_detail...)
-    // ==========================================
-    if (dv.luan_giai_can) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <div style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Thiên can đại vận
-                </div>
-                <p style="font-size: 13px; color: #444; margin: 0; line-height: 1.5;">
-                    ${dv.luan_giai_can}
-                </p>
-            </div>
-        `;
+    // Xử lý chặn nếu là Tiểu Vận
+    if (!phanTich || Object.keys(phanTich).length === 0) {
+        return `<div style="font-size: 15.5px; line-height: 1.6; color: #666; font-style: italic; text-align: justify; padding: 10px;">Giai đoạn Tiểu Vận (trước khi lên Đại Vận), năng lượng còn phụ thuộc nhiều vào cha mẹ. Hãy chọn các Đại Vận tiếp theo.</div>`;
     }
 
-    // ==========================================
-    // 2. LUẬN GIẢI ĐỊA CHI
-    // Sửa `dv.luan_giai_chi` thành field thật từ API
-    // ==========================================
-    if (dv.luan_giai_chi) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <div style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Địa chi đại vận
-                </div>
-                <p style="font-size: 13px; color: #444; margin: 0; line-height: 1.5;">
-                    ${dv.luan_giai_chi}
-                </p>
-            </div>
-        `;
-    }
+    // Xử lý Các mục tương tác
+    let tuongTacHtml = "";
+    if (phanTich.chi_tiet_tuong_tac && phanTich.chi_tiet_tuong_tac.length > 0) {
+        phanTich.chi_tiet_tuong_tac.forEach(item => {
+            
+            // ==========================================
+            // AUTO BẮT TỪ KHÓA VÀ NGŨ HÀNH ĐỂ GẮN BADGE
+            // ==========================================
+            let loaiText = item.loai;
+            
+            // 1. Quét các Hợp / Hội có mang theo Ngũ Hành (VD: Bán hợp Mộc, Tam hợp Kim...)
+            loaiText = loaiText.replace(/(Tam Hội|Tam Hợp|Bán Hợp|Lục Hợp|Hợp Hóa|Hợp)\s*(Mộc|Kim|Thủy|Hỏa|Thổ)?/gi, (match, kieuHop, nguHanh) => {
+                let badgeClass = 'badge-hop'; // Màu mặc định nếu chỉ ghi "Hợp"
+                
+                if (nguHanh) {
+                    // Nếu dò thấy Ngũ Hành phía sau, ép màu theo Ngũ Hành
+                    const nh = nguHanh.toLowerCase();
+                    if (nh === 'mộc') badgeClass = 'badge-moc';
+                    if (nh === 'kim') badgeClass = 'badge-kim';
+                    if (nh === 'thủy') badgeClass = 'badge-thuy';
+                    if (nh === 'hỏa') badgeClass = 'badge-hoa';
+                    if (nh === 'thổ') badgeClass = 'badge-tho';
+                } else {
+                    // Nếu không có ngũ hành, phân loại theo tính chất Hợp/Hội
+                    const kh = kieuHop.toLowerCase();
+                    if (kh.includes('hội')) badgeClass = 'badge-hoi';
+                    if (kh.includes('tam hợp')) badgeClass = 'badge-tamhop';
+                }
+                
+                // Trả về HTML đã bọc đúng màu
+                return `<span class="badge-tuvi ${badgeClass}">${match}</span>`;
+            });
 
-    // ==========================================
-    // 3. TƯƠNG TÁC XUNG/HỢP CỦA ĐẠI VẬN
-    // Sửa `dv.luan_giai_tuong_tac` thành field thật từ API
-    // ==========================================
-    if (dv.luan_giai_tuong_tac) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <div style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Tương tác Đại vận
-                </div>
-                <p style="font-size: 13px; color: #444; margin: 0; line-height: 1.5;">
-                    ${dv.luan_giai_tuong_tac}
-                </p>
-            </div>
-        `;
-    }
+            // 2. Nhóm Cảnh báo (Màu đỏ/cam) - Giữ nguyên như cũ
+            loaiText = loaiText.replace(/(Tương Xung|Trực Xung|Xung)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hình|Tự Hình|Hình)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Hại|Hại)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
+            loaiText = loaiText.replace(/(Tương Phá|Phá)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
+            // ==========================================
 
-    // ==========================================
-    // Trường hợp API trả về mảng (Array) các tương tác thay vì 1 chuỗi dài
-    // Nếu API của ông trả về mảng thì mở comment đoạn code dưới đây để dùng:
-    // ==========================================
-    /*
-    if (dv.mang_tuong_tac && dv.mang_tuong_tac.length > 0) {
-        html += `
-            <div class="luan-giai-item" style="margin-bottom: 15px;">
-                <div style="color: #a43026; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #c94c4c; margin-right: 5px;">♦</span> Tương tác Đại vận
+            // Sử dụng loaiText đã được bọc span badge thay vì item.loai gốc
+            tuongTacHtml += `
+                <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid #1e4b41; border-radius: 4px;">
+                    <div style="font-weight: bold; color: #1e4b41; font-size: 15px;">🔸 ${loaiText}</div>
+                    <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
                 </div>
-                <ul style="font-size: 13px; color: #444; margin: 0; padding-left: 20px; line-height: 1.5;">
-        `;
-        dv.mang_tuong_tac.forEach(item => {
-            html += `<li>${item}</li>`;
+            `;
         });
-        html += `</ul></div>`;
-    }
-    */
-
-    // Hiển thị nếu Đại vận này trống dữ liệu
-    if (!dv.luan_giai_can && !dv.luan_giai_chi && !dv.luan_giai_tuong_tac) {
-         html += `
-            <p style="font-size: 13px; color: #666; font-style: italic; text-align: center;">
-                Chưa có dữ liệu luận giải chi tiết cho Đại vận này.
-            </p>
-         `;
+    } else {
+        tuongTacHtml = `<div style="margin-top: 15px; font-size: 15.5px; line-height: 1.6; color: #666; text-align: justify;">Giai đoạn này vận khí bình ổn, ít chịu sự tác động mạnh từ ngoại cảnh.</div>`;
     }
 
-    html += `</div>`;
-    return html;
+    return tuongTacHtml;
 }
     
     // Hàm này gọi khi click từ BẢNG NGANG bên dưới
