@@ -979,25 +979,40 @@
         width: 100% !important;
     }
 }
+/* Giao diện dành riêng cho Mobile & Tablet nhỏ */
 @media (max-width: 768px) {
-    /* Ép khối Luận Giải Đại Vận xếp dọc */
-    #box-luan-giai-dai-van {
+    
+    /* 1. Ép thẻ bọc ngoài cùng chuyển sang xếp dọc (cột) */
+    .main-layout-wrapper {
         display: flex !important;
-        flex-direction: column !important; /* Lệnh then chốt ép danh sách rớt xuống dưới tiêu đề */
+        flex-direction: column !important;
+        gap: 20px; /* Tạo khoảng thở 20px giữa các khối khi xếp chồng */
         width: 100% !important;
+    }
+
+    /* 2. Đẩy cột Mệnh Bàn (cột giữa) lên vị trí SỐ 1 */
+    .center-bazi-column {
+        order: 1 !important;
+        width: 100% !important;
+    }
+
+    /* 3. Đẩy cột Vượng Suy (cột phải) xuống vị trí SỐ 2 */
+    .right-analysis-column {
+        order: 2 !important;
+        width: 100% !important;
+    }
+
+    /* 4. Đẩy khối Luận Giải Đại Vận (cột trái) rớt xuống ĐÁY (SỐ 3) */
+    .spacer-left {
+        order: 3 !important;
+        width: 100% !important;
+        display: block !important; /* Đảm bảo thoát khỏi mọi lệnh ẩn nếu có */
+    }
+
+    /* 5. Cho phép khối Đại vận tự do co giãn chiều cao trên mobile, không bị cụt */
+    #box-luan-giai-dai-van {
         height: auto !important;
-        margin-bottom: 25px !important;
-    }
-
-    /* Đảm bảo tiêu đề xanh chiếm trọn 100% chiều ngang màn hình */
-    #title-luan-giai-dai-van {
-        width: 100% !important;
-        border-radius: 6px 6px 0 0 !important; /* (Tùy chọn) Bo tròn 2 góc trên cho đẹp */
-    }
-
-    /* Đảm bảo khung chứa accordion cũng bung hết 100% */
-    #noidung-dai-van {
-        width: 100% !important;
+        max-height: none !important; 
     }
 }
     </style>
