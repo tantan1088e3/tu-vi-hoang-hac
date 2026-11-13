@@ -1452,6 +1452,10 @@
             if (currentYear >= dv.nam_bat_dau && currentYear <= dv.nam_ket_thuc) activeIndex = index; 
         });
 
+        // --- BƯỚC 1: RENDER TOÀN BỘ ĐẠI VẬN RA CỘT TRÁI 1 LẦN DUY NHẤT ---
+        renderToanBoDaiVanCotTrai(daiVanList); 
+        
+        // --- BƯỚC 2: VÒNG LẶP VẼ BẢNG NGANG CỦA ÔNG ---
         daiVanList.forEach((dv, index) => {
             const [can, chi] = dv.can_chi.split(' '); 
             const cell = document.createElement('div');
@@ -1463,19 +1467,25 @@
                 </div>
                 <div class="dv-tuoi">${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t<br>${dv.nam_bat_dau}</div>
             `;
+            
             cell.onclick = () => {
+                // Xử lý active UI ở bảng ngang
                 document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
                 cell.classList.add('active');
+                
+                // Render 10 năm lưu niên tương ứng
                 renderLuuNian(dv.liu_nian);
-                // --- KÍCH HOẠT ĐỔ DỮ LIỆU ĐẠI VẬN SANG CỘT PHẢI ---
-                renderChiTietDaiVan(dv);
+                
+                // KÍCH HOẠT MỞ ĐẠI VẬN TƯƠNG ỨNG Ở CỘT TRÁI
+                moDaiVanCotTrai(index);
             };
             dvContainer.appendChild(cell);
         });
-
+        
+        // --- BƯỚC 3: TRẠNG THÁI MẶC ĐỊNH KHI TẢI TRANG ---
         if (daiVanList.length > 0) {
             renderLuuNian(daiVanList[activeIndex].liu_nian);
-            renderChiTietDaiVan(daiVanList[activeIndex]);
+            moDaiVanCotTrai(activeIndex); // Tự động mở cái đang active
         }
 
         // =========================================================
@@ -1523,6 +1533,75 @@
             }
         }
     }
+
+    function renderToanBoDaiVanCotTrai(daiVanList) {
+        const container = document.getElementById('id-cot-luan-giai'); // Sửa ID thật của ông
+        let html = '<div class="dv-accordion-container">';
+    
+        daiVanList.forEach((dv, index) => {
+            // Lấy số sao (hoặc tự tính dựa vào API của ông)
+            let saoText = dv.danh_gia_sao || 'Đang cập nhật';
+    
+            html += `
+                <div class="dv-accordion-item" id="acc-dv-${index}">
+                    <!-- PHẦN HEADER (Luôn hiện) -->
+                    <div class="dv-accordion-header" onclick="clickHeaderAccordion(${index})">
+                        <span>Đại vận: ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
+                        <span>Đánh giá: ${saoText} <span class="toggle-icon">▼</span></span>
+                    </div>
+                    
+                    <!-- PHẦN BODY (Nội dung giấu đi) -->
+                    <div class="dv-accordion-body" style="display: none;">
+                        ${getHTMLChiTietDaiVan(dv)} <!-- Gọi hàm lấy nội dung tôi đã viết cho ông ở tin nhắn trước -->
+                    </div>
+                </div>
+            `;
+        });
+    
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    // Hàm này gọi khi click từ BẢNG NGANG bên dưới
+function moDaiVanCotTrai(indexToOpen) {
+    // 1. Đóng toàn bộ các accordion khác
+    document.querySelectorAll('.dv-accordion-item').forEach(item => {
+        item.classList.remove('expanded');
+        item.querySelector('.dv-accordion-body').style.display = 'none';
+    });
+
+    // 2. Mở cái được chỉ định
+    const targetItem = document.getElementById(`acc-dv-${indexToOpen}`);
+    if (targetItem) {
+        targetItem.classList.add('expanded');
+        targetItem.querySelector('.dv-accordion-body').style.display = 'block';
+    }
+}
+
+// Hàm này gọi khi người dùng BẤM TRỰC TIẾP VÀO CỘT TRÁI
+function clickHeaderAccordion(clickedIndex) {
+    const targetItem = document.getElementById(`acc-dv-${clickedIndex}`);
+    const isCurrentlyOpen = targetItem.classList.contains('expanded');
+
+    // Nếu nó đang đóng thì ta mới làm (đang mở thì bấm kệ nó hoặc cho nó tự đóng)
+    if (!isCurrentlyOpen) {
+        // Mở nó ra
+        moDaiVanCotTrai(clickedIndex);
+
+        // ĐỒNG THỜI: Bắt bảng ngang bên dưới phải sáng đèn theo 
+        // bằng cách gọi sự kiện click ẩn vào ô tương ứng ở dưới bảng ngang
+        const cellTuongUng = document.querySelectorAll('.dv-cell')[clickedIndex];
+        if (cellTuongUng) {
+            // Lưu ý: Đừng gọi cellTuongUng.click() để tránh lặp vô tận (Loop Hell)
+            // Thay vào đó, ta tự đổi màu cell và render lại lưu niên
+            document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
+            cellTuongUng.classList.add('active');
+            
+            // Render lại lưu niên theo đúng Đại vận đang bấm
+            renderLuuNian(daiVanList[clickedIndex].liu_nian);
+        }
+    }
+}
 
     // =========================================================
     // HÀM MỚI BỔ SUNG: RENDER CHI TIẾT ĐẠI VẬN CỘT PHẢI
