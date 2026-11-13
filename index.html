@@ -1535,29 +1535,46 @@
     }
 
     function renderToanBoDaiVanCotTrai(daiVanList) {
-    // Đã thay đúng ID thật của ông: 'noidung-dai-van'
     const container = document.getElementById('noidung-dai-van'); 
+    if (!container) return;
 
-    // Bẫy lỗi: Đảm bảo thẻ div này đã load xong
-    if (!container) {
-        console.error("LỖI: Chưa tìm thấy id 'noidung-dai-van' trên giao diện!");
-        return; 
-    }
-
-    let html = '<div class="dv-accordion-container">';
+    // Ép khoảng cách giữa các vận nhỏ lại (gap: 4px)
+    let html = '<div class="dv-accordion-container" style="display: flex; flex-direction: column; gap: 4px;">';
 
     daiVanList.forEach((dv, index) => {
-        let saoText = dv.danh_gia_sao || 'Đang cập nhật';
+        // ==========================================
+        // 1. TỰ ĐỘNG TÍNH SAO (LẤY TỪ DATA PHÂN TÍCH SÂU)
+        // ==========================================
+        let saoStr = "<span style='color:#999; font-size: 11px;'>Đang cập nhật</span>";
+        if (dv.phan_tich_sau && dv.phan_tich_sau.sao_dai_van) {
+            if (dv.phan_tich_sau.sao_dai_van === "🔒") {
+                saoStr = "<span style='color:#d32f2f; font-weight:bold; font-size:12px;'>🔒 VIP</span>";
+            } else {
+                let soSao = parseInt(dv.phan_tich_sau.sao_dai_van) || 0;
+                saoStr = `<span style="color:#f57c00; font-size:12px;">${"⭐".repeat(soSao)}</span>`;
+            }
+        }
+
+        // ==========================================
+        // 2. TẠO HTML VỚI GIAO DIỆN SIÊU GỌN NHẸ
+        // ==========================================
         html += `
-            <div class="dv-accordion-item" id="acc-dv-${index}">
-                <!-- PHẦN HEADER -->
-                <div class="dv-accordion-header" onclick="clickHeaderAccordion(${index})">
-                    <span>Đại vận: ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
-                    <span>Đánh giá: ${saoText} <span class="toggle-icon">▼</span></span>
+            <div class="dv-accordion-item" id="acc-dv-${index}" style="border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; background: #fff;">
+                
+                <!-- HEADER: Chỉ 1 dòng nhỏ, font-size 13px, padding mỏng -->
+                <div class="dv-accordion-header" onclick="clickHeaderAccordion(${index})" 
+                     style="padding: 6px 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background-color: #fcf8f2;">
+                    
+                    <div style="font-weight: bold; color: #444;">
+                        Vận ${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t <span style="font-weight: normal; color: #777; margin-left: 2px;">(${dv.can_chi})</span>
+                        <span style="margin-left: 8px;">${saoStr}</span>
+                    </div>
+                    
+                    <span class="toggle-icon" style="font-size: 10px; color: #888; transition: transform 0.3s;">▼</span>
                 </div>
                 
-                <!-- PHẦN BODY -->
-                <div class="dv-accordion-body" style="display: none;">
+                <!-- BODY: Nội dung ẩn/hiện -->
+                <div class="dv-accordion-body" style="display: none; padding: 12px; border-top: 1px dashed #eee; background: #fff;">
                     ${getHTMLChiTietDaiVan(dv)} 
                 </div>
             </div>
@@ -1565,8 +1582,6 @@
     });
 
     html += '</div>';
-    
-    // Lệnh này sẽ ghi đè toàn bộ dòng chữ "Vui lòng chọn..." bằng danh sách Accordion
     container.innerHTML = html; 
 }
 
