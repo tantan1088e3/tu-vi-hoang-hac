@@ -1664,28 +1664,47 @@ function moDaiVanCotTrai(indexToOpen) {
     }
 }
 
-// Hàm này gọi khi người dùng BẤM TRỰC TIẾP VÀO CỘT TRÁI
+// Hàm này gọi khi người dùng BẤM TRỰC TIẾP VÀO HEADER Ở CỘT TRÁI
 function clickHeaderAccordion(clickedIndex) {
     const targetItem = document.getElementById(`acc-dv-${clickedIndex}`);
+    const bodyItem = targetItem.querySelector('.dv-accordion-body');
+    
+    // Lưu lại trạng thái của cái đang được bấm (trước khi đóng tất cả)
     const isCurrentlyOpen = targetItem.classList.contains('expanded');
 
-    // Nếu nó đang đóng thì ta mới làm (đang mở thì bấm kệ nó hoặc cho nó tự đóng)
-    if (!isCurrentlyOpen) {
-        // Mở nó ra
-        moDaiVanCotTrai(clickedIndex);
+    // BƯỚC 1: QUÉT SẠCH VÀ ĐÓNG TẤT CẢ ACCORDION LẠI
+    document.querySelectorAll('.dv-accordion-item').forEach(item => {
+        item.classList.remove('expanded');
+        item.querySelector('.dv-accordion-body').style.display = 'none';
+        
+        // (Tùy chọn UX) Reset mũi tên xoay về mặc định
+        const icon = item.querySelector('.toggle-icon');
+        if (icon) icon.style.transform = 'rotate(0deg)'; 
+    });
 
-        // ĐỒNG THỜI: Bắt bảng ngang bên dưới phải sáng đèn theo 
-        // bằng cách gọi sự kiện click ẩn vào ô tương ứng ở dưới bảng ngang
+    // BƯỚC 2: QUYẾT ĐỊNH TRẠNG THÁI MỚI
+    if (!isCurrentlyOpen) {
+        // TRƯỜNG HỢP A: Lúc nãy nó đang đóng -> Bây giờ mở nó ra
+        targetItem.classList.add('expanded');
+        bodyItem.style.display = 'block';
+        
+        // Xoay mũi tên lên trên để báo hiệu đang mở
+        const icon = targetItem.querySelector('.toggle-icon');
+        if (icon) icon.style.transform = 'rotate(180deg)';
+
+        // Đồng thời làm sáng đèn cái ô tương ứng ở bảng Lưu niên bên dưới
         const cellTuongUng = document.querySelectorAll('.dv-cell')[clickedIndex];
         if (cellTuongUng) {
-            // Lưu ý: Đừng gọi cellTuongUng.click() để tránh lặp vô tận (Loop Hell)
-            // Thay vào đó, ta tự đổi màu cell và render lại lưu niên
             document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
             cellTuongUng.classList.add('active');
-            
-            // Render lại lưu niên theo đúng Đại vận đang bấm
-            renderLuuNian(daiVanList[clickedIndex].liu_nian);
+            renderLuuNian(daiVanList[clickedIndex].liu_nian); // Đổ data 10 năm ra
         }
+    } else {
+        // TRƯỜNG HỢP B: Lúc nãy nó đang mở -> Bước 1 đã đóng nó lại rồi, nên giờ không làm gì thêm ở cột trái nữa.
+        
+        // Tuy nhiên, ta nên tắt luôn cái đèn 'active' ở bảng ngang bên dưới cho đồng bộ 
+        // (Khi không xem Đại vận nào thì bảng dưới cũng không sáng đèn)
+        document.querySelectorAll('.dv-cell').forEach(c => c.classList.remove('active'));
     }
 }
 
