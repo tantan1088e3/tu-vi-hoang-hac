@@ -1535,32 +1535,37 @@
     }
 
     function renderToanBoDaiVanCotTrai(daiVanList) {
-        const container = document.getElementById('id-cot-luan-giai'); // Sửa ID thật của ông
-        let html = '<div class="dv-accordion-container">';
-    
-        daiVanList.forEach((dv, index) => {
-            // Lấy số sao (hoặc tự tính dựa vào API của ông)
-            let saoText = dv.danh_gia_sao || 'Đang cập nhật';
-    
-            html += `
-                <div class="dv-accordion-item" id="acc-dv-${index}">
-                    <!-- PHẦN HEADER (Luôn hiện) -->
-                    <div class="dv-accordion-header" onclick="clickHeaderAccordion(${index})">
-                        <span>Đại vận: ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
-                        <span>Đánh giá: ${saoText} <span class="toggle-icon">▼</span></span>
-                    </div>
-                    
-                    <!-- PHẦN BODY (Nội dung giấu đi) -->
-                    <div class="dv-accordion-body" style="display: none;">
-                        ${getHTMLChiTietDaiVan(dv)} <!-- Gọi hàm lấy nội dung tôi đã viết cho ông ở tin nhắn trước -->
-                    </div>
-                </div>
-            `;
-        });
-    
-        html += '</div>';
-        container.innerHTML = html;
+    // 1. THAY TÊN ID NÀY BẰNG ID THẬT CỦA ÔNG:
+    const container = document.getElementById('ĐIỀN_ID_THẬT_VÀO_ĐÂY'); 
+
+    // 2. BẪY LỖI: Nếu tìm không thấy ID, báo lỗi ra Console chứ không cho sập trang
+    if (!container) {
+        console.error("LỖI: Không tìm thấy thẻ div nào có ID như trên để in Đại Vận!");
+        return; 
     }
+
+    let html = '<div class="dv-accordion-container">';
+
+    daiVanList.forEach((dv, index) => {
+        let saoText = dv.danh_gia_sao || 'Đang cập nhật';
+        html += `
+            <div class="dv-accordion-item" id="acc-dv-${index}">
+                <div class="dv-accordion-header" onclick="clickHeaderAccordion(${index})">
+                    <span>Đại vận: ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc}t)</span>
+                    <span>Đánh giá: ${saoText} <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="dv-accordion-body" style="display: none;">
+                    ${getHTMLChiTietDaiVan(dv)}
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    
+    // 3. Dòng 1562 sẽ chạy mượt mà vì container đã tồn tại
+    container.innerHTML = html; 
+}
 
 // Hàm chuyển đổi dữ liệu Đại Vận thành chuỗi HTML chi tiết để nhét vào Accordion
 function getHTMLChiTietDaiVan(dv) {
