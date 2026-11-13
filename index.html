@@ -979,6 +979,21 @@
         width: 100% !important;
     }
 }
+@media (max-width: 768px) {
+    /* Ép thẻ bọc ngoài cùng phải hiển thị và tràn viền */
+    .spacer-left {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 20px; /* Đẩy Mệnh bàn xuống một chút cho đỡ dính */
+    }
+
+    /* Đảm bảo hộp bên trong bung hết cỡ */
+    #box-luan-giai-dai-van {
+        display: flex !important;
+        width: 100% !important;
+        height: auto !important; /* Bỏ ép chiều cao 100% trên mobile để nó tự co giãn */
+    }
+}
     </style>
 </head>
 <body>
