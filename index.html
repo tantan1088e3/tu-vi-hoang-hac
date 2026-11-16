@@ -1223,7 +1223,11 @@
                     
                     <div style="text-align: center; margin-top: 20px;">
                         <button class="btn-back-form" onclick="(resetBaziForm())">← Lập lá số khác</button>
+                        <button class="btn-share-img" onclick="shareBaziImage()" style="background: #d97706; color: #fff; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 600;">
+                            📸 Tải / Chia sẻ Ảnh
+                        </button>
                     </div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
                 </div>
 
                 <!-- CỘT 3: Khung Luận Giải (Trôi bên phải) -->
@@ -1979,23 +1983,65 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistoryList();
 });
     
-    function getThapThan(nhatChu, canKiemTra) {
-        const thapThanMap = {
-            "Giáp": {"Giáp":"Tỷ", "Ất":"Kiếp", "Bính":"Thực", "Đinh":"Thương", "Mậu":"T.Tài", "Kỷ":"C.Tài", "Canh":"Sát", "Tân":"Quan", "Nhâm":"Kiêu", "Quý":"Ấn"},
-            "Ất": {"Giáp":"Kiếp", "Ất":"Tỷ", "Bính":"Thương", "Đinh":"Thực", "Mậu":"C.Tài", "Kỷ":"T.Tài", "Canh":"Quan", "Tân":"Sát", "Nhâm":"Ấn", "Quý":"Kiêu"},
-            "Bính": {"Giáp":"Kiêu", "Ất":"Ấn", "Bính":"Tỷ", "Đinh":"Kiếp", "Mậu":"Thực", "Kỷ":"Thương", "Canh":"T.Tài", "Tân":"C.Tài", "Nhâm":"Sát", "Quý":"Quan"},
-            "Đinh": {"Giáp":"Ấn", "Ất":"Kiêu", "Bính":"Kiếp", "Đinh":"Tỷ", "Mậu":"Thương", "Kỷ":"Thực", "Canh":"C.Tài", "Tân":"T.Tài", "Nhâm":"Quan", "Quý":"Sát"},
-            "Mậu": {"Giáp":"Sát", "Ất":"Quan", "Bính":"Kiêu", "Đinh":"Ấn", "Mậu":"Tỷ", "Kỷ":"Kiếp", "Canh":"Thực", "Tân":"Thương", "Nhâm":"T.Tài", "Quý":"C.Tài"},
-            "Kỷ": {"Giáp":"Quan", "Ất":"Sát", "Bính":"Ấn", "Đinh":"Kiêu", "Mậu":"Kiếp", "Kỷ":"Tỷ", "Canh":"Thương", "Tân":"Thực", "Nhâm":"C.Tài", "Quý":"T.Tài"},
-            "Canh": {"Giáp":"T.Tài", "Ất":"C.Tài", "Bính":"Sát", "Đinh":"Quan", "Mậu":"Kiêu", "Kỷ":"Ấn", "Canh":"Tỷ", "Tân":"Kiếp", "Nhâm":"Thực", "Quý":"Thương"},
-            "Tân": {"Giáp":"C.Tài", "Ất":"T.Tài", "Bính":"Quan", "Đinh":"Sát", "Mậu":"Ấn", "Kỷ":"Kiêu", "Canh":"Kiếp", "Tân":"Tỷ", "Nhâm":"Thương", "Quý":"Thực"},
-            "Nhâm": {"Giáp":"Thực", "Ất":"Thương", "Bính":"T.Tài", "Đinh":"C.Tài", "Mậu":"Sát", "Kỷ":"Quan", "Canh":"Kiêu", "Tân":"Ấn", "Nhâm":"Tỷ", "Quý":"Kiếp"},
-            "Quý": {"Giáp":"Thương", "Ất":"Thực", "Bính":"C.Tài", "Đinh":"T.Tài", "Mậu":"Quan", "Kỷ":"Sát", "Canh":"Ấn", "Tân":"Kiêu", "Nhâm":"Kiếp", "Quý":"Tỷ"}
-        };
-        return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
-    }
+function getThapThan(nhatChu, canKiemTra) {
+    const thapThanMap = {
+        "Giáp": {"Giáp":"Tỷ", "Ất":"Kiếp", "Bính":"Thực", "Đinh":"Thương", "Mậu":"T.Tài", "Kỷ":"C.Tài", "Canh":"Sát", "Tân":"Quan", "Nhâm":"Kiêu", "Quý":"Ấn"},
+        "Ất": {"Giáp":"Kiếp", "Ất":"Tỷ", "Bính":"Thương", "Đinh":"Thực", "Mậu":"C.Tài", "Kỷ":"T.Tài", "Canh":"Quan", "Tân":"Sát", "Nhâm":"Ấn", "Quý":"Kiêu"},
+        "Bính": {"Giáp":"Kiêu", "Ất":"Ấn", "Bính":"Tỷ", "Đinh":"Kiếp", "Mậu":"Thực", "Kỷ":"Thương", "Canh":"T.Tài", "Tân":"C.Tài", "Nhâm":"Sát", "Quý":"Quan"},
+        "Đinh": {"Giáp":"Ấn", "Ất":"Kiêu", "Bính":"Kiếp", "Đinh":"Tỷ", "Mậu":"Thương", "Kỷ":"Thực", "Canh":"C.Tài", "Tân":"T.Tài", "Nhâm":"Quan", "Quý":"Sát"},
+        "Mậu": {"Giáp":"Sát", "Ất":"Quan", "Bính":"Kiêu", "Đinh":"Ấn", "Mậu":"Tỷ", "Kỷ":"Kiếp", "Canh":"Thực", "Tân":"Thương", "Nhâm":"T.Tài", "Quý":"C.Tài"},
+        "Kỷ": {"Giáp":"Quan", "Ất":"Sát", "Bính":"Ấn", "Đinh":"Kiêu", "Mậu":"Kiếp", "Kỷ":"Tỷ", "Canh":"Thương", "Tân":"Thực", "Nhâm":"C.Tài", "Quý":"T.Tài"},
+        "Canh": {"Giáp":"T.Tài", "Ất":"C.Tài", "Bính":"Sát", "Đinh":"Quan", "Mậu":"Kiêu", "Kỷ":"Ấn", "Canh":"Tỷ", "Tân":"Kiếp", "Nhâm":"Thực", "Quý":"Thương"},
+        "Tân": {"Giáp":"C.Tài", "Ất":"T.Tài", "Bính":"Quan", "Đinh":"Sát", "Mậu":"Ấn", "Kỷ":"Kiêu", "Canh":"Kiếp", "Tân":"Tỷ", "Nhâm":"Thương", "Quý":"Thực"},
+        "Nhâm": {"Giáp":"Thực", "Ất":"Thương", "Bính":"T.Tài", "Đinh":"C.Tài", "Mậu":"Sát", "Kỷ":"Quan", "Canh":"Kiêu", "Tân":"Ấn", "Nhâm":"Tỷ", "Quý":"Kiếp"},
+        "Quý": {"Giáp":"Thương", "Ất":"Thực", "Bính":"C.Tài", "Đinh":"T.Tài", "Mậu":"Quan", "Kỷ":"Sát", "Canh":"Ấn", "Tân":"Kiêu", "Nhâm":"Kiếp", "Quý":"Tỷ"}
+    };
+    return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
+}
     
-    document.addEventListener("DOMContentLoaded", populateDropdowns);
+function shareBaziImage() {
+    const targetElement = document.querySelector('.result-wrapper');
+    if (!targetElement) return;
+
+    html2canvas(targetElement, {
+        scale: 2, // Tăng độ nét gấp đôi (Chuẩn Retina)
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        onclone: (clonedDoc) => {
+            // Tìm các ô Đại vận và Lưu niên đang có vòng chạy (.active) trong bản chụp
+            const activeCells = clonedDoc.querySelectorAll('#dv-container .active, #ln-container .active');
+            
+            activeCells.forEach(cell => {
+                // Ép vẽ lại vòng viền trực tiếp bằng inline-style để html2canvas bắt buộc phải chụp
+                cell.style.border = '2px solid #1e4b41';
+                cell.style.borderRadius = '6px';
+                cell.style.boxShadow = '0 0 0 2px rgba(30, 75, 65, 0.25), inset 0 0 6px rgba(30, 75, 65, 0.15)';
+                cell.style.backgroundColor = '#f4fbf9';
+                cell.style.position = 'relative';
+            });
+        }
+    }).then(canvas => {
+        canvas.toBlob(blob => {
+            const file = new File([blob], 'tu-tru-menh-ban.png', { type: 'image/png' });
+
+            // Nếu dùng trên điện thoại hỗ trợ bắn ảnh trực tiếp qua Zalo/Facebook/Telegram
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    title: 'Tứ Trụ Mệnh Bàn',
+                    files: [file]
+                }).catch(() => {});
+            } else {
+                // Nếu trên máy tính: Tự động tải ảnh nét căng về máy
+                const link = document.createElement('a');
+                link.download = 'tu-tru-menh-ban.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        }, 'image/png');
+    });
+}
+    
+document.addEventListener("DOMContentLoaded", populateDropdowns);
     
 </script>
 </body>
