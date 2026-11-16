@@ -919,7 +919,7 @@
    ========================================================================== */
 .result-wrapper {
     background-image: 
-        linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.55) 100%),
+        linear-gradient(135deg, rgba(242, 250, 246, 0.7) 0%, rgba(221, 240, 230, 0.85) 50%, rgba(206, 232, 218, 0.9) 100%) !important;
         url('nen-web4a.png') !important;
     
     background-repeat: no-repeat, no-repeat !important;
@@ -990,11 +990,19 @@
 }
 
 /* ==========================================================================
-   HIỆU ỨNG BẢNG TRONG SUỐT (NHÌN XUYÊN ẢNH NỀN)
+   TẠO 1 LỚP KÍNH MỜ (GLASSMORPHISM) ÔM TRỌN TẤT CẢ CÁC BẢNG
    ========================================================================== */
 
-/* 1. Mở khóa nền cho toàn bộ các khung bao quanh bảng */
-.,
+/* 1. Đổ màu trắng bán trong suốt cho thẻ bọc ngoài cùng (.t-grid-scroll) */
+.result-wrapper .t-grid-scroll {
+    background-color: rgba(255, 255, 255, 0.55) !important;
+    border-radius: 10px !important;
+    padding: 15px !important; /* Tạo lề để lớp kính tràn ra ngoài bảng một chút cho đẹp */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 2. Xóa hoàn toàn nền của các khung lưới bên trong để lộ lớp kính 0.55 ra */
+.result-body,
 .result-wrapper .t-grid,
 .result-wrapper .bazi-main-grid,
 .result-wrapper .ts-grid {
@@ -1002,20 +1010,18 @@
     background-color: transparent !important;
 }
 
-/* 2. Ép tất cả các ô trong Tứ Trụ, Thần Sát, Đại Vận, Lưu Niên thành lớp kính mờ */
+/* 3. Xóa màu nền của các ô chữ (cell), Đại Vận, Lưu Niên để chúng nhìn xuyên thấu 100% xuống lớp kính */
 .result-wrapper .t-cell,
 .result-wrapper .ts-cell,
 #dv-container > *,
 #ln-container > * {
-    background-color: rgba(255, 255, 255, 0.55) !important; /* 0.55 là độ mờ. Hạ xuống 0.3 sẽ càng trong suốt, tăng lên 0.8 sẽ đặc hơn */
+    background-color: transparent !important;
 }
 
-/* 3. Riêng cột nhãn ngoài cùng bên trái (Dương Lịch, Bát Tự...) cho mờ ít hơn một chút để tạo điểm nhấn */
+/* 4. (Tùy chọn) Phủ thêm một chút mờ nhẹ cho các ô Nhãn (Dương Lịch, T.Can...) để dễ phân biệt hàng cột */
 .result-wrapper .t-cell.t-label {
-    background-color: rgba(255, 255, 255, 0.55) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important; 
 }
-
-/* Lưu ý: Cột Nhật Chủ (Vàng hoàng kim) đã được setup code riêng ở phần trước nên sẽ vẫn giữ được màu vàng sang trọng và không bị ảnh hưởng bởi đoạn code này */
 
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
