@@ -2084,7 +2084,7 @@ function ensureShareModalInBody() {
     return modal;
 }
 
-// 3. Tự động dò chính xác ô Đại Vận / Lưu Niên đang có vòng chạy
+// 3. Tự động dò chính xác ô Đại Vận & Lưu Niên đang được chọn (Bắt cả ô tự động sáng đèn)
 function findActiveCells(containerSelector, savedClickIndex) {
     const container = document.querySelector(containerSelector);
     if (!container) return { activeCells: [], normalClassName: 't-cell' };
@@ -2092,31 +2092,46 @@ function findActiveCells(containerSelector, savedClickIndex) {
     const cells = Array.from(container.children);
     if (cells.length === 0) return { activeCells: [], normalClassName: 't-cell' };
 
-    // Tìm class chuẩn của các ô bình thường (không có vòng chạy)
-    const classCounts = {};
-    cells.forEach(c => {
-        classCounts[c.className] = (classCounts[c.className] || 0) + 1;
-    });
-    const normalClassName = Object.keys(classCounts).reduce((a, b) => classCounts[a] >= classCounts[b] ? a : b);
+    // Hàm lấy chữ ký hình ảnh (viền, nền, đổ bóng, lớp giả ::before/::after) của từng ô
+    const getBoxSignature = (el) => {
+        const cs = window.getComputedStyle(el);
+        const b = window.getComputedStyle(el, '::before');
+        const a = window.getComputedStyle(el, '::after');
+        return [
+            cs.borderTopWidth, cs.borderRightWidth, cs.borderBottomWidth, cs.borderLeftWidth,
+            cs.borderTopColor, cs.borderLeftColor,
+            cs.backgroundColor, cs.backgroundImage,
+            cs.boxShadow, cs.outlineWidth, cs.outlineColor,
+            b ? b.content : '', b ? b.backgroundImage : '', b ? b.borderWidth : '',
+            a ? a.content : '', a ? a.backgroundImage : '', a ? a.borderWidth : ''
+        ].join('|');
+    };
+
+    // Tìm trạng thái chuẩn của đa số các ô bình thường (9 ô không được chọn) trong hàng
+    const findMajority = (arr) => {
+        const counts = {};
+        arr.forEach(val => { counts[val] = (counts[val] || 0) + 1; });
+        return Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
+    };
+
+    const normalClassName = findMajority(cells.map(c => c.className.trim()));
+    const normalInlineStyle = findMajority(cells.map(c => (c.getAttribute('style') || '').trim()));
+    const normalBoxSig = findMajority(cells.map(c => getBoxSignature(c)));
 
     const activeCells = [];
-    cells.forEach((cell, idx) => {
-        const cs = window.getComputedStyle(cell);
-        const beforeCs = window.getComputedStyle(cell, '::before');
-        const afterCs = window.getComputedStyle(cell, '::after');
+    cells.forEach((cell) => {
+        // Bất kỳ ô nào có Class, Style hoặc Khung viền khác biệt với 9 ô còn lại -> Chính là ô đang Focus!
+        const isDiffClass = cell.className.trim() !== normalClassName;
+        const isDiffStyle = (cell.getAttribute('style') || '').trim() !== normalInlineStyle;
+        const isDiffBox = getBoxSignature(cell) !== normalBoxSig;
+        const hasChildActive = cell.querySelector('[class*="active"], [class*="select"], [class*="focus"], [class*="current"]') !== null;
 
-        const hasDiffClass = cell.className !== normalClassName;
-        const hasKeywordClass = /active|select|focus|current|highlight|chon|run/i.test(cell.className);
-        const hasPseudo = (beforeCs && beforeCs.content !== 'none' && beforeCs.content !== 'normal') ||
-                          (afterCs && afterCs.content !== 'none' && afterCs.content !== 'normal');
-        const hasRelativePos = cs.position === 'relative' || cs.overflow === 'hidden';
-
-        if (hasKeywordClass || (hasDiffClass && (hasPseudo || hasRelativePos))) {
+        if (isDiffClass || isDiffStyle || isDiffBox || hasChildActive) {
             activeCells.push(cell);
         }
     });
 
-    // Nếu người dùng vừa click hoặc bộ lọc trên chưa bắt được, dùng vị trí click gần nhất
+    // Dự phòng nếu người dùng vừa click trực tiếp
     if (activeCells.length === 0 && savedClickIndex >= 0 && cells[savedClickIndex]) {
         activeCells.push(cells[savedClickIndex]);
     }
