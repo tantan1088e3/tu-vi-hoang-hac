@@ -2052,8 +2052,24 @@ function ensureShareModalInBody() {
     return modal;
 }
 
-// 1. Mở Popup và chụp ảnh lá số
-function openShareBaziModal() {
+// Hàm tự động dò tìm ô Đại Vận / Lưu Niên đang có vòng chạy (bắt chuẩn mọi tên class hoặc ::before)
+function getActiveCellIndices(containerSelector) {
+    const cells = Array.from(document.querySelectorAll(`${containerSelector} > *`));
+    const activeIndices = [];
+    cells.forEach((cell, index) => {
+        const beforeStyle = window.getComputedStyle(cell, '::before');
+        const hasActiveClass = /active|select|focus|current|highlight/i.test(cell.className);
+        const hasPseudoRing = beforeStyle && beforeStyle.content !== 'none' && beforeStyle.content !== 'normal';
+        
+        if (hasActiveClass || hasPseudoRing) {
+            activeIndices.push(index);
+        }
+    });
+    return activeIndices;
+}
+
+// Hàm mở Popup và chụp ảnh lá số giữ nguyên Focus Đại Vận & Lưu Niên
+async function openShareBaziModal() {
     const modal = ensureShareModalInBody();
     const statusMsg = document.getElementById('share-status-msg');
     const previewImg = document.getElementById('bazi-preview-img');
@@ -2061,13 +2077,15 @@ function openShareBaziModal() {
 
     if (!targetElement || !modal) return;
 
-    // Reset trạng thái trước khi chụp (Tuyệt đối không gán src="" vì sẽ gây lỗi html2canvas)
+    // Lưu lại vị trí ô Đại Vận và Lưu Niên đang có vòng chạy trước khi chụp
+    const activeDvIndices = getActiveCellIndices('#dv-container');
+    const activeLnIndices = getActiveCellIndices('#ln-container');
+
     currentBaziBlob = null;
     currentBaziDataUrl = null;
     previewImg.style.display = 'none';
     previewImg.removeAttribute('src');
 
-    // Tạm khóa các nút trong 1-2 giây chờ tạo ảnh xong
     const actionBtns = modal.querySelectorAll('button');
     actionBtns.forEach(btn => {
         btn.style.opacity = '0.5';
@@ -2077,41 +2095,77 @@ function openShareBaziModal() {
     modal.style.display = 'flex';
     statusMsg.innerHTML = '⏳ Đang chụp lá số nét cao (vui lòng đợi 1-2 giây)...';
 
-    // Chụp khung lá số
-    html2canvas(targetElement, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        ignoreElements: (el) => el.id === 'bazi-share-modal',
-        onclone: (clonedDoc) => {
-            // Giữ nguyên vòng viền ở ô Đại Vận và Lưu Niên đang chọn
-            const activeCells = clonedDoc.querySelectorAll('#dv-container .active, #ln-container .active');
-            activeCells.forEach(cell => {
-                cell.style.border = '2px solid #1e4b41';
-                cell.style.borderRadius = '6px';
-                cell.style.boxShadow = '0 0 0 2px rgba(30, 75, 65, 0.25), inset 0 0 6px rgba(30, 75, 65, 0.15)';
-                cell.style.backgroundColor = '#f4fbf9';
-                cell.style.position = 'relative';
-            });
-        }
-    }).then(canvas => {
+    try {
+        await ensureHtml2CanvasLoaded();
+
+        const canvas = await html2canvas(targetElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            ignoreElements: (el) => el.id === 'bazi-share-modal',
+            onclone: (clonedDoc) => {
+                // 1. Tắt lớp giả ::before / ::after của vòng chạy để xóa 2 vạch đen hai bên
+                const fixStyle = clonedDoc.createElement('style');
+                fixStyle.innerHTML = `
+                    #dv-container, #ln-container {
+                        overflow: visible !important;
+                        padding: 4px 2px !important;
+                    }
+                    #dv-container > *, #ln-container > *,
+                    #dv-container > *::before, #dv-container > *::after,
+                    #ln-container > *::before, #ln-container > *::after {
+                        content: none !important;
+                        animation: none !important;
+                        background-image: none !important;
+                    }
+                    /* Tô nền vàng hoàng kim đậm hơn cột Nhật Chủ, không dùng viền xanh */
+                    .bazi-capture-focus {
+                        background-color: #fbe6b2 !important; /* Vàng kem đậm nổi bật */
+                        border: 1.5px solid #c59b52 !important; /* Viền vàng đồng tiệp màu nhãn NHẬT CHỦ */
+                        border-radius: 6px !important;
+                        box-shadow: 0 2px 6px rgba(197, 155, 82, 0.25) !important;
+                        box-sizing: border-box !important;
+                        position: relative !important;
+                        z-index: 10 !important;
+                    }
+                `;
+                clonedDoc.head.appendChild(fixStyle);
+
+                // 2. Áp màu nền vào ô Đại Vận đang chọn
+                const clonedDvCells = clonedDoc.querySelectorAll('#dv-container > *');
+                activeDvIndices.forEach(idx => {
+                    if (clonedDvCells[idx]) {
+                        clonedDvCells[idx].classList.add('bazi-capture-focus');
+                    }
+                });
+
+                // 3. Áp màu nền vào ô Lưu Niên đang chọn
+                const clonedLnCells = clonedDoc.querySelectorAll('#ln-container > *');
+                activeLnIndices.forEach(idx => {
+                    if (clonedLnCells[idx]) {
+                        clonedLnCells[idx].classList.add('bazi-capture-focus');
+                    }
+                });
+            }
+        });
+
         currentBaziDataUrl = canvas.toDataURL('image/png');
         previewImg.src = currentBaziDataUrl;
         previewImg.style.display = 'block';
 
         canvas.toBlob(blob => {
             currentBaziBlob = blob;
-            // Mở khóa các nút sau khi ảnh đã sẵn sàng 100%
             actionBtns.forEach(btn => {
                 btn.style.opacity = '1';
                 btn.style.pointerEvents = 'auto';
             });
             statusMsg.innerHTML = '<b style="color: #1e4b41;">✅ Ảnh đã sẵn sàng! Hãy bấm nút bên dưới để Copy & Chia sẻ:</b>';
         }, 'image/png');
-    }).catch(err => {
+
+    } catch (err) {
         console.error('Lỗi chụp ảnh lá số:', err);
         statusMsg.innerHTML = '<b style="color: #dc2626;">❌ Lỗi tạo ảnh: ' + err.message + '</b>';
-    });
+    }
 }
 
 function closeShareBaziModal() {
@@ -2173,7 +2227,7 @@ async function shareToPlatform(platform) {
     const shareText = encodeURIComponent('Lá số Tứ Trụ Bát Tự tại Tử Vi Hoàng Hạc:');
 
     if (platform === 'facebook') {
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank', 'width=680,height=550');
+        window.open('https://www.facebook.com/groups/joins/', '_blank', 'width=1000,height=700');
     } else if (platform === 'telegram') {
         window.open(`https://t.me/share/url?url=${currentUrl}&text=${shareText}`, '_blank', 'width=650,height=500');
     } else if (platform === 'zalo') {
