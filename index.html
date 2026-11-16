@@ -2047,26 +2047,12 @@ function getThapThan(nhatChu, canKiemTra) {
 }
     
 // =========================================================
-// TRỌN BỘ CODE CHỤP & CHIA SẺ LÁ SỐ (TÔ NỀN VÀNG ĐẠI VẬN & LƯU NIÊN)
+// TRỌN BỘ CODE CHỤP & CHIA SẺ LÁ SỐ (ĐẦY ĐỦ 100% CÁC HÀM)
 // =========================================================
 let currentBaziBlob = null;
 let currentBaziDataUrl = null;
-let lastClickedDvIndex = -1;
-let lastClickedLnIndex = -1;
 
-// Theo dõi mỗi khi người dùng click chọn ô Đại Vận hoặc Lưu Niên
-document.addEventListener('click', (e) => {
-    const dvCell = e.target.closest('#dv-container > *');
-    if (dvCell && dvCell.parentElement) {
-        lastClickedDvIndex = Array.from(dvCell.parentElement.children).indexOf(dvCell);
-    }
-    const lnCell = e.target.closest('#ln-container > *');
-    if (lnCell && lnCell.parentElement) {
-        lastClickedLnIndex = Array.from(lnCell.parentElement.children).indexOf(lnCell);
-    }
-}, true);
-
-// 1. Tự động kiểm tra và nạp thư viện html2canvas
+// 1. Tự động kiểm tra và nạp thư viện html2canvas nếu trang chưa có
 function ensureHtml2CanvasLoaded() {
     return new Promise((resolve, reject) => {
         if (typeof html2canvas !== 'undefined') {
@@ -2081,7 +2067,7 @@ function ensureHtml2CanvasLoaded() {
     });
 }
 
-// 2. Đưa Popup ra ngoài body
+// 2. Đưa Popup ra ngoài body để không làm lỗi lúc chụp
 function ensureShareModalInBody() {
     let modal = document.getElementById('bazi-share-modal');
     if (modal && modal.parentElement !== document.body) {
@@ -2090,62 +2076,22 @@ function ensureShareModalInBody() {
     return modal;
 }
 
-// 3. Tự động dò chính xác ô Đại Vận & Lưu Niên đang được chọn (Bắt cả ô tự động sáng đèn)
-function findActiveCells(containerSelector, savedClickIndex) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return { activeCells: [], normalClassName: 't-cell' };
-
-    const cells = Array.from(container.children);
-    if (cells.length === 0) return { activeCells: [], normalClassName: 't-cell' };
-
-    // Hàm lấy chữ ký hình ảnh (viền, nền, đổ bóng, lớp giả ::before/::after) của từng ô
-    const getBoxSignature = (el) => {
-        const cs = window.getComputedStyle(el);
-        const b = window.getComputedStyle(el, '::before');
-        const a = window.getComputedStyle(el, '::after');
-        return [
-            cs.borderTopWidth, cs.borderRightWidth, cs.borderBottomWidth, cs.borderLeftWidth,
-            cs.borderTopColor, cs.borderLeftColor,
-            cs.backgroundColor, cs.backgroundImage,
-            cs.boxShadow, cs.outlineWidth, cs.outlineColor,
-            b ? b.content : '', b ? b.backgroundImage : '', b ? b.borderWidth : '',
-            a ? a.content : '', a ? a.backgroundImage : '', a ? a.borderWidth : ''
-        ].join('|');
-    };
-
-    // Tìm trạng thái chuẩn của đa số các ô bình thường (9 ô không được chọn) trong hàng
-    const findMajority = (arr) => {
-        const counts = {};
-        arr.forEach(val => { counts[val] = (counts[val] || 0) + 1; });
-        return Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
-    };
-
-    const normalClassName = findMajority(cells.map(c => c.className.trim()));
-    const normalInlineStyle = findMajority(cells.map(c => (c.getAttribute('style') || '').trim()));
-    const normalBoxSig = findMajority(cells.map(c => getBoxSignature(c)));
-
-    const activeCells = [];
-    cells.forEach((cell) => {
-        // Bất kỳ ô nào có Class, Style hoặc Khung viền khác biệt với 9 ô còn lại -> Chính là ô đang Focus!
-        const isDiffClass = cell.className.trim() !== normalClassName;
-        const isDiffStyle = (cell.getAttribute('style') || '').trim() !== normalInlineStyle;
-        const isDiffBox = getBoxSignature(cell) !== normalBoxSig;
-        const hasChildActive = cell.querySelector('[class*="active"], [class*="select"], [class*="focus"], [class*="current"]') !== null;
-
-        if (isDiffClass || isDiffStyle || isDiffBox || hasChildActive) {
-            activeCells.push(cell);
+// 3. Tự động dò vị trí ô Đại Vận & Lưu Niên đang có vòng chạy
+function getActiveCellIndices(containerSelector) {
+    const cells = Array.from(document.querySelectorAll(`${containerSelector} > *`));
+    const activeIndices = [];
+    cells.forEach((cell, index) => {
+        const beforeStyle = window.getComputedStyle(cell, '::before');
+        const hasActiveClass = /active|select|focus|current|highlight/i.test(cell.className);
+        const hasPseudoRing = beforeStyle && beforeStyle.content !== 'none' && beforeStyle.content !== 'normal';
+        if (hasActiveClass || hasPseudoRing) {
+            activeIndices.push(index);
         }
     });
-
-    // Dự phòng nếu người dùng vừa click trực tiếp
-    if (activeCells.length === 0 && savedClickIndex >= 0 && cells[savedClickIndex]) {
-        activeCells.push(cells[savedClickIndex]);
-    }
-
-    return { activeCells, normalClassName };
+    return activeIndices;
 }
 
-// 4. Mở Popup và chụp ảnh (Xóa lớp mặt nạ trắng ::after để lên chuẩn nền vàng #fbe6b2)
+// 4. Mở Popup và chụp ảnh lá số (Tô nền vàng đậm hơn cột Nhật Chủ cho Đại Vận & Lưu Niên)
 async function openShareBaziModal() {
     const modal = ensureShareModalInBody();
     const statusMsg = document.getElementById('share-status-msg');
@@ -2153,6 +2099,9 @@ async function openShareBaziModal() {
     const targetElement = document.querySelector('.result-wrapper');
 
     if (!targetElement || !modal) return;
+
+    const activeDvIndices = getActiveCellIndices('#dv-container');
+    const activeLnIndices = getActiveCellIndices('#ln-container');
 
     currentBaziBlob = null;
     currentBaziDataUrl = null;
@@ -2168,94 +2117,52 @@ async function openShareBaziModal() {
     modal.style.display = 'flex';
     statusMsg.innerHTML = '⏳ Đang chụp lá số nét cao (vui lòng đợi 1-2 giây)...';
 
-    const restoreList = [];
-    let tempStyleTag = null;
-
     try {
         await ensureHtml2CanvasLoaded();
 
-        // Tìm ô đang chọn ở Đại Vận và Lưu Niên
-        const dvInfo = findActiveCells('#dv-container', lastClickedDvIndex);
-        const lnInfo = findActiveCells('#ln-container', lastClickedLnIndex);
-
-        const allTargets = [
-            ...dvInfo.activeCells.map(cell => ({ cell, baseClass: dvInfo.normalClassName })),
-            ...lnInfo.activeCells.map(cell => ({ cell, baseClass: lnInfo.normalClassName }))
-        ];
-
-        // 1. Gắn CSS tạm thời để tắt toàn bộ lớp mặt nạ trắng ::before / ::after ở Lưu Niên & Đại Vận
-        tempStyleTag = document.createElement('style');
-        tempStyleTag.id = 'bazi-temp-capture-style';
-        tempStyleTag.innerHTML = `
-            #dv-container > *::before, #dv-container > *::after,
-            #ln-container > *::before, #ln-container > *::after,
-            .bazi-gold-capture::before, .bazi-gold-capture::after,
-            .bazi-gold-capture *::before, .bazi-gold-capture *::after {
-                content: none !important;
-                display: none !important;
-                opacity: 0 !important;
-                background: transparent !important;
-                background-color: transparent !important;
-                background-image: none !important;
-                border: none !important;
-                box-shadow: none !important;
-                animation: none !important;
-            }
-            .bazi-gold-capture {
-                background: #fbe6b2 !important;
-                background-color: #fbe6b2 !important;
-                background-image: linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%) !important;
-                border: 1.5px solid #d4a359 !important;
-                border-radius: 6px !important;
-                box-shadow: none !important;
-            }
-        `;
-        document.head.appendChild(tempStyleTag);
-
-        // 2. Áp nền vàng #fbe6b2 trực tiếp lên ô Đại Vận và Lưu Niên đang chọn
-        allTargets.forEach(({ cell, baseClass }) => {
-            restoreList.push({
-                el: cell,
-                oldClassName: cell.className,
-                oldStyle: cell.getAttribute('style')
-            });
-
-            cell.className = baseClass + ' col-day bazi-gold-capture';
-            cell.style.setProperty('background', '#fbe6b2', 'important');
-            cell.style.setProperty('background-color', '#fbe6b2', 'important');
-            cell.style.setProperty('background-image', 'linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%)', 'important');
-            cell.style.setProperty('border', '1.5px solid #d4a359', 'important');
-            cell.style.setProperty('border-radius', '6px', 'important');
-            cell.style.setProperty('box-shadow', 'none', 'important');
-
-            cell.querySelectorAll('*').forEach(child => {
-                restoreList.push({
-                    el: child,
-                    oldClassName: child.className,
-                    oldStyle: child.getAttribute('style')
-                });
-                child.style.setProperty('background', 'transparent', 'important');
-                child.style.setProperty('background-color', 'transparent', 'important');
-                child.style.setProperty('background-image', 'none', 'important');
-            });
-        });
-
-        // Chụp ảnh lá số
-        const rawCanvas = await html2canvas(targetElement, {
+        const canvas = await html2canvas(targetElement, {
             scale: 2,
             useCORS: true,
             backgroundColor: '#ffffff',
-            ignoreElements: (el) => el.id === 'bazi-share-modal'
-        });
+            ignoreElements: (el) => el.id === 'bazi-share-modal',
+            onclone: (clonedDoc) => {
+                // Tắt lớp giả ::before / ::after của vòng chạy và tô nền vàng đậm hơn cột Nhật Chủ
+                const fixStyle = clonedDoc.createElement('style');
+                fixStyle.innerHTML = `
+                    #dv-container, #ln-container {
+                        overflow: visible !important;
+                        padding: 4px 2px !important;
+                    }
+                    #dv-container > *, #ln-container > *,
+                    #dv-container > *::before, #dv-container > *::after,
+                    #ln-container > *::before, #ln-container > *::after {
+                        content: none !important;
+                        animation: none !important;
+                        background-image: none !important;
+                    }
+                    .bazi-capture-focus {
+                        background-color: #fbe6b2 !important;
+                        border: 1.5px solid #c59b52 !important;
+                        border-radius: 6px !important;
+                        box-shadow: 0 2px 6px rgba(197, 155, 82, 0.25) !important;
+                        box-sizing: border-box !important;
+                        position: relative !important;
+                        z-index: 10 !important;
+                    }
+                `;
+                clonedDoc.head.appendChild(fixStyle);
 
-        // Ép tráng một lớp nền trắng đặc 100% (loại bỏ hoàn toàn kênh trong suốt Alpha)
-        const canvas = document.createElement('canvas');
-        canvas.width = rawCanvas.width;
-        canvas.height = rawCanvas.height;
-        const ctx = canvas.getContext('2d', { alpha: false });
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(rawCanvas, 0, 0);
+                const clonedDvCells = clonedDoc.querySelectorAll('#dv-container > *');
+                activeDvIndices.forEach(idx => {
+                    if (clonedDvCells[idx]) clonedDvCells[idx].classList.add('bazi-capture-focus');
+                });
+
+                const clonedLnCells = clonedDoc.querySelectorAll('#ln-container > *');
+                activeLnIndices.forEach(idx => {
+                    if (clonedLnCells[idx]) clonedLnCells[idx].classList.add('bazi-capture-focus');
+                });
+            }
+        });
 
         currentBaziDataUrl = canvas.toDataURL('image/png');
         previewImg.src = currentBaziDataUrl;
@@ -2273,20 +2180,6 @@ async function openShareBaziModal() {
     } catch (err) {
         console.error('Lỗi chụp ảnh lá số:', err);
         statusMsg.innerHTML = '<b style="color: #dc2626;">❌ Lỗi tạo ảnh: ' + err.message + '</b>';
-    } finally {
-        // 4. Gỡ CSS tạm và trả lại hiệu ứng vòng chạy trên web ngay lập tức
-        if (tempStyleTag && tempStyleTag.parentElement) {
-            tempStyleTag.parentElement.removeChild(tempStyleTag);
-        }
-        for (let i = restoreList.length - 1; i >= 0; i--) {
-            const item = restoreList[i];
-            item.el.className = item.oldClassName;
-            if (item.oldStyle === null) {
-                item.el.removeAttribute('style');
-            } else {
-                item.el.setAttribute('style', item.oldStyle);
-            }
-        }
     }
 }
 
@@ -2296,7 +2189,7 @@ function closeShareBaziModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// 6. Copy ảnh vào Clipboard
+// 6. Copy ảnh vào bộ nhớ tạm (Clipboard) để bấm Ctrl + V
 async function copyBaziImageToClipboard(showAlert = true) {
     const statusMsg = document.getElementById('share-status-msg');
     if (!currentBaziBlob) {
@@ -2314,6 +2207,7 @@ async function copyBaziImageToClipboard(showAlert = true) {
         }
         return true;
     } catch (err) {
+        console.error('Lỗi Copy Clipboard:', err);
         if (showAlert) {
             statusMsg.innerHTML = '<b style="color: #d97706;">⚠️ Hãy bấm chuột phải vào ảnh xem trước chọn "Sao chép hình ảnh"!</b>';
         }
@@ -2321,7 +2215,7 @@ async function copyBaziImageToClipboard(showAlert = true) {
     }
 }
 
-// 7. Chia sẻ lên Facebook, Zalo, Telegram
+// 7. Chia sẻ lên Facebook (Mở danh sách Nhóm), Zalo, Telegram
 async function shareToPlatform(platform) {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -2347,6 +2241,7 @@ async function shareToPlatform(platform) {
         if (groupBox) {
             groupBox.style.display = groupBox.style.display === 'none' ? 'block' : 'none';
         } else {
+            // Mở thẳng trang danh sách các Nhóm Facebook của người dùng để họ chọn nhóm và Ctrl + V
             window.open('https://www.facebook.com/groups/joins/', '_blank', 'width=1050,height=720');
         }
     } else if (platform === 'telegram') {
@@ -2356,7 +2251,7 @@ async function shareToPlatform(platform) {
     }
 }
 
-// 8. Mở link Nhóm cụ thể
+// 8. Mở link Nhóm cụ thể (nếu dùng menu chọn nhóm)
 async function openFbDestination(url) {
     await copyBaziImageToClipboard(false);
     document.getElementById('share-status-msg').innerHTML = 
@@ -2373,6 +2268,7 @@ function downloadBaziImage() {
     link.click();
 }
 
+// Gắn toàn bộ hàm vào window để nút HTML gọi không bao giờ bị lỗi ReferenceError
 window.ensureHtml2CanvasLoaded = ensureHtml2CanvasLoaded;
 window.openShareBaziModal = openShareBaziModal;
 window.shareBaziImage = openShareBaziModal;
