@@ -2264,20 +2264,28 @@ async function openShareBaziModal() {
         tempStyleTag = document.createElement('style');
         tempStyleTag.id = 'bazi-temp-capture-style';
         tempStyleTag.innerHTML = `
-            #dv-container > *.active::before, #dv-container > *.active::after,
-            #ln-container > *.active::before, #ln-container > *.active::after,
-            .bazi-gold-capture::before, .bazi-gold-capture::after {
+            #dv-container > *::before, #dv-container > *::after,
+            #ln-container > *::before, #ln-container > *::after,
+            .bazi-gold-capture::before, .bazi-gold-capture::after,
+            .bazi-gold-capture *::before, .bazi-gold-capture *::after {
+                content: none !important;
+                display: none !important;
+                opacity: 0 !important;
+                background: transparent !important;
+                background-image: none !important;
+                border: none !important;
+                box-shadow: none !important;
                 animation: none !important;
-                opacity: 1 !important;
             }
 
-            /* Tạo khung viền dải màu cầu vồng tĩnh rực rỡ và sang trọng cho ảnh chụp */
+            /* Nền trắng mờ nhẹ nhìn xuyên vân mây, chỉ bôi viền đậm định vị */
             .bazi-gold-capture {
-                background: rgba(255, 255, 255, 0.75) !important; /* Nền trắng mờ nhẹ nhìn xuyên vân mây */
-                border: 2.5px solid transparent !important;
-                border-image: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) 1 !important;
+                background: rgba(255, 255, 255, 0.75) !important;
+                background-color: rgba(255, 255, 255, 0.75) !important;
+                background-image: none !important;
+                border: 2px solid #b45309 !important; /* Viền đồng đậm bao quanh */
                 border-radius: 6px !important;
-                box-shadow: 0 0 10px rgba(168, 85, 247, 0.25) !important;
+                box-shadow: none !important;
             }
         `;
         document.head.appendChild(tempStyleTag);
@@ -2292,10 +2300,11 @@ async function openShareBaziModal() {
 
             cell.className = baseClass + ' col-day bazi-gold-capture';
             cell.style.setProperty('background', 'rgba(255, 255, 255, 0.75)', 'important');
-            cell.style.setProperty('border', '2.5px solid transparent', 'important');
-            cell.style.setProperty('border-image', 'linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) 1', 'important');
+            cell.style.setProperty('background-color', 'rgba(255, 255, 255, 0.75)', 'important');
+            cell.style.setProperty('background-image', 'none', 'important');
+            cell.style.setProperty('border', '2px solid #b45309', 'important');
             cell.style.setProperty('border-radius', '6px', 'important');
-            cell.style.setProperty('box-shadow', '0 0 10px rgba(168, 85, 247, 0.25)', 'important');
+            cell.style.setProperty('box-shadow', 'none', 'important');
 
             cell.querySelectorAll('*').forEach(child => {
                 restoreList.push({
