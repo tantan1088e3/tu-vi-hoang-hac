@@ -1227,7 +1227,47 @@
                             📸 Tải / Chia sẻ Ảnh
                         </button>
                     </div>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+                    <!-- POPUP CHIA SẺ LÁ SỐ (FACEBOOK, ZALO, TELEGRAM) -->
+                    <div id="bazi-share-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+                        <div style="background: #fff; border-radius: 12px; max-width: 420px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; position: relative;">
+                            
+                            <!-- Nút đóng -->
+                            <span onclick="closeShareBaziModal()" style="position: absolute; top: 10px; right: 15px; font-size: 22px; cursor: pointer; color: #888;">&times;</span>
+                            
+                            <h3 style="margin: 0 0 8px 0; color: #1e4b41; font-size: 18px;">Chia Sẻ Lá Số Bát Tự</h3>
+                            <p id="share-status-msg" style="font-size: 13px; color: #666; margin: 0 0 12px 0;">
+                                Đang tạo ảnh lá số nét cao...
+                            </p>
+                    
+                            <!-- Khung xem trước ảnh chụp lá số -->
+                            <div style="max-height: 220px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; background: #fafafa; padding: 5px;">
+                                <img id="bazi-preview-img" src="" alt="Preview Lá Số" style="width: 100%; height: auto; border-radius: 4px; display: none;" />
+                            </div>
+                    
+                            <!-- Nút Copy Ảnh nhanh (Cực tiện cho Zalo / Tele / FB trên PC) -->
+                            <button onclick="copyBaziImageToClipboard(true)" style="width: 100%; background: #1e4b41; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-size: 14px;">
+                                📋 Copy Ảnh (Để bấm Ctrl+V vào Zalo, FB, Tele)
+                            </button>
+                    
+                            <!-- Cụm 3 nút Mạng xã hội: Facebook - Zalo - Telegram -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                                <button onclick="shareToPlatform('facebook')" style="background: #1877F2; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
+                                    📘 Facebook
+                                </button>
+                                <button onclick="shareToPlatform('zalo')" style="background: #0068FF; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
+                                    💬 Zalo
+                                </button>
+                                <button onclick="shareToPlatform('telegram')" style="background: #26A5E4; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
+                                    ✈️ Telegram
+                                </button>
+                            </div>
+                    
+                            <!-- Nút Tải file ảnh về máy -->
+                            <button onclick="downloadBaziImage()" style="width: 100%; background: #f3f4f6; color: #333; border: 1px solid #ddd; padding: 9px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13.5px;">
+                                📥 Tải file ảnh về máy (.PNG)
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- CỘT 3: Khung Luận Giải (Trôi bên phải) -->
@@ -1999,20 +2039,30 @@ function getThapThan(nhatChu, canKiemTra) {
     return thapThanMap[nhatChu] ? (thapThanMap[nhatChu][canKiemTra] || "-") : "-";
 }
     
-function shareBaziImage() {
+let currentBaziBlob = null;
+let currentBaziDataUrl = null;
+
+// 1. Mở Popup và chụp ảnh lá số (Giữ nguyên vòng viền Đại vận & Lưu niên)
+function openShareBaziModal() {
+    const modal = document.getElementById('bazi-share-modal');
+    const statusMsg = document.getElementById('share-status-msg');
+    const previewImg = document.getElementById('bazi-preview-img');
     const targetElement = document.querySelector('.result-wrapper');
+
     if (!targetElement) return;
 
+    modal.style.display = 'flex';
+    statusMsg.innerHTML = '⏳ Đang chụp lá số và giữ nguyên vòng Đại Vận...';
+    previewImg.style.display = 'none';
+
     html2canvas(targetElement, {
-        scale: 2, // Tăng độ nét gấp đôi (Chuẩn Retina)
+        scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
         onclone: (clonedDoc) => {
-            // Tìm các ô Đại vận và Lưu niên đang có vòng chạy (.active) trong bản chụp
+            // Khóa cứng vòng viền ở ô Đại Vận và Lưu Niên đang chọn để ảnh chụp không bị mất
             const activeCells = clonedDoc.querySelectorAll('#dv-container .active, #ln-container .active');
-            
             activeCells.forEach(cell => {
-                // Ép vẽ lại vòng viền trực tiếp bằng inline-style để html2canvas bắt buộc phải chụp
                 cell.style.border = '2px solid #1e4b41';
                 cell.style.borderRadius = '6px';
                 cell.style.boxShadow = '0 0 0 2px rgba(30, 75, 65, 0.25), inset 0 0 6px rgba(30, 75, 65, 0.15)';
@@ -2021,24 +2071,85 @@ function shareBaziImage() {
             });
         }
     }).then(canvas => {
-        canvas.toBlob(blob => {
-            const file = new File([blob], 'tu-tru-menh-ban.png', { type: 'image/png' });
+        currentBaziDataUrl = canvas.toDataURL('image/png');
+        previewImg.src = currentBaziDataUrl;
+        previewImg.style.display = 'block';
+        statusMsg.innerHTML = '✅ Đã tạo ảnh xong! Chọn kênh bên dưới để chia sẻ:';
 
-            // Nếu dùng trên điện thoại hỗ trợ bắn ảnh trực tiếp qua Zalo/Facebook/Telegram
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    title: 'Tứ Trụ Mệnh Bàn',
-                    files: [file]
-                }).catch(() => {});
-            } else {
-                // Nếu trên máy tính: Tự động tải ảnh nét căng về máy
-                const link = document.createElement('a');
-                link.download = 'tu-tru-menh-ban.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }
+        canvas.toBlob(blob => {
+            currentBaziBlob = blob;
         }, 'image/png');
     });
+}
+
+function closeShareBaziModal() {
+    document.getElementById('bazi-share-modal').style.display = 'none';
+}
+
+// 2. Hàm Copy thẳng bức ảnh vào bộ nhớ tạm (Clipboard) để bấm Ctrl + V
+async function copyBaziImageToClipboard(showAlert = true) {
+    if (!currentBaziBlob) return false;
+    try {
+        const item = new ClipboardItem({ 'image/png': currentBaziBlob });
+        await navigator.clipboard.write([item]);
+        if (showAlert) {
+            document.getElementById('share-status-msg').innerHTML = 
+                '<b style="color: #15803d;">✅ Đã Copy ảnh! Hãy qua Zalo, FB hoặc Tele bấm Ctrl + V để dán ảnh.</b>';
+        }
+        return true;
+    } catch (err) {
+        if (showAlert) {
+            alert('Trình duyệt không hỗ trợ copy ảnh trực tiếp, hệ thống sẽ tải ảnh về máy cho bạn!');
+            downloadBaziImage();
+        }
+        return false;
+    }
+}
+
+// 3. Hàm chia sẻ theo từng nền tảng: Facebook, Zalo, Telegram
+async function shareToPlatform(platform) {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Nếu người dùng đang cầm Điện thoại: Gọi menu gốc của ĐT để bắn thẳng file ảnh vào App Zalo/FB/Tele
+    if (isMobile && currentBaziBlob && navigator.canShare) {
+        const file = new File([currentBaziBlob], 'tu-tru-menh-ban.png', { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    title: 'Tứ Trụ Mệnh Bàn - Tử Vi Hoàng Hạc',
+                    files: [file]
+                });
+                return;
+            } catch (e) {}
+        }
+    }
+
+    // Nếu người dùng đang dùng Máy tính (PC):
+    // Bước A: Tự động Copy sẵn bức ảnh lá số vào Clipboard cho người dùng
+    await copyBaziImageToClipboard(false);
+    document.getElementById('share-status-msg').innerHTML = 
+        '<b style="color: #d97706;">📋 Đã tự động Copy ảnh lá số! Khi cửa sổ mở ra, bạn chỉ cần bấm Ctrl + V để dán ảnh.</b>';
+
+    const currentUrl = encodeURIComponent(window.location.href);
+    const shareText = encodeURIComponent('Lá số Tứ Trụ Bát Tự tại Tử Vi Hoàng Hạc:');
+
+    // Bước B: Mở đúng nền tảng mà người dùng vừa bấm
+    if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank', 'width=650,height=500');
+    } else if (platform === 'telegram') {
+        window.open(`https://t.me/share/url?url=${currentUrl}&text=${shareText}`, '_blank', 'width=650,height=500');
+    } else if (platform === 'zalo') {
+        window.open('https://chat.zalo.me/', '_blank');
+    }
+}
+
+// 4. Hàm tải file ảnh .PNG về máy
+function downloadBaziImage() {
+    if (!currentBaziDataUrl) return;
+    const link = document.createElement('a');
+    link.download = 'tu-tru-menh-ban.png';
+    link.href = currentBaziDataUrl;
+    link.click();
 }
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
