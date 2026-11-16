@@ -913,7 +913,7 @@
    GIAO DIỆN NỀN XANH NGỌC VÂN MÂY & Ô LÁ SỐ TRONG SUỐT XUYÊN THẤU
    ========================================================================== */
 
-/* 1. Phủ nền xanh lá nhạt + Họa tiết Vân Mây cổ phong lên toàn bộ .result-wrapper */
+/* 1. Phủ nền xanh lá nhạt + Họa tiết Vân Mây cổ phong lên toàn bộ  */
 /* ==========================================================================
    MỘT HÌNH BÁT QUÁI LỚN DUY NHẤT Ở CHÍNH GIỮA KHUNG LÁ SỐ
    ========================================================================== */
@@ -986,40 +986,6 @@
     font-weight: 700 !important;
     border-left: 3.5px solid #1e4b41 !important;
     padding-left: 8px;
-}
-
-/* ==========================================================================
-   TẠO 1 LỚP KÍNH MỜ (GLASSMORPHISM) ÔM TRỌN TẤT CẢ CÁC BẢNG
-   ========================================================================== */
-
-/* 1. Đổ màu trắng bán trong suốt cho thẻ bọc ngoài cùng (.t-grid-scroll) */
-.result-wrapper .t-grid-scroll {
-    background-color: rgba(255, 255, 255, 0.55) !important;
-    border-radius: 10px !important;
-    padding: 15px !important; /* Tạo lề để lớp kính tràn ra ngoài bảng một chút cho đẹp */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* 2. Xóa hoàn toàn nền của các khung lưới bên trong để lộ lớp kính 0.55 ra */
-.result-body,
-.result-wrapper .t-grid,
-.result-wrapper .bazi-main-grid,
-.result-wrapper .ts-grid {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-
-/* 3. Xóa màu nền của các ô chữ (cell), Đại Vận, Lưu Niên để chúng nhìn xuyên thấu 100% xuống lớp kính */
-.result-wrapper .t-cell,
-.result-wrapper .ts-cell,
-#dv-container > *,
-#ln-container > * {
-    background-color: transparent !important;
-}
-
-/* 4. (Tùy chọn) Phủ thêm một chút mờ nhẹ cho các ô Nhãn (Dương Lịch, T.Can...) để dễ phân biệt hàng cột */
-.result-wrapper .t-cell.t-label {
-    background-color: rgba(255, 255, 255, 0.3) !important; 
 }
 
 /* =========================================
