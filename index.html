@@ -2139,7 +2139,7 @@ function findActiveCells(containerSelector, savedClickIndex) {
     return { activeCells, normalClassName };
 }
 
-// 4. Mở Popup và chụp ảnh (Tạm gỡ vòng chạy trên DOM thật để tô nền vàng #fbe6b2)
+// 4. Mở Popup và chụp ảnh (Xóa lớp mặt nạ trắng ::after để lên chuẩn nền vàng #fbe6b2)
 async function openShareBaziModal() {
     const modal = ensureShareModalInBody();
     const statusMsg = document.getElementById('share-status-msg');
@@ -2162,13 +2162,13 @@ async function openShareBaziModal() {
     modal.style.display = 'flex';
     statusMsg.innerHTML = '⏳ Đang chụp lá số nét cao (vui lòng đợi 1-2 giây)...';
 
-    // Danh sách lưu trạng thái gốc để khôi phục ngay sau khi chụp xong
     const restoreList = [];
+    let tempStyleTag = null;
 
     try {
         await ensureHtml2CanvasLoaded();
 
-        // Tìm ô đang active ở cả Đại Vận và Lưu Niên
+        // Tìm ô đang chọn ở Đại Vận và Lưu Niên
         const dvInfo = findActiveCells('#dv-container', lastClickedDvIndex);
         const lnInfo = findActiveCells('#ln-container', lastClickedLnIndex);
 
@@ -2177,8 +2177,36 @@ async function openShareBaziModal() {
             ...lnInfo.activeCells.map(cell => ({ cell, baseClass: lnInfo.normalClassName }))
         ];
 
-        // BƯỚC QUAN TRỌNG: Tạm gỡ class vòng chạy (để xóa mặt nạ trắng ::after và 2 vạch đen)
-        // sau đó tô thẳng màu nền vàng đậm hơn cột Nhật Chủ (#fbe6b2) lên DOM thật
+        // 1. Gắn CSS tạm thời để tắt toàn bộ lớp mặt nạ trắng ::before / ::after ở Lưu Niên & Đại Vận
+        tempStyleTag = document.createElement('style');
+        tempStyleTag.id = 'bazi-temp-capture-style';
+        tempStyleTag.innerHTML = `
+            #dv-container > *::before, #dv-container > *::after,
+            #ln-container > *::before, #ln-container > *::after,
+            .bazi-gold-capture::before, .bazi-gold-capture::after,
+            .bazi-gold-capture *::before, .bazi-gold-capture *::after {
+                content: none !important;
+                display: none !important;
+                opacity: 0 !important;
+                background: transparent !important;
+                background-color: transparent !important;
+                background-image: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                animation: none !important;
+            }
+            .bazi-gold-capture {
+                background: #fbe6b2 !important;
+                background-color: #fbe6b2 !important;
+                background-image: linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%) !important;
+                border: 1.5px solid #d4a359 !important;
+                border-radius: 6px !important;
+                box-shadow: none !important;
+            }
+        `;
+        document.head.appendChild(tempStyleTag);
+
+        // 2. Áp nền vàng #fbe6b2 trực tiếp lên ô Đại Vận và Lưu Niên đang chọn
         allTargets.forEach(({ cell, baseClass }) => {
             restoreList.push({
                 el: cell,
@@ -2186,14 +2214,14 @@ async function openShareBaziModal() {
                 oldStyle: cell.getAttribute('style')
             });
 
-            // Đổi về class ô bình thường + col-day để mất hẳn lớp mặt nạ trắng ::after
-            cell.className = baseClass + ' col-day';
+            cell.className = baseClass + ' col-day bazi-gold-capture';
             cell.style.setProperty('background', '#fbe6b2', 'important');
             cell.style.setProperty('background-color', '#fbe6b2', 'important');
+            cell.style.setProperty('background-image', 'linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%)', 'important');
             cell.style.setProperty('border', '1.5px solid #d4a359', 'important');
+            cell.style.setProperty('border-radius', '6px', 'important');
             cell.style.setProperty('box-shadow', 'none', 'important');
 
-            // Đảm bảo các thẻ con bên trong không có nền trắng đè lên nền vàng
             cell.querySelectorAll('*').forEach(child => {
                 restoreList.push({
                     el: child,
@@ -2202,10 +2230,11 @@ async function openShareBaziModal() {
                 });
                 child.style.setProperty('background', 'transparent', 'important');
                 child.style.setProperty('background-color', 'transparent', 'important');
+                child.style.setProperty('background-image', 'none', 'important');
             });
         });
 
-        // Chụp ảnh khi ô Đại Vận & Lưu Niên đã lên màu vàng rõ nét
+        // 3. Chụp ảnh lá số
         const canvas = await html2canvas(targetElement, {
             scale: 2,
             useCORS: true,
@@ -2230,7 +2259,10 @@ async function openShareBaziModal() {
         console.error('Lỗi chụp ảnh lá số:', err);
         statusMsg.innerHTML = '<b style="color: #dc2626;">❌ Lỗi tạo ảnh: ' + err.message + '</b>';
     } finally {
-        // KHÔI PHỤC LẠI VÒNG CHẠY TRÊN WEB NGAY LẬP TỨC
+        // 4. Gỡ CSS tạm và trả lại hiệu ứng vòng chạy trên web ngay lập tức
+        if (tempStyleTag && tempStyleTag.parentElement) {
+            tempStyleTag.parentElement.removeChild(tempStyleTag);
+        }
         for (let i = restoreList.length - 1; i >= 0; i--) {
             const item = restoreList[i];
             item.el.className = item.oldClassName;
