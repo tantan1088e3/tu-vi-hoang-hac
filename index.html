@@ -920,19 +920,18 @@
 .result-wrapper {
     background-color: #e6f4ec !important;
     background-image: 
-        /* Lớp 1: Phủ một lớp màu xanh ngọc / trắng mờ (Overlay) để làm dịu ảnh nền, giữ độ tương phản cho chữ */
-        linear-gradient(135deg, rgba(242, 250, 246, 0.85) 0%, rgba(221, 240, 230, 0.90) 100%),
-        /* Lớp 2: Đường dẫn đến bức ảnh có sẵn của ông (đặt trong thư mục dự án hoặc link ảnh online) */
+        /* Lớp phủ mỏng đi rất nhiều (chỉ còn 30% - 40%) để ảnh nền phía dưới hiện rõ ràng */
+        linear-gradient(135deg, rgba(242, 250, 246, 0.3) 0%, rgba(221, 240, 230, 0.4) 100%),
         url('nen-web4a.png') !important;
         
     background-repeat: no-repeat, no-repeat !important;
     background-position: center center, center center !important;
-    background-size: cover, cover !important; /* Phủ kín khung lá số */
+    background-size: cover, cover !important; 
     
     border: 1.5px solid #9ec5b2 !important;
     border-radius: 14px !important;
     box-shadow: 0 8px 24px rgba(30, 75, 65, 0.1) !important;
-    overflow: hidden; /* Đảm bảo ảnh không bị tràn viền bo tròn */
+    overflow: hidden;
 }
 
 /* 2. Mở khóa trong suốt cho các khối bao quanh bảng */
