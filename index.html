@@ -910,6 +910,82 @@
     border-top: 1px solid #eee;
 }
 
+/* ==========================================================================
+   GIAO DIỆN NỀN XANH NGỌC VÂN MÂY & Ô LÁ SỐ TRONG SUỐT XUYÊN THẤU
+   ========================================================================== */
+
+/* 1. Phủ nền xanh lá nhạt + Họa tiết Vân Mây cổ phong lên toàn bộ .result-wrapper */
+.result-wrapper {
+    background-color: #e6f4ec !important;
+    background-image: 
+        /* Lớp 1: Vân mây Á Đông nét thanh (tăng độ đậm để nhìn xuyên qua ô rõ ràng) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='130' viewBox='0 0 260 130'%3E%3Cg fill='none' stroke='%231e4b41' stroke-width='1.5' stroke-opacity='0.12'%3E%3Cpath d='M40 75c-12 0-22-10-22-22s10-22 22-22c4 0 8 1 11 3 6-12 18-20 33-20 20 0 36 16 36 36 0 2 0 5-1 7 10 2 17 11 17 22 0 12-10 22-22 22H40z'/%3E%3Cpath d='M52 66c-7 0-13-6-13-13s6-13 13-13c6 0 11 4 12 10 3-7 10-13 18-13 11 0 20 9 20 20s-9 20-20 20'/%3E%3Cpath d='M170 112c-10 0-18-8-18-18s8-18 18-18c3 0 6 1 9 2 5-10 15-17 27-17 17 0 30 13 30 30 0 2 0 4-1 6 8 2 14 9 14 18 0 10-8 18-18 18h-61z'/%3E%3Cpath d='M182 104c-6 0-11-5-11-11s5-11 11-11c5 0 9 3 10 8 2-6 8-11 15-11 9 0 16 7 16 16s-7 16-16 16'/%3E%3Cpath d='M10 25c8 0 15-5 18-12 4 4 10 7 16 7 12 0 22-10 22-22'/%3E%3C/g%3E%3C/svg%3E"),
+        /* Lớp 2: Chuyển sắc xanh ngọc bích dịu mắt */
+        linear-gradient(135deg, rgba(242, 250, 246, 0.7) 0%, rgba(221, 240, 230, 0.85) 50%, rgba(206, 232, 218, 0.9) 100%) !important;
+    background-repeat: repeat, no-repeat !important;
+    background-size: 260px 130px, 100% 100% !important;
+    border: 1.5px solid #9ec5b2 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 24px rgba(30, 75, 65, 0.1) !important;
+}
+
+/* 2. Mở khóa trong suốt cho các khối bao quanh bảng */
+.result-header,
+.result-body,
+.t-grid-scroll {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* 3. Khung lưới (.t-grid) dùng màu viền xanh ngọc đậm để tạo đường kẻ sắc nét giữa các ô */
+.result-wrapper .t-grid {
+    background-color: rgba(132, 175, 156, 0.45) !important; /* Màu của đường kẻ chia ô */
+    border: 1.5px solid #84af9c !important;
+    border-radius: 8px;
+}
+
+/* 4. Các ô lá số (.t-cell) trong suốt (độ đục 38%) để nhìn xuyên thấu xuống vân mây bên dưới */
+.result-wrapper .t-cell,
+#dv-container > *,
+#ln-container > * {
+    background-color: rgba(255, 255, 255, 0.38) !important;
+    border-color: rgba(132, 175, 156, 0.55) !important;
+    color: #1e293b;
+}
+
+/* 5. Cột nhãn bên trái (Dương Lịch, Chủ Tinh, Bát Tự, Niên Thần...) phủ xanh ngọc trong suốt */
+.result-wrapper .t-cell.t-label {
+    background-color: rgba(205, 232, 218, 0.55) !important;
+    color: #133930 !important;
+    font-weight: 700 !important;
+}
+
+/* 6. Cột Nhật Chủ (.col-day) giữ sắc vàng kem ấm áp nhưng vẫn bán trong suốt để thấy vân mây */
+.result-wrapper .t-cell.col-day,
+.result-wrapper .t-cell.t-label.col-day {
+    background-color: rgba(254, 240, 195, 0.68) !important;
+}
+
+/* 7. Làm rõ nét chữ Tiêu đề, Đương số và các tiêu đề phụ trên nền xanh vân mây */
+.result-header h3 {
+    color: #133930 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#res-subtitle {
+    color: #1e293b !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
+.result-wrapper .ts-title {
+    color: #133930 !important;
+    font-weight: 700 !important;
+    border-left: 3.5px solid #1e4b41 !important;
+    padding-left: 8px;
+}
+
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
