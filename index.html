@@ -937,33 +937,36 @@
     background-color: transparent !important;
 }
 
-/* 3. Khung lưới (.t-grid) dùng màu viền xanh ngọc đậm để tạo đường kẻ sắc nét giữa các ô */
-.result-wrapper .t-grid {
-    background-color: rgba(132, 175, 156, 0.45) !important; /* Màu của đường kẻ chia ô */
+/* 3. Cho khung lưới (.t-grid) TRONG SUỐT HOÀN TOÀN để không chắn mất vân mây bên dưới */
+.result-wrapper .t-grid,
+.result-wrapper .bazi-main-grid,
+.result-wrapper .ts-grid {
+    background: transparent !important;
+    background-color: transparent !important;
     border: 1.5px solid #84af9c !important;
     border-radius: 8px;
 }
 
-/* 4. Các ô lá số (.t-cell) trong suốt (độ đục 38%) để nhìn xuyên thấu xuống vân mây bên dưới */
+/* 4. Các ô lá số (.t-cell) dùng nền trắng trong suốt nhẹ + kẻ viền trực tiếp trên từng ô */
 .result-wrapper .t-cell,
 #dv-container > *,
 #ln-container > * {
-    background-color: rgba(255, 255, 255, 0.38) !important;
-    border-color: rgba(132, 175, 156, 0.55) !important;
+    background-color: rgba(255, 255, 255, 0.55) !important; /* Sáng trong và nhìn xuyên thấy vân mây */
+    border: 0.5px solid #9abfb0 !important; /* Kẻ viền sắc nét cho từng ô mà không cần tô nền .t-grid */
     color: #1e293b;
 }
 
-/* 5. Cột nhãn bên trái (Dương Lịch, Chủ Tinh, Bát Tự, Niên Thần...) phủ xanh ngọc trong suốt */
+/* 5. Cột nhãn bên trái (Dương Lịch, Chủ Tinh, Bát Tự...) chỉnh lại màu xanh ngọc dịu sáng hơn */
 .result-wrapper .t-cell.t-label {
-    background-color: rgba(205, 232, 218, 0.55) !important;
+    background-color: rgba(215, 238, 226, 0.65) !important;
     color: #133930 !important;
     font-weight: 700 !important;
 }
 
-/* 6. Cột Nhật Chủ (.col-day) giữ sắc vàng kem ấm áp nhưng vẫn bán trong suốt để thấy vân mây */
+/* 6. Cột Nhật Chủ (.col-day) giữ màu vàng kem sáng rõ */
 .result-wrapper .t-cell.col-day,
 .result-wrapper .t-cell.t-label.col-day {
-    background-color: rgba(254, 240, 195, 0.68) !important;
+    background-color: rgba(254, 243, 199, 0.78) !important;
 }
 
 /* 7. Làm rõ nét chữ Tiêu đề, Đương số và các tiêu đề phụ trên nền xanh vân mây */
