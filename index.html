@@ -2264,7 +2264,6 @@ async function openShareBaziModal() {
         tempStyleTag = document.createElement('style');
         tempStyleTag.id = 'bazi-temp-capture-style';
         tempStyleTag.innerHTML = `
-            /* Tắt lớp mặt nạ trắng ::before / ::after của vòng chạy */
             #dv-container > *::before, #dv-container > *::after,
             #ln-container > *::before, #ln-container > *::after,
             .bazi-gold-capture::before, .bazi-gold-capture::after,
@@ -2273,22 +2272,20 @@ async function openShareBaziModal() {
                 display: none !important;
                 opacity: 0 !important;
                 background: transparent !important;
+                background-color: transparent !important;
                 background-image: none !important;
                 border: none !important;
                 box-shadow: none !important;
                 animation: none !important;
             }
-
-            /* Đổi màu nền Đại Vận & Lưu Niên GIỐNG HỆT màu cột Nhật Chủ */
             .bazi-gold-capture {
-                background: #fef0c7 !important;
-                background-color: #fef0c7 !important;
-                background-image: linear-gradient(180deg, #fef0c7 0%, #fef0c7 100%) !important;
-                border: 2px solid #d99b26 !important; /* Viền vàng đồng đậm định vị rõ ô đang chọn */
+                background: #fbe6b2 !important;
+                background-color: #fbe6b2 !important;
+                background-image: linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%) !important;
+                border: 1.5px solid #d4a359 !important;
                 border-radius: 6px !important;
                 box-shadow: none !important;
             }
-        `;
         `;
         document.head.appendChild(tempStyleTag);
 
@@ -2301,10 +2298,10 @@ async function openShareBaziModal() {
             });
 
             cell.className = baseClass + ' col-day bazi-gold-capture';
-            cell.style.setProperty('background', '#fef0c7', 'important');
-            cell.style.setProperty('background-color', '#fef0c7', 'important');
-            cell.style.setProperty('background-image', 'linear-gradient(180deg, #fef0c7 0%, #fef0c7 100%)', 'important');
-            cell.style.setProperty('border', '2px solid #d99b26', 'important');
+            cell.style.setProperty('background', '#fbe6b2', 'important');
+            cell.style.setProperty('background-color', '#fbe6b2', 'important');
+            cell.style.setProperty('background-image', 'linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%)', 'important');
+            cell.style.setProperty('border', '1.5px solid #d4a359', 'important');
             cell.style.setProperty('border-radius', '6px', 'important');
             cell.style.setProperty('box-shadow', 'none', 'important');
 
