@@ -2181,21 +2181,6 @@ async function openShareBaziModal() {
         tempStyleTag = document.createElement('style');
         tempStyleTag.id = 'bazi-temp-capture-style';
         tempStyleTag.innerHTML = `
-            /* 1. Làm đậm toàn bộ đường kẻ bảng và các ô Đại Vận / Lưu Niên khi chụp ảnh */
-            .result-wrapper table, 
-            .result-wrapper th, 
-            .result-wrapper td,
-            #dv-container > *, 
-            #ln-container > * {
-                border-color: #cbd5e1 !important; /* Xám đá sắc nét, không bị mờ khi FB nén */
-            }
-
-            /* 2. Đóng khung bao ngoài các bảng đậm hơn một nấc */
-            .result-wrapper table {
-                border: 1.5px solid #94a3b8 !important;
-            }
-
-            /* 3. Xóa mặt nạ trắng của vòng chạy */
             #dv-container > *::before, #dv-container > *::after,
             #ln-container > *::before, #ln-container > *::after,
             .bazi-gold-capture::before, .bazi-gold-capture::after,
@@ -2204,18 +2189,17 @@ async function openShareBaziModal() {
                 display: none !important;
                 opacity: 0 !important;
                 background: transparent !important;
+                background-color: transparent !important;
                 background-image: none !important;
                 border: none !important;
                 box-shadow: none !important;
                 animation: none !important;
             }
-
-            /* 4. Viền vàng đồng đậm (2px) + nền vàng cho 2 ô Đại Vận & Lưu Niên đang chọn */
             .bazi-gold-capture {
                 background: #fbe6b2 !important;
                 background-color: #fbe6b2 !important;
                 background-image: linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%) !important;
-                border: 2px solid #b45309 !important;
+                border: 1.5px solid #d4a359 !important;
                 border-radius: 6px !important;
                 box-shadow: none !important;
             }
@@ -2234,7 +2218,7 @@ async function openShareBaziModal() {
             cell.style.setProperty('background', '#fbe6b2', 'important');
             cell.style.setProperty('background-color', '#fbe6b2', 'important');
             cell.style.setProperty('background-image', 'linear-gradient(180deg, #fbe6b2 0%, #fbe6b2 100%)', 'important');
-            cell.style.setProperty('border', '2px solid #b45309', 'important');
+            cell.style.setProperty('border', '1.5px solid #d4a359', 'important');
             cell.style.setProperty('border-radius', '6px', 'important');
             cell.style.setProperty('box-shadow', 'none', 'important');
 
