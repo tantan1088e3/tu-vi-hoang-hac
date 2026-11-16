@@ -2042,25 +2042,48 @@ function getThapThan(nhatChu, canKiemTra) {
 let currentBaziBlob = null;
 let currentBaziDataUrl = null;
 
-// 1. Mở Popup và chụp ảnh lá số (Giữ nguyên vòng viền Đại vận & Lưu niên)
+// Tự động tạo hoặc di chuyển Popup ra ngoài body để không làm lỗi html2canvas
+function ensureShareModalInBody() {
+    let modal = document.getElementById('bazi-share-modal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    return modal;
+}
+
+// 1. Mở Popup và chụp ảnh lá số
 function openShareBaziModal() {
-    const modal = document.getElementById('bazi-share-modal');
+    const modal = ensureShareModalInBody();
     const statusMsg = document.getElementById('share-status-msg');
     const previewImg = document.getElementById('bazi-preview-img');
     const targetElement = document.querySelector('.result-wrapper');
 
-    if (!targetElement) return;
+    if (!targetElement || !modal) return;
+
+    // Reset trạng thái trước khi chụp (Tuyệt đối không gán src="" vì sẽ gây lỗi html2canvas)
+    currentBaziBlob = null;
+    currentBaziDataUrl = null;
+    previewImg.style.display = 'none';
+    previewImg.removeAttribute('src');
+
+    // Tạm khóa các nút trong 1-2 giây chờ tạo ảnh xong
+    const actionBtns = modal.querySelectorAll('button');
+    actionBtns.forEach(btn => {
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+    });
 
     modal.style.display = 'flex';
-    statusMsg.innerHTML = '⏳ Đang chụp lá số và giữ nguyên vòng Đại Vận...';
-    previewImg.style.display = 'none';
+    statusMsg.innerHTML = '⏳ Đang chụp lá số nét cao (vui lòng đợi 1-2 giây)...';
 
+    // Chụp khung lá số
     html2canvas(targetElement, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
+        ignoreElements: (el) => el.id === 'bazi-share-modal',
         onclone: (clonedDoc) => {
-            // Khóa cứng vòng viền ở ô Đại Vận và Lưu Niên đang chọn để ảnh chụp không bị mất
+            // Giữ nguyên vòng viền ở ô Đại Vận và Lưu Niên đang chọn
             const activeCells = clonedDoc.querySelectorAll('#dv-container .active, #ln-container .active');
             activeCells.forEach(cell => {
                 cell.style.border = '2px solid #1e4b41';
@@ -2074,68 +2097,82 @@ function openShareBaziModal() {
         currentBaziDataUrl = canvas.toDataURL('image/png');
         previewImg.src = currentBaziDataUrl;
         previewImg.style.display = 'block';
-        statusMsg.innerHTML = '✅ Đã tạo ảnh xong! Chọn kênh bên dưới để chia sẻ:';
 
         canvas.toBlob(blob => {
             currentBaziBlob = blob;
+            // Mở khóa các nút sau khi ảnh đã sẵn sàng 100%
+            actionBtns.forEach(btn => {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            });
+            statusMsg.innerHTML = '<b style="color: #1e4b41;">✅ Ảnh đã sẵn sàng! Hãy bấm nút bên dưới để Copy & Chia sẻ:</b>';
         }, 'image/png');
+    }).catch(err => {
+        console.error('Lỗi chụp ảnh lá số:', err);
+        statusMsg.innerHTML = '<b style="color: #dc2626;">❌ Lỗi tạo ảnh: ' + err.message + '</b>';
     });
 }
 
 function closeShareBaziModal() {
-    document.getElementById('bazi-share-modal').style.display = 'none';
+    const modal = document.getElementById('bazi-share-modal');
+    if (modal) modal.style.display = 'none';
 }
 
-// 2. Hàm Copy thẳng bức ảnh vào bộ nhớ tạm (Clipboard) để bấm Ctrl + V
+// 2. Hàm Copy thẳng bức ảnh vào Clipboard (Dùng Promise trực tiếp trong ClipboardItem để Chrome không chặn)
 async function copyBaziImageToClipboard(showAlert = true) {
-    if (!currentBaziBlob) return false;
+    const statusMsg = document.getElementById('share-status-msg');
+    if (!currentBaziBlob) {
+        statusMsg.innerHTML = '<b style="color: #dc2626;">⚠️ Ảnh chưa tạo xong, vui lòng đợi 1 giây rồi bấm lại!</b>';
+        return false;
+    }
+
     try {
-        const item = new ClipboardItem({ 'image/png': currentBaziBlob });
+        const item = new ClipboardItem({
+            'image/png': Promise.resolve(currentBaziBlob)
+        });
         await navigator.clipboard.write([item]);
         if (showAlert) {
-            document.getElementById('share-status-msg').innerHTML = 
-                '<b style="color: #15803d;">✅ Đã Copy ảnh! Hãy qua Zalo, FB hoặc Tele bấm Ctrl + V để dán ảnh.</b>';
+            statusMsg.innerHTML = '<b style="color: #15803d;">✅ Đã Copy ảnh vào bộ nhớ! Hãy qua Zalo, FB, Tele bấm Ctrl + V.</b>';
         }
         return true;
     } catch (err) {
+        console.error('Lỗi Copy Clipboard:', err);
         if (showAlert) {
-            alert('Trình duyệt không hỗ trợ copy ảnh trực tiếp, hệ thống sẽ tải ảnh về máy cho bạn!');
-            downloadBaziImage();
+            statusMsg.innerHTML = '<b style="color: #d97706;">⚠️ Trình duyệt chặn copy tự động. Bạn hãy bấm chuột phải vào ảnh xem trước chọn "Sao chép hình ảnh"!</b>';
         }
         return false;
     }
 }
 
-// 3. Hàm chia sẻ theo từng nền tảng: Facebook, Zalo, Telegram
+// 3. Chia sẻ lên Facebook, Zalo, Telegram
 async function shareToPlatform(platform) {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    // Nếu người dùng đang cầm Điện thoại: Gọi menu gốc của ĐT để bắn thẳng file ảnh vào App Zalo/FB/Tele
     if (isMobile && currentBaziBlob && navigator.canShare) {
         const file = new File([currentBaziBlob], 'tu-tru-menh-ban.png', { type: 'image/png' });
         if (navigator.canShare({ files: [file] })) {
             try {
-                await navigator.share({
-                    title: 'Tứ Trụ Mệnh Bàn - Tử Vi Hoàng Hạc',
-                    files: [file]
-                });
+                await navigator.share({ title: 'Tứ Trụ Mệnh Bàn', files: [file] });
                 return;
             } catch (e) {}
         }
     }
 
-    // Nếu người dùng đang dùng Máy tính (PC):
-    // Bước A: Tự động Copy sẵn bức ảnh lá số vào Clipboard cho người dùng
-    await copyBaziImageToClipboard(false);
-    document.getElementById('share-status-msg').innerHTML = 
-        '<b style="color: #d97706;">📋 Đã tự động Copy ảnh lá số! Khi cửa sổ mở ra, bạn chỉ cần bấm Ctrl + V để dán ảnh.</b>';
+    // Copy ảnh vào Clipboard trước khi mở cửa sổ mới
+    const copied = await copyBaziImageToClipboard(false);
+    const statusMsg = document.getElementById('share-status-msg');
+
+    if (copied) {
+        statusMsg.innerHTML = '<b style="color: #15803d;">📋 Đã Copy ảnh lá số! Khi cửa sổ mở ra, hãy bấm Ctrl + V vào ô viết bài.</b>';
+    } else {
+        statusMsg.innerHTML = '<b style="color: #d97706;">💡 Hãy bấm chuột phải vào hình lá số ở trên -> Chọn "Sao chép hình ảnh" rồi Ctrl + V.</b>';
+    }
 
     const currentUrl = encodeURIComponent(window.location.href);
     const shareText = encodeURIComponent('Lá số Tứ Trụ Bát Tự tại Tử Vi Hoàng Hạc:');
 
-    // Bước B: Mở đúng nền tảng mà người dùng vừa bấm
     if (platform === 'facebook') {
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank', 'width=650,height=500');
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank', 'width=680,height=550');
     } else if (platform === 'telegram') {
         window.open(`https://t.me/share/url?url=${currentUrl}&text=${shareText}`, '_blank', 'width=650,height=500');
     } else if (platform === 'zalo') {
@@ -2143,7 +2180,7 @@ async function shareToPlatform(platform) {
     }
 }
 
-// 4. Hàm tải file ảnh .PNG về máy
+// 4. Tải file ảnh về máy
 function downloadBaziImage() {
     if (!currentBaziDataUrl) return;
     const link = document.createElement('a');
@@ -2151,6 +2188,13 @@ function downloadBaziImage() {
     link.href = currentBaziDataUrl;
     link.click();
 }
+
+window.openShareBaziModal = openShareBaziModal;
+window.shareBaziImage = openShareBaziModal;
+window.closeShareBaziModal = closeShareBaziModal;
+window.copyBaziImageToClipboard = copyBaziImageToClipboard;
+window.shareToPlatform = shareToPlatform;
+window.downloadBaziImage = downloadBaziImage;
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
     
