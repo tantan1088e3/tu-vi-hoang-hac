@@ -2264,13 +2264,50 @@ async function openShareBaziModal() {
         tempStyleTag = document.createElement('style');
         tempStyleTag.id = 'bazi-temp-capture-style';
         tempStyleTag.innerHTML = `
-            /* Chỉ tắt lớp vòng chạy động bị lỗi 2 vạch đen khi chụp ảnh tĩnh */
-            #dv-container > *::before, #dv-container > *::after,
-            #ln-container > *::before, #ln-container > *::after {
-                content: none !important;
-                display: none !important;
+            #dv-container > *.active::before, #dv-container > *.active::after,
+            #ln-container > *.active::before, #ln-container > *.active::after,
+            .bazi-gold-capture::before, .bazi-gold-capture::after {
+                animation: none !important;
+                opacity: 1 !important;
+            }
+
+            /* Tạo khung viền dải màu cầu vồng tĩnh rực rỡ và sang trọng cho ảnh chụp */
+            .bazi-gold-capture {
+                background: rgba(255, 255, 255, 0.75) !important; /* Nền trắng mờ nhẹ nhìn xuyên vân mây */
+                border: 2.5px solid transparent !important;
+                border-image: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) 1 !important;
+                border-radius: 6px !important;
+                box-shadow: 0 0 10px rgba(168, 85, 247, 0.25) !important;
             }
         `;
+        document.head.appendChild(tempStyleTag);
+
+        // 2. Áp nền vàng #fbe6b2 trực tiếp lên ô Đại Vận và Lưu Niên đang chọn
+        allTargets.forEach(({ cell, baseClass }) => {
+            restoreList.push({
+                el: cell,
+                oldClassName: cell.className,
+                oldStyle: cell.getAttribute('style')
+            });
+
+            cell.className = baseClass + ' col-day bazi-gold-capture';
+            cell.style.setProperty('background', 'rgba(255, 255, 255, 0.75)', 'important');
+            cell.style.setProperty('border', '2.5px solid transparent', 'important');
+            cell.style.setProperty('border-image', 'linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) 1', 'important');
+            cell.style.setProperty('border-radius', '6px', 'important');
+            cell.style.setProperty('box-shadow', '0 0 10px rgba(168, 85, 247, 0.25)', 'important');
+
+            cell.querySelectorAll('*').forEach(child => {
+                restoreList.push({
+                    el: child,
+                    oldClassName: child.className,
+                    oldStyle: child.getAttribute('style')
+                });
+                child.style.setProperty('background', 'transparent', 'important');
+                child.style.setProperty('background-color', 'transparent', 'important');
+                child.style.setProperty('background-image', 'none', 'important');
+            });
+        });
 
         // 3. Chụp ảnh lá số
         const canvas = await html2canvas(targetElement, {
