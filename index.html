@@ -2041,12 +2041,26 @@ function getThapThan(nhatChu, canKiemTra) {
 }
     
 // =========================================================
-// TRỌN BỘ CODE CHỤP & CHIA SẺ LÁ SỐ (ĐẦY ĐỦ 100% CÁC HÀM)
+// TRỌN BỘ CODE CHỤP & CHIA SẺ LÁ SỐ (TÔ NỀN VÀNG ĐẠI VẬN & LƯU NIÊN)
 // =========================================================
 let currentBaziBlob = null;
 let currentBaziDataUrl = null;
+let lastClickedDvIndex = -1;
+let lastClickedLnIndex = -1;
 
-// 1. Tự động kiểm tra và nạp thư viện html2canvas nếu trang chưa có
+// Theo dõi mỗi khi người dùng click chọn ô Đại Vận hoặc Lưu Niên
+document.addEventListener('click', (e) => {
+    const dvCell = e.target.closest('#dv-container > *');
+    if (dvCell && dvCell.parentElement) {
+        lastClickedDvIndex = Array.from(dvCell.parentElement.children).indexOf(dvCell);
+    }
+    const lnCell = e.target.closest('#ln-container > *');
+    if (lnCell && lnCell.parentElement) {
+        lastClickedLnIndex = Array.from(lnCell.parentElement.children).indexOf(lnCell);
+    }
+}, true);
+
+// 1. Tự động kiểm tra và nạp thư viện html2canvas
 function ensureHtml2CanvasLoaded() {
     return new Promise((resolve, reject) => {
         if (typeof html2canvas !== 'undefined') {
@@ -2061,7 +2075,7 @@ function ensureHtml2CanvasLoaded() {
     });
 }
 
-// 2. Đưa Popup ra ngoài body để không làm lỗi lúc chụp
+// 2. Đưa Popup ra ngoài body
 function ensureShareModalInBody() {
     let modal = document.getElementById('bazi-share-modal');
     if (modal && modal.parentElement !== document.body) {
@@ -2070,22 +2084,47 @@ function ensureShareModalInBody() {
     return modal;
 }
 
-// 3. Tự động dò vị trí ô Đại Vận & Lưu Niên đang có vòng chạy
-function getActiveCellIndices(containerSelector) {
-    const cells = Array.from(document.querySelectorAll(`${containerSelector} > *`));
-    const activeIndices = [];
-    cells.forEach((cell, index) => {
-        const beforeStyle = window.getComputedStyle(cell, '::before');
-        const hasActiveClass = /active|select|focus|current|highlight/i.test(cell.className);
-        const hasPseudoRing = beforeStyle && beforeStyle.content !== 'none' && beforeStyle.content !== 'normal';
-        if (hasActiveClass || hasPseudoRing) {
-            activeIndices.push(index);
+// 3. Tự động dò chính xác ô Đại Vận / Lưu Niên đang có vòng chạy
+function findActiveCells(containerSelector, savedClickIndex) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return { activeCells: [], normalClassName: 't-cell' };
+
+    const cells = Array.from(container.children);
+    if (cells.length === 0) return { activeCells: [], normalClassName: 't-cell' };
+
+    // Tìm class chuẩn của các ô bình thường (không có vòng chạy)
+    const classCounts = {};
+    cells.forEach(c => {
+        classCounts[c.className] = (classCounts[c.className] || 0) + 1;
+    });
+    const normalClassName = Object.keys(classCounts).reduce((a, b) => classCounts[a] >= classCounts[b] ? a : b);
+
+    const activeCells = [];
+    cells.forEach((cell, idx) => {
+        const cs = window.getComputedStyle(cell);
+        const beforeCs = window.getComputedStyle(cell, '::before');
+        const afterCs = window.getComputedStyle(cell, '::after');
+
+        const hasDiffClass = cell.className !== normalClassName;
+        const hasKeywordClass = /active|select|focus|current|highlight|chon|run/i.test(cell.className);
+        const hasPseudo = (beforeCs && beforeCs.content !== 'none' && beforeCs.content !== 'normal') ||
+                          (afterCs && afterCs.content !== 'none' && afterCs.content !== 'normal');
+        const hasRelativePos = cs.position === 'relative' || cs.overflow === 'hidden';
+
+        if (hasKeywordClass || (hasDiffClass && (hasPseudo || hasRelativePos))) {
+            activeCells.push(cell);
         }
     });
-    return activeIndices;
+
+    // Nếu người dùng vừa click hoặc bộ lọc trên chưa bắt được, dùng vị trí click gần nhất
+    if (activeCells.length === 0 && savedClickIndex >= 0 && cells[savedClickIndex]) {
+        activeCells.push(cells[savedClickIndex]);
+    }
+
+    return { activeCells, normalClassName };
 }
 
-// 4. Mở Popup và chụp ảnh lá số (Tô nền vàng đậm hơn cột Nhật Chủ cho Đại Vận & Lưu Niên)
+// 4. Mở Popup và chụp ảnh (Tạm gỡ vòng chạy trên DOM thật để tô nền vàng #fbe6b2)
 async function openShareBaziModal() {
     const modal = ensureShareModalInBody();
     const statusMsg = document.getElementById('share-status-msg');
@@ -2093,9 +2132,6 @@ async function openShareBaziModal() {
     const targetElement = document.querySelector('.result-wrapper');
 
     if (!targetElement || !modal) return;
-
-    const activeDvIndices = getActiveCellIndices('#dv-container');
-    const activeLnIndices = getActiveCellIndices('#ln-container');
 
     currentBaziBlob = null;
     currentBaziDataUrl = null;
@@ -2111,51 +2147,55 @@ async function openShareBaziModal() {
     modal.style.display = 'flex';
     statusMsg.innerHTML = '⏳ Đang chụp lá số nét cao (vui lòng đợi 1-2 giây)...';
 
+    // Danh sách lưu trạng thái gốc để khôi phục ngay sau khi chụp xong
+    const restoreList = [];
+
     try {
         await ensureHtml2CanvasLoaded();
 
+        // Tìm ô đang active ở cả Đại Vận và Lưu Niên
+        const dvInfo = findActiveCells('#dv-container', lastClickedDvIndex);
+        const lnInfo = findActiveCells('#ln-container', lastClickedLnIndex);
+
+        const allTargets = [
+            ...dvInfo.activeCells.map(cell => ({ cell, baseClass: dvInfo.normalClassName })),
+            ...lnInfo.activeCells.map(cell => ({ cell, baseClass: lnInfo.normalClassName }))
+        ];
+
+        // BƯỚC QUAN TRỌNG: Tạm gỡ class vòng chạy (để xóa mặt nạ trắng ::after và 2 vạch đen)
+        // sau đó tô thẳng màu nền vàng đậm hơn cột Nhật Chủ (#fbe6b2) lên DOM thật
+        allTargets.forEach(({ cell, baseClass }) => {
+            restoreList.push({
+                el: cell,
+                oldClassName: cell.className,
+                oldStyle: cell.getAttribute('style')
+            });
+
+            // Đổi về class ô bình thường + col-day để mất hẳn lớp mặt nạ trắng ::after
+            cell.className = baseClass + ' col-day';
+            cell.style.setProperty('background', '#fbe6b2', 'important');
+            cell.style.setProperty('background-color', '#fbe6b2', 'important');
+            cell.style.setProperty('border', '1.5px solid #d4a359', 'important');
+            cell.style.setProperty('box-shadow', 'none', 'important');
+
+            // Đảm bảo các thẻ con bên trong không có nền trắng đè lên nền vàng
+            cell.querySelectorAll('*').forEach(child => {
+                restoreList.push({
+                    el: child,
+                    oldClassName: child.className,
+                    oldStyle: child.getAttribute('style')
+                });
+                child.style.setProperty('background', 'transparent', 'important');
+                child.style.setProperty('background-color', 'transparent', 'important');
+            });
+        });
+
+        // Chụp ảnh khi ô Đại Vận & Lưu Niên đã lên màu vàng rõ nét
         const canvas = await html2canvas(targetElement, {
             scale: 2,
             useCORS: true,
             backgroundColor: '#ffffff',
-            ignoreElements: (el) => el.id === 'bazi-share-modal',
-            onclone: (clonedDoc) => {
-                // Tắt lớp giả ::before / ::after của vòng chạy và tô nền vàng đậm hơn cột Nhật Chủ
-                const fixStyle = clonedDoc.createElement('style');
-                fixStyle.innerHTML = `
-                    #dv-container, #ln-container {
-                        overflow: visible !important;
-                        padding: 4px 2px !important;
-                    }
-                    #dv-container > *, #ln-container > *,
-                    #dv-container > *::before, #dv-container > *::after,
-                    #ln-container > *::before, #ln-container > *::after {
-                        content: none !important;
-                        animation: none !important;
-                        background-image: none !important;
-                    }
-                    .bazi-capture-focus {
-                        background-color: #fbe6b2 !important;
-                        border: 1.5px solid #c59b52 !important;
-                        border-radius: 6px !important;
-                        box-shadow: 0 2px 6px rgba(197, 155, 82, 0.25) !important;
-                        box-sizing: border-box !important;
-                        position: relative !important;
-                        z-index: 10 !important;
-                    }
-                `;
-                clonedDoc.head.appendChild(fixStyle);
-
-                const clonedDvCells = clonedDoc.querySelectorAll('#dv-container > *');
-                activeDvIndices.forEach(idx => {
-                    if (clonedDvCells[idx]) clonedDvCells[idx].classList.add('bazi-capture-focus');
-                });
-
-                const clonedLnCells = clonedDoc.querySelectorAll('#ln-container > *');
-                activeLnIndices.forEach(idx => {
-                    if (clonedLnCells[idx]) clonedLnCells[idx].classList.add('bazi-capture-focus');
-                });
-            }
+            ignoreElements: (el) => el.id === 'bazi-share-modal'
         });
 
         currentBaziDataUrl = canvas.toDataURL('image/png');
@@ -2174,6 +2214,17 @@ async function openShareBaziModal() {
     } catch (err) {
         console.error('Lỗi chụp ảnh lá số:', err);
         statusMsg.innerHTML = '<b style="color: #dc2626;">❌ Lỗi tạo ảnh: ' + err.message + '</b>';
+    } finally {
+        // KHÔI PHỤC LẠI VÒNG CHẠY TRÊN WEB NGAY LẬP TỨC
+        for (let i = restoreList.length - 1; i >= 0; i--) {
+            const item = restoreList[i];
+            item.el.className = item.oldClassName;
+            if (item.oldStyle === null) {
+                item.el.removeAttribute('style');
+            } else {
+                item.el.setAttribute('style', item.oldStyle);
+            }
+        }
     }
 }
 
@@ -2183,7 +2234,7 @@ function closeShareBaziModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// 6. Copy ảnh vào bộ nhớ tạm (Clipboard) để bấm Ctrl + V
+// 6. Copy ảnh vào Clipboard
 async function copyBaziImageToClipboard(showAlert = true) {
     const statusMsg = document.getElementById('share-status-msg');
     if (!currentBaziBlob) {
@@ -2201,7 +2252,6 @@ async function copyBaziImageToClipboard(showAlert = true) {
         }
         return true;
     } catch (err) {
-        console.error('Lỗi Copy Clipboard:', err);
         if (showAlert) {
             statusMsg.innerHTML = '<b style="color: #d97706;">⚠️ Hãy bấm chuột phải vào ảnh xem trước chọn "Sao chép hình ảnh"!</b>';
         }
@@ -2209,7 +2259,7 @@ async function copyBaziImageToClipboard(showAlert = true) {
     }
 }
 
-// 7. Chia sẻ lên Facebook (Mở danh sách Nhóm), Zalo, Telegram
+// 7. Chia sẻ lên Facebook, Zalo, Telegram
 async function shareToPlatform(platform) {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -2235,7 +2285,6 @@ async function shareToPlatform(platform) {
         if (groupBox) {
             groupBox.style.display = groupBox.style.display === 'none' ? 'block' : 'none';
         } else {
-            // Mở thẳng trang danh sách các Nhóm Facebook của người dùng để họ chọn nhóm và Ctrl + V
             window.open('https://www.facebook.com/groups/joins/', '_blank', 'width=1050,height=720');
         }
     } else if (platform === 'telegram') {
@@ -2245,7 +2294,7 @@ async function shareToPlatform(platform) {
     }
 }
 
-// 8. Mở link Nhóm cụ thể (nếu dùng menu chọn nhóm)
+// 8. Mở link Nhóm cụ thể
 async function openFbDestination(url) {
     await copyBaziImageToClipboard(false);
     document.getElementById('share-status-msg').innerHTML = 
@@ -2262,7 +2311,6 @@ function downloadBaziImage() {
     link.click();
 }
 
-// Gắn toàn bộ hàm vào window để nút HTML gọi không bao giờ bị lỗi ReferenceError
 window.ensureHtml2CanvasLoaded = ensureHtml2CanvasLoaded;
 window.openShareBaziModal = openShareBaziModal;
 window.shareBaziImage = openShareBaziModal;
