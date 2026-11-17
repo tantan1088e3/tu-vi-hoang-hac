@@ -1087,10 +1087,8 @@
 }
 
 /* ==========================================================================
-   DẤU ẤN CÁ NHÂN (ẤN TRIỆN CHU SA) TẠI TIÊU ĐỀ
+   ẤN TRIỆN CHIM HẠC CHU SA (ĐỒNG ĐỀU, TRANG TRỌNG)
    ========================================================================== */
-
-/* Căn chỉnh để Tiêu đề và Con dấu nằm ngang hàng, ở giữa trang */
 .header-title-wrapper {
     display: flex;
     align-items: center;
@@ -1099,30 +1097,30 @@
     margin-bottom: 8px;
 }
 
-/* Ép margin của thẻ h3 về 0 để không bị xô lệch với con dấu */
 .header-title-wrapper h3 {
-    margin: 0 !important; 
+    margin: 0 !important;
 }
 
-/* Điêu khắc con dấu Ấn Triện */
-.brand-stamp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* Định dạng con dấu */
+.brand-stamp-stamp {
+    display: inline-block;
+    width: 38px; /* Kích thước vừa vặn bên cạnh chữ, không quá to */
+    height: 38px;
+    vertical-align: middle;
     
-    color: #c92a2a !important; /* Màu đỏ chu sa */
-    border: 2px solid #c92a2a !important;
-    background-color: rgba(255, 255, 255, 0.7); /* Lót một lớp nền trắng mờ để chữ đỏ nổi bật trên mọi hoa văn */
-    
-    padding: 3px 6px !important;
-    font-size: 13px !important;
-    font-weight: 800 !important;
-    font-family: "Times New Roman", "Kaiti", serif !important; /* Dùng font có chân mô phỏng nét bút lông */
-    letter-spacing: 2px !important;
-    border-radius: 4px !important; /* Bo nhẹ góc để con dấu mềm mại hơn */
-    
-    box-shadow: inset 0 0 3px rgba(201, 42, 42, 0.2); /* Đổ bóng chìm tạo cảm giác mực in thấm vào giấy */
-    transform: rotate(-2deg); /* Nghiêng cực nhẹ 2 độ tạo cảm giác đóng dấu thủ công bằng tay */
+    /* Hiệu ứng con dấu đóng thủ công */
+    transform: rotate(-3deg); /* Nghiêng nhẹ 3 độ giống như đóng bằng tay */
+    filter: drop-shadow(1px 1px 1px rgba(179, 30, 30, 0.25)); /* Bóng mực đỏ rỉ nhẹ */
+    transition: all 0.3s ease;
+}
+
+.brand-stamp-stamp svg {
+    width: 100%;
+    height: 100%;
+}
+
+.brand-stamp-stamp:hover {
+    transform: rotate(0deg) scale(1.05); /* Hiệu ứng động nhẹ khi di chuột qua */
 }
 
 /* =========================================
