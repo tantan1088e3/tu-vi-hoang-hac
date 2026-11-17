@@ -1198,6 +1198,24 @@
         max-height: none !important; 
     }
 }
+/* ==========================================================================
+   TỐI ƯU KÍCH THƯỚC TIÊU ĐỀ TRÊN MOBILE (ĐIỆN THOẠI)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .result-wrapper .ts-title {
+        /* Rút gọn khoảng đệm: Trên 12px - Phải 10px - Dưới 8px - Trái 10px */
+        padding: 12px 10px 8px 10px !important; 
+        
+        /* Giảm nhẹ cỡ chữ cho thanh thoát hơn trên màn nhỏ */
+        font-size: 15px !important; 
+    }
+
+    /* Thu nhỏ vạch xanh trang trí đầu dòng một chút cho cân đối với chữ */
+    .result-wrapper .ts-title::before {
+        height: 14px !important;
+        margin-right: 6px !important;
+    }
+}
     </style>
 </head>
 <body>
