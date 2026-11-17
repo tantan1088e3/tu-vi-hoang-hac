@@ -1256,6 +1256,19 @@
                 
                 <!-- CỘT 1: Chống lề trái -->
                 <div class="spacer-left">
+                    <!-- KHỐI GIỚI THIỆU TÁC GIẢ (Dạng danh thiếp) -->
+                    <div class="author-profile-card">
+                        <div class="author-info">
+                            <h4 class="author-name">
+                                <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank">VÔ VI CÁC</a>
+                            </h4>
+                            <p class="author-title">Chuyên gia Mệnh Lý</p>
+                            <p class="author-desc">Phân tích chuyên sâu Tử Vi & Bát Tự</p>
+                            <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank" class="fb-link">
+                                Kết nối Facebook ↗
+                            </a>
+                        </div>
+                    </div>
                     <!-- HỘP 2: LUẬN GIẢI ĐẠI VẬN (Đã có đúng ID để nhận data) -->
                     <div class="box-luan-giai" id="box-luan-giai-dai-van">
                         <div class="luan-giai-title" id="title-luan-giai-dai-van">LUẬN GIẢI ĐẠI VẬN NĂM</div>
@@ -1354,64 +1367,10 @@
                     <div style="text-align: center; margin-top: 20px;">
                         <button class="btn-back-form" onclick="(resetBaziForm())">← Lập lá số khác</button>
                     </div>
-                    <!-- POPUP CHIA SẺ LÁ SỐ (FACEBOOK, ZALO, TELEGRAM) -->
-                    <div id="bazi-share-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
-                        <div style="background: #fff; border-radius: 12px; max-width: 420px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; position: relative;">
-                            
-                            <!-- Nút đóng -->
-                            <span onclick="closeShareBaziModal()" style="position: absolute; top: 10px; right: 15px; font-size: 22px; cursor: pointer; color: #888;">&times;</span>
-                            
-                            <h3 style="margin: 0 0 8px 0; color: #1e4b41; font-size: 18px;">Chia Sẻ Lá Số Bát Tự</h3>
-                            <p id="share-status-msg" style="font-size: 13px; color: #666; margin: 0 0 12px 0;">
-                                Đang tạo ảnh lá số nét cao...
-                            </p>
-                    
-                            <!-- Khung xem trước ảnh chụp lá số -->
-                            <div style="max-height: 220px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; background: #fafafa; padding: 5px;">
-                                <img id="bazi-preview-img" src="" alt="Preview Lá Số" style="width: 100%; height: auto; border-radius: 4px; display: none;" />
-                            </div>
-                    
-                            <!-- Nút Copy Ảnh nhanh (Cực tiện cho Zalo / Tele / FB trên PC) -->
-                            <button onclick="copyBaziImageToClipboard(true)" style="width: 100%; background: #1e4b41; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-size: 14px;">
-                                📋 Copy Ảnh (Để bấm Ctrl+V vào Zalo, FB, Tele)
-                            </button>
-                    
-                            <!-- Cụm 3 nút Mạng xã hội: Facebook - Zalo - Telegram -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                                <button onclick="shareToPlatform('facebook')" style="background: #1877F2; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
-                                    📘 Facebook
-                                </button>
-                                <button onclick="shareToPlatform('zalo')" style="background: #0068FF; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
-                                    💬 Zalo
-                                </button>
-                                <button onclick="shareToPlatform('telegram')" style="background: #26A5E4; color: #fff; border: none; padding: 10px 5px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
-                                    ✈️ Telegram
-                                </button>
-                            </div>
-                    
-                            <!-- Nút Tải file ảnh về máy -->
-                            <button onclick="downloadBaziImage()" style="width: 100%; background: #f3f4f6; color: #333; border: 1px solid #ddd; padding: 9px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13.5px;">
-                                📥 Tải file ảnh về máy (.PNG)
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- CỘT 3: Khung Luận Giải (Trôi bên phải) -->
                 <div class="right-analysis-column">
-                    <!-- KHỐI GIỚI THIỆU TÁC GIẢ (Dạng danh thiếp) -->
-                    <div class="author-profile-card">
-                        <div class="author-info">
-                            <h4 class="author-name">
-                                <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank">VÔ VI CÁC</a>
-                            </h4>
-                            <p class="author-title">Chuyên gia Mệnh Lý</p>
-                            <p class="author-desc">Phân tích chuyên sâu Tử Vi & Bát Tự</p>
-                            <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank" class="fb-link">
-                                Kết nối Facebook ↗
-                            </a>
-                        </div>
-                    </div>
                     <!-- HỘP PHÂN TÍCH VƯỢNG SUY (Được đẩy xuống tự nhiên) -->
                     <div class="box-luan-giai" id="box-luan-giai">
                         <div class="luan-giai-title">PHÂN TÍCH VƯỢNG SUY</div>
