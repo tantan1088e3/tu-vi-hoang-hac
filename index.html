@@ -1087,11 +1087,11 @@
 }
 
 /* ==========================================================================
-   ẤN TRIỆN CHIM HẠC CHU SA (ĐỒNG ĐỀU, TRANG TRỌNG)
+   ẤN TRIỆN CHIM HẠC BẰNG HÌNH ẢNH
    ========================================================================== */
 .header-title-wrapper {
     display: flex;
-    align-items: center;
+    align-items: center; /* Căn giữa theo chiều dọc */
     justify-content: center;
     gap: 12px; 
     margin-bottom: 8px;
@@ -1101,26 +1101,19 @@
     margin: 0 !important;
 }
 
-/* Định dạng con dấu */
+/* Khung chứa ảnh triện */
 .brand-stamp-stamp {
     display: inline-block;
-    width: 38px; /* Kích thước vừa vặn bên cạnh chữ, không quá to */
-    height: 38px;
-    vertical-align: middle;
-    
-    /* Hiệu ứng con dấu đóng thủ công */
-    transform: rotate(-3deg); /* Nghiêng nhẹ 3 độ giống như đóng bằng tay */
-    filter: drop-shadow(1px 1px 1px rgba(179, 30, 30, 0.25)); /* Bóng mực đỏ rỉ nhẹ */
-    transition: all 0.3s ease;
+    width: 32px; /* Chỉnh độ to nhỏ của ấn triện ở đây (vd: 32px, 36px) */
+    height: 32px;
+    flex-shrink: 0; /* Ép nó không bị bóp méo khi màn hình nhỏ */
 }
 
-.brand-stamp-stamp svg {
+/* Ép ảnh vừa khít khung */
+.brand-stamp-stamp img {
     width: 100%;
     height: 100%;
-}
-
-.brand-stamp-stamp:hover {
-    transform: rotate(0deg) scale(1.05); /* Hiệu ứng động nhẹ khi di chuột qua */
+    object-fit: contain;
 }
 
 /* =========================================
