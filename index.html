@@ -997,6 +997,32 @@
     padding-top: 10px;
 }
 
+/* ==========================================================================
+   LÀM TRONG SUỐT CÁC BẢNG LÁ SỐ ĐỂ NHÌN XUYÊN XUỐNG ẢNH NỀN
+   ========================================================================== */
+
+/* 1. Xóa nền trắng của các khung bao bọc bảng */
+.result-wrapper .t-grid,
+.result-wrapper .bazi-main-grid,
+.result-wrapper .ts-grid,
+.result-wrapper .dv-grid,
+.result-wrapper .ln-grid {
+    background-color: transparent !important;
+}
+
+/* 2. Chuyển màu nền của tất cả các ô chữ thành trong suốt hoàn toàn */
+/* Dùng :not(.col-day) để giữ nguyên lớp nền vàng hoàng kim của cột Nhật Chủ */
+.result-wrapper .t-cell:not(.col-day),
+#dv-container > *:not(.col-day),
+#ln-container > *:not(.col-day) {
+    background-color: transparent !important;
+}
+
+/* 3. Phủ một lớp kính mờ rất nhẹ (40%) cho các ô Nhãn (Dương Lịch, Trụ, T.Can...) để dễ nhận diện hàng/cột */
+.result-wrapper .t-cell.t-label {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
