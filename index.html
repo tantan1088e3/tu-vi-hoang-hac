@@ -1164,54 +1164,46 @@
 }
 /* Giao diện dành riêng cho Mobile & Tablet nhỏ */
 @media (max-width: 768px) {
-    /* 1. Bố cục ngoài cùng: Ép 3 cột thành hàng dọc */
     .main-layout-wrapper {
         display: flex !important;
         flex-direction: column !important;
-        gap: 20px; /* Khoảng cách giữa các cột */
+        gap: 20px; /* Khoảng cách đều giữa tất cả các khối */
     }
 
-    /* === SẮP XẾP THỨ TỰ 3 CỘT CHÍNH === */
-    
-    /* Đưa cột Lá Số lên vị trí ĐẦU TIÊN */
-    .center-bazi-column {
-        order: 1 !important;
-    }
-
-    /* Đưa cột Phân Tích Vượng Suy xuống vị trí THỨ HAI */
+    /* 1. "Phá vỡ" vách ngăn của 3 cột để các khối con tràn ra ngoài và ngang hàng nhau */
+    .spacer-left,
+    .center-bazi-column,
     .right-analysis-column {
-        order: 2 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 20px; /* Khoảng cách giữa Vượng Suy và Tải App */
+        display: contents !important;
     }
 
-    /* Đưa cột Luận Giải Đại Vận xuống vị trí CUỐI CÙNG */
-    .spacer-left {
+    /* === 2. BẮT ĐẦU ĐÁNH SỐ THỨ TỰ (ORDER) THEO ĐÚNG Ý ÔNG === */
+
+    /* Vị trí SỐ 1: Nhóm Lá Số (Bao gồm Bảng lá số và nút Lập lá số khác bên dưới) */
+    .center-bazi-column > * {
+        order: 1 !important;
+    }
+
+    /* Vị trí SỐ 2: Phân Tích Vượng Suy */
+    #box-luan-giai {
+        order: 2 !important;
+    }
+
+    /* Vị trí SỐ 3: Luận Giải Đại Vận */
+    #box-luan-giai-dai-van {
         order: 3 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 20px; /* Khoảng cách giữa Đại Vận và Vô Vi Các */
-    }
-
-    /* === ĐẢO VỊ TRÍ CÁC HỘP BÊN TRONG TỪNG CỘT === */
-
-    /* Trong cột Phải: Đẩy "Vượng Suy" lên trên, "Tải App" xuống dưới */
-    .right-analysis-column #box-luan-giai {
-        order: 1 !important;
-    }
-    .right-analysis-column .promo-box {
-        order: 2 !important;
-    }
-
-    /* Trong cột Trái: Đẩy "Luận Giải Đại Vận" lên trên, "Vô Vi Các" xuống dưới */
-    .spacer-left #box-luan-giai-dai-van {
-        order: 1 !important;
         height: auto !important;
-        max-height: none !important; 
+        max-height: none !important;
     }
+
+    /* Vị trí SỐ 4: Khối Vô Vi Các (Đang nằm trong cột trái) */
     .spacer-left .promo-box {
-        order: 2 !important;
+        order: 4 !important;
+    }
+
+    /* Vị trí SỐ 5: Khối Tải App (Đang nằm trong cột phải) */
+    .right-analysis-column .promo-box {
+        order: 5 !important;
     }
 }
 /* ==========================================================================
