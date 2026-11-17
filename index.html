@@ -1086,39 +1086,7 @@
     color: #ffffff !important;
 }
 
-/* ==========================================================================
-   ẤN TRIỆN ĐÓNG GÓC TRÊN CÙNG BÊN TRÁI
-   ========================================================================== */
 
-/* 1. Đặt mốc tọa độ cho khung lá số để ấn triện bám vào */
-.result-wrapper {
-    position: relative; /* Quan trọng: Không có dòng này triện sẽ bay lung tung */
-}
-
-/* 2. Cố định vị trí và tăng kích thước ấn triện */
-.brand-stamp-stamp {
-    position: absolute;
-    top: 20px;   /* Cách mép trên 20px */
-    left: 20px;  /* Cách mép trái 20px */
-    width: 65px; /* Tăng độ to lên gấp đôi (trước là 32px) */
-    height: 65px;
-    z-index: 10; /* Đảm bảo con dấu nổi lên trên các thành phần khác */
-}
-
-.brand-stamp-stamp img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    opacity: 0.9; /* Hơi mờ đi 1 xíu (90%) để giống mực thấm vào giấy */
-}
-
-/* 3. Đưa tiêu đề trở lại vị trí chính giữa trang */
-.header-title-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-}
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
@@ -1402,10 +1370,7 @@
                 
                 <!-- CỘT 2: Bảng Lá Số -->
                 <div class="center-bazi-column">
-                    <!-- Đóng ấn triện ngay góc trên cùng bên trái của khung result-wrapper -->
-                    <span class="brand-stamp-stamp">
-                        <img src="binh-an.png" alt="Ấn Triện" /> 
-                    </span>
+                   
                     <div class="result-header">
                         <div class="header-title-wrapper">
                             <h3>TỨ TRỤ MỆNH BÀN</h3>
