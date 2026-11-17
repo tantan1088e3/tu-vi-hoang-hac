@@ -1206,14 +1206,14 @@
         order: 5 !important;
     }
 
-    /* Ép tất cả các hộp phụ (Giới thiệu, Tải App, Luận Giải Đại Vận) bung to 100% bằng mép với Vượng Suy */
+    /* Ép tất cả các hộp bung to 100% và xóa lề thừa để không bị cách xa nhau */
     .promo-box,
+    #box-luan-giai,
     #box-luan-giai-dai-van {
         width: 100% !important;
-        max-width: 100% !important; /* Xóa bỏ giới hạn chiều rộng của bản web */
+        max-width: 100% !important;
         box-sizing: border-box !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        margin: 0 !important; /* Lệnh "diệt" khoảng trống thừa */
     }
 }
 /* ==========================================================================
