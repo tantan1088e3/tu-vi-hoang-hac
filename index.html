@@ -1086,6 +1086,45 @@
     color: #ffffff !important;
 }
 
+/* ==========================================================================
+   DẤU ẤN CÁ NHÂN (ẤN TRIỆN CHU SA) TẠI TIÊU ĐỀ
+   ========================================================================== */
+
+/* Căn chỉnh để Tiêu đề và Con dấu nằm ngang hàng, ở giữa trang */
+.header-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; 
+    margin-bottom: 8px;
+}
+
+/* Ép margin của thẻ h3 về 0 để không bị xô lệch với con dấu */
+.header-title-wrapper h3 {
+    margin: 0 !important; 
+}
+
+/* Điêu khắc con dấu Ấn Triện */
+.brand-stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    color: #c92a2a !important; /* Màu đỏ chu sa */
+    border: 2px solid #c92a2a !important;
+    background-color: rgba(255, 255, 255, 0.7); /* Lót một lớp nền trắng mờ để chữ đỏ nổi bật trên mọi hoa văn */
+    
+    padding: 3px 6px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    font-family: "Times New Roman", "Kaiti", serif !important; /* Dùng font có chân mô phỏng nét bút lông */
+    letter-spacing: 2px !important;
+    border-radius: 4px !important; /* Bo nhẹ góc để con dấu mềm mại hơn */
+    
+    box-shadow: inset 0 0 3px rgba(201, 42, 42, 0.2); /* Đổ bóng chìm tạo cảm giác mực in thấm vào giấy */
+    transform: rotate(-2deg); /* Nghiêng cực nhẹ 2 độ tạo cảm giác đóng dấu thủ công bằng tay */
+}
+
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
@@ -1371,7 +1410,10 @@
                 <div class="center-bazi-column">
                     <div class="result-wrapper">
                         <div class="result-header">
-                            <h3>TỨ TRỤ MỆNH BÀN</h3>
+                            <div class="header-title-wrapper">
+                                    <h3>TỨ TRỤ MỆNH BÀN</h3>
+                                    <span class="brand-stamp">VÔ VI</span>
+                                </div>
                             <p id="res-subtitle">Đương số: Nguyễn Văn A (Càn tạo) - Ngày sinh: ...</p>
                         </div>
                         <div class="result-body">
