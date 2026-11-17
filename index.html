@@ -1086,6 +1086,33 @@
     color: #ffffff !important;
 }
 
+/* 1. Giới hạn chiều cao và tạo thanh cuộn cho danh sách Đại Vận */
+#noidung-dai-van {
+    max-height: 380px; /* Ông có thể tăng giảm số này (ví dụ 400px) cho vừa mắt */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px; /* Tạo khoảng trống nhỏ để chữ không dính vào thanh cuộn */
+}
+
+/* 2. Trang trí lại thanh cuộn cho đẹp, hợp với giao diện cổ phong */
+#noidung-dai-van::-webkit-scrollbar {
+    width: 5px;
+}
+
+#noidung-dai-van::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#noidung-dai-van::-webkit-scrollbar-thumb {
+    background: var(--accent); /* Lấy luôn màu vàng chủ đạo của web */
+    border-radius: 4px;
+}
+
+#noidung-dai-van::-webkit-scrollbar-thumb:hover {
+    background: #b59530; /* Tối đi một chút khi di chuột vào */
+}
+
 /* =========================================
    3. HIỂN THỊ ĐIỆN THOẠI
 ========================================= */
