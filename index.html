@@ -1164,38 +1164,51 @@
 }
 /* Giao diện dành riêng cho Mobile & Tablet nhỏ */
 @media (max-width: 768px) {
-    
-    /* 1. Ép thẻ bọc ngoài cùng chuyển sang xếp dọc (cột) */
+    /* Đảm bảo khung bao ngoài sử dụng Flexbox để điều hướng thứ tự */
     .main-layout-wrapper {
         display: flex !important;
         flex-direction: column !important;
-        gap: 20px; /* Tạo khoảng thở 20px giữa các khối khi xếp chồng */
-        width: 100% !important;
     }
 
-    /* 2. Đẩy cột Mệnh Bàn (cột giữa) lên vị trí SỐ 1 */
+    /* 1. Đưa cột Mệnh Bàn (chứa Lá Số) lên đầu tiên */
     .center-bazi-column {
         order: 1 !important;
-        width: 100% !important;
     }
 
-    /* 3. Đẩy cột Vượng Suy (cột phải) xuống vị trí SỐ 2 */
+    /* 2. Đưa cột Phân Tích Vượng Suy (bao gồm cả khối Tải App) xuống vị trí số 2 */
     .right-analysis-column {
         order: 2 !important;
-        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
-    /* 4. Đẩy khối Luận Giải Đại Vận (cột trái) rớt xuống ĐÁY (SỐ 3) */
+    /* 3. Đưa cột Luận Giải (bao gồm cả khối Vô Vi Các) xuống vị trí số 3 */
     .spacer-left {
         order: 3 !important;
-        width: 100% !important;
-        display: block !important; /* Đảm bảo thoát khỏi mọi lệnh ẩn nếu có */
+        display: flex !important;
+        flex-direction: column !important;
     }
 
-    /* 5. Cho phép khối Đại vận tự do co giãn chiều cao trên mobile, không bị cụt */
+    /* Định dạng để ưu tiên nội dung chính, đẩy các khối quảng cáo/giới thiệu xuống cuối cột của chúng */
+    
+    /* Đẩy phần Phân Tích Vượng Suy lên trên cùng của cột số 2 */
+    .analysis-wrapper {
+        order: 1 !important; 
+    }
+    
+    /* Đẩy khối Tải App xuống dưới phần Phân Tích Vượng Suy */
+    .promo-box:nth-of-type(1) { /* Hoặc gán ID/class riêng cho hộp tải app để chọn chính xác hơn */
+        order: 2 !important;
+    }
+
+    /* Đẩy phần Luận Giải Đại Vận Năm lên trên cùng của cột số 3 */
     #box-luan-giai-dai-van {
-        height: auto !important;
-        max-height: none !important; 
+        order: 1 !important;
+    }
+
+    /* Đẩy khối Vô Vi Các xuống dưới phần Luận Giải Đại Vận */
+    .author-profile-card { /* Điều chỉnh class nếu bạn đã đổi thành promo-box */
+        order: 2 !important;
     }
 }
 /* ==========================================================================
