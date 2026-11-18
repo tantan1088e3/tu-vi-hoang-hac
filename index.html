@@ -1567,7 +1567,7 @@
     <!-- Nút tải ảnh (Mặc định ẩn, chỉ hiện khi có kết quả) -->
     <div id="ai-download-box" style="display: none; text-align: center; margin-top: 35px; border-top: 1px dashed rgba(212, 175, 55, 0.2); padding-top: 25px;">
         <button id="btnDownloadAI" style="background: var(--accent, #d4af37); color: #111; font-weight: bold; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: all 0.3s;">
-            📸 Tải Lời Phán (Ảnh PNG)
+            📄 Tải Lời Phân Tích (PDF)
         </button>
     </div>
 </div>
@@ -1597,6 +1597,7 @@
 </button>
 <script src="storage.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
@@ -2840,37 +2841,64 @@ document.getElementById("btnAI").addEventListener("click", async function() {
 // ==========================================
 // TÍNH NĂNG CHỤP ẢNH LỜI LUẬN GIẢI
 // ==========================================
+// ==========================================
+// TÍNH NĂNG TẢI FILE PDF (MULTI-PAGE)
+// ==========================================
 document.getElementById("btnDownloadAI").addEventListener("click", function() {
     let btn = this;
     let originalText = btn.innerHTML;
     
-    // Đổi chữ trên nút để khách biết đang xử lý
-    btn.innerHTML = "⏳ Đang tạo ảnh...";
+    btn.innerHTML = "⏳ Đang tạo PDF...";
     btn.style.opacity = "0.7";
     btn.disabled = true;
 
-    // Chọn cái khung bọc ngoài cùng để chụp cả tiêu đề
+    // Lấy khung chứa nội dung
     let container = document.getElementById("ai-result-container");
 
-    // Dùng html2canvas để chụp
+    // 1. Chụp giao diện với độ nét cao (Scale 2)
     html2canvas(container, {
-        scale: 2, // Phóng to x2 để ảnh tải về nét căng (chuẩn HD)
-        backgroundColor: "#161c18", // Đổ màu nền Đạo gia cho ảnh (tránh bị viền đen)
-        useCORS: true // Cho phép load các icon nếu có
+        scale: 2, 
+        backgroundColor: "#161c18", // Giữ nền đen của Đạo gia
+        useCORS: true 
     }).then(canvas => {
-        // Tạo link ảo để ép trình duyệt tải file
-        let link = document.createElement("a");
-        link.download = "Luan_Giai_Hoang_Hac_Cac.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click(); // Tự động bấm tải
+        // Khởi tạo thư viện jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        // Cài đặt khổ giấy A4
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth(); // Chiều rộng A4
+        const pdfHeight = pdf.internal.pageSize.getHeight(); // Chiều cao A4
+        
+        // Tính toán chiều cao ảnh tương ứng khi ép vào bề ngang A4
+        const imgData = canvas.toDataURL("image/png");
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        let heightLeft = imgHeight;
+        let position = 0;
 
-        // Khôi phục nút
+        // Trang 1
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+
+        // Nếu nội dung quá dài, tự động "băm" ra các trang tiếp theo
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight; // Kéo ảnh dịch lên trên
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+        }
+
+        // Tải file về máy
+        pdf.save("Luan_Giai_Hoang_Hac_Cac.pdf");
+
+        // Trả lại trạng thái nút
         btn.innerHTML = originalText;
         btn.style.opacity = "1";
         btn.disabled = false;
     }).catch(err => {
-        console.error("Lỗi tạo ảnh: ", err);
-        alert("Có lỗi khi tạo ảnh. Vui lòng thử lại!");
+        console.error("Lỗi tạo PDF: ", err);
+        alert("Có lỗi khi tạo PDF. Vui lòng thử lại!");
         btn.innerHTML = originalText;
         btn.style.opacity = "1";
         btn.disabled = false;
