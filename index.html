@@ -1541,6 +1541,7 @@
 <button id="btnBackToTop" class="floating-btn" onclick="(resetBaziForm())">
     ← Lập lá số khác
 </button>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="storage.js"></script>
 <script>
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
@@ -2657,7 +2658,8 @@ function startPollingAiResult(recordId, btnElement) {
                 
                 // 2. Nhồi chữ của Cụ Hạc vào và bật thẻ content lên
                 let contentBox = document.getElementById("ai-content");
-                contentBox.innerHTML = data.data.replace(/\n/g, '<br><br>'); // Thay \n thành thẻ <br> để xuống dòng cho đẹp
+                // Dùng marked.js để dịch chữ của Cụ Hạc thành HTML tuyệt đẹp
+                contentBox.innerHTML = marked.parse(data.data);
                 contentBox.style.display = "block"; 
                 
                 resetAiButton(btnElement);
