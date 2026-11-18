@@ -2737,6 +2737,9 @@ function startPollingAiResult(recordId, btnElement) {
             } else if (data.status === "error") {
                 clearInterval(aiPollingInterval);
                 showErrorOnButton(btnElement, "Lỗi: " + data.msg);
+                // THÊM 2 DÒNG NÀY ĐỂ GIẤU HỘP ĐEN ĐI KHI CÓ LỖI
+                let resultContainer = document.getElementById("ai-result-container");
+                if (resultContainer) resultContainer.style.display = "none";
                 document.getElementById("ai-loading").style.display = "none";
             }
         } catch (error) {
