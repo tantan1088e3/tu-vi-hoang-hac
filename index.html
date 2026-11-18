@@ -2745,27 +2745,6 @@ function startPollingAiResult(recordId, btnElement) {
                 resetAiButton(btnElement);
 
             } 
-            else if (data.status === "processing") {
-                if (data.data && data.data.trim() !== "") {
-                    // 1. Tắt hiệu ứng quay vòng, mở nắp hộp đen ra
-                    document.getElementById("ai-loading").style.display = "none";
-                    
-                    let resultContainer = document.getElementById("ai-result-container");
-                    if (resultContainer) resultContainer.style.display = "block";
-                    
-                    let contentBox = document.getElementById("ai-content");
-                    if (contentBox) contentBox.style.display = "block";
-
-                    // 2. Dịch Markdown siêu tốc cho bản nháp (Giữ nguyên phong cách sang trọng của ông)
-                    let rawText = data.data;
-                    let cleanText = rawText.replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--accent);">$1</strong>');
-                    cleanText = cleanText.replace(/### (.*?)(?=\n|$)/g, '<h3 style="color: var(--accent);">$1</h3>');
-                    cleanText = cleanText.replace(/\n/g, '<br>');
-                    
-                    // 3. In chữ đang gõ + Hiệu ứng con trỏ nhấp nháy
-                    contentBox.innerHTML = cleanText + '<span style="animation: pulse 1s infinite; font-size: 1.2rem;"> ✍️...</span>';
-                }
-            }
             else if (data.status === "error") {
                 clearInterval(aiPollingInterval);
                 
