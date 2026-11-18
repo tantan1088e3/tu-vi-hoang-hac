@@ -2736,11 +2736,25 @@ function startPollingAiResult(recordId, btnElement) {
 
             } else if (data.status === "error") {
                 clearInterval(aiPollingInterval);
-                showErrorOnButton(btnElement, "Lỗi: " + data.msg);
-                // THÊM 2 DÒNG NÀY ĐỂ GIẤU HỘP ĐEN ĐI KHI CÓ LỖI
+                
+                // 1. Dọn sạch hiện trường trước
                 let resultContainer = document.getElementById("ai-result-container");
-                if (resultContainer) resultContainer.style.display = "none";
-                document.getElementById("ai-loading").style.display = "none";
+                if (resultContainer) resultContainer.style.display = "none"; 
+                let loadingBox = document.getElementById("ai-loading");
+                if (loadingBox) loadingBox.style.display = "none"; 
+                let contentBox = document.getElementById("ai-content");
+                if (contentBox) contentBox.style.display = "none"; 
+                let downloadBox = document.getElementById("ai-download-box");
+                if (downloadBox) downloadBox.style.display = "none";
+
+                // 2. Phân loại lỗi để xử lý
+                if (data.msg.includes("⚠️") || data.msg.includes("Không thể hoàn thành")) {
+                    // Lỗi do sập API Key -> Khóa nút chờ ngày hồi sinh
+                    lockButtonUntilApiRecovers(btnElement);
+                } else {
+                    // Lỗi thông thường (ví dụ: thao tác sai) -> Báo lỗi 4s rồi mở lại
+                    showErrorOnButton(btnElement, data.msg);
+                }
             }
         } catch (error) {
             console.error("Lỗi polling AI:", error);
@@ -2778,6 +2792,34 @@ function resetAiButton(btn) {
     
     btn.style.borderColor = 'var(--accent, #d4af37)';
     btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ddd;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
+}
+
+// ==========================================
+// HÀM KHÓA NÚT & LẮNG NGHE ĐẾN KHI API SỐNG LẠI
+// ==========================================
+function lockButtonUntilApiRecovers(btn) {
+    // 1. Chuyển nút sang trạng thái Bảo Trì (Đỏ bầm, cấm bấm)
+    btn.innerHTML = `<span style="font-size: 1.4rem; animation: pulse 2s infinite;">🛑</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ff6b6b;">Đang Bảo Trì API</div><div style="font-size: 0.75rem; color: #aaa;">Sẽ tự động mở lại khi Cụ Hạc online...</div></div>`;
+    btn.style.borderColor = '#ff4444';
+    btn.style.backgroundColor = '#1a1010'; // Đỏ đen tối
+    btn.style.cursor = 'not-allowed';
+    btn.disabled = true;
+
+    // 2. Chạy ngầm một Radar, cứ 10 giây hỏi thăm Server 1 lần
+    let recoveryInterval = setInterval(async () => {
+        try {
+            const res = await fetch('https://api.tuvihoanghac.id.vn/api/ai-status');
+            const data = await res.json();
+            
+            // Nếu Server báo "ok" (Đã có Key hoạt động)
+            if (data.status === "ok") {
+                clearInterval(recoveryInterval); // Tắt radar
+                resetAiButton(btn); // Đánh thức nút bấm sáng lên như cũ!
+            }
+        } catch (error) {
+            console.log("Radar đang chờ mạng khôi phục...");
+        }
+    }, 10000); // 10000ms = 10 giây
 }
 
 // ==========================================
