@@ -2765,9 +2765,12 @@ function resetAiButton(btn) {
     btn.disabled = false;
     btn.style.opacity = '1';
     btn.style.cursor = 'pointer';
-    btn.style.backgroundColor = ''; // Trả lại nền đen/mặc định ban đầu
+    
+    // Ép cứng lại màu nền tối ban đầu (thay vì để rỗng)
+    btn.style.backgroundColor = '#161c18'; // Ông có thể đổi thành #111 hoặc #000 nếu muốn đen hơn
+    
     btn.style.borderColor = 'var(--accent, #d4af37)';
-    btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
+    btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ddd;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
 }
 
 // ==========================================
