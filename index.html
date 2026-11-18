@@ -1532,7 +1532,7 @@
     </p>
 </footer>
 <!-- NÚT NỔI AI GÓC TRÁI MÀN HÌNH -->
-<button id="btn-ai-float" style="position: fixed; bottom: 30px; left: 30px; z-index: 9999; background: linear-gradient(135deg, var(--accent, #d4af37), #b59530); color: #111; border: 2px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.6); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.95rem;" 
+<button id="btnAI" style="position: fixed; bottom: 30px; left: 30px; z-index: 9999; background: linear-gradient(135deg, var(--accent, #d4af37), #b59530); color: #111; border: 2px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.6); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.95rem;" 
     onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(212, 175, 55, 0.5)';" 
     onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 15px rgba(0,0,0,0.6)';">
     <span style="font-size: 1.3rem; animation: pulse 2s infinite;">🤖</span> AI Luận Giải
@@ -1565,6 +1565,7 @@
         // 2. ẨN MỆNH BÀN KẾT QUẢ VÀ NÚT LÊN ĐẦU TRANG
         document.getElementById('bazi-result-container').style.display = 'none';
         document.getElementById('btnBackToTop').style.display = 'none'; 
+        document.getElementById('btnAI').style.display = 'none'; 
         
         // 3. HIỆN LẠI KHU VỰC LỊCH SỬ
         document.getElementById('bazi-history-container').style.display = '';
@@ -1672,6 +1673,7 @@
                 document.getElementById('bazi-form-container').style.display = 'none';
                 document.getElementById('bazi-result-container').style.display = 'block';
                 document.getElementById('btnBackToTop').style.display = 'block';
+                document.getElementById('btnAI').style.display = 'block';
                 // 2. ẨN KHU VỰC LỊCH SỬ
                 document.getElementById('bazi-history-container').style.display = 'none';
                 // Nếu bạn có dùng thẻ bọc cột .history-col ở ngoài, hãy ẩn luôn nó để xóa sạch khoảng trống
