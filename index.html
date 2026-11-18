@@ -2742,20 +2742,30 @@ function startPollingAiResult(recordId, btnElement) {
 }
 
 function showErrorOnButton(btn, msg) {
-    btn.innerHTML = `<span style="font-size: 1.2rem;">⚠️</span><div style="line-height: 1.3;"><div style="font-size: 0.85rem; font-weight: bold; color: #ff9999;">${msg}</div></div>`;
+    // Ép sáng lại 100% (Sửa lỗi bị mờ)
+    btn.style.opacity = '1';
+    
+    // Đổ nền đỏ mờ để làm nổi bật cảnh báo
+    btn.style.backgroundColor = 'rgba(255, 68, 68, 0.15)'; 
+    
+    // Tăng cỡ chữ và dùng màu đỏ cam (#ff6b6b) cho rực rỡ
+    btn.innerHTML = `<span style="font-size: 1.4rem;">⚠️</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ff6b6b;">${msg}</div></div>`;
+    
     btn.style.borderColor = '#ff4444';
     btn.style.cursor = 'not-allowed';
     btn.disabled = true;
 
+    // Tự động khôi phục sau 4.5 giây
     setTimeout(() => {
         resetAiButton(btn);
-    }, 4000);
+    }, 4500);
 }
 
 function resetAiButton(btn) {
     btn.disabled = false;
     btn.style.opacity = '1';
     btn.style.cursor = 'pointer';
+    btn.style.backgroundColor = ''; // Trả lại nền đen/mặc định ban đầu
     btn.style.borderColor = 'var(--accent, #d4af37)';
     btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
 }
