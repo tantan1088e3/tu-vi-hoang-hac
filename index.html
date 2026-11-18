@@ -1589,7 +1589,6 @@
 <button id="btnBackToTop" class="floating-btn" onclick="(resetBaziForm())">
     ← Lập lá số khác
 </button>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="storage.js"></script>
 <script>
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
@@ -2687,10 +2686,9 @@ function startPollingAiResult(recordId, btnElement) {
     
     aiPollingInterval = setInterval(async () => {
         checkCount++;
-        if (checkCount > 45) { // Quá 90 giây
+        if (checkCount > 45) { // Quá 90 giây timeout
             clearInterval(aiPollingInterval);
-            alert("Cụ Hạc đang bận tiếp quá nhiều khách. Quý vị vui lòng thử lại sau!");
-            resetAiButton(btnElement);
+            showErrorOnButton(btnElement, "Cụ Hạc quá tải. Vui lòng thử lại sau!");
             document.getElementById("ai-loading").style.display = "none";
             return;
         }
@@ -2702,21 +2700,31 @@ function startPollingAiResult(recordId, btnElement) {
             if (data.status === "done") {
                 clearInterval(aiPollingInterval); 
                 
-                // 1. Tắt hiệu ứng loading
-                document.getElementById("ai-loading").style.display = "none";
+                // --- BỘ DỊCH MARKDOWN HANDMADE SANG TRỌNG ---
+                let rawText = data.data;
+                let cleanText = rawText.replace(/\n{3,}/g, '\n\n'); // Dọn khoảng trống thừa
+                cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--accent);">$1</strong>'); // In đậm
+                cleanText = cleanText.replace(/### (.*?)(?=\n|$)/g, '<h3 style="color: var(--accent); border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-top: 35px; margin-bottom: 20px;">$1</h3>'); // Tiêu đề
+                cleanText = cleanText.replace(/^\* (.*?)$/gm, '<div style="margin-bottom: 18px; padding-left: 15px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">•</span>$1</div>'); // Gạch đầu dòng
                 
-                // 2. Nhồi chữ của Cụ Hạc vào và bật thẻ content lên
+                cleanText = cleanText.split('\n\n').map(paragraph => { // Ngắt đoạn
+                    if (paragraph.trim().startsWith('<h3') || paragraph.trim().startsWith('<div')) return paragraph;
+                    return `<p style="margin-bottom: 22px; text-align: justify;">${paragraph.replace(/\n/g, '<br>')}</p>`;
+                }).join('');
+                
+                cleanText = cleanText.replace(/---/g, '<hr style="border: 0; border-top: 1px dashed rgba(212, 175, 55, 0.3); margin: 30px 0;">'); // Kẻ ngang
+
+                // Ẩn loading, hiện nội dung
+                document.getElementById("ai-loading").style.display = "none";
                 let contentBox = document.getElementById("ai-content");
-                // Dùng marked.js để dịch chữ của Cụ Hạc thành HTML tuyệt đẹp
-                contentBox.innerHTML = marked.parse(data.data);
+                contentBox.innerHTML = cleanText;
                 contentBox.style.display = "block"; 
                 
                 resetAiButton(btnElement);
 
             } else if (data.status === "error") {
                 clearInterval(aiPollingInterval);
-                alert("Lỗi thỉnh giáo: " + data.msg);
-                resetAiButton(btnElement);
+                showErrorOnButton(btnElement, "Lỗi: " + data.msg);
                 document.getElementById("ai-loading").style.display = "none";
             }
         } catch (error) {
