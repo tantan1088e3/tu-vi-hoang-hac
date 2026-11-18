@@ -2628,24 +2628,20 @@ async function openFbDestination(url) {
 }
 
 // ==========================================
-// LOGIC XỬ LÝ NÚT BẤM "VÔ VI LUẬN MỆNH"
+// HÀM TỰ ĐỘNG HỎI THĂM KẾT QUẢ AI (POLLING)
 // ==========================================
 let aiPollingInterval;
 
 function startPollingAiResult(recordId, btnElement) {
     let checkCount = 0;
-    let contentBox = document.getElementById("ai-content"); 
-    let loadingBox = document.getElementById("ai-loading"); 
     
-    if(loadingBox) loadingBox.style.display = "block";
-
     aiPollingInterval = setInterval(async () => {
         checkCount++;
         if (checkCount > 45) { // Quá 90 giây
             clearInterval(aiPollingInterval);
             alert("Cụ Hạc đang bận tiếp quá nhiều khách. Quý vị vui lòng thử lại sau!");
             resetAiButton(btnElement);
-            if(loadingBox) loadingBox.style.display = "none";
+            document.getElementById("ai-loading").style.display = "none";
             return;
         }
 
@@ -2655,17 +2651,22 @@ function startPollingAiResult(recordId, btnElement) {
 
             if (data.status === "done") {
                 clearInterval(aiPollingInterval); 
-                if(loadingBox) loadingBox.style.display = "none";
                 
-                contentBox.innerHTML = data.data.replace(/\n/g, '<br>'); 
-                contentBox.style.display = "block";
+                // 1. Tắt hiệu ứng loading
+                document.getElementById("ai-loading").style.display = "none";
+                
+                // 2. Nhồi chữ của Cụ Hạc vào và bật thẻ content lên
+                let contentBox = document.getElementById("ai-content");
+                contentBox.innerHTML = data.data.replace(/\n/g, '<br><br>'); // Thay \n thành thẻ <br> để xuống dòng cho đẹp
+                contentBox.style.display = "block"; 
+                
                 resetAiButton(btnElement);
 
             } else if (data.status === "error") {
                 clearInterval(aiPollingInterval);
                 alert("Lỗi thỉnh giáo: " + data.msg);
                 resetAiButton(btnElement);
-                if(loadingBox) loadingBox.style.display = "none";
+                document.getElementById("ai-loading").style.display = "none";
             }
         } catch (error) {
             console.error("Lỗi polling AI:", error);
@@ -2680,6 +2681,9 @@ function resetAiButton(btn) {
     btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
 }
 
+// ==========================================
+// SỰ KIỆN NÚT BẤM
+// ==========================================
 document.getElementById("btnAI").addEventListener("click", async function() {
     let btn = this;
     
@@ -2691,7 +2695,6 @@ document.getElementById("btnAI").addEventListener("click", async function() {
     let now = new Date().getTime();
     let lastClicked = localStorage.getItem("last_ai_click");
 
-    // Khóa chống click 1 phút
     if (lastClicked && (now - lastClicked < 60000)) {
         alert("Cụ Hạc đang mải bấm độn. Xin vui lòng chờ 1 phút trước khi hỏi lại!");
         return; 
@@ -2703,12 +2706,18 @@ document.getElementById("btnAI").addEventListener("click", async function() {
     btn.innerHTML = '⏳ Đang truyền tin...';
     localStorage.setItem("last_ai_click", now);
 
-    // Xóa nội dung cũ đi (nếu khách vừa xem 1 lá số khác)
+    // ==========================================
+    // KHÚC QUAN TRỌNG NHẤT: BẬT GIAO DIỆN HTML CỦA ÔNG LÊN
+    // ==========================================
+    let resultContainer = document.getElementById("ai-result-container");
+    let loadingBox = document.getElementById("ai-loading");
     let contentBox = document.getElementById("ai-content");
-    if(contentBox) {
-        contentBox.innerHTML = "<div style='text-align: center; color: var(--accent, #d4af37);'><i>Đang chờ Cụ Hạc nhả chữ...</i></div>";
-        contentBox.style.display = "block";
-        contentBox.scrollIntoView({ behavior: 'smooth' });
+
+    if(resultContainer) {
+        resultContainer.style.display = "block"; // Mở cái hộp to nhất ra
+        loadingBox.style.display = "block";      // Bật chữ "Cụ Hạc đang bấm độn..."
+        contentBox.style.display = "none";       // Ẩn chữ cũ đi (nếu có)
+        resultContainer.scrollIntoView({ behavior: 'smooth' }); // Cuộn màn hình xuống
     }
 
     try {
@@ -2718,7 +2727,7 @@ document.getElementById("btnAI").addEventListener("click", async function() {
                 'Content-Type': 'application/json',
                 'x-api-key': 'HoangHac_Web_Public_2026'
             },
-            body: JSON.stringify(currentBaziDataForAI) // Lôi biến toàn cục ra ném lên API
+            body: JSON.stringify(currentBaziDataForAI) 
         });
 
         const data = await res.json();
@@ -2730,11 +2739,13 @@ document.getElementById("btnAI").addEventListener("click", async function() {
             alert(data.msg); 
             resetAiButton(btn);
             localStorage.removeItem("last_ai_click"); 
+            resultContainer.style.display = "none"; // Lỗi thì giấu hộp đi
         }
     } catch (error) {
         alert("Mất kết nối đến Hoàng Hạc Các. Vui lòng thử lại!");
         resetAiButton(btn);
         localStorage.removeItem("last_ai_click");
+        resultContainer.style.display = "none";
     }
 });
     
