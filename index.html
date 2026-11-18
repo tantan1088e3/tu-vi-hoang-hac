@@ -1378,6 +1378,15 @@
                             </div>
                         </div>
                     </div>
+                    <!-- NÚT BẤM GỌI AI (Đặt dưới hộp Luận Giải Đại Vận) -->
+                    <div class="box-luan-giai" style="margin-top: 15px; clear: both; text-align: center; padding: 15px 10px; border: 1px solid rgba(212, 175, 55, 0.4); background: #1a221d; border-radius: 6px;">
+                        <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 12px; font-style: italic;">
+                            Khám phá huyền cơ qua góc nhìn Trí tuệ nhân tạo
+                        </p>
+                        <button id="btn-ai-luangiai" style="background: var(--accent); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 0.95rem; width: 100%; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                            🤖 TRỢ LÝ AI LUẬN MỆNH
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- CỘT 2: Bảng Lá Số -->
@@ -1490,6 +1499,30 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- KHUNG KẾT QUẢ AI (Nằm ngay trên Footer) -->
+<div id="ai-result-container" style="display: none; max-width: 1100px; margin: 30px auto; padding: 30px; border: 1px solid var(--accent); background: #161c18; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);">
+    <h3 style="color: var(--accent); border-bottom: 1px dashed rgba(212, 175, 55, 0.4); padding-bottom: 15px; margin-bottom: 25px; text-align: center; font-size: 1.3rem;">
+        📜 HOÀNG HẠC AI LUẬN MỆNH
+    </h3>
+    
+    <!-- 1. Trạng thái Loading (Cụ đang bấm độn) -->
+    <div id="ai-loading" style="text-align: center; padding: 30px;">
+        <div style="font-size: 30px; animation: pulse 1.5s infinite; margin-bottom: 15px;">⏳</div>
+        <p style="color: #aaa; font-style: italic;">Cụ Hoàng Hạc đang bấm độn và phân tích dữ liệu... xin chờ giây lát...</p>
+    </div>
+
+    <!-- 2. Nội dung text AI trả về (Đang để nội dung demo) -->
+    <div id="ai-content" style="display: none; color: #ddd; line-height: 1.8; font-size: 1.05rem;">
+        <p><strong>1. Tổng quan ngũ hành:</strong> Dữ liệu từ API đang được phân tích. Nguyên cục thể hiện sự tương tác mạnh mẽ giữa các thiên can...</p>
+        <p><strong>2. Phân tích dụng thần:</strong> (Vị trí này sắp tới ông gọi API và nhét JSON trả về vào đây)</p>
+        <p><strong>3. Lời khuyên cải vận:</strong> ...</p>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <span style="font-size: 0.85rem; color: #666; font-style: italic;">* Phiên bản Demo giao diện, tính năng kết nối LLM đang được hoàn thiện.</span>
         </div>
     </div>
 </div>
@@ -2570,6 +2603,28 @@ window.copyBaziImageToClipboard = copyBaziImageToClipboard;
 window.shareToPlatform = shareToPlatform;
 window.openFbDestination = openFbDestination;
 window.downloadBaziImage = downloadBaziImage;
+
+document.getElementById("btn-ai-luangiai").addEventListener("click", function() {
+        var resultBox = document.getElementById("ai-result-container");
+        var loadingBox = document.getElementById("ai-loading");
+        var contentBox = document.getElementById("ai-content");
+        
+        // 1. Hiện khung kết quả dưới đáy
+        resultBox.style.display = "block";
+        
+        // 2. Bật trạng thái Loading, giấu nội dung chữ đi
+        loadingBox.style.display = "block";
+        contentBox.style.display = "none";
+        
+        // 3. Tự động cuộn trang mượt mà xuống cái khung đó
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // 4. Giả lập AI nghĩ mất 2.5 giây rồi mới nhả kết quả chữ ra
+        setTimeout(function() {
+            loadingBox.style.display = "none";
+            contentBox.style.display = "block";
+        }, 2500);
+    });
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
     
