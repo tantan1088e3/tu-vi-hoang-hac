@@ -2844,32 +2844,35 @@ document.getElementById("btnAI").addEventListener("click", async function() {
 // ==========================================
 // TÍNH NĂNG TẢI FILE PDF (MULTI-PAGE)
 // ==========================================
+// ==========================================
+// TÍNH NĂNG TẢI FILE PDF (ĐÃ FIX LỖI NỀN TRẮNG & DÍNH NÚT)
+// ==========================================
 document.getElementById("btnDownloadAI").addEventListener("click", function() {
     let btn = this;
     let originalText = btn.innerHTML;
     
+    // Đổi trạng thái nút
     btn.innerHTML = "⏳ Đang tạo PDF...";
     btn.style.opacity = "0.7";
     btn.disabled = true;
 
+    // QUAN TRỌNG: Giấu cái hộp chứa nút tải đi để máy ảnh không chụp vào
+    let downloadBox = document.getElementById("ai-download-box");
+    downloadBox.style.display = "none"; 
+
     // Lấy khung chứa nội dung
     let container = document.getElementById("ai-result-container");
 
-    // 1. Chụp giao diện với độ nét cao (Scale 2)
     html2canvas(container, {
         scale: 2, 
-        backgroundColor: "#161c18", // Giữ nền đen của Đạo gia
+        backgroundColor: "#161c18", 
         useCORS: true 
     }).then(canvas => {
-        // Khởi tạo thư viện jsPDF
         const { jsPDF } = window.jspdf;
-        
-        // Cài đặt khổ giấy A4
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth(); // Chiều rộng A4
-        const pdfHeight = pdf.internal.pageSize.getHeight(); // Chiều cao A4
+        const pdfWidth = pdf.internal.pageSize.getWidth(); 
+        const pdfHeight = pdf.internal.pageSize.getHeight(); 
         
-        // Tính toán chiều cao ảnh tương ứng khi ép vào bề ngang A4
         const imgData = canvas.toDataURL("image/png");
         const imgProps = pdf.getImageProperties(imgData);
         const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
@@ -2877,28 +2880,41 @@ document.getElementById("btnDownloadAI").addEventListener("click", function() {
         let heightLeft = imgHeight;
         let position = 0;
 
-        // Trang 1
+        // XỬ LÝ TRANG 1
+        // Đổ mực nền đen (#161c18 tương đương RGB: 22, 28, 24) kín tờ A4 trước
+        pdf.setFillColor(22, 28, 24); 
+        pdf.rect(0, 0, pdfWidth, pdfHeight, "F"); 
+        // Sau đó mới dán ảnh lên
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
         heightLeft -= pdfHeight;
 
-        // Nếu nội dung quá dài, tự động "băm" ra các trang tiếp theo
+        // XỬ LÝ CÁC TRANG TIẾP THEO (Nếu bài dài)
         while (heightLeft >= 0) {
-            position = heightLeft - imgHeight; // Kéo ảnh dịch lên trên
-            pdf.addPage();
+            position = heightLeft - imgHeight; 
+            pdf.addPage(); // Thêm trang mới
+            
+            // Tiếp tục đổ mực đen kín tờ A4 mới
+            pdf.setFillColor(22, 28, 24);
+            pdf.rect(0, 0, pdfWidth, pdfHeight, "F");
+            
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
             heightLeft -= pdfHeight;
         }
 
-        // Tải file về máy
+        // Tải file
         pdf.save("Luan_Giai_Hoang_Hac_Cac.pdf");
 
-        // Trả lại trạng thái nút
+        // QUAN TRỌNG: Mở lại cái hộp chứa nút tải ảnh ra cho khách
+        downloadBox.style.display = "block";
         btn.innerHTML = originalText;
         btn.style.opacity = "1";
         btn.disabled = false;
     }).catch(err => {
         console.error("Lỗi tạo PDF: ", err);
-        alert("Có lỗi khi tạo PDF. Vui lòng thử lại!");
+        showErrorOnButton(btn, "Lỗi tạo PDF. Vui lòng thử lại!");
+        
+        // Nhớ mở lại nút nếu lỗi
+        downloadBox.style.display = "block";
         btn.innerHTML = originalText;
         btn.style.opacity = "1";
         btn.disabled = false;
