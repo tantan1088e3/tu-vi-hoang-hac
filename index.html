@@ -2741,10 +2741,22 @@ function startPollingAiResult(recordId, btnElement) {
     }, 2000); 
 }
 
+function showErrorOnButton(btn, msg) {
+    btn.innerHTML = `<span style="font-size: 1.2rem;">⚠️</span><div style="line-height: 1.3;"><div style="font-size: 0.85rem; font-weight: bold; color: #ff9999;">${msg}</div></div>`;
+    btn.style.borderColor = '#ff4444';
+    btn.style.cursor = 'not-allowed';
+    btn.disabled = true;
+
+    setTimeout(() => {
+        resetAiButton(btn);
+    }, 4000);
+}
+
 function resetAiButton(btn) {
     btn.disabled = false;
     btn.style.opacity = '1';
     btn.style.cursor = 'pointer';
+    btn.style.borderColor = 'var(--accent, #d4af37)';
     btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
 }
 
