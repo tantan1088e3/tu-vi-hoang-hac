@@ -2795,31 +2795,44 @@ function resetAiButton(btn) {
 }
 
 // ==========================================
-// HÀM KHÓA NÚT & LẮNG NGHE ĐẾN KHI API SỐNG LẠI
+// HÀM KHÓA NÚT THÔNG MINH (XỬ LÝ CẢ 429 VÀ HẾT KEY)
 // ==========================================
-function lockButtonUntilApiRecovers(btn) {
-    // 1. Chuyển nút sang trạng thái Bảo Trì (Đỏ bầm, cấm bấm)
-    btn.innerHTML = `<span style="font-size: 1.4rem; animation: pulse 2s infinite;">🛑</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ff6b6b;">Đang Bảo Trì API</div><div style="font-size: 0.75rem; color: #aaa;">Sẽ tự động mở lại khi Cụ Hạc online...</div></div>`;
+function lockButtonUntilApiRecovers(btn, errorMsg) {
     btn.style.borderColor = '#ff4444';
-    btn.style.backgroundColor = '#1a1010'; // Đỏ đen tối
+    btn.style.backgroundColor = '#1a1010';
     btn.style.cursor = 'not-allowed';
     btn.disabled = true;
 
-    // 2. Chạy ngầm một Radar, cứ 10 giây hỏi thăm Server 1 lần
-    let recoveryInterval = setInterval(async () => {
-        try {
-            const res = await fetch('https://api.tuvihoanghac.id.vn/api/ai-status');
-            const data = await res.json();
+    // KỊCH BẢN 1: Nếu lỗi là do "Chưa nạp Key nào" (Kho rỗng)
+    if (errorMsg.includes("trống rỗng")) {
+        btn.innerHTML = `<span style="font-size: 1.4rem; animation: pulse 2s infinite;">🛑</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ff6b6b;">Đang Bảo Trì API</div><div style="font-size: 0.75rem; color: #aaa;">Sẽ tự động mở lại khi Cụ Hạc online...</div></div>`;
+        
+        // Chạy Radar ping server tìm Key mới
+        let recoveryInterval = setInterval(async () => {
+            try {
+                const res = await fetch('https://api.tuvihoanghac.id.vn/api/ai-status');
+                const data = await res.json();
+                if (data.status === "ok") {
+                    clearInterval(recoveryInterval);
+                    resetAiButton(btn); // Mở khóa!
+                }
+            } catch (error) {}
+        }, 10000);
+    } 
+    // KỊCH BẢN 2: Lỗi do bị Google chặn 429 (Hỏi quá nhanh trong 1 phút)
+    else {
+        let countdown = 120; // Khóa đúng 2 phút (120 giây) để chờ Google xả băng
+        
+        let cdInterval = setInterval(() => {
+            btn.innerHTML = `<span style="font-size: 1.4rem;">⏳</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ffaa00;">Cụ Hạc Đang Bận</div><div style="font-size: 0.75rem; color: #aaa;">Vui lòng thử lại sau ${countdown} giây...</div></div>`;
             
-            // Nếu Server báo "ok" (Đã có Key hoạt động)
-            if (data.status === "ok") {
-                clearInterval(recoveryInterval); // Tắt radar
-                resetAiButton(btn); // Đánh thức nút bấm sáng lên như cũ!
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(cdInterval);
+                resetAiButton(btn); // Hết giờ, tự động mở khóa
             }
-        } catch (error) {
-            console.log("Radar đang chờ mạng khôi phục...");
-        }
-    }, 10000); // 10000ms = 10 giây
+        }, 1000);
+    }
 }
 
 // ==========================================
