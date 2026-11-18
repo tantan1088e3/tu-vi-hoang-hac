@@ -1236,6 +1236,54 @@
     }
 }
     </style>
+<style>
+    /* Làm mềm toàn bộ hộp chứa AI */
+    #ai-result-container {
+        background-color: #222724 !important; /* Đổi sang xám xanh đen cực dịu, thay vì đen tuyền */
+        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    }
+
+    /* Tinh chỉnh font chữ và khoảng cách */
+    #ai-content {
+        color: #d1d6d3 !important; /* Chữ xám ánh xanh ngọc (tắt hẳn độ chói của màu trắng) */
+        font-size: 1.1rem;
+        line-height: 1.85; /* Tăng khoảng cách dòng để chữ dễ thở */
+        letter-spacing: 0.3px; /* Kéo giãn khoảng cách giữa các chữ cái một chút */
+    }
+
+    /* Xử lý các đoạn văn */
+    #ai-content p {
+        margin-bottom: 22px;
+        text-align: justify; /* Căn đều 2 bên đọc cho vuông vức như sách */
+    }
+
+    /* Tiêu đề và chữ in đậm giữ màu Vàng rêu phong (Accent) */
+    #ai-content h3, 
+    #ai-content strong {
+        color: var(--accent, #d4af37);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    /* Xử lý gạch đầu dòng Markdown */
+    #ai-content ul, 
+    #ai-content ol {
+        padding-left: 20px;
+        margin-bottom: 22px;
+    }
+    
+    #ai-content li {
+        margin-bottom: 12px; /* Tách dòng các gạch đầu dòng */
+    }
+
+    /* Làm mờ thanh gạch ngang phân cách */
+    #ai-content hr {
+        border: 0;
+        border-top: 1px dashed rgba(212, 175, 55, 0.2);
+        margin: 30px 0;
+    }
+</style>
 </head>
 <body>
 <!-- Màn hình Loading ẩn -->
