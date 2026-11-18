@@ -2694,10 +2694,20 @@ function startPollingAiResult(recordId, btnElement) {
     
     aiPollingInterval = setInterval(async () => {
         checkCount++;
-        if (checkCount > 45) { // Quá 90 giây timeout
+        if (checkCount > 90) { // Nâng lên 90 lần = 180 giây (3 phút) timeout
             clearInterval(aiPollingInterval);
-            showErrorOnButton(btnElement, "Cụ Hạc quá tải. Vui lòng thử lại sau!");
-            document.getElementById("ai-loading").style.display = "none";
+            
+            // Dọn dẹp khung chờ nếu hết thời gian
+            let resultContainer = document.getElementById("ai-result-container");
+            if (resultContainer) resultContainer.style.display = "none"; 
+            let loadingBox = document.getElementById("ai-loading");
+            if (loadingBox) loadingBox.style.display = "none";
+            let contentBox = document.getElementById("ai-content");
+            if (contentBox) contentBox.style.display = "none"; 
+            let downloadBox = document.getElementById("ai-download-box");
+            if (downloadBox) downloadBox.style.display = "none";
+            
+            showErrorOnButton(btnElement, "Cụ Hạc bận đột xuất. Vui lòng thử lại!");
             return;
         }
 
