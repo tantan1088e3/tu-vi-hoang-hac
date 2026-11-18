@@ -2584,25 +2584,7 @@ async function openFbDestination(url) {
     window.open(url, '_blank', 'width=1050,height=720');
 }
 
-// 9. Tải file ảnh .PNG về máy
-function downloadBaziImage() {
-    if (!currentBaziDataUrl) return;
-    const link = document.createElement('a');
-    link.download = 'tu-tru-menh-ban.png';
-    link.href = currentBaziDataUrl;
-    link.click();
-}
-
-window.ensureHtml2CanvasLoaded = ensureHtml2CanvasLoaded;
-window.openShareBaziModal = openShareBaziModal;
-window.shareBaziImage = openShareBaziModal;
-window.closeShareBaziModal = closeShareBaziModal;
-window.copyBaziImageToClipboard = copyBaziImageToClipboard;
-window.shareToPlatform = shareToPlatform;
-window.openFbDestination = openFbDestination;
-window.downloadBaziImage = downloadBaziImage;
-
-document.getElementById("btn-ai-luangiai").addEventListener("click", function() {
+document.getElementById("btnAI").addEventListener("click", function() {
         var resultBox = document.getElementById("ai-result-container");
         var loadingBox = document.getElementById("ai-loading");
         var contentBox = document.getElementById("ai-content");
