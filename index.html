@@ -2707,6 +2707,9 @@ function startPollingAiResult(recordId, btnElement) {
 
             if (data.status === "done") {
                 clearInterval(aiPollingInterval); 
+                // 1. IN DỮ LIỆU RA F12 ĐỂ SOI
+                console.log("=== DỮ LIỆU TỪ SERVER TRẢ VỀ ===");
+                console.log(data);
                 
                 // --- BỘ DỊCH MARKDOWN HANDMADE SANG TRỌNG ---
                 let rawText = data.data;
