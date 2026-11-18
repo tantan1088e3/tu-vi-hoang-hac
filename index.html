@@ -2688,7 +2688,7 @@ document.getElementById("btnAI").addEventListener("click", async function() {
     let btn = this;
     
     if (!currentBaziDataForAI) {
-        alert("Vui lòng lập lá số trước khi thỉnh giáo Cụ Hoàng Hạc!");
+        showErrorOnButton(btn, "Vui lòng lập lá số trước!");
         return;
     }
 
@@ -2696,7 +2696,7 @@ document.getElementById("btnAI").addEventListener("click", async function() {
     let lastClicked = localStorage.getItem("last_ai_click");
 
     if (lastClicked && (now - lastClicked < 60000)) {
-        alert("Cụ Hạc đang mải bấm độn. Xin vui lòng chờ 1 phút trước khi hỏi lại!");
+        showErrorOnButton(btn, "Xin chờ 1 phút để hỏi lại!");
         return; 
     }
 
@@ -2706,9 +2706,7 @@ document.getElementById("btnAI").addEventListener("click", async function() {
     btn.innerHTML = '⏳ Đang truyền tin...';
     localStorage.setItem("last_ai_click", now);
 
-    // ==========================================
-    // KHÚC QUAN TRỌNG NHẤT: BẬT GIAO DIỆN HTML CỦA ÔNG LÊN
-    // ==========================================
+    // BẬT GIAO DIỆN HTML 
     let resultContainer = document.getElementById("ai-result-container");
     let loadingBox = document.getElementById("ai-loading");
     let contentBox = document.getElementById("ai-content");
@@ -2736,16 +2734,14 @@ document.getElementById("btnAI").addEventListener("click", async function() {
             btn.innerHTML = '⏳ Cụ Hạc đang xét...';
             startPollingAiResult(data.record_id, btn);
         } else {
-            alert(data.msg); 
-            resetAiButton(btn);
+            showErrorOnButton(btn, data.msg); // Báo lỗi hết lượt hoặc lỗi server
             localStorage.removeItem("last_ai_click"); 
-            resultContainer.style.display = "none"; // Lỗi thì giấu hộp đi
+            if(resultContainer) resultContainer.style.display = "none"; // Giấu hộp đi
         }
     } catch (error) {
-        alert("Mất kết nối đến Hoàng Hạc Các. Vui lòng thử lại!");
-        resetAiButton(btn);
+        showErrorOnButton(btn, "Mất kết nối mạng. Vui lòng thử lại!"); // Báo lỗi đứt mạng
         localStorage.removeItem("last_ai_click");
-        resultContainer.style.display = "none";
+        if(resultContainer) resultContainer.style.display = "none";
     }
 });
     
