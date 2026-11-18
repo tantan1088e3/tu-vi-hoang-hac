@@ -1494,16 +1494,6 @@
     </div>
 </div>
 
-<!-- NÚT BẤM GỌI AI (Đặt dưới hộp Luận Giải Đại Vận) -->
-<div class="box-luan-giai" style="margin-top: 15px; clear: both; text-align: center; padding: 15px 10px; border: 1px solid rgba(212, 175, 55, 0.4); background: #1a221d; border-radius: 6px;">
-    <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 12px; font-style: italic;">
-        Khám phá huyền cơ qua góc nhìn Trí tuệ nhân tạo
-    </p>
-    <button id="btn-ai-luangiai" style="background: var(--accent); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 0.95rem; width: 100%; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-        🤖 TRỢ LÝ AI LUẬN MỆNH
-    </button>
-</div>
-    
 <!-- KHUNG KẾT QUẢ AI (Nằm ngay trên Footer) -->
 <div id="ai-result-container" style="display: none; max-width: 1100px; margin: 30px auto; padding: 30px; border: 1px solid var(--accent); background: #161c18; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);">
     <h3 style="color: var(--accent); border-bottom: 1px dashed rgba(212, 175, 55, 0.4); padding-bottom: 15px; margin-bottom: 25px; text-align: center; font-size: 1.3rem;">
@@ -1541,7 +1531,12 @@
         Bằng việc sử dụng công cụ, bạn đồng ý với <a href="/privacy.html" style="color: var(--accent); text-decoration: none;">Chính sách bảo mật</a> của chúng tôi.
     </p>
 </footer>
-
+<!-- NÚT NỔI AI GÓC TRÁI MÀN HÌNH -->
+<button id="btn-ai-float" style="position: fixed; bottom: 30px; left: 30px; z-index: 9999; background: linear-gradient(135deg, var(--accent, #d4af37), #b59530); color: #111; border: 2px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.6); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.95rem;" 
+    onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(212, 175, 55, 0.5)';" 
+    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 15px rgba(0,0,0,0.6)';">
+    <span style="font-size: 1.3rem; animation: pulse 2s infinite;">🤖</span> AI Luận Giải
+</button>
 <!-- Nút thả nổi quay lại form -->
 <button id="btnBackToTop" class="floating-btn" onclick="(resetBaziForm())">
     ← Lập lá số khác
