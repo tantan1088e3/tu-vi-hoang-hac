@@ -1508,7 +1508,7 @@
 
     <!-- 2. Nội dung text AI trả về (Đang để nội dung demo) -->
     <div id="ai-content" style="display: none; color: #ddd; line-height: 1.8; font-size: 1.05rem;">
-        <p><strong>1. Tổng quan ngũ hành:</strong> Dữ liệu từ API đang được phân tích. Nguyên cục thể hiện sự tương tác mạnh mẽ giữa các thiên can...</p>
+        <p><strong>1. Tổng quan ngũ hành:</strong> Dữ liệu từ  đang được phân tích. Nguyên cục thể hiện sự tương tác mạnh mẽ giữa các thiên can...</p>
         <p><strong>2. Phân tích dụng thần:</strong>Chức Năng Đang Phát Triển</p>
         <p><strong>3. Lời khuyên cải vận:</strong> ...</p>
         
@@ -1543,6 +1543,9 @@
 </button>
 <script src="storage.js"></script>
 <script>
+    // Biến lưu trữ dữ liệu lá số để truyền cho AI
+    let currentBaziDataForAI = null;
+    
     function switchMainTab(topic, element) {
         document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
@@ -1641,7 +1644,7 @@
         };
         
         try {
-            // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI API
+            // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI 
             if (loadingScreen) {
                 loadingScreen.style.display = "flex";
             }
@@ -1846,6 +1849,46 @@
             if (elmVuongSuy) {
                 elmVuongSuy.innerHTML = htmlHoanChinh;
             }
+        }
+
+        // =========================================================
+        // GÓI DỮ LIỆU CHUẨN BỊ CHO AI (KHÔNG ẢNH HƯỞNG GIAO DIỆN)
+        // =========================================================
+        try {
+            let canChiNam = data.tu_tru.nam.split(' (')[0];
+            let canChiThang = data.tu_tru.thang.split(' (')[0];
+            let canChiNgay = data.tu_tru.ngay.split(' (')[0];
+            let canChiGio = data.tu_tru.gio.split(' (')[0];
+            let batTuStr = `${canChiNam} - ${canChiThang} - ${canChiNgay} - ${canChiGio}`;
+
+            let vuongSuyText = "";
+            if (data.phan_tich_vuong_suy && data.phan_tich_vuong_suy.hien_thi_ui) {
+                const vs = data.phan_tich_vuong_suy.hien_thi_ui;
+                let chiTiet = vs.phan_tich_chi_tiet ? vs.phan_tich_chi_tiet.join(". ") : "";
+                vuongSuyText = `Chi tiết: ${chiTiet}\nKết luận: ${vs.tong_quan.trang_thai}\nDụng thần: ${vs.cai_van.dung_than}\nHỷ thần: ${vs.cai_van.hy_than}\nKỵ thần: ${vs.cai_van.ky_than}\nGiải pháp: ${vs.cai_van.giai_phap}`;
+            }
+
+            let daiVanText = "";
+            if (data.dai_van_chi_tiet && data.dai_van_chi_tiet.length > 0) {
+                daiVanText = data.dai_van_chi_tiet.map(dv => 
+                    `Vận ${dv.can_chi} (${dv.tuoi_bat_dau}-${dv.tuoi_ket_thuc} tuổi, từ năm ${dv.nam_bat_dau})`
+                ).join("\n");
+            }
+
+            let gioiTinhStr = inputTime.gender === 1 ? "Nam" : "Nữ";
+            let maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${inputTime.gender}`;
+
+            // Gán ra biến toàn cục
+            currentBaziDataForAI = {
+                ma_la_so: maLaSo,
+                ngay_gio_sinh: `${inputTime.day}/${inputTime.month}/${inputTime.year} ${inputTime.hour}:${inputTime.minute}`,
+                gioi_tinh: gioiTinhStr,
+                bat_tu: batTuStr,
+                raw_vuong_suy: vuongSuyText,
+                raw_dai_van: daiVanText
+            };
+        } catch (e) {
+            console.error("Lỗi khi gom dữ liệu cho AI:", e);
         }
     }
 
@@ -2584,27 +2627,116 @@ async function openFbDestination(url) {
     window.open(url, '_blank', 'width=1050,height=720');
 }
 
-document.getElementById("btnAI").addEventListener("click", function() {
-        var resultBox = document.getElementById("ai-result-container");
-        var loadingBox = document.getElementById("ai-loading");
-        var contentBox = document.getElementById("ai-content");
-        
-        // 1. Hiện khung kết quả dưới đáy
-        resultBox.style.display = "block";
-        
-        // 2. Bật trạng thái Loading, giấu nội dung chữ đi
-        loadingBox.style.display = "block";
-        contentBox.style.display = "none";
-        
-        // 3. Tự động cuộn trang mượt mà xuống cái khung đó
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // 4. Giả lập AI nghĩ mất 2.5 giây rồi mới nhả kết quả chữ ra
-        setTimeout(function() {
-            loadingBox.style.display = "none";
-            contentBox.style.display = "block";
-        }, 2500);
-    });
+// ==========================================
+// LOGIC XỬ LÝ NÚT BẤM "VÔ VI LUẬN MỆNH"
+// ==========================================
+let aiPollingInterval;
+
+function startPollingAiResult(recordId, btnElement) {
+    let checkCount = 0;
+    let contentBox = document.getElementById("ai-content"); 
+    let loadingBox = document.getElementById("ai-loading"); 
+    
+    if(loadingBox) loadingBox.style.display = "block";
+
+    aiPollingInterval = setInterval(async () => {
+        checkCount++;
+        if (checkCount > 45) { // Quá 90 giây
+            clearInterval(aiPollingInterval);
+            alert("Cụ Hạc đang bận tiếp quá nhiều khách. Quý vị vui lòng thử lại sau!");
+            resetAiButton(btnElement);
+            if(loadingBox) loadingBox.style.display = "none";
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-result/${recordId}`);
+            const data = await res.json();
+
+            if (data.status === "done") {
+                clearInterval(aiPollingInterval); 
+                if(loadingBox) loadingBox.style.display = "none";
+                
+                contentBox.innerHTML = data.data.replace(/\n/g, '<br>'); 
+                contentBox.style.display = "block";
+                resetAiButton(btnElement);
+
+            } else if (data.status === "error") {
+                clearInterval(aiPollingInterval);
+                alert("Lỗi thỉnh giáo: " + data.msg);
+                resetAiButton(btnElement);
+                if(loadingBox) loadingBox.style.display = "none";
+            }
+        } catch (error) {
+            console.error("Lỗi polling AI:", error);
+        }
+    }, 2000); 
+}
+
+function resetAiButton(btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.innerHTML = '<span style="font-size: 1.6rem; animation: pulse 2s infinite;">📜</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold;">Hỏi Cụ Hoàng Hạc</div><div style="font-size: 0.75rem; color: #aaa; font-weight: normal;">Trợ lý AI giải đáp lá số</div></div>';
+}
+
+document.getElementById("btnAI").addEventListener("click", async function() {
+    let btn = this;
+    
+    if (!currentBaziDataForAI) {
+        alert("Vui lòng lập lá số trước khi thỉnh giáo Cụ Hoàng Hạc!");
+        return;
+    }
+
+    let now = new Date().getTime();
+    let lastClicked = localStorage.getItem("last_ai_click");
+
+    // Khóa chống click 1 phút
+    if (lastClicked && (now - lastClicked < 60000)) {
+        alert("Cụ Hạc đang mải bấm độn. Xin vui lòng chờ 1 phút trước khi hỏi lại!");
+        return; 
+    }
+
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+    btn.innerHTML = '⏳ Đang truyền tin...';
+    localStorage.setItem("last_ai_click", now);
+
+    // Xóa nội dung cũ đi (nếu khách vừa xem 1 lá số khác)
+    let contentBox = document.getElementById("ai-content");
+    if(contentBox) {
+        contentBox.innerHTML = "<div style='text-align: center; color: var(--accent, #d4af37);'><i>Đang chờ Cụ Hạc nhả chữ...</i></div>";
+        contentBox.style.display = "block";
+        contentBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    try {
+        const res = await fetch('https://api.tuvihoanghac.id.vn/api/ask-ai', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'HoangHac_Web_Public_2026'
+            },
+            body: JSON.stringify(currentBaziDataForAI) // Lôi biến toàn cục ra ném lên API
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+            btn.innerHTML = '⏳ Cụ Hạc đang xét...';
+            startPollingAiResult(data.record_id, btn);
+        } else {
+            alert(data.msg); 
+            resetAiButton(btn);
+            localStorage.removeItem("last_ai_click"); 
+        }
+    } catch (error) {
+        alert("Mất kết nối đến Hoàng Hạc Các. Vui lòng thử lại!");
+        resetAiButton(btn);
+        localStorage.removeItem("last_ai_click");
+    }
+});
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
     
