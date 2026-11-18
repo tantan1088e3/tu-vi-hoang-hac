@@ -2795,9 +2795,14 @@ function resetAiButton(btn) {
 }
 
 // ==========================================
-// HÀM KHÓA NÚT THÔNG MINH (XỬ LÝ CẢ 429 VÀ HẾT KEY)
+// HÀM KHÓA NÚT THÔNG MINH (ĐÃ ĐỔ BÊ TÔNG BẪY LỖI)
 // ==========================================
-function lockButtonUntilApiRecovers(btn, errorMsg) {
+// Đặt mặc định errorMsg = "" để Javascript không bao giờ bị crash
+function lockButtonUntilApiRecovers(btn, errorMsg = "") { 
+    
+    // Đề phòng thêm 1 lớp nữa cho chắc cú
+    if (typeof errorMsg !== "string") errorMsg = "";
+
     btn.style.borderColor = '#ff4444';
     btn.style.backgroundColor = '#1a1010';
     btn.style.cursor = 'not-allowed';
@@ -2807,21 +2812,20 @@ function lockButtonUntilApiRecovers(btn, errorMsg) {
     if (errorMsg.includes("trống rỗng")) {
         btn.innerHTML = `<span style="font-size: 1.4rem; animation: pulse 2s infinite;">🛑</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ff6b6b;">Đang Bảo Trì API</div><div style="font-size: 0.75rem; color: #aaa;">Sẽ tự động mở lại khi Cụ Hạc online...</div></div>`;
         
-        // Chạy Radar ping server tìm Key mới
         let recoveryInterval = setInterval(async () => {
             try {
                 const res = await fetch('https://api.tuvihoanghac.id.vn/api/ai-status');
                 const data = await res.json();
                 if (data.status === "ok") {
                     clearInterval(recoveryInterval);
-                    resetAiButton(btn); // Mở khóa!
+                    resetAiButton(btn); 
                 }
             } catch (error) {}
         }, 10000);
     } 
-    // KỊCH BẢN 2: Lỗi do bị Google chặn 429 (Hỏi quá nhanh trong 1 phút)
+    // KỊCH BẢN 2: Lỗi do bị Google chặn 429 (Hỏi quá nhanh)
     else {
-        let countdown = 120; // Khóa đúng 2 phút (120 giây) để chờ Google xả băng
+        let countdown = 120; 
         
         let cdInterval = setInterval(() => {
             btn.innerHTML = `<span style="font-size: 1.4rem;">⏳</span><div style="line-height: 1.3;"><div style="font-size: 0.95rem; font-weight: bold; color: #ffaa00;">Cụ Hạc Đang Bận</div><div style="font-size: 0.75rem; color: #aaa;">Vui lòng thử lại sau ${countdown} giây...</div></div>`;
@@ -2829,7 +2833,7 @@ function lockButtonUntilApiRecovers(btn, errorMsg) {
             countdown--;
             if (countdown < 0) {
                 clearInterval(cdInterval);
-                resetAiButton(btn); // Hết giờ, tự động mở khóa
+                resetAiButton(btn); 
             }
         }, 1000);
     }
