@@ -1236,50 +1236,47 @@
     }
 }
 @media (max-width: 768px) {
-  body {
-    padding-bottom: 110px;
-  }
-
-  /* Nút Vô Vi Luận Mệnh AI bên trái, chừa khoảng trống cho nút '+' bên phải */
-  .ai-floating-btn,
-  #ai-btn {
-    left: 12px !important;
-    right: 70px !important;
-    bottom: 14px !important;
-    max-width: none !important;
-    box-sizing: border-box;
-  }
-
-  .ai-floating-btn .ai-btn-sub,
-  #ai-btn .ai-btn-sub {
-    white-space: normal !important;
-    word-break: break-word;
-    font-size: 11px !important;
-    line-height: 1.3 !important;
-  }
-
-  /* Biến #btnBackToTop thành nút '+' hình tròn ở góc dưới phải trên mobile */
+  /* 1. Nút '+' tròn ở góc dưới phải */
   #btnBackToTop.floating-btn,
   #btnBackToTop {
+    position: fixed !important;
     left: auto !important;
     right: 12px !important;
     bottom: 14px !important;
+    top: auto !important;
+    transform: none !important; /* tránh bị lệch trục Y do style cũ */
+    margin: 0 !important;
     width: 46px !important;
     height: 46px !important;
     padding: 0 !important;
     border-radius: 50% !important;
-    display: inline-flex !important;
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 0 !important;
-    line-height: 1 !important;
+    z-index: 1000 !important;
   }
 
-  #btnBackToTop::before {
-    content: "+";
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1;
+  /* 2. Nút Vô Vi Luận Mệnh AI bên trái: dừng trước nút '+' (46px + 12px + 10px = 68px) */
+  .ai-floating-btn,
+  #ai-btn {
+    position: fixed !important;
+    left: 12px !important;
+    right: 68px !important;
+    bottom: 14px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 999 !important;
+  }
+
+  /* Cho chữ bên trong nút AI tự xuống dòng gọn trong phần khung còn lại */
+  .ai-floating-btn *,
+  #ai-btn * {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
     </style>
