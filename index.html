@@ -1676,6 +1676,7 @@
 
     async function handleBaziSubmit(event) {
         event.preventDefault(); 
+        stopExistingAiPolling();
         // 1. LẤY DỮ LIỆU ĐẦU VÀO
         let name = document.getElementById('name').value.trim();
         if (name === '') name = 'Vô Danh Khách';
