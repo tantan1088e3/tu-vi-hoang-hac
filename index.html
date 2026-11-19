@@ -2884,17 +2884,48 @@ function renderFormattedAiContent(rawText) {
 
 function setAiButtonUnavailableState(btn) {
     if (!btn) return;
+
     btn.disabled = true;
-    btn.style.opacity = "0.65";
-    btn.style.cursor = "not-allowed";
+    btn.setAttribute("aria-disabled", "true");
+    btn.classList.remove("ready", "active", "is-ready");
+    btn.classList.add("disabled", "is-disabled");
+
+    const line1 = "Hệ thống miễn phí, tạm chưa đáp ứng.";
+    const line2 = "Vui lòng quay lại sau ít phút.";
+    const fullSubText = `${line1}\n${line2}`;
+
+    // Tìm phần tử chứa mô tả phụ bên trong nút nếu có
+    const descEl = btn.querySelector(
+        ".ai-btn-sub, .ai-subtext, .sub-text, .desc, small, span[data-sub]"
+    );
+
+    if (descEl) {
+        descEl.style.whiteSpace = "pre-line";
+        descEl.style.lineHeight = "1.35";
+        descEl.textContent = fullSubText;
+        return;
+    }
+
+    // Nếu nút có nhiều phần tử con và phần tử con cuối là dòng phụ
+    const children = Array.from(btn.children);
+    if (children.length >= 2) {
+        const lastChild = children[children.length - 1];
+        lastChild.style.whiteSpace = "pre-line";
+        lastChild.style.lineHeight = "1.35";
+        lastChild.textContent = fullSubText;
+        return;
+    }
+
+    // Fallback: dựng lại 2 phần rõ ràng (tiêu đề + dòng phụ 2 dòng) mà không làm mất icon nếu có
+    const iconEl = btn.querySelector("svg, i, img");
+    const iconHtml = iconEl ? iconEl.outerHTML : "";
+
     btn.innerHTML = `
-        <span style="font-size: 1.25rem;">🌿</span>
-        <div style="line-height: 1.35; text-align: left;">
-            <div style="font-size: 0.92rem; font-weight: bold;">Vô Vi Luận Mệnh</div>
-            <div style="font-size: 0.75rem; opacity: 0.92;">
-                Hệ thống miễn phí, đôi lúc chưa đáp ứng kịp.
-            </div>
-        </div>
+        ${iconHtml}
+        <span class="ai-btn-text-wrap" style="display:flex;flex-direction:column;text-align:left;gap:2px;">
+            <span class="ai-btn-title" style="font-weight:600;">Vô Vi Luận Mệnh</span>
+            <span class="ai-btn-sub" style="white-space:pre-line;line-height:1.35;font-size:0.85em;opacity:0.9;">${line1}\n${line2}</span>
+        </span>
     `;
 }
 
