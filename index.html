@@ -1618,6 +1618,7 @@
     }
 
     function resetBaziForm() {
+        stopExistingAiPolling();
         // 1. HIỆN LẠI FORM NHẬP LIỆU (Xóa inline style 'none', trả về CSS mặc định)
         document.getElementById('bazi-form-container').style.display = '';
         
@@ -2910,26 +2911,68 @@ function setAiButtonReadyState(btn) {
     `;
 }
 
+let existingAiPollTimer = null;
+
+function stopExistingAiPolling() {
+    if (existingAiPollTimer) {
+        clearInterval(existingAiPollTimer);
+        existingAiPollTimer = null;
+    }
+}
+
 async function checkExistingAiResult(maLaSo, btn) {
+    stopExistingAiPolling();
+
     cachedAiContent = null;
     cachedAiCode = maLaSo || null;
     setAiButtonUnavailableState(btn);
 
     if (!maLaSo || maLaSo.includes("undefined")) return;
 
-    try {
-        const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`);
-        const data = await res.json();
+    const url = `https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`;
+    let attempts = 0;
+    const maxAttempts = 15; // 15 lần * 60s = tối đa 15 phút
 
-        // Đề phòng người dùng đã kịp bấm lập lá số khác trong lúc fetch
-        if (cachedAiCode !== maLaSo) return;
-
-        if (data.status === "done" && data.data) {
-            cachedAiContent = data.data;
-            setAiButtonReadyState(btn);
+    const pollOnce = async () => {
+        if (cachedAiCode !== maLaSo) {
+            stopExistingAiPolling();
+            return;
         }
-    } catch (e) {
-        setAiButtonUnavailableState(btn);
+
+        attempts++;
+        if (attempts > maxAttempts) {
+            stopExistingAiPolling();
+            return;
+        }
+
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (cachedAiCode !== maLaSo) {
+                stopExistingAiPolling();
+                return;
+            }
+
+            if (data.status === "done" && data.data) {
+                stopExistingAiPolling();
+                cachedAiContent = data.data;
+                setAiButtonReadyState(btn);
+            } else if (data.status === "error" || data.status === "unavailable") {
+                stopExistingAiPolling();
+                setAiButtonUnavailableState(btn);
+            }
+        } catch (e) {
+            setAiButtonUnavailableState(btn);
+        }
+    };
+
+    // Kiểm tra ngay 1 lần khi vừa lập xong lá số
+    await pollOnce();
+
+    // Chưa có bài thì cứ 1 phút quét lại 1 lần
+    if (cachedAiCode === maLaSo && !cachedAiContent && !existingAiPollTimer) {
+        existingAiPollTimer = setInterval(pollOnce, 60000);
     }
 }
     
