@@ -1945,6 +1945,10 @@
                 raw_vuong_suy: vuongSuyText,
                 raw_dai_van: daiVanText
             };
+            
+            const btnAiEl = document.getElementById("btnAI");
+            checkExistingAiResult(currentBaziDataForAI.ma_la_so, btnAiEl);
+        
         } catch (e) {
             console.error("Lỗi khi gom dữ liệu cho AI:", e);
         }
@@ -2851,68 +2855,113 @@ function lockButtonUntilApiRecovers(btn, errorMsg = "") {
     }
 }
 
+let cachedAiContent = null;
+let cachedAiCode = null;
+
+function renderFormattedAiContent(rawText) {
+    let cleanText = String(rawText || "");
+    cleanText = cleanText.replace(/\n{3,}/g, '\n\n');
+    cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--accent);">$1</strong>');
+    cleanText = cleanText.replace(/### (.*?)(?=\n|$)/g, '<h3 style="color: var(--accent); border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-top: 35px; margin-bottom: 20px;">$1</h3>');
+    cleanText = cleanText.replace(/^\* (.*?)$/gm, '<div style="margin-bottom: 18px; padding-left: 15px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">•</span>$1</div>');
+
+    cleanText = cleanText.split('\n\n').map(paragraph => {
+        const trimmed = paragraph.trim();
+        if (!trimmed) return "";
+        if (trimmed.startsWith('<h3') || trimmed.startsWith('<div')) return paragraph;
+        return `<p style="margin-bottom: 22px; text-align: justify;">${paragraph.replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+
+    cleanText = cleanText.replace(/---/g, '<hr style="border: 0; border-top: 1px dashed rgba(212, 175, 55, 0.3); margin: 30px 0;">');
+    return cleanText;
+}
+
+function setAiButtonUnavailableState(btn) {
+    if (!btn) return;
+    btn.disabled = true;
+    btn.style.opacity = "0.65";
+    btn.style.cursor = "not-allowed";
+    btn.innerHTML = `
+        <span style="font-size: 1.25rem;">🌿</span>
+        <div style="line-height: 1.35; text-align: left;">
+            <div style="font-size: 0.92rem; font-weight: bold;">Vô Vi Luận Mệnh</div>
+            <div style="font-size: 0.75rem; opacity: 0.92;">
+                Hiện tại hệ thống đang cho mọi người dùng miễn phí nên có thể có lúc hệ thống chưa đáp ứng được.
+            </div>
+        </div>
+    `;
+}
+
+function setAiButtonReadyState(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+    btn.innerHTML = `
+        <span style="font-size: 1.25rem;">✨</span>
+        <div style="line-height: 1.35; text-align: left;">
+            <div style="font-size: 0.95rem; font-weight: bold;">Vô Vi Luận Mệnh</div>
+            <div style="font-size: 0.75rem; opacity: 0.9;">Đã có luận giải sẵn — bấm để xem ngay</div>
+        </div>
+    `;
+}
+
+async function checkExistingAiResult(maLaSo, btn) {
+    cachedAiContent = null;
+    cachedAiCode = maLaSo || null;
+    setAiButtonUnavailableState(btn);
+
+    if (!maLaSo || maLaSo.includes("undefined")) return;
+
+    try {
+        const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`);
+        const data = await res.json();
+
+        // Đề phòng người dùng đã kịp bấm lập lá số khác trong lúc fetch
+        if (cachedAiCode !== maLaSo) return;
+
+        if (data.status === "done" && data.data) {
+            cachedAiContent = data.data;
+            setAiButtonReadyState(btn);
+        }
+    } catch (e) {
+        setAiButtonUnavailableState(btn);
+    }
+}
+    
 // ==========================================
 // SỰ KIỆN NÚT BẤM
 // ==========================================
-document.getElementById("btnAI").addEventListener("click", async function() {
+document.getElementById("btnAI").addEventListener("click", async function () {
     let btn = this;
-    
+
     if (!currentBaziDataForAI) {
         showErrorOnButton(btn, "Vui lòng lập lá số trước!");
         return;
     }
 
-    let now = new Date().getTime();
-    let lastClicked = localStorage.getItem("last_ai_click");
-
-    if (lastClicked && (now - lastClicked < 60000)) {
-        showErrorOnButton(btn, "Xin chờ 1 phút để hỏi lại!");
-        return; 
-    }
-
-    btn.disabled = true;
-    btn.style.opacity = '0.6';
-    btn.style.cursor = 'not-allowed';
-    btn.innerHTML = '⏳ Đang truyền tin...';
-    localStorage.setItem("last_ai_click", now);
-
-    // BẬT GIAO DIỆN HTML 
     let resultContainer = document.getElementById("ai-result-container");
     let loadingBox = document.getElementById("ai-loading");
     let contentBox = document.getElementById("ai-content");
+    let downloadBox = document.getElementById("ai-download-box");
 
-    if(resultContainer) {
-        resultContainer.style.display = "block"; // Mở cái hộp to nhất ra
-        loadingBox.style.display = "block";      // Bật chữ "Cụ Hạc đang bấm độn..."
-        contentBox.style.display = "none";       // Ẩn chữ cũ đi (nếu có)
-        resultContainer.scrollIntoView({ behavior: 'smooth' }); // Cuộn màn hình xuống
-    }
-
-    try {
-        const res = await fetch('https://api.tuvihoanghac.id.vn/api/ask-ai', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': 'HoangHac_Web_Public_2026'
-            },
-            body: JSON.stringify(currentBaziDataForAI) 
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-            btn.innerHTML = '⏳ Cụ Hạc đang xét...';
-            startPollingAiResult(data.record_id, btn);
-        } else {
-            showErrorOnButton(btn, data.msg); // Báo lỗi hết lượt hoặc lỗi server
-            localStorage.removeItem("last_ai_click"); 
-            if(resultContainer) resultContainer.style.display = "none"; // Giấu hộp đi
+    // TRƯỜNG HỢP 1: Đã có bài luận sẵn -> Mở đọc ngay, không chờ & không trừ lượt
+    if (cachedAiContent && cachedAiCode === currentBaziDataForAI.ma_la_so) {
+        if (resultContainer) {
+            resultContainer.style.display = "block";
+            if (loadingBox) loadingBox.style.display = "none";
+            if (contentBox) {
+                contentBox.innerHTML = renderFormattedAiContent(cachedAiContent);
+                contentBox.style.display = "block";
+            }
+            if (downloadBox) downloadBox.style.display = "block";
+            resultContainer.scrollIntoView({ behavior: "smooth" });
         }
-    } catch (error) {
-        showErrorOnButton(btn, "Mất kết nối mạng. Vui lòng thử lại!"); // Báo lỗi đứt mạng
-        localStorage.removeItem("last_ai_click");
-        if(resultContainer) resultContainer.style.display = "none";
+        return;
     }
+
+    // TRƯỜNG HỢP 2: Chưa có bài sẵn -> Khóa nút kèm lời nhắn miễn phí
+    setAiButtonUnavailableState(btn);
 });
 
 // ==========================================
