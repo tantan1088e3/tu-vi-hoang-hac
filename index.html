@@ -1744,7 +1744,7 @@
                 const emptyCol = document.querySelector('.empty-col');
                 if (emptyCol) emptyCol.style.display = 'none';
                 // Vẽ data lên màn hình
-                renderBaziResult(response.data, { year, month, day, hour, minute });
+                renderBaziResult(response.data, { year, month, day, hour, minute }, genderInt);
                 window.scrollTo({ top: 0, behavior: 'smooth' }); 
             } else {
                 alert("Lỗi từ máy chủ: " + JSON.stringify(response));
@@ -1763,7 +1763,7 @@
     
     }
 
-    function renderBaziResult(data, inputTime) {
+    function renderBaziResult(data, inputTime,genderInt) {
         document.getElementById('val-nam-time').innerText = inputTime.year;
         document.getElementById('val-thang-time').innerText = inputTime.month;
         document.getElementById('val-ngay-time').innerText = inputTime.day;
@@ -1932,26 +1932,11 @@
                 ).join("\n");
             }
 
-            const rawGender = inputTime?.gender;
-            const isFemale =
-                rawGender === 0 ||
-                rawGender === "0" ||
-                rawGender === false ||
-                String(rawGender).trim().toLowerCase() in {
-                    "nu": 1,
-                    "nữ": 1,
-                    "female": 1,
-                    "f": 1,
-                    "khon": 1,
-                    "khôn": 1
-                };
-            
-            const genderNum = isFemale ? 0 : 1;
-            const gioiTinhStr = genderNum === 0 ? "Nữ" : "Nam";
-            const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${genderNum}`;
+            const gioiTinhStr = genderInt === 0 ? "Nữ" : "Nam";
+            const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${genderInt}`;
 
             console.log("[DEBUG GENDER]", {
-                genderInInputTime: inputTime?.gender,
+                genderInInputTime: genderInt,
                 allInputTime: inputTime
             });
 
