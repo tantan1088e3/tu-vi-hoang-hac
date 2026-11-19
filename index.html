@@ -1932,8 +1932,9 @@
                 ).join("\n");
             }
 
-            let gioiTinhStr = inputTime.gender === 1 ? "Nam" : "Nữ";
-            let maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${inputTime.gender}`;
+            const genderNum = (inputTime && (inputTime.gender === 0 || inputTime.gender === "0")) ? 0 : 1;
+            let gioiTinhStr = genderNum === 1 ? "Nam" : "Nữ";
+            let maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${genderNum}`;
 
             // Gán ra biến toàn cục
             currentBaziDataForAI = {
