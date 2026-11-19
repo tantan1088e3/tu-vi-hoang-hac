@@ -1950,6 +1950,11 @@
             const gioiTinhStr = genderNum === 0 ? "Nữ" : "Nam";
             const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${genderNum}`;
 
+            console.log("[DEBUG GENDER]", {
+                genderInInputTime: inputTime?.gender,
+                allInputTime: inputTime
+            });
+
             // Gán ra biến toàn cục
             currentBaziDataForAI = {
                 ma_la_so: maLaSo,
