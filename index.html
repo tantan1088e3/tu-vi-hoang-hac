@@ -1981,14 +1981,11 @@
                 ).join("\n");
             }
 
+            // Dùng hàm getCanhGioCode có sẵn của ông để tạo mã lá số chuẩn theo canh giờ
+            const canhGioCode = getCanhGioCode(inputTime.hour, inputTime.minute);
             const gioiTinhStr = genderInt === 0 ? "Nữ" : "Nam";
-            const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${inputTime.hour}${inputTime.minute}_${genderInt}`;
-
-            console.log("[DEBUG GENDER]", {
-                genderInInputTime: genderInt,
-                allInputTime: inputTime
-            });
-
+            const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${canhGioCode}_${genderInt}`;
+            
             // Gán ra biến toàn cục
             currentBaziDataForAI = {
                 ma_la_so: maLaSo,
@@ -3199,6 +3196,22 @@ document.getElementById("btnDownloadAI").addEventListener("click", function() {
         btn.disabled = false;
     });
 });
+
+function getCanhGioCode(hour, minute = 0) {
+    const h = parseInt(hour, 10);
+    if (h === 23 || h === 0) return "TY";    // 23:00 - 00:59
+    if (h === 1 || h === 2) return "SUU";    // 01:00 - 02:59
+    if (h === 3 || h === 4) return "DAN";    // 03:00 - 04:59
+    if (h === 5 || h === 6) return "MAO";    // 05:00 - 06:59
+    if (h === 7 || h === 8) return "THIN";   // 07:00 - 08:59
+    if (h === 9 || h === 10) return "TI";    // 09:00 - 10:59
+    if (h === 11 || h === 12) return "NGO";  // 11:00 - 12:59
+    if (h === 13 || h === 14) return "MUI";  // 13:00 - 14:59
+    if (h === 15 || h === 16) return "THAN"; // 15:00 - 16:59
+    if (h === 17 || h === 18) return "DAU";  // 17:00 - 18:59
+    if (h === 19 || h === 20) return "TUAT"; // 19:00 - 20:59
+    return "HOI";                            // 21:00 - 22:59
+}
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
     
