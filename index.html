@@ -2890,11 +2890,16 @@ function setAiButtonUnavailableState(btn) {
     btn.classList.remove("ready", "active", "is-ready");
     btn.classList.add("disabled", "is-disabled");
 
+    // Làm mờ và giảm độ gắt của nút khi chưa có bài
+    btn.style.opacity = "0.58";
+    btn.style.filter = "grayscale(45%) saturate(65%)";
+    btn.style.cursor = "not-allowed";
+    btn.style.boxShadow = "none";
+
     const line1 = "Hệ thống miễn phí, tạm chưa đáp ứng.";
     const line2 = "Vui lòng quay lại sau ít phút.";
     const fullSubText = `${line1}\n${line2}`;
 
-    // Tìm phần tử chứa mô tả phụ bên trong nút nếu có
     const descEl = btn.querySelector(
         ".ai-btn-sub, .ai-subtext, .sub-text, .desc, small, span[data-sub]"
     );
@@ -2906,7 +2911,6 @@ function setAiButtonUnavailableState(btn) {
         return;
     }
 
-    // Nếu nút có nhiều phần tử con và phần tử con cuối là dòng phụ
     const children = Array.from(btn.children);
     if (children.length >= 2) {
         const lastChild = children[children.length - 1];
@@ -2916,7 +2920,6 @@ function setAiButtonUnavailableState(btn) {
         return;
     }
 
-    // Fallback: dựng lại 2 phần rõ ràng (tiêu đề + dòng phụ 2 dòng) mà không làm mất icon nếu có
     const iconEl = btn.querySelector("svg, i, img");
     const iconHtml = iconEl ? iconEl.outerHTML : "";
 
@@ -2924,7 +2927,7 @@ function setAiButtonUnavailableState(btn) {
         ${iconHtml}
         <span class="ai-btn-text-wrap" style="display:flex;flex-direction:column;text-align:left;gap:2px;">
             <span class="ai-btn-title" style="font-weight:600;">Vô Vi Luận Mệnh</span>
-            <span class="ai-btn-sub" style="white-space:pre-line;line-height:1.35;font-size:0.85em;opacity:0.9;">${line1}\n${line2}</span>
+            <span class="ai-btn-sub" style="white-space:pre-line;line-height:1.35;font-size:0.85em;opacity:0.85;">${line1}\n${line2}</span>
         </span>
     `;
 }
