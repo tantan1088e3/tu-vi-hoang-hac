@@ -3215,6 +3215,9 @@ function getCanhGioCode(hour, minute = 0) {
     return "HOI";                            // 21:00 - 22:59
 }
 
+document.addEventListener("DOMContentLoaded", populateDropdowns);
+    
+</script>
 <script>
 function closeDirectLasoModal() {
     document.getElementById("direct-laso-modal").style.display = "none";
@@ -3254,10 +3257,6 @@ window.addEventListener("DOMContentLoaded", async function () {
         bodyEl.innerHTML = "❌ Có lỗi khi kết nối máy chủ. Vui lòng thử lại sau.";
     }
 });
-</script>
-    
-document.addEventListener("DOMContentLoaded", populateDropdowns);
-    
 </script>
 </body>
 </html>
