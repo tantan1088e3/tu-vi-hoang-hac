@@ -3258,6 +3258,11 @@ window.addEventListener("DOMContentLoaded", async function () {
         </div>
     `;
     document.body.appendChild(wrapper);
+    wrapper.addEventListener("click", function (e) {
+        if (e.target === wrapper) {
+            closeDirectLasoModal();
+        }
+    });
 
     const bodyEl = document.getElementById("direct-laso-body");
 
