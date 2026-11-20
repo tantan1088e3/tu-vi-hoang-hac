@@ -1647,48 +1647,6 @@
 <script src="storage.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-function closeDirectLasoModal() {
-    document.getElementById("direct-laso-modal").style.display = "none";
-    const cleanUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, cleanUrl);
-}
-
-window.addEventListener("DOMContentLoaded", async function () {
-    const params = new URLSearchParams(window.location.search);
-    const maLaSo = params.get("ma");
-    if (!maLaSo) return;
-
-    const modal = document.getElementById("direct-laso-modal");
-    const codeEl = document.getElementById("direct-laso-code");
-    const bodyEl = document.getElementById("direct-laso-body");
-
-    codeEl.textContent = "Mã lá số: " + maLaSo;
-    modal.style.display = "block";
-
-    try {
-        const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`);
-        const data = await res.json();
-
-        if (data.status === "done" && data.data) {
-            if (typeof marked !== "undefined") {
-                bodyEl.innerHTML = marked.parse(data.data);
-            } else {
-                bodyEl.innerHTML = data.data.replace(/\n/g, "<br>");
-            }
-        } else if (data.status === "pending" || data.status === "processing") {
-            bodyEl.innerHTML = "⏳ Lá số này đang được Cụ Hoàng Hạc luận giải. Bạn vui lòng tải lại trang sau ít phút nhé!";
-        } else {
-            bodyEl.innerHTML = "⚠️ Không tìm thấy bài luận giải cho mã lá số này.";
-        }
-    } catch (err) {
-        console.error(err);
-        bodyEl.innerHTML = "❌ Có lỗi khi kết nối máy chủ. Vui lòng thử lại sau.";
-    }
-});
-</script>
-
 <script>
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
@@ -3256,6 +3214,47 @@ function getCanhGioCode(hour, minute = 0) {
     if (h === 19 || h === 20) return "TUAT"; // 19:00 - 20:59
     return "HOI";                            // 21:00 - 22:59
 }
+
+<script>
+function closeDirectLasoModal() {
+    document.getElementById("direct-laso-modal").style.display = "none";
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+}
+
+window.addEventListener("DOMContentLoaded", async function () {
+    const params = new URLSearchParams(window.location.search);
+    const maLaSo = params.get("ma");
+    if (!maLaSo) return;
+
+    const modal = document.getElementById("direct-laso-modal");
+    const codeEl = document.getElementById("direct-laso-code");
+    const bodyEl = document.getElementById("direct-laso-body");
+
+    codeEl.textContent = "Mã lá số: " + maLaSo;
+    modal.style.display = "block";
+
+    try {
+        const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`);
+        const data = await res.json();
+
+        if (data.status === "done" && data.data) {
+            if (typeof marked !== "undefined") {
+                bodyEl.innerHTML = marked.parse(data.data);
+            } else {
+                bodyEl.innerHTML = data.data.replace(/\n/g, "<br>");
+            }
+        } else if (data.status === "pending" || data.status === "processing") {
+            bodyEl.innerHTML = "⏳ Lá số này đang được Cụ Hoàng Hạc luận giải. Bạn vui lòng tải lại trang sau ít phút nhé!";
+        } else {
+            bodyEl.innerHTML = "⚠️ Không tìm thấy bài luận giải cho mã lá số này.";
+        }
+    } catch (err) {
+        console.error(err);
+        bodyEl.innerHTML = "❌ Có lỗi khi kết nối máy chủ. Vui lòng thử lại sau.";
+    }
+});
+</script>
     
 document.addEventListener("DOMContentLoaded", populateDropdowns);
     
