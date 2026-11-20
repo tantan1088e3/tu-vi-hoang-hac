@@ -1473,7 +1473,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="notify-box" style="display:none; margin-top:16px; background:#ffffff; border:1px solid #d8e2dc; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+                    <div id="notify-box" style="margin-top:16px; background:#ffffff; border:1px solid #d8e2dc; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
                         <!-- Thanh tiêu đề đồng bộ màu xanh rêu của cột trái -->
                         <div style="background:#1c4228; color:#ffffff; font-weight:bold; font-size:13px; padding:10px 12px; text-align:center; letter-spacing:0.3px;">
                             NHẬN KẾT QUẢ LUẬN GIẢI AI
@@ -2019,6 +2019,8 @@
             const canhGioCode = getCanhGioCode(inputTime.hour, inputTime.minute);
             const gioiTinhStr = genderInt === 0 ? "Nữ" : "Nam";
             const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${canhGioCode}_${genderInt}`;
+
+            initNotifyBox(maLaSo);
             
             // Gán ra biến toàn cục
             currentBaziDataForAI = {
@@ -3247,6 +3249,80 @@ function getCanhGioCode(hour, minute = 0) {
     return "HOI";                            // 21:00 - 22:59
 }
 
+let currentNotifyMaLaSo = "";
+
+// Hàm khởi tạo hộp nhận thông báo theo mã lá số
+function initNotifyBox(maLaSo) {
+    if (!maLaSo) return;
+    currentNotifyMaLaSo = maLaSo;
+
+    const box = document.getElementById("notify-box");
+    const teleBtn = document.getElementById("btn-notify-tele");
+    const msg = document.getElementById("notify-email-msg");
+
+    if (teleBtn) {
+        teleBtn.href = `https://t.me/fbwiter_bot?start=${encodeURIComponent(maLaSo)}`;
+    }
+    if (msg) {
+        msg.innerText = "";
+    }
+    if (box) {
+        box.style.display = "block";
+    }
+}
+
+// Hàm gửi Email đăng ký lên API
+async function registerEmailNotify() {
+    const emailInput = document.getElementById("input-notify-email");
+    const msg = document.getElementById("notify-email-msg");
+    const btn = document.getElementById("btn-notify-email");
+    const email = emailInput.value.trim();
+
+    if (!currentNotifyMaLaSo) {
+        msg.style.color = "#d32f2f";
+        msg.innerText = "Không tìm thấy mã lá số hiện tại.";
+        return;
+    }
+
+    if (!email || !email.includes("@") || !email.includes(".")) {
+        msg.style.color = "#d32f2f";
+        msg.innerText = "Vui lòng nhập địa chỉ email hợp lệ.";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Đang đăng ký...";
+    msg.innerText = "";
+
+    try {
+        const res = await fetch("https://api.tuvihoanghac.id.vn/api/register-notify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                ma_la_so: currentNotifyMaLaSo,
+                channel: "email",
+                target: email
+            })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+            msg.style.color = "#1c4228";
+            msg.innerText = "✅ Đã đăng ký! Link bài luận sẽ gửi về email của bạn ngay khi xong.";
+            emailInput.value = "";
+        } else {
+            msg.style.color = "#d32f2f";
+            msg.innerText = data.message || "Có lỗi xảy ra, vui lòng thử lại.";
+        }
+    } catch (err) {
+        msg.style.color = "#d32f2f";
+        msg.innerText = "Không kết nối được tới máy chủ.";
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Đăng ký nhận Email";
+    }
+}
+    
 document.addEventListener("DOMContentLoaded", populateDropdowns);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
