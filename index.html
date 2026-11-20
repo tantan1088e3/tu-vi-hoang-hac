@@ -1632,6 +1632,7 @@
         Bằng việc sử dụng công cụ, bạn đồng ý với <a href="/privacy.html" style="color: var(--accent); text-decoration: none;">Chính sách bảo mật</a> của chúng tôi.
     </p>
 </footer>
+    
 <!-- NÚT NỔI AI GÓC TRÁI MÀN HÌNH -->
 <button id="btnAI" style="position: fixed; bottom: 30px; left: 30px; z-index: 9999; background: #111; color: white; border: 1px solid var(--accent, #d4af37); padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.6); transition: transform 0.2s, box-shadow 0.2s; display: none; align-items: center; gap: 8px; font-size: 0.95rem;" 
     onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(212, 175, 55, 0.4)';" 
@@ -1642,9 +1643,52 @@
 <button id="btnBackToTop" class="floating-btn" onclick="(resetBaziForm())">
     ← Lập lá số khác
 </button>
+    
 <script src="storage.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+function closeDirectLasoModal() {
+    document.getElementById("direct-laso-modal").style.display = "none";
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+}
+
+window.addEventListener("DOMContentLoaded", async function () {
+    const params = new URLSearchParams(window.location.search);
+    const maLaSo = params.get("ma");
+    if (!maLaSo) return;
+
+    const modal = document.getElementById("direct-laso-modal");
+    const codeEl = document.getElementById("direct-laso-code");
+    const bodyEl = document.getElementById("direct-laso-body");
+
+    codeEl.textContent = "Mã lá số: " + maLaSo;
+    modal.style.display = "block";
+
+    try {
+        const res = await fetch(`https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`);
+        const data = await res.json();
+
+        if (data.status === "done" && data.data) {
+            if (typeof marked !== "undefined") {
+                bodyEl.innerHTML = marked.parse(data.data);
+            } else {
+                bodyEl.innerHTML = data.data.replace(/\n/g, "<br>");
+            }
+        } else if (data.status === "pending" || data.status === "processing") {
+            bodyEl.innerHTML = "⏳ Lá số này đang được Cụ Hoàng Hạc luận giải. Bạn vui lòng tải lại trang sau ít phút nhé!";
+        } else {
+            bodyEl.innerHTML = "⚠️ Không tìm thấy bài luận giải cho mã lá số này.";
+        }
+    } catch (err) {
+        console.error(err);
+        bodyEl.innerHTML = "❌ Có lỗi khi kết nối máy chủ. Vui lòng thử lại sau.";
+    }
+});
+</script>
+
 <script>
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
