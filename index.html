@@ -1473,6 +1473,38 @@
                             </div>
                         </div>
                     </div>
+                    <div id="notify-box" style="display:none; margin-top:16px; background:#ffffff; border:1px solid #d8e2dc; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+                        <!-- Thanh tiêu đề đồng bộ màu xanh rêu của cột trái -->
+                        <div style="background:#1c4228; color:#ffffff; font-weight:bold; font-size:13px; padding:10px 12px; text-align:center; letter-spacing:0.3px;">
+                            NHẬN KẾT QUẢ LUẬN GIẢI AI
+                        </div>
+                    
+                        <div style="padding:12px;">
+                            <p style="font-size:12px; color:#555; margin:0 0 10px 0; line-height:1.45; text-align:center;">
+                                Không cần treo máy chờ. Chọn cách nhận link bài luận ngay khi hoàn tất:
+                            </p>
+                    
+                            <!-- Nút Telegram -->
+                            <a id="btn-notify-tele" href="#" target="_blank"
+                               style="display:block; width:100%; box-sizing:border-box; text-align:center; background:#229ED9; color:#fff; text-decoration:none; padding:9px 10px; border-radius:6px; font-weight:bold; font-size:13px; margin-bottom:10px;">
+                                ✈️ Nhận qua Telegram
+                            </a>
+                    
+                            <!-- Đường kẻ chia nhẹ -->
+                            <div style="text-align:center; font-size:11px; color:#888; margin:8px 0;">— hoặc nhận qua Email —</div>
+                    
+                            <!-- Ô nhập Email + Nút xếp dọc cho vừa cột hẹp -->
+                            <input type="email" id="input-notify-email" placeholder="Nhập email của bạn..."
+                                   style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #ccc; font-size:13px; margin-bottom:8px; outline:none;">
+                    
+                            <button id="btn-notify-email" onclick="registerEmailNotify()"
+                                    style="width:100%; padding:8px 10px; border-radius:6px; border:none; background:#1c4228; color:#f0d78c; font-weight:bold; cursor:pointer; font-size:13px;">
+                                Đăng ký nhận Email
+                            </button>
+                    
+                            <div id="notify-email-msg" style="margin-top:8px; font-size:12px; text-align:center; line-height:1.4;"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- CỘT 2: Bảng Lá Số -->
