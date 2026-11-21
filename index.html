@@ -2996,22 +2996,39 @@ function renderFormattedAiContent(rawText) {
     return cleanText;
 }
 
+function scrollToNotifyBox() {
+    const targetBox = document.getElementById("notify-box");
+    if (!targetBox) return;
+
+    targetBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    targetBox.style.transition = "box-shadow 0.4s ease";
+    targetBox.style.boxShadow = "0 0 18px rgba(212, 175, 55, 0.85)";
+    setTimeout(() => {
+        targetBox.style.boxShadow = "";
+    }, 1800);
+}
+
 function setAiButtonUnavailableState(btn) {
     if (!btn) return;
 
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
-    btn.classList.remove("ready", "active", "is-ready");
-    btn.classList.add("disabled", "is-disabled");
+    // Giữ nút bấm được để khách chạm vào là trượt xuống ô nhận thông báo
+    btn.disabled = false;
+    btn.removeAttribute("aria-disabled");
+    btn.classList.remove("ready", "active", "is-ready", "disabled", "is-disabled");
+    btn.classList.add("is-waiting");
 
-    // Làm mờ và giảm độ gắt của nút khi chưa có bài
-    btn.style.opacity = "0.58";
-    btn.style.filter = "grayscale(45%) saturate(65%)";
-    btn.style.cursor = "not-allowed";
-    btn.style.boxShadow = "none";
+    // Giữ giao diện dịu mắt nhưng vẫn rõ ràng là bấm được
+    btn.style.opacity = "0.92";
+    btn.style.filter = "none";
+    btn.style.cursor = "pointer";
+    btn.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.45)";
+    btn.onclick = function (e) {
+        e.preventDefault();
+        scrollToNotifyBox();
+    };
 
-    const line1 = "Hệ thống luận mệnh AI miễn phí, đang quá tải.";
-    const line2 = "Vui lòng quay lại vào thời gian khác.";
+    const line1 = "Đang xếp hàng luận mệnh AI miễn phí.";
+    const line2 = "👉 Bấm vào đây để nhận bài qua Email / Tele";
     const fullSubText = `${line1}\n${line2}`;
 
     const descEl = btn.querySelector(
@@ -3053,7 +3070,7 @@ function setAiButtonUnavailableState(btn) {
         ${iconHtml}
         <span class="ai-btn-text-wrap" style="display:flex;flex-direction:column;text-align:left;gap:2px;">
             <span class="ai-btn-title" style="font-weight:600;">Vô Vi Luận Mệnh AI</span>
-            <span class="ai-btn-sub" style="white-space:pre-line;line-height:1.35;font-size:0.85em;opacity:0.85;">${line1}\n${line2}</span>
+            <span class="ai-btn-sub" style="white-space:pre-line;line-height:1.35;font-size:0.85em;color:#f0d78c;">${line1}\n${line2}</span>
         </span>
     `;
 }
