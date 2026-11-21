@@ -3077,6 +3077,7 @@ function setAiButtonUnavailableState(btn) {
 
 function setAiButtonReadyState(btn) {
     if (!btn) return;
+    btn.onclick = null;
     btn.disabled = false;
     btn.style.opacity = "1";
     btn.style.cursor = "pointer";
