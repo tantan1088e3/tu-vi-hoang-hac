@@ -3,58 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chính Sách Bảo Mật - Bùi Quang Tân</title>
+    <title>Chính Sách Bảo Mật - Hoàng Hạc Các</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px auto; max-width: 800px; padding: 0 15px; color: #333; }
-        h2, h3 { color: #2c3e50; }
-        ul { margin-top: 5px; }
+        :root {
+            --primary: #1e4d2b;
+            --primary-hover: #14351d;
+            --accent: #c5a059;
+            --bg-page: #f4f7f4;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #5a6b7c;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        /* --- HEADER & MENU --- */
+        header {
+            background: linear-gradient(135deg, #1e4d2b 0%, #0f2615 100%);
+            color: var(--accent);
+            padding: 3rem 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-style: italic;
+            color: #e8d0a5;
+            font-size: 1rem;
+        }
+
+        .main-nav {
+            background: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            top: 0;
+            z-index: 100;
+        }
+
+        .main-menu-list {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+
+        .main-menu-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .main-tab {
+            display: inline-block;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            background: transparent;
+            transition: 0.3s;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .main-tab:hover {
+            color: white;
+        }
+
+        .main-tab.active {
+            color: var(--accent);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- NỘI DUNG TRANG TĨNH --- */
+        .container {
+            max-width: 960px;
+            margin: 2.5rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .page-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+        }
+
+        .page-card h2 {
+            text-align: center;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .page-card p.sub {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: #f4f7f4;
+            border-left: 4px solid var(--primary);
+            padding: 18px 22px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .info-box p {
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-box a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .page-card h3 {
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin: 22px 0 10px;
+        }
+
+        .page-card p {
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+
+        .page-card ul {
+            margin: 0 0 18px 22px;
+        }
+
+        .page-card li {
+            margin-bottom: 8px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 26px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-hover);
+        }
+
+        @media (max-width: 850px) {
+            .main-menu-list {
+                justify-content: flex-start !important;
+                padding: 0 15px;
+            }
+            .main-tab {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 1.5rem 1rem 1rem;
+            }
+            header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            .container {
+                padding: 0 10px;
+                margin-top: 1.2rem;
+            }
+            .page-card {
+                padding: 22px 16px;
+            }
+            .page-card h2 {
+                font-size: 1.4rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h2>CHÍNH SÁCH BẢO MẬT (PRIVACY POLICY)</h2>
-    <p><b>Các ứng dụng áp dụng:</b><br>
-    - Phong thủy nhà ở<br>
-    - Xem Bát Tự - Tứ Trụ<br>
-    <b>Nhà phát triển / Đơn vị phát hành:</b> Bùi Quang Tân<br>
-<b>Email liên hệ hỗ trợ:</b> tantan1088e3@gmail.com</p>
-    <b>Nhà phát triển / Đơn vị phát hành:</b> Bùi Quang Tân<br>
-    <b>Email liên hệ hỗ trợ:</b> tantan1088e3@gmail.com</p>
+<header>
+    <h1>Hoàng Hạc Các</h1>
+    <p>Hệ Thống Di Sản Thuật Số &amp; Luận Mệnh 2026</p>
+</header>
 
-    <p>Chào mừng bạn đến với các ứng dụng di động Phong thủy nhà ở, Xem Bát Tự và các nền tảng trực tuyến liên quan. Chúng tôi (do Bùi Quang Tân là nhà phát triển độc lập chịu trách nhiệm quản lý) cam kết bảo vệ quyền riêng tư của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin khi bạn truy cập hoặc sử dụng các ứng dụng của chúng tôi.</p>
+<nav class="main-nav">
+    <div class="main-menu-list">
+        <a class="main-tab" href="/">LẬP LÁ SỐ</a>
+        <a class="main-tab" href="/#tutru">TỨ TRỤ BÁT TỰ</a>
+        <a class="main-tab" href="/#tuvi">TỬ VI ĐẨU SỐ</a>
+        <a class="main-tab" href="/#app">TẢI APP</a>
+        <a class="main-tab" href="/contact.html">TƯ VẤN ★</a>
+    </div>
+</nav>
 
-    <h3>1. Thu thập thông tin</h3>
-    <p>Chúng tôi không yêu cầu người dùng đăng ký tài khoản cá nhân để sử dụng các tính năng của ứng dụng Phong thủy nhà ở và Xem Bát Tự. Tuy nhiên, để cải thiện trải nghiệm người dùng và duy trì hoạt động ổn định của ứng dụng, chúng tôi có thể thu thập một số thông tin ẩn danh thông qua thiết bị hoặc trình duyệt của bạn, bao gồm:</p>
-    <ul>
-        <li>Địa chỉ IP (để phân tích khu vực truy cập).</li>
-        <li>Loại thiết bị, hệ điều hành và phiên bản ứng dụng/trình duyệt.</li>
-        <li>Thời gian truy cập và thống kê các màn hình hoặc tính năng bạn đã xem trên ứng dụng.</li>
-    </ul>
+<main class="container">
+    <section class="page-card">
+        <h2>Chính Sách Bảo Mật</h2>
+        <p class="sub">Quyền riêng tư, cookie và đối tác quảng cáo trên website &amp; ứng dụng</p>
 
-    <h3>2. Sử dụng Cookie và công nghệ tương tự</h3>
-    <p>Chúng tôi sử dụng các mã định danh ẩn danh trên thiết bị di động (và Cookie nếu truy cập qua web) để:</p>
-    <ul>
-        <li>Lưu trữ các tùy chỉnh cá nhân của bạn (ví dụ: trạng thái hiển thị, cài đặt giao diện, lưu trữ cục bộ trên thiết bị).</li>
-        <li>Phân tích lưu lượng truy cập thông qua các công cụ thống kê như Google Analytics.</li>
-        <li>Cung cấp quảng cáo phù hợp thông qua các đối tác mạng quảng cáo.</li>
-    </ul>
+        <div class="info-box">
+            <p><strong>Các ứng dụng &amp; nền tảng áp dụng:</strong> Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ, Hoàng Hạc Các</p>
+            <p><strong>Nhà phát triển / Đơn vị phát hành:</strong> Bùi Quang Tân</p>
+            <p><strong>Email liên hệ hỗ trợ:</strong> <a href="mailto:tantan1088e3@gmail.com">tantan1088e3@gmail.com</a></p>
+        </div>
 
-    <h3>3. Đối tác quảng cáo (Google AdMob)</h3>
-    <p>Các ứng dụng (Phong thủy nhà ở, Xem Bát Tự) sử dụng các dịch vụ quảng cáo từ bên thứ ba, bao gồm Google AdMob. Các nhà cung cấp này sử dụng mã định danh thiết bị di động để phục vụ quảng cáo dựa trên các lần tương tác trước đó của người dùng với ứng dụng này hoặc các ứng dụng khác trên thiết bị của bạn.</p>
-    <p>Việc sử dụng công nghệ này cho phép Google và các đối tác hiển thị quảng cáo được cá nhân hóa đến người dùng. Bạn có thể tùy chọn từ chối quảng cáo cá nhân hóa bằng cách tắt tính năng cá nhân hóa quảng cáo trong phần cài đặt tài khoản Google hoặc phần cài đặt quyền riêng tư trên thiết bị di động của bạn.</p>
+        <p>Chào mừng bạn đến với các ứng dụng di động Phong thủy nhà ở, Xem Bát Tự và các nền tảng trực tuyến liên quan. Chúng tôi (do Bùi Quang Tân là nhà phát triển độc lập chịu trách nhiệm quản lý) cam kết bảo vệ quyền riêng tư của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin khi bạn truy cập hoặc sử dụng các ứng dụng và website của chúng tôi.</p>
 
-    <h3>4. Bảo mật dữ liệu</h3>
-    <p>Chúng tôi áp dụng các biện pháp an ninh kỹ thuật phù hợp để bảo vệ những thông tin ẩn danh được thu thập. Tuy nhiên, không có phương thức truyền tải dữ liệu nào qua internet hoặc phương thức lưu trữ điện tử nào là an toàn tuyệt đối 100%.</p>
+        <h3>1. Thu thập thông tin</h3>
+        <p>Chúng tôi không yêu cầu người dùng đăng ký tài khoản cá nhân để sử dụng các tính năng của ứng dụng Phong thủy nhà ở, Xem Bát Tự và website. Tuy nhiên, để cải thiện trải nghiệm người dùng và duy trì hoạt động ổn định, chúng tôi có thể thu thập một số thông tin ẩn danh thông qua thiết bị hoặc trình duyệt của bạn, bao gồm:</p>
+        <ul>
+            <li>Địa chỉ IP (để phân tích khu vực truy cập).</li>
+            <li>Loại thiết bị, hệ điều hành và phiên bản ứng dụng/trình duyệt.</li>
+            <li>Thời gian truy cập và thống kê các màn hình hoặc tính năng bạn đã xem.</li>
+        </ul>
 
-    <h3>5. Thay đổi chính sách</h3>
-    <p>Chúng tôi có quyền cập nhật hoặc sửa đổi Chính sách bảo mật này bất cứ lúc nào để phù hợp với các quy định mới hoặc tính năng của ứng dụng. Mọi thay đổi sẽ được cập nhật trực tiếp tại trang này và có hiệu lực ngay lập tức kể từ thời điểm đăng tải.</p>
+        <h3>2. Sử dụng Cookie và công nghệ tương tự</h3>
+        <p>Chúng tôi sử dụng các mã định danh ẩn danh trên thiết bị di động (và Cookie nếu truy cập qua web) để:</p>
+        <ul>
+            <li>Lưu trữ các tùy chỉnh cá nhân của bạn (ví dụ: trạng thái hiển thị, cài đặt giao diện, lưu trữ cục bộ trên thiết bị).</li>
+            <li>Phân tích lưu lượng truy cập thông qua các công cụ thống kê như Google Analytics.</li>
+            <li>Cung cấp quảng cáo phù hợp thông qua các đối tác mạng quảng cáo.</li>
+        </ul>
 
-    <h3>6. Thông tin liên hệ</h3>
-    <p>Nếu bạn có bất kỳ câu hỏi, thắc mắc hoặc yêu cầu nào liên quan đến Chính sách bảo mật này hoặc các ứng dụng Phong thủy nhà ở, Xem Bát Tự, vui lòng liên hệ trực tiếp với nhà phát triển:</p>
-    <ul>
-        <li><b>Họ và tên nhà phát triển:</b> Bùi Quang Tân</li>
-        <li><b>Email liên hệ:</b> tantan1088e3@gmail.com</li>
-    </ul>
+        <h3>3. Đối tác quảng cáo (Google AdMob &amp; Google AdSense)</h3>
+        <p>Các ứng dụng (Phong thủy nhà ở, Xem Bát Tự) và trang web sử dụng các dịch vụ quảng cáo từ bên thứ ba, bao gồm Google AdMob và Google AdSense. Các nhà cung cấp này sử dụng mã định danh thiết bị hoặc cookie trình duyệt để phục vụ quảng cáo dựa trên các lần tương tác trước đó của người dùng với dịch vụ này hoặc các trang/ứng dụng khác.</p>
+        <p>Việc sử dụng công nghệ này cho phép Google và các đối tác hiển thị quảng cáo được cá nhân hóa đến người dùng. Bạn có thể tùy chọn từ chối quảng cáo cá nhân hóa bằng cách tắt tính năng cá nhân hóa quảng cáo trong phần cài đặt tài khoản Google hoặc phần cài đặt quyền riêng tư trên thiết bị của bạn.</p>
+
+        <h3>4. Bảo mật dữ liệu</h3>
+        <p>Chúng tôi áp dụng các biện pháp an ninh kỹ thuật phù hợp để bảo vệ những thông tin ẩn danh được thu thập. Tuy nhiên, không có phương thức truyền tải dữ liệu nào qua internet hoặc phương thức lưu trữ điện tử nào là an toàn tuyệt đối 100%.</p>
+
+        <h3>5. Thay đổi chính sách</h3>
+        <p>Chúng tôi có quyền cập nhật hoặc sửa đổi Chính sách bảo mật này bất cứ lúc nào để phù hợp với các quy định mới hoặc tính năng của ứng dụng và website. Mọi thay đổi sẽ được cập nhật trực tiếp tại trang này và có hiệu lực ngay lập tức kể từ thời điểm đăng tải.</p>
+
+        <h3>6. Thông tin liên hệ</h3>
+        <p>Nếu bạn có bất kỳ câu hỏi, thắc mắc hoặc yêu cầu nào liên quan đến Chính sách bảo mật này hoặc các ứng dụng Phong thủy nhà ở, Xem Bát Tự, vui lòng liên hệ trực tiếp với nhà phát triển:</p>
+        <ul>
+            <li><strong>Họ và tên nhà phát triển:</strong> Bùi Quang Tân</li>
+            <li><strong>Email liên hệ:</strong> <a href="mailto:tantan1088e3@gmail.com">tantan1088e3@gmail.com</a></li>
+        </ul>
+
+        <a href="/" class="btn-back">← Quay lại Lập Lá Số</a>
+    </section>
+</main>
+
+<footer class="site-footer" style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent); margin-top: 40px; font-size: 0.9rem; line-height: 1.6;">
+    <p style="font-size: 1.05rem; font-weight: bold; color: #aaa; margin-bottom: 15px;">
+        &copy; 2026 Tử Vi Hoàng Hạc
+    </p>
+    <p style="margin-bottom: 10px;">
+        <a href="/" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Trang chủ</a> |
+        <a href="/about.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Giới thiệu</a> |
+        <a href="/contact.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Liên hệ</a> |
+        <a href="/privacy.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Chính sách bảo mật</a>
+    </p>
+    <p style="margin-bottom: 8px;">
+        <em>* Tuyên bố miễn trừ: Hệ thống luận mệnh cung cấp thông tin dựa trên cơ sở học thuật Tứ Trụ Bát Tự. Kết quả chỉ mang tính chất tham khảo, chiêm nghiệm và nghiên cứu văn hóa cổ truyền.</em>
+    </p>
+    <p style="margin-bottom: 0; font-size: 0.85rem;">
+        Bằng việc sử dụng công cụ, bạn đồng ý với <a href="/privacy.html" style="color: var(--accent); text-decoration: none;">Chính sách bảo mật</a> của chúng tôi.
+    </p>
+</footer>
 
 </body>
 </html>
