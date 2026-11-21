@@ -3,50 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Điều Khoản Dịch Vụ - Bùi Quang Tân</title>
+    <title>Điều Khoản Dịch Vụ - Hoàng Hạc Các</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px auto; max-width: 800px; padding: 0 15px; color: #333; }
-        h2, h3 { color: #2c3e50; }
-        ul { margin-top: 5px; }
-        p { margin-bottom: 15px; }
+        :root {
+            --primary: #1e4d2b;
+            --primary-hover: #14351d;
+            --accent: #c5a059;
+            --bg-page: #f4f7f4;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #5a6b7c;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        /* --- HEADER & MENU --- */
+        header {
+            background: linear-gradient(135deg, #1e4d2b 0%, #0f2615 100%);
+            color: var(--accent);
+            padding: 3rem 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-style: italic;
+            color: #e8d0a5;
+            font-size: 1rem;
+        }
+
+        .main-nav {
+            background: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            top: 0;
+            z-index: 100;
+        }
+
+        .main-menu-list {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+
+        .main-menu-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .main-tab {
+            display: inline-block;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            background: transparent;
+            transition: 0.3s;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .main-tab:hover {
+            color: white;
+        }
+
+        .main-tab.active {
+            color: var(--accent);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- NỘI DUNG TRANG TĨNH --- */
+        .container {
+            max-width: 960px;
+            margin: 2.5rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .page-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(30, 77, 43, 0.06);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+        }
+
+        .page-card h2 {
+            text-align: center;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .page-card p.sub {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: #f4f7f4;
+            border-left: 4px solid var(--primary);
+            padding: 18px 22px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .info-box p {
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-box a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .page-card h3 {
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin: 22px 0 10px;
+        }
+
+        .page-card p {
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+
+        .page-card ul {
+            margin: 0 0 18px 22px;
+        }
+
+        .page-card li {
+            margin-bottom: 8px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 26px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-hover);
+        }
+
+        @media (max-width: 850px) {
+            .main-menu-list {
+                justify-content: flex-start !important;
+                padding: 0 15px;
+            }
+            .main-tab {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 1.5rem 1rem 1rem;
+            }
+            header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            .container {
+                padding: 0 10px;
+                margin-top: 1.2rem;
+            }
+            .page-card {
+                padding: 22px 16px;
+            }
+            .page-card h2 {
+                font-size: 1.4rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h2>ĐIỀU KHOẢN DỊCH VỤ (TERMS OF SERVICE)</h2>
-    <p><b>Các ứng dụng áp dụng:</b><br>
-    - Phong thủy nhà ở<br>
-    - Xem Bát Tự - Tứ Trụ<br>
-    <b>Nhà phát triển / Đơn vị phát hành:</b> Bùi Quang Tân<br>
-    <b>Email liên hệ hỗ trợ:</b> tantan1088e3@gmail.com</p>
+<header>
+    <h1>Hoàng Hạc Các</h1>
+    <p>Hệ Thống Di Sản Thuật Số &amp; Luận Mệnh 2026</p>
+</header>
 
-    <p>Chào mừng bạn đến với các ứng dụng di động Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ và các nền tảng trực tuyến liên quan. Khi bạn tải xuống, cài đặt hoặc sử dụng các ứng dụng của chúng tôi, bạn đồng ý tuân thủ và chịu ràng buộc bởi các điều khoản dịch vụ dưới đây. Vui lòng đọc kỹ các điều khoản này trước khi sử dụng ứng dụng.</p>
+<nav class="main-nav">
+    <div class="main-menu-list">
+        <a class="main-tab" href="/">LẬP LÁ SỐ</a>
+        <a class="main-tab" href="/#tutru">TỨ TRỤ BÁT TỰ</a>
+        <a class="main-tab" href="/#tuvi">TỬ VI ĐẨU SỐ</a>
+        <a class="main-tab" href="/#app">TẢI APP</a>
+        <a class="main-tab" href="/contact.html">TƯ VẤN ★</a>
+    </div>
+</nav>
 
-    <h3>1. Chấp nhận điều khoản</h3>
-    <p>Bằng việc truy cập, tải về hoặc sử dụng các ứng dụng Phong thủy nhà ở và Xem Bát Tự - Tứ Trụ, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý tuân thủ các Điều khoản dịch vụ này cùng với Chính sách bảo mật đi kèm. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng ngừng sử dụng ứng dụng ngay lập tức.</p>
+<main class="container">
+    <section class="page-card">
+        <h2>Điều Khoản Dịch Vụ</h2>
+        <p class="sub">Quy định sử dụng hệ thống, quyền sở hữu trí tuệ và giới hạn trách nhiệm</p>
 
-    <h3>2. Quyền và trách nhiệm của người dùng</h3>
-    <p>Bạn được phép sử dụng ứng dụng cho các mục đích cá nhân, phi thương mại và tuân thủ pháp luật hiện hành.</p>
-    <p>Bạn cam kết không thực hiện bất kỳ hành vi nào nhằm can thiệp, phá hoại, đảo ngược mã nguồn hoặc làm suy yếu hệ thống kỹ thuật của ứng dụng dưới mọi hình thức.</p>
-    <p>Bạn chịu trách nhiệm về mọi thiết bị, kết nối internet và chi phí phát sinh liên quan khi sử dụng ứng dụng trên thiết bị di động của mình.</p>
+        <div class="info-box">
+            <p><strong>Các ứng dụng &amp; nền tảng áp dụng:</strong> Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ, Hoàng Hạc Các</p>
+            <p><strong>Nhà phát triển / Đơn vị phát hành:</strong> Bùi Quang Tân</p>
+            <p><strong>Email liên hệ hỗ trợ:</strong> <a href="mailto:tantan1088e3@gmail.com">tantan1088e3@gmail.com</a></p>
+        </div>
 
-    <h3>3. Quyền sở hữu trí tuệ</h3>
-    <p>Toàn bộ mã nguồn, giao diện, hình ảnh, cơ sở dữ liệu, văn bản và các nội dung hiển thị trong các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ thuộc quyền sở hữu độc lập và chịu trách nhiệm quản lý bởi nhà phát triển Bùi Quang Tân.</p>
-    <p>Mọi hành vi sao chép, chỉnh sửa, phân phối hoặc sử dụng lại bất kỳ nội dung nào từ ứng dụng cho mục đích thương mại khi chưa có sự đồng ý bằng văn bản của nhà phát triển đều là vi phạm pháp luật sở hữu trí tuệ.</p>
+        <p>Chào mừng bạn đến với các ứng dụng di động Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ và các nền tảng trực tuyến liên quan. Khi bạn tải xuống, cài đặt, truy cập hoặc sử dụng các dịch vụ của chúng tôi, bạn đồng ý tuân thủ và chịu ràng buộc bởi các Điều khoản dịch vụ dưới đây. Vui lòng đọc kỹ các điều khoản này trước khi sử dụng.</p>
 
-    <h3>4. Giới hạn trách nhiệm</h3>
-    <p>Các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ cung cấp các thông tin mang tính chất tham khảo dựa trên phong thủy và lý số truyền thống nhằm cải thiện trải nghiệm cá nhân. Chúng tôi không chịu trách nhiệm pháp lý cho bất kỳ quyết định dân sự, tài chính hoặc đời sống nào của người dùng dựa hoàn toàn trên các thông tin từ ứng dụng.</p>
-    <p>Dịch vụ được cung cấp trên cơ sở "nguyên trạng" và "có sẵn". Chúng tôi không cam kết ứng dụng sẽ hoạt động không gián đoạn hoặc hoàn toàn không có lỗi kỹ thuật phát sinh từ bên thứ ba (như nhà cung cấp mạng, thiết bị phần cứng).</p>
+        <h3>1. Chấp nhận điều khoản</h3>
+        <p>Bằng việc truy cập, tải về hoặc sử dụng các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ và website, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý tuân thủ các Điều khoản dịch vụ này cùng với Chính sách bảo mật đi kèm. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng ngừng sử dụng ngay lập tức.</p>
 
-    <h3>5. Thay đổi điều khoản</h3>
-    <p>Chúng tôi có quyền sửa đổi, bổ sung hoặc cập nhật các Điều khoản dịch vụ này bất cứ lúc nào để phù hợp với sự phát triển của ứng dụng hoặc các quy định pháp luật mới. Các thay đổi sẽ có hiệu lực ngay khi được đăng tải công khai trên trang web này. Việc bạn tiếp tục sử dụng ứng dụng sau khi có thay đổi đồng nghĩa với việc bạn chấp nhận các điều khoản mới đó.</p>
+        <h3>2. Quyền và trách nhiệm của người dùng</h3>
+        <p>Bạn được phép sử dụng dịch vụ cho các mục đích cá nhân, phi thương mại và tuân thủ pháp luật hiện hành.</p>
+        <p>Bạn cam kết không thực hiện bất kỳ hành vi nào nhằm can thiệp, phá hoại, đảo ngược mã nguồn hoặc làm suy yếu hệ thống kỹ thuật của ứng dụng và website dưới mọi hình thức.</p>
+        <p>Bạn chịu trách nhiệm về mọi thiết bị, kết nối internet và chi phí phát sinh liên quan khi sử dụng trên thiết bị của mình.</p>
 
-    <h3>6. Thông tin liên hệ</h3>
-    <p>Nếu bạn có bất kỳ câu hỏi, thắc mắc hoặc yêu cầu nào liên quan đến Điều khoản dịch vụ này hoặc các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ, vui lòng liên hệ trực tiếp với nhà phát triển:</p>
-    <ul>
-        <li><b>Họ và tên nhà phát triển:</b> Bùi Quang Tân</li>
-        <li><b>Email liên hệ:</b> tantan1088e3@gmail.com</li>
-    </ul>
+        <h3>3. Quyền sở hữu trí tuệ</h3>
+        <p>Toàn bộ mã nguồn, giao diện, hình ảnh, cơ sở dữ liệu, văn bản và các nội dung hiển thị trong các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ và website thuộc quyền sở hữu độc lập và chịu trách nhiệm quản lý bởi nhà phát triển Bùi Quang Tân.</p>
+        <p>Mọi hành vi sao chép, chỉnh sửa, phân phối hoặc sử dụng lại bất kỳ nội dung nào cho mục đích thương mại khi chưa có sự đồng ý bằng văn bản của nhà phát triển đều là vi phạm pháp luật sở hữu trí tuệ.</p>
+
+        <h3>4. Giới hạn trách nhiệm</h3>
+        <p>Các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ và hệ thống cung cấp các thông tin mang tính chất tham khảo, chiêm nghiệm và nghiên cứu văn hóa dựa trên phong thủy và lý số truyền thống. Chúng tôi không chịu trách nhiệm pháp lý cho bất kỳ quyết định dân sự, tài chính hoặc đời sống nào của người dùng dựa hoàn toàn trên các thông tin từ hệ thống.</p>
+        <p>Dịch vụ được cung cấp trên cơ sở "nguyên trạng" và "có sẵn". Chúng tôi không cam kết hệ thống sẽ hoạt động không gián đoạn hoặc hoàn toàn không có lỗi kỹ thuật phát sinh từ bên thứ ba (như nhà cung cấp mạng, thiết bị phần cứng hoặc dịch vụ bên ngoài).</p>
+
+        <h3>5. Thay đổi điều khoản</h3>
+        <p>Chúng tôi có quyền sửa đổi, bổ sung hoặc cập nhật các Điều khoản dịch vụ này bất cứ lúc nào để phù hợp với sự phát triển của hệ thống hoặc các quy định pháp luật mới. Các thay đổi sẽ có hiệu lực ngay khi được đăng tải công khai trên trang này. Việc bạn tiếp tục sử dụng sau khi có thay đổi đồng nghĩa với việc bạn chấp nhận các điều khoản mới đó.</p>
+
+        <h3>6. Thông tin liên hệ</h3>
+        <p>Nếu bạn có bất kỳ câu hỏi, thắc mắc hoặc yêu cầu nào liên quan đến Điều khoản dịch vụ này hoặc các ứng dụng Phong thủy nhà ở, Xem Bát Tự - Tứ Trụ, vui lòng liên hệ trực tiếp với nhà phát triển:</p>
+        <ul>
+            <li><strong>Họ và tên nhà phát triển:</strong> Bùi Quang Tân</li>
+            <li><strong>Email liên hệ:</strong> <a href="mailto:tantan1088e3@gmail.com">tantan1088e3@gmail.com</a></li>
+        </ul>
+
+        <a href="/" class="btn-back">← Quay lại Lập Lá Số</a>
+    </section>
+</main>
+
+<footer class="site-footer" style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent); margin-top: 40px; font-size: 0.9rem; line-height: 1.6;">
+    <p style="font-size: 1.05rem; font-weight: bold; color: #aaa; margin-bottom: 15px;">
+        &copy; 2026 Tử Vi Hoàng Hạc
+    </p>
+    <p style="margin-bottom: 10px;">
+        <a href="/" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Trang chủ</a> |
+        <a href="/about.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Giới thiệu</a> |
+        <a href="/contact.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Liên hệ</a> |
+        <a href="/privacy.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Chính sách bảo mật</a> |
+        <a href="/terms.html" style="color: var(--accent); text-decoration: none; margin: 0 8px;">Điều khoản dịch vụ</a>
+    </p>
+    <p style="margin-bottom: 8px;">
+        <em>* Tuyên bố miễn trừ: Hệ thống luận mệnh cung cấp thông tin dựa trên cơ sở học thuật Tứ Trụ Bát Tự. Kết quả chỉ mang tính chất tham khảo, chiêm nghiệm và nghiên cứu văn hóa cổ truyền.</em>
+    </p>
+    <p style="margin-bottom: 0; font-size: 0.85rem;">
+        Bằng việc sử dụng công cụ, bạn đồng ý với <a href="/privacy.html" style="color: var(--accent); text-decoration: none;">Chính sách bảo mật</a> và <a href="/terms.html" style="color: var(--accent); text-decoration: none;">Điều khoản dịch vụ</a> của chúng tôi.
+    </p>
+</footer>
 
 </body>
 </html>
