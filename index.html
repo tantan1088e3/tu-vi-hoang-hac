@@ -1426,9 +1426,28 @@
     border-radius: 4px;
 }
 
-@media (max-width: 640px) {
+/*@media (max-width: 640px) {
     .aff-list {
         grid-template-columns: 1fr;
+    }
+}*/
+@media (max-width: 640px) {
+    .aff-list {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .aff-list::-webkit-scrollbar {
+        display: none; /* Ẩn thanh cuộn cho gọn mắt */
+    }
+
+    .aff-item {
+        flex: 0 0 82%; /* Để thẻ tiếp theo ló ra một chút ở mép phải, báo hiệu vuốt được */
+        scroll-snap-align: start;
     }
 }
 </style>
