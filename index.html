@@ -1336,6 +1336,84 @@
         border-top: 1px dashed rgba(212, 175, 55, 0.2);
         margin: 30px 0;
     }
+    .aff-box {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #f9f7f2;
+    border: 1px solid #e2dcc8;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.aff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #234936;
+    font-size: 13.5px;
+}
+
+.aff-tag {
+    font-size: 11px;
+    color: #7c7565;
+    background: #ede7d7;
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
+.aff-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.aff-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #ebe6d9;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #2d2d2d;
+    transition: border-color 0.2s, transform 0.15s;
+}
+
+.aff-item:hover {
+    border-color: #234936;
+    transform: translateY(-1px);
+}
+
+.aff-item-title {
+    font-weight: 600;
+    color: #1f3d2d;
+    line-height: 1.35;
+}
+
+.aff-item-sub {
+    font-size: 11.5px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.aff-btn {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #234936;
+    background: #eaf2ee;
+    padding: 5px 9px;
+    border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+    .aff-list {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 </head>
 <body>
@@ -1590,6 +1668,30 @@
                                 <div class="ts-title">Lưu Niên</div>
                                 <div class=" ln-grid" id="ln-container"></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- KHUNG GỢI Ý SÁCH THAM KHẢO -->
+                    <div class="aff-box">
+                        <div class="aff-header">
+                            <span>Tài liệu Bát Tự – Mệnh Lý nên đọc</span>
+                            <span class="aff-tag">Tiki Trading</span>
+                        </div>
+                        <div class="aff-list">
+                            <a class="aff-item" href="https://ti.ki/i5E9kdQy/5LRQBID3" target="_blank" rel="nofollow sponsored noopener noreferrer">
+                                <div>
+                                    <div class="aff-item-title">Tứ Trụ Mệnh Lý Chính Nguyên</div>
+                                    <div class="aff-item-sub">Nền tảng tự chiêm nghiệm lá số</div>
+                                </div>
+                                <span class="aff-btn">Xem →</span>
+                            </a>
+                            <a class="aff-item" href="https://ti.ki/ZSQF2Zzv/KL0NDIUM" target="_blank" rel="nofollow sponsored noopener noreferrer">
+                                <div>
+                                    <div class="aff-item-title">Tử Bình Chân Thuyên / Trích Thiên Tủy</div>
+                                    <div class="aff-item-sub">Kinh điển luận cách cục & dụng thần</div>
+                                </div>
+                                <span class="aff-btn">Xem →</span>
+                            </a>
                         </div>
                     </div>
                     
