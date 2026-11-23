@@ -1343,6 +1343,11 @@
     border: 1px solid #e2dcc8;
     border-radius: 8px;
     font-size: 13px;
+    /* Thêm 3 dòng này để khóa không cho phình ngang */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .aff-header {
@@ -1432,6 +1437,11 @@
     }
 }*/
 @media (max-width: 640px) {
+    .aff-box {
+        /* Ép chặt tối đa theo chiều rộng màn hình điện thoại */
+        max-width: calc(100vw - 24px);
+    }
+
     .aff-list {
         display: flex;
         overflow-x: auto;
@@ -1439,15 +1449,17 @@
         scroll-snap-type: x mandatory;
         padding-bottom: 4px;
         -webkit-overflow-scrolling: touch;
+        width: 100%;
     }
 
     .aff-list::-webkit-scrollbar {
-        display: none; /* Ẩn thanh cuộn cho gọn mắt */
+        display: none;
     }
 
     .aff-item {
-        flex: 0 0 82%; /* Để thẻ tiếp theo ló ra một chút ở mép phải, báo hiệu vuốt được */
+        flex: 0 0 82%;
         scroll-snap-align: start;
+        box-sizing: border-box;
     }
 }
 </style>
