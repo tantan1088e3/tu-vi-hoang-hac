@@ -1450,6 +1450,7 @@
         padding-bottom: 4px;
         -webkit-overflow-scrolling: touch;
         width: 100%;
+        padding-top: 2px; /* Chừa khoảng trống phía trên để không bị cắt viền */
     }
 
     .aff-list::-webkit-scrollbar {
@@ -1460,6 +1461,9 @@
         flex: 0 0 82%;
         scroll-snap-align: start;
         box-sizing: border-box;
+    }
+    .aff-item:hover {
+        transform: none; /* Tắt hiệu ứng nhấc lên trên điện thoại */
     }
 }
 </style>
