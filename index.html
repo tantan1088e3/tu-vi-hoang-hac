@@ -1470,133 +1470,82 @@
 }
 </style>
 <style>
-.ln-wave-wrapper {
-    margin-top: 10px;
-    border: 1px solid #e5e0d5;
-    border-radius: 6px;
-    background: #fdfcf9;
-    padding: 10px 0 8px;
-    /* Khóa cứng chiều ngang: không bao giờ đẩy phình cột cha */
-    width: 0;
-    min-width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-.ln-wave-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 12px 6px;
-    font-size: 12px;
-    color: #555;
-}
-.ln-wave-title {
-    font-weight: 600;
-    color: #161c18;
-}
-.ln-wave-legend {
-    display: flex;
-    gap: 12px;
-    font-size: 11px;
-}
-.ln-wave-legend i {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 4px;
-    vertical-align: middle;
-}
-.ln-wave-legend .dot-up { background: #1e7e4f; }
-.ln-wave-legend .dot-down { background: #c0392b; }
-
-.ln-wave-canvas {
-    position: relative;
-    width: 100%;
-    height: 115px;
-    user-select: none;
-}
-.ln-wave-svg {
+/* Đường gióng dọc mờ cho từng năm, đậm hơn khi active */
+.ln-wave-col .ln-wave-guide {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-.ln-wave-overlay {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    z-index: 2;
-}
-.ln-wave-col {
-    position: relative;
-    cursor: pointer;
-}
-.ln-wave-col:hover .ln-wave-guide,
-.ln-wave-col.active .ln-wave-guide {
-    opacity: 1;
-}
-.ln-wave-guide {
-    position: absolute;
-    top: 6px;
-    bottom: 6px;
+    top: 0;
+    bottom: 0;
     left: 50%;
     width: 1px;
-    background: rgba(212, 175, 55, 0.45);
-    opacity: 0;
-    transition: opacity 0.15s;
+    border-left: 1px dashed rgba(139, 125, 107, 0.22);
+    pointer-events: none;
+    transition: border-color 0.15s ease;
 }
-.ln-wave-dot {
-    position: absolute;
-    left: 50%;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-    transition: transform 0.15s;
+.ln-wave-col.active .ln-wave-guide {
+    border-left: 1px dashed rgba(26, 79, 50, 0.75);
 }
-.ln-wave-dot.has-event {
-    width: 11px;
-    height: 11px;
+
+/* Hàng trục X chứa Năm + Địa Chi */
+.ln-wave-xaxis {
+    display: grid;
+    border-top: 1px solid #e4dccb;
+    padding-top: 6px;
+    margin-bottom: 10px;
 }
-.ln-wave-col:hover .ln-wave-dot,
-.ln-wave-col.active .ln-wave-dot {
-    transform: translate(-50%, -50%) scale(1.35);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
-}
-.ln-wave-detail {
-    margin: 6px 12px 0;
-    padding-top: 7px;
-    border-top: 1px dashed #e2dcd0;
-    font-size: 12px;
-    color: #333;
-    /* Khóa sẵn chiều cao đủ cho 2 dòng để không bị giật dọc */
-    min-height: 48px;
+
+.ln-wave-xlabel {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    align-content: flex-start;
-    gap: 6px;
+    justify-content: center;
+    cursor: pointer;
+    padding: 3px 1px;
+    border-radius: 5px;
+    line-height: 1.2;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    user-select: none;
 }
-.ln-wave-badge {
+
+.ln-x-year {
+    font-size: 11px;
+    font-weight: 500;
+    color: #5c5346;
+    font-variant-numeric: tabular-nums;
+}
+
+.ln-x-chi {
+    font-size: 10px;
+    color: #8c8273;
+    margin-top: 1px;
+}
+
+/* Đánh dấu nhẹ năm hiện tại */
+.ln-wave-xlabel.is-current .ln-x-year {
+    color: #1a4f32;
+    font-weight: 700;
+}
+
+/* Trạng thái đang chọn / di chuột */
+.ln-wave-xlabel.active {
+    background-color: #eaf3ec;
+}
+.ln-wave-xlabel.active .ln-x-year {
+    color: #1a4f32;
+    font-weight: 700;
+}
+.ln-wave-xlabel.active .ln-x-chi {
+    color: #1a4f32;
     font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 11px;
 }
-.ln-wave-badge.up { background: #e6f4ec; color: #166534; }
-.ln-wave-badge.mid { background: #f3f0e6; color: #786020; }
-.ln-wave-badge.down { background: #fdecec; color: #b91c1c; }
-.ln-wave-tag {
-    background: #fff;
-    border: 1px solid #dfd8c8;
-    border-radius: 4px;
-    padding: 1px 6px;
-    font-size: 11px;
-    color: #444;
+
+/* Tối ưu cho màn hình điện thoại (10 cột không bị tràn) */
+@media (max-width: 600px) {
+    .ln-x-year {
+        font-size: 9.5px;
+    }
+    .ln-x-chi {
+        font-size: 9px;
+    }
 }
 </style>
 </head>
@@ -1861,6 +1810,7 @@
                                         </div>
                                     </div>
                                     <div class="ln-wave-canvas" id="ln-wave-canvas"></div>
+                                    <div class="ln-wave-xaxis" id="ln-wave-xaxis"></div>
                                     <div class="ln-wave-detail" id="ln-wave-detail">
                                         Di chuột hoặc chạm vào từng năm để xem xu hướng & tương tác nổi bật.
                                     </div>
@@ -2663,51 +2613,149 @@ function kichHoatDaiVan(indexToOpen) {
     `;
 }
 
-function renderLuuNian(liuNianArr) {
-    const lnContainer = document.getElementById('ln-container');
-    lnContainer.innerHTML = '';
-    const currentYear = new Date().getFullYear();
-    let currentYearIdx = -1;
+function renderLuuNienWave(liuNianList, activeIndex = -1) {
+    const wrapper = document.getElementById("ln-wave-wrapper");
+    const canvas = document.getElementById("ln-wave-canvas");
+    const detail = document.getElementById("ln-wave-detail");
+    let xaxis = document.getElementById("ln-wave-xaxis");
+    if (!wrapper || !canvas || !detail) return;
 
-    liuNianArr.forEach((ln, idx) => {
-        const [can, chi] = ln.can_chi.split(' ');
-        const isCurrentYear = (ln.nam === currentYear);
-        if (isCurrentYear) currentYearIdx = idx;
+    // Tự tạo thẻ trục X nếu HTML chưa kịp thêm
+    if (!xaxis) {
+        xaxis = document.createElement("div");
+        xaxis.id = "ln-wave-xaxis";
+        xaxis.className = "ln-wave-xaxis";
+        canvas.insertAdjacentElement("afterend", xaxis);
+    }
 
-        const cell = document.createElement('div');
-        cell.className = 't-cell ln-cell';
-        cell.style.cursor = 'pointer';
-        cell.dataset.idx = idx;
+    // Ẩn biểu đồ nếu là Tiểu Vận (diem_song === null) hoặc không có dữ liệu
+    const valid = Array.isArray(liuNianList) && liuNianList.some(item => typeof item.diem_song === "number");
+    if (!valid) {
+        wrapper.style.display = "none";
+        return;
+    }
+    wrapper.style.display = "block";
 
-        if (isCurrentYear) {
-            cell.style.borderBottom = 'none';
-            cell.style.boxShadow = 'inset 0 -3px 0 #1a4f32';
-            cell.style.backgroundColor = '#f4f9f5';
-        }
+    const n = liuNianList.length;
+    const curYear = new Date().getFullYear();
 
-        cell.innerHTML = `
-            <div class="ln-tuoi" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.tuoi}t</div>
-            <div class="ln-canchi">
-                <span class="${getColorClass(can)}">${can}</span><br>
-                <span class="${getColorClass(chi)}">${chi}</span>
-            </div>
-            <div class="ln-nam" style="${isCurrentYear ? 'font-weight: bold;' : ''}">${ln.nam}</div>
-        `;
-
-        // Đồng bộ: di chuột hoặc chạm vào ô năm -> nhảy sóng & hiện chi tiết tương ứng
-        const syncWave = () => {
-            if (typeof window.syncLuuNienWave === 'function') {
-                window.syncLuuNienWave(idx);
-            }
+    const pts = liuNianList.map((item, i) => {
+        const val = typeof item.diem_song === "number" ? item.diem_song : 0;
+        return {
+            x: ((i + 0.5) / n) * 1000,
+            y: 50 - (val / 100) * 40, // +100 -> 10%, 0 -> 50%, -100 -> 90%
+            val,
+            item
         };
-        cell.addEventListener('mouseenter', syncWave);
-        cell.addEventListener('click', syncWave);
-
-        lnContainer.appendChild(cell);
     });
 
-    // Vẽ biểu đồ sóng ngay bên dưới (mặc định trỏ vào năm hiện tại nếu có)
-    renderLuuNienWave(liuNianArr, currentYearIdx);
+    // Tạo đường cong mượt Cubic Bezier
+    let dLine = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[i], p1 = pts[i + 1];
+        const cx = ((p0.x + p1.x) / 2).toFixed(1);
+        dLine += ` C ${cx} ${p0.y.toFixed(1)}, ${cx} ${p1.y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
+    }
+    const dArea = `${dLine} L ${pts[n - 1].x.toFixed(1)} 50 L ${pts[0].x.toFixed(1)} 50 Z`;
+
+    const svgHTML = `
+        <svg class="ln-wave-svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+            <defs>
+                <clipPath id="ln-clip-up"><rect x="0" y="0" width="1000" height="50"></rect></clipPath>
+                <clipPath id="ln-clip-down"><rect x="0" y="50" width="1000" height="50"></rect></clipPath>
+                <linearGradient id="ln-grad-up" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1e7e4f" stop-opacity="0.32"></stop>
+                    <stop offset="100%" stop-color="#1e7e4f" stop-opacity="0.03"></stop>
+                </linearGradient>
+                <linearGradient id="ln-grad-down" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#c0392b" stop-opacity="0.03"></stop>
+                    <stop offset="100%" stop-color="#c0392b" stop-opacity="0.32"></stop>
+                </linearGradient>
+            </defs>
+            <line x1="0" y1="50" x2="1000" y2="50" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="4 4"></line>
+            <path d="${dArea}" fill="url(#ln-grad-up)" clip-path="url(#ln-clip-up)"></path>
+            <path d="${dArea}" fill="url(#ln-grad-down)" clip-path="url(#ln-clip-down)"></path>
+            <path d="${dLine}" fill="none" stroke="#1e7e4f" stroke-width="2.2" clip-path="url(#ln-clip-up)"></path>
+            <path d="${dLine}" fill="none" stroke="#c0392b" stroke-width="2.2" clip-path="url(#ln-clip-down)"></path>
+        </svg>
+    `;
+
+    // Overlay chấm tròn & đường gióng dọc
+    const overlayHTML = `
+        <div class="ln-wave-overlay" style="grid-template-columns: repeat(${n}, 1fr);">
+            ${pts.map((p, idx) => {
+                const color = p.val >= 10 ? "#1e7e4f" : (p.val <= -20 ? "#c0392b" : "#b89028");
+                const hasEvent = Array.isArray(p.item.su_kien) && p.item.su_kien.length > 0;
+                const isAct = idx === activeIndex ? "active" : "";
+                return `
+                    <div class="ln-wave-col ${isAct}" data-idx="${idx}">
+                        <div class="ln-wave-guide"></div>
+                        <div class="ln-wave-dot ${hasEvent ? "has-event" : ""}" style="top:${p.y}%; background:${color};"></div>
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `;
+
+    // Trục X hiển thị Năm + Chi (căn chuẩn 1-1 dưới từng chấm)
+    xaxis.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    xaxis.innerHTML = pts.map((p, idx) => {
+        const parts = (p.item.can_chi || "").split(" ");
+        const chi = parts[1] || "";
+        const isCurrent = p.item.nam === curYear ? "is-current" : "";
+        const isAct = idx === activeIndex ? "active" : "";
+        return `
+            <div class="ln-wave-xlabel ${isCurrent} ${isAct}" data-idx="${idx}">
+                <span class="ln-x-year">${p.item.nam}</span>
+                <span class="ln-x-chi">${chi}</span>
+            </div>
+        `;
+    }).join("");
+
+    canvas.innerHTML = svgHTML + overlayHTML;
+
+    const showDetail = (idx) => {
+        const p = pts[idx];
+        if (!p) return;
+        const badgeCls = p.val >= 10 ? "up" : (p.val <= -20 ? "down" : "mid");
+        const tags = (p.item.su_kien && p.item.su_kien.length)
+            ? p.item.su_kien.map(sk => `<span class="ln-wave-tag">${sk}</span>`).join("")
+            : `<span style="color:#777;">Không có xung/hợp đột biến.</span>`;
+
+        detail.innerHTML = `
+            <strong>${p.item.nam} (${p.item.can_chi})</strong>
+            <span class="ln-wave-badge ${badgeCls}">${p.item.xu_huong || "Bình hòa"}</span>
+            ${tags}
+        `;
+    };
+
+    const cols = canvas.querySelectorAll(".ln-wave-col");
+    const xlabels = xaxis.querySelectorAll(".ln-wave-xlabel");
+
+    const setActive = (idx) => {
+        cols.forEach(c => c.classList.remove("active"));
+        xlabels.forEach(l => l.classList.remove("active"));
+        if (cols[idx]) cols[idx].classList.add("active");
+        if (xlabels[idx]) xlabels[idx].classList.add("active");
+        showDetail(idx);
+    };
+
+    // Bắt sự kiện đồng bộ cho cả chấm sóng lẫn nhãn năm bên dưới
+    cols.forEach((col, idx) => {
+        col.addEventListener("mouseenter", () => setActive(idx));
+        col.addEventListener("click", () => setActive(idx));
+    });
+    xlabels.forEach((lbl, idx) => {
+        lbl.addEventListener("mouseenter", () => setActive(idx));
+        lbl.addEventListener("click", () => setActive(idx));
+    });
+
+    const defaultIdx = activeIndex >= 0
+        ? activeIndex
+        : Math.max(0, liuNianList.findIndex(x => x.nam === curYear));
+    setActive(defaultIdx);
+
+    window.syncLuuNienWave = setActive;
 }
 
 function renderLuuNienWave(liuNianList, activeIndex = -1) {
