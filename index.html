@@ -1470,12 +1470,17 @@
 }
 </style>
 <style>
-    .ln-wave-wrapper {
+.ln-wave-wrapper {
     margin-top: 10px;
     border: 1px solid #e5e0d5;
     border-radius: 6px;
     background: #fdfcf9;
     padding: 10px 0 8px;
+    /* Khóa cứng chiều ngang: không bao giờ đẩy phình cột cha */
+    width: 0;
+    min-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 .ln-wave-header {
     display: flex;
@@ -1568,10 +1573,12 @@
     border-top: 1px dashed #e2dcd0;
     font-size: 12px;
     color: #333;
-    min-height: 24px;
+    /* Khóa sẵn chiều cao đủ cho 2 dòng để không bị giật dọc */
+    min-height: 48px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    align-content: flex-start;
     gap: 6px;
 }
 .ln-wave-badge {
