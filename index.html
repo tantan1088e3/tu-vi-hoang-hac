@@ -2239,7 +2239,7 @@
                 cell.classList.add('active');
                 
                 // Render 10 năm lưu niên tương ứng
-                (dv.liu_nian);
+                renderLuuNian(dv.liu_nian);
                 
                 // KÍCH HOẠT MỞ ĐẠI VẬN TƯƠNG ỨNG Ở CỘT TRÁI
                 moDaiVanCotTrai(index);
@@ -2249,7 +2249,7 @@
         
         // --- BƯỚC 3: TRẠNG THÁI MẶC ĐỊNH KHI TẢI TRANG ---
         if (daiVanList.length > 0) {
-            (daiVanList[activeIndex].liu_nian);
+            renderLuuNian(daiVanList[activeIndex].liu_nian);
             //moDaiVanCotTrai(activeIndex); // Tự động mở cái đang active
         }
 
