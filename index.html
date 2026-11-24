@@ -1598,6 +1598,55 @@
     font-size: 11px;
     color: #444;
 }
+/* Hàng trục X chứa Năm + Địa Chi */
+.ln-wave-xaxis {
+    display: grid;
+    width: 100%;
+    border-top: 1px solid #e5e0d5;
+    padding-top: 5px;
+    margin-top: 2px;
+}
+.ln-wave-xlabel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 3px 1px;
+    border-radius: 4px;
+    line-height: 1.2;
+    transition: background-color 0.15s ease;
+    user-select: none;
+}
+.ln-x-year {
+    font-size: 11px;
+    font-weight: 500;
+    color: #5c5346;
+    font-variant-numeric: tabular-nums;
+}
+.ln-x-chi {
+    font-size: 10px;
+    color: #8c8273;
+    margin-top: 1px;
+}
+.ln-wave-xlabel.is-current .ln-x-year {
+    color: #1e7e4f;
+    font-weight: 700;
+}
+.ln-wave-xlabel:hover,
+.ln-wave-xlabel.active {
+    background-color: #eaf3ec;
+}
+.ln-wave-xlabel.active .ln-x-year,
+.ln-wave-xlabel.active .ln-x-chi {
+    color: #166534;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .ln-x-year { font-size: 9.5px; }
+    .ln-x-chi { font-size: 9px; }
+}
 </style>
 </head>
 <body>
