@@ -1470,82 +1470,133 @@
 }
 </style>
 <style>
-/* Đường gióng dọc mờ cho từng năm, đậm hơn khi active */
-.ln-wave-col .ln-wave-guide {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    border-left: 1px dashed rgba(139, 125, 107, 0.22);
-    pointer-events: none;
-    transition: border-color 0.15s ease;
+.ln-wave-wrapper {
+    margin-top: 10px;
+    border: 1px solid #e5e0d5;
+    border-radius: 6px;
+    background: #fdfcf9;
+    padding: 10px 0 8px;
+    /* Khóa cứng chiều ngang: không bao giờ đẩy phình cột cha */
+    width: 0;
+    min-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
-.ln-wave-col.active .ln-wave-guide {
-    border-left: 1px dashed rgba(26, 79, 50, 0.75);
-}
-
-/* Hàng trục X chứa Năm + Địa Chi */
-.ln-wave-xaxis {
-    display: grid;
-    border-top: 1px solid #e4dccb;
-    padding-top: 6px;
-    margin-bottom: 10px;
-}
-
-.ln-wave-xlabel {
+.ln-wave-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 3px 1px;
-    border-radius: 5px;
-    line-height: 1.2;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    padding: 0 12px 6px;
+    font-size: 12px;
+    color: #555;
+}
+.ln-wave-title {
+    font-weight: 600;
+    color: #161c18;
+}
+.ln-wave-legend {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+}
+.ln-wave-legend i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+.ln-wave-legend .dot-up { background: #1e7e4f; }
+.ln-wave-legend .dot-down { background: #c0392b; }
+
+.ln-wave-canvas {
+    position: relative;
+    width: 100%;
+    height: 115px;
     user-select: none;
 }
-
-.ln-x-year {
-    font-size: 11px;
-    font-weight: 500;
-    color: #5c5346;
-    font-variant-numeric: tabular-nums;
+.ln-wave-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-
-.ln-x-chi {
-    font-size: 10px;
-    color: #8c8273;
-    margin-top: 1px;
+.ln-wave-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    z-index: 2;
 }
-
-/* Đánh dấu nhẹ năm hiện tại */
-.ln-wave-xlabel.is-current .ln-x-year {
-    color: #1a4f32;
-    font-weight: 700;
+.ln-wave-col {
+    position: relative;
+    cursor: pointer;
 }
-
-/* Trạng thái đang chọn / di chuột */
-.ln-wave-xlabel.active {
-    background-color: #eaf3ec;
+.ln-wave-col:hover .ln-wave-guide,
+.ln-wave-col.active .ln-wave-guide {
+    opacity: 1;
 }
-.ln-wave-xlabel.active .ln-x-year {
-    color: #1a4f32;
-    font-weight: 700;
+.ln-wave-guide {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 50%;
+    width: 1px;
+    background: rgba(212, 175, 55, 0.45);
+    opacity: 0;
+    transition: opacity 0.15s;
 }
-.ln-wave-xlabel.active .ln-x-chi {
-    color: #1a4f32;
+.ln-wave-dot {
+    position: absolute;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s;
+}
+.ln-wave-dot.has-event {
+    width: 11px;
+    height: 11px;
+}
+.ln-wave-col:hover .ln-wave-dot,
+.ln-wave-col.active .ln-wave-dot {
+    transform: translate(-50%, -50%) scale(1.35);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+}
+.ln-wave-detail {
+    margin: 6px 12px 0;
+    padding-top: 7px;
+    border-top: 1px dashed #e2dcd0;
+    font-size: 12px;
+    color: #333;
+    /* Khóa sẵn chiều cao đủ cho 2 dòng để không bị giật dọc */
+    min-height: 48px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    gap: 6px;
+}
+.ln-wave-badge {
     font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
 }
-
-/* Tối ưu cho màn hình điện thoại (10 cột không bị tràn) */
-@media (max-width: 600px) {
-    .ln-x-year {
-        font-size: 9.5px;
-    }
-    .ln-x-chi {
-        font-size: 9px;
-    }
+.ln-wave-badge.up { background: #e6f4ec; color: #166534; }
+.ln-wave-badge.mid { background: #f3f0e6; color: #786020; }
+.ln-wave-badge.down { background: #fdecec; color: #b91c1c; }
+.ln-wave-tag {
+    background: #fff;
+    border: 1px solid #dfd8c8;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    color: #444;
 }
 </style>
 </head>
