@@ -2150,15 +2150,18 @@ function highlightBaziKeywords(text) {
     // 1. Làm đậm nhãn đầu dòng
     html = html.replace(/^([^:]{3,35}:)/, '<strong class="hl-label">$1</strong>');
 
-    // Nhóm Tốt / Cát (Xanh rêu)
+    // 2. Nhóm Tốt / Cát (Xanh rêu)
     const goodRegex = /(Đắc lệnh|Tài tinh chế Ấn|Tỷ Kiếp gánh Tài|Thương Quan khứ Quan|Ấn tinh chế Thực|Thương Quan chế Sát|Thực Thần chế Sát|Quan\/Sát Ấn tương sinh|Sát Ấn tương sinh|Quan Ấn tương sinh|Thực Thần sinh Tài|Thương Quan sinh Tài|Chuyển Kỵ thành Hỷ|Dĩ Kỵ chế Kỵ|Hóa Cát|Xung Khứ Kỵ|gốc rễ vững)/gi;
+    html = html.replace(goodRegex, (m) => createKeywordLink(m, "hl-good"));
 
-    // Nhóm Xấu / Cảnh báo (Đỏ đất)
+    // 3. Nhóm Xấu / Cảnh báo (Đỏ đất)
     const badRegex = /(Thất lệnh|Quan Sát hỗn tạp|Thương Quan kiến Quan|Kiêu Thần đoạt Thực|Tỷ Kiếp đoạt Tài|Tham Tài hoại Ấn|Tài Ấn tương khắc|Sát sinh Kỵ Ấn|Quan sinh Kỵ Ấn|Thực Thần sinh Kỵ Tài|Thương Quan sinh Kỵ Tài|Thực Thần khắc Sát|Thương Quan khắc Sát|THIÊN KHẮC ĐỊA XUNG|Tranh hợp|suy kiệt\/biến chất|suy kiệt|bạt căn|bất ổn|Kỵ Thần)/gi;
+    html = html.replace(badRegex, (m) => createKeywordLink(m, "hl-bad"));
 
-    // 4. Nhóm Tương tác & Hóa (Vàng hổ phách) — THÊM hợp bất hóa|hợp trói vào đây
+    // 4. Nhóm Tương tác & Hóa (Vàng hổ phách)
     const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tham Hợp Vong Xung|hợp bất hóa|hợp trói|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
     html = html.replace(interRegex, (m) => createKeywordLink(m, "hl-inter"));
+
     return html;
 }
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
