@@ -1673,7 +1673,15 @@
     border-radius: 3px;
     font-weight: 600;
 }
-
+a.hl-link {
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease, text-decoration 0.15s ease;
+}
+a.hl-link:hover {
+    text-decoration: underline;
+    opacity: 0.85;
+}
 </style>
 </head>
 <body>
@@ -2114,30 +2122,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-    function highlightBaziKeywords(text) {
-        if (!text) return "";
-        let html = String(text);
+    const BAZI_KEYWORD_LINKS = {
+        "thương quan chế sát": "/bai-viet/thuong-quan-che-sat.html",
+        "thất lệnh": "/bai-viet/dac-lenh-that-lenh.html",
+        "đắc lệnh": "/bai-viet/dac-lenh-that-lenh.html",
+        "lục hợp": "/bai-viet/luc-hop-dia-chi.html",
+        "tự hình": "/bai-viet/tu-hinh-trong-bat-tu.html",
+        // ... sau này có bài mới chỉ cần thêm vào đây
+    };
     
-        // 1. Làm đậm nhãn đầu dòng (VD: "Thiên Can:", "Tương tác Địa chi:")
-        html = html.replace(
-            /^([^:]{3,35}:)/,
-            '<strong class="hl-label">$1</strong>'
-        );
     
-        // 2. Nhóm Tốt / Cát (Xanh rêu)
-        const goodRegex = /(Đắc lệnh|Thương Quan chế Sát|Thực Thần chế Sát|Quan\/Sát Ấn tương sinh|Sát Ấn tương sinh|Quan Ấn tương sinh|Thực Thần sinh Tài|Thương Quan sinh Tài|Chuyển Kỵ thành Hỷ|Dĩ Kỵ chế Kỵ|Hóa Cát|Xung Khứ Kỵ|gốc rễ vững)/gi;
-        html = html.replace(goodRegex, '<span class="hl-good">$1</span>');
-    
-        // 3. Nhóm Xấu / Cảnh báo (Đỏ đất)
-        const badRegex = /(Thất lệnh|Quan Sát hỗn tạp|Thương Quan kiến Quan|Kiêu Thần đoạt Thực|Tỷ Kiếp đoạt Tài|Tham Tài hoại Ấn|Tài Ấn tương khắc|THIÊN KHẮC ĐỊA XUNG|Tranh hợp|suy kiệt\/biến chất|suy kiệt|bạt căn|hợp bất hóa|hợp trói|bất ổn|Kỵ Thần)/gi;
-        html = html.replace(badRegex, '<span class="hl-bad">$1</span>');
-    
-        // 4. Nhóm Tương tác & Hóa (Vàng hổ phách)
-        const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tham Hợp Vong Xung|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
-        html = html.replace(interRegex, '<span class="hl-inter">$1</span>');
-    
-        return html;
+    function createKeywordLink(match, cls) {
+    const key = match.toLowerCase().trim();
+    const internalUrl = BAZI_KEYWORD_LINKS[key];
+
+    if (internalUrl) {
+        return `<a href="${internalUrl}" target="_blank" rel="noopener noreferrer" class="${cls} hl-link" title="Đọc bài phân tích về '${match}'">${match}</a>`;
     }
+    // Chưa có bài viết -> dẫn sang Google kèm ngữ cảnh "trong bát tự"
+    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(match + " trong bát tự")}`;
+    return `<a href="${googleUrl}" target="_blank" rel="noopener noreferrer" class="${cls} hl-link" title="Tìm hiểu '${match}' trên Google">${match}</a>`;
+}
+
+function highlightBaziKeywords(text) {
+    if (!text) return "";
+    let html = String(text);
+
+    // 1. Làm đậm nhãn đầu dòng
+    html = html.replace(/^([^:]{3,35}:)/, '<strong class="hl-label">$1</strong>');
+
+    // 2. Nhóm Tốt / Cát (Xanh rêu)
+    const goodRegex = /(Đắc lệnh|Thương Quan chế Sát|Thực Thần chế Sát|Quan\/Sát Ấn tương sinh|Sát Ấn tương sinh|Quan Ấn tương sinh|Thực Thần sinh Tài|Thương Quan sinh Tài|Chuyển Kỵ thành Hỷ|Dĩ Kỵ chế Kỵ|Hóa Cát|Xung Khứ Kỵ|gốc rễ vững)/gi;
+    html = html.replace(goodRegex, (m) => createKeywordLink(m, "hl-good"));
+
+    // 3. Nhóm Xấu / Cảnh báo (Đỏ đất)
+    const badRegex = /(Thất lệnh|Quan Sát hỗn tạp|Thương Quan kiến Quan|Kiêu Thần đoạt Thực|Tỷ Kiếp đoạt Tài|Tham Tài hoại Ấn|Tài Ấn tương khắc|THIÊN KHẮC ĐỊA XUNG|Tranh hợp|suy kiệt\/biến chất|suy kiệt|bạt căn|hợp bất hóa|hợp trói|bất ổn|Kỵ Thần)/gi;
+    html = html.replace(badRegex, (m) => createKeywordLink(m, "hl-bad"));
+
+    // 4. Nhóm Tương tác & Hóa (Vàng hổ phách)
+    const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tham Hợp Vong Xung|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
+    html = html.replace(interRegex, (m) => createKeywordLink(m, "hl-inter"));
+
+    return html;
+}
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
     
