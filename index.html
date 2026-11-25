@@ -1684,7 +1684,57 @@ a.hl-link:hover {
     opacity: 0.85;
 }
 
+.optional-ai-box {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #f6faf8;
+    border: 1px dashed #b9d2c9;
+    border-radius: 6px;
+}
 
+.label-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.opt-tag {
+    font-weight: normal;
+    color: #6b7b75;
+    font-size: 12px;
+}
+
+.char-count {
+    font-weight: normal;
+    color: #888;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.quick-q-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 7px;
+}
+
+.quick-q-btn {
+    background: #ffffff;
+    border: 1px solid #c5dbd3;
+    color: #1e4b41;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.quick-q-btn:hover {
+    background: #1e4b41;
+    color: #f0d78c;
+    border-color: #1e4b41;
+}
 </style>
 </head>
 <body>
@@ -1726,50 +1776,78 @@ a.hl-link:hover {
                 
             <!-- KHUNG 1A: FORM NHẬP THÔNG TIN -->
             <div class="form-card" id="bazi-form-container">
-                <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
-                <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để thiết lập lá số</p>
-                <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
-                    <div class="form-group">
-                        <label>Họ và tên đương số</label>
-                        <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A">
+            <h2>LẬP LÁ SỐ TỨ TRỤ</h2>
+            <p class="subtitle">Nhập thông tin ngày giờ sinh dương lịch để thiết lập lá số</p>
+            <form id="bazi-form" onsubmit="handleBaziSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Họ và tên đương số</label>
+                    <input type="text" class="form-control" id="name" placeholder="Ví dụ: Nguyễn Văn A">
+                </div>
+                
+                <div class="row-group">
+                    <div class="form-group col-third">
+                        <label for="birth_day">Ngày</label>
+                        <select class="form-control" id="birth_day" required></select>
                     </div>
-                    
-                    <div class="row-group">
-                        <div class="form-group col-third">
-                            <label>Ngày</label>
-                            <select class="form-control" id="birth_day" required></select>
-                        </div>
-                        <div class="form-group col-third">
-                            <label>Tháng</label>
-                            <select class="form-control" id="birth_month" required></select>
-                        </div>
-                        <div class="form-group col-third">
-                            <label>Năm</label>
-                            <select class="form-control" id="birth_year" required></select>
+                    <div class="form-group col-third">
+                        <label for="birth_month">Tháng</label>
+                        <select class="form-control" id="birth_month" required></select>
+                    </div>
+                    <div class="form-group col-third">
+                        <label for="birth_year">Năm</label>
+                        <select class="form-control" id="birth_year" required></select>
+                    </div>
+                </div>
+        
+                <div class="row-group">
+                    <div class="form-group col-third">
+                        <label for="birth_hour">Giờ</label>
+                        <select class="form-control" id="birth_hour" required></select>
+                    </div>
+                    <div class="form-group col-third">
+                        <label for="birth_minute">Phút</label>
+                        <select class="form-control" id="birth_minute" required></select>
+                    </div>
+                    <div class="form-group col-third">
+                        <label for="gender">Giới tính</label>
+                        <select class="form-control" id="gender">
+                            <option value="Nam">Nam (Càn tạo)</option>
+                            <option value="Nu">Nữ (Khôn tạo)</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <!-- Khối tùy chọn: Câu hỏi trực diện & Email nhận bài luận -->
+                <div class="optional-ai-box">
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="input-cau-hoi" class="label-flex">
+                            <span>Câu hỏi muốn luận trực diện <small class="opt-tag">(Không bắt buộc • Miễn phí)</small></span>
+                            <small id="cau-hoi-count" class="char-count">0/250</small>
+                        </label>
+                        <textarea class="form-control" id="input-cau-hoi" rows="2" maxlength="250"
+                            placeholder="VD: Năm nay có nên chuyển việc không? Hoặc chuyện tình cảm, tài lộc sắp tới thế nào?"
+                            oninput="updateCauHoiCount(this)"
+                            style="resize: none; font-family: inherit; line-height: 1.45;"></textarea>
+        
+                        <div class="quick-q-wrap">
+                            <button type="button" class="quick-q-btn" onclick="chonCauHoiNhanh('Công việc và tài lộc năm nay có biến động gì đáng chú ý không?')">+ Công việc & Tài lộc</button>
+                            <button type="button" class="quick-q-btn" onclick="chonCauHoiNhanh('Chuyện tình duyên, gia đạo trong vận hiện tại thế nào?')">+ Tình duyên</button>
+                            <button type="button" class="quick-q-btn" onclick="chonCauHoiNhanh('Vận hạn năm nay cần lưu ý phòng tránh điều gì nhất?')">+ Hạn năm nay</button>
                         </div>
                     </div>
-    
-                    <div class="row-group">
-                        <div class="form-group col-third">
-                            <label>Giờ</label>
-                            <select class="form-control" id="birth_hour" required></select>
-                        </div>
-                        <div class="form-group col-third">
-                            <label>Phút</label>
-                            <select class="form-control" id="birth_minute" required></select>
-                        </div>
-                        <div class="form-group col-third">
-                            <label>Giới tính</label>
-                            <select class="form-control" id="gender">
-                                <option value="Nam">Nam (Càn tạo)</option>
-                                <option value="Nu">Nữ (Khôn tạo)</option>
-                            </select>
-                        </div>
+        
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="input-email-notify">
+                            Email nhận link bài luận AI <small class="opt-tag">(Tùy chọn — hoặc chọn Telegram sau khi lập)</small>
+                        </label>
+                        <input type="email" class="form-control" id="input-email-notify"
+                               placeholder="Nhập email để hệ thống tự gửi link ngay khi giải xong...">
                     </div>
-    
-                    <button type="submit" class="btn-submit" style="margin-top: 20px;">BẤM ĐỂ LẬP LÁ SỐ</button>
-                </form>
-            </div>
+                </div>
+        
+                <button type="submit" class="btn-submit" style="margin-top: 18px;">BẤM ĐỂ LẬP LÁ SỐ</button>
+            </form>
+        </div>
     
             <!-- CỘT 3: KHU VỰC LỊCH SỬ BÊN PHẢI -->
             <div class="history-col">
@@ -2240,95 +2318,105 @@ function highlightBaziKeywords(text) {
     }
 
     async function handleBaziSubmit(event) {
-        event.preventDefault(); 
-        stopExistingAiPolling();
-        // 1. LẤY DỮ LIỆU ĐẦU VÀO
-        let name = document.getElementById('name').value.trim();
-        if (name === '') name = 'Vô Danh Khách';
-        const day = parseInt(document.getElementById('birth_day').value, 10);
-        const month = parseInt(document.getElementById('birth_month').value, 10);
-        const year = parseInt(document.getElementById('birth_year').value, 10);
-        const hour = parseInt(document.getElementById('birth_hour').value, 10);
-        const minute = parseInt(document.getElementById('birth_minute').value, 10);
-        const gender = document.getElementById('gender').value;
-        const genderInt = gender === 'Nam' ? 1 : 0;
-        const birthdateStr = `${day}/${month}/${year}`;
-        const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
-        const loadingScreen = document.getElementById("loadingOverlay");
+    event.preventDefault(); 
+    stopExistingAiPolling();
 
-        // Tạo object userInput để truyền vào LocalStorage
-        const userInput = {
-            name: name,
-            gender: genderInt,
-            year: year,
-            month: month,
-            day: day,
-            hour: hour,
-            minute: minute
-        };
-        
-        try {
-            // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI 
-            if (loadingScreen) {
-                loadingScreen.style.display = "flex";
-            }
-            // 3. GỌI API VÀ ĐỢI (AWAIT) DATA TRẢ VỀ
-            const res = await fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': 'HoangHac_Web_Public_2026'
-                },
-                body: JSON.stringify({ year, month, day, hour, minute, gender: genderInt })
-            });
-            const response = await res.json();
-            // 4. KHI API ĐÃ CHẠY XONG -> TẮT MÀN HÌNH LOADING
-            if (loadingScreen) {
-                loadingScreen.style.display = "none";
-            }
+    // 1. LẤY DỮ LIỆU ĐẦU VÀO
+    let name = document.getElementById('name').value.trim();
+    if (name === '') name = 'Vô Danh Khách';
+    const day = parseInt(document.getElementById('birth_day').value, 10);
+    const month = parseInt(document.getElementById('birth_month').value, 10);
+    const year = parseInt(document.getElementById('birth_year').value, 10);
+    const hour = parseInt(document.getElementById('birth_hour').value, 10);
+    const minute = parseInt(document.getElementById('birth_minute').value, 10);
+    const gender = document.getElementById('gender').value;
+    const genderInt = gender === 'Nam' ? 1 : 0;
+    const birthdateStr = `${day}/${month}/${year}`;
+    const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
+    const loadingScreen = document.getElementById("loadingOverlay");
+
+    const cauHoi = (document.getElementById('input-cau-hoi')?.value || '').trim().slice(0, 250);
+    const notifyEmail = (document.getElementById('input-email-notify')?.value || '').trim();
+
+    // Tạo object userInput để truyền vào LocalStorage
+    const userInput = {
+        name: name,
+        gender: genderInt,
+        year: year,
+        month: month,
+        day: day,
+        hour: hour,
+        minute: minute,
+        cauHoi: cauHoi
+    };
     
-            // 5. XỬ LÝ KẾT QUẢ VÀ ĐỔI GIAO DIỆN
-            if (response.status === "success") {
-                // =======================================
-                // 3. LƯU LÁ SỐ VÀO LOCAL STORAGE
-                // ======================================
-                ChartStorage.save(userInput);
-                console.log("Đã lưu lá số thành công!");
-                renderHistoryList();
-                // Chỉ khi có data xịn mới bắt đầu ghi text và ẩn/hiện div
-                document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
-                document.getElementById('bazi-form-container').style.display = 'none';
-                document.getElementById('bazi-result-container').style.display = 'block';
-                document.getElementById('btnBackToTop').style.display = 'block';
-                document.getElementById('btnAI').style.display = 'flex';
-                // 2. ẨN KHU VỰC LỊCH SỬ
-                document.getElementById('bazi-history-container').style.display = 'none';
-                // Nếu bạn có dùng thẻ bọc cột .history-col ở ngoài, hãy ẩn luôn nó để xóa sạch khoảng trống
-                const historyCol = document.querySelector('.history-col');
-                if (historyCol) historyCol.style.display = 'none';
-                
-                // 3. Ẩn cột trống bên trái (nếu có dùng ở layout 3 cột)
-                const emptyCol = document.querySelector('.empty-col');
-                if (emptyCol) emptyCol.style.display = 'none';
-                // Vẽ data lên màn hình
-                renderBaziResult(response.data, { year, month, day, hour, minute }, genderInt);
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
-            } else {
-                alert("Lỗi từ máy chủ: " + JSON.stringify(response));
-                resetBaziForm();
-            }
-    
-        } catch (err) {
-            // TẮT MÀN HÌNH LOADING NẾU CÓ LỖI MẠNG
-            if (loadingScreen) {
-                loadingScreen.style.display = "none";
-            }
-            console.error("Lỗi:", err);
-            alert("Lỗi kết nối API. Vui lòng kiểm tra lại mạng hoặc VPS.");
+    try {
+        // 2. BẬT MÀN HÌNH LOADING TRƯỚC KHI GỌI 
+        if (loadingScreen) {
+            loadingScreen.style.display = "flex";
+        }
+
+        // 3. GỌI API VÀ ĐỢI (AWAIT) DATA TRẢ VỀ (ĐÃ GỬI KÈM cau_hoi & notify_email)
+        const res = await fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'HoangHac_Web_Public_2026'
+            },
+            body: JSON.stringify({
+                year,
+                month,
+                day,
+                hour,
+                minute,
+                gender: genderInt,
+                cau_hoi: cauHoi,
+                notify_email: notifyEmail
+            })
+        });
+        const response = await res.json();
+
+        // 4. KHI API ĐÃ CHẠY XONG -> TẮT MÀN HÌNH LOADING
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+
+        // 5. XỬ LÝ KẾT QUẢ VÀ ĐỔI GIAO DIỆN
+        if (response.status === "success") {
+            ChartStorage.save(userInput);
+            console.log("Đã lưu lá số thành công!");
+            renderHistoryList();
+
+            document.getElementById('res-subtitle').innerText = `Đương số: ${name} (${gender === 'Nam' ? 'Càn tạo' : 'Khôn tạo'}) - Sinh ngày: ${birthdateStr} lúc ${birthtimeStr}`;
+            document.getElementById('bazi-form-container').style.display = 'none';
+            document.getElementById('bazi-result-container').style.display = 'block';
+            document.getElementById('btnBackToTop').style.display = 'block';
+            document.getElementById('btnAI').style.display = 'flex';
+
+            document.getElementById('bazi-history-container').style.display = 'none';
+            const historyCol = document.querySelector('.history-col');
+            if (historyCol) historyCol.style.display = 'none';
+            
+            const emptyCol = document.querySelector('.empty-col');
+            if (emptyCol) emptyCol.style.display = 'none';
+
+            // Truyền thêm cauHoi và notifyEmail xuống renderBaziResult
+            renderBaziResult(response.data, { year, month, day, hour, minute }, genderInt, cauHoi, notifyEmail);
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        } else {
+            alert("Lỗi từ máy chủ: " + JSON.stringify(response));
             resetBaziForm();
         }
-    
+
+    } catch (err) {
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+        console.error("Lỗi:", err);
+        alert("Lỗi kết nối API. Vui lòng kiểm tra lại mạng hoặc VPS.");
+        resetBaziForm();
     }
+}
 
     function renderBaziResult(data, inputTime,genderInt) {
         document.getElementById('val-nam-time').innerText = inputTime.year;
@@ -2505,7 +2593,7 @@ function highlightBaziKeywords(text) {
             const maLaSo = `LS_${inputTime.year}${inputTime.month}${inputTime.day}_${canhGioCode}_${genderInt}`;
 
             initNotifyBox(maLaSo);
-            
+
             // Gán ra biến toàn cục
             currentBaziDataForAI = {
                 ma_la_so: maLaSo,
@@ -4174,6 +4262,19 @@ window.addEventListener("DOMContentLoaded", async function () {
     if (!maLaSo) return;
     await openAiPopupByCode(maLaSo, null, true);
 });
+
+function updateCauHoiCount(el) {
+    const counter = document.getElementById('cau-hoi-count');
+    if (counter) counter.innerText = `${el.value.length}/250`;
+}
+
+function chonCauHoiNhanh(text) {
+    const el = document.getElementById('input-cau-hoi');
+    if (!el) return;
+    el.value = text;
+    updateCauHoiCount(el);
+    el.focus();
+}
 </script>
 </body>
 </html>
