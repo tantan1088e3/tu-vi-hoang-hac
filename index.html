@@ -1820,10 +1820,17 @@ a.hl-link:hover {
                 <!-- Khối tùy chọn: Câu hỏi trực diện & Email nhận bài luận -->
                 <div class="optional-ai-box">
                     <div class="form-group" style="margin-bottom: 12px;">
-                        <label for="input-cau-hoi" class="label-flex">
-                            <span>Câu hỏi muốn luận trực diện <small class="opt-tag">(Không bắt buộc • Miễn phí)</small></span>
-                            <small id="cau-hoi-count" class="char-count">0/250</small>
-                        </label>
+                        <div class="label-flex" style="margin-bottom: 6px;">
+                            <label for="input-cau-hoi" style="margin: 0;">
+                                Câu hỏi muốn luận trực diện <small class="opt-tag">(Miễn phí)</small>
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <select id="input-nam-hoi" class="form-control"
+                                        style="width: auto; padding: 2px 8px; height: 28px; font-size: 12.5px;">
+                                </select>
+                                <small id="cau-hoi-count" class="char-count">0/250</small>
+                            </div>
+                        </div>
                         <textarea class="form-control" id="input-cau-hoi" rows="2" maxlength="250"
                             placeholder="VD: Năm nay có nên chuyển việc không? Hoặc chuyện tình cảm, tài lộc sắp tới thế nào?"
                             oninput="updateCauHoiCount(this)"
@@ -2335,7 +2342,9 @@ function highlightBaziKeywords(text) {
     const birthtimeStr = `${hour}:${minute < 10 ? '0' + minute : minute}`;
     const loadingScreen = document.getElementById("loadingOverlay");
 
-    const cauHoi = (document.getElementById('input-cau-hoi')?.value || '').trim().slice(0, 250);
+    const rawCauHoi = (document.getElementById('input-cau-hoi')?.value || '').trim().slice(0, 220);
+    const namHoi = document.getElementById('input-nam-hoi')?.value || '';
+    const cauHoi = rawCauHoi ? `[Trọng tâm năm ${namHoi}] ${rawCauHoi}` : '';
     const notifyEmail = (document.getElementById('input-email-notify')?.value || '').trim();
 
     // Tạo object userInput để truyền vào LocalStorage
@@ -4275,6 +4284,21 @@ function chonCauHoiNhanh(text) {
     updateCauHoiCount(el);
     el.focus();
 }
+(function initNamHoiSelect() {
+    const sel = document.getElementById('input-nam-hoi');
+    if (!sel) return;
+    const can = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+    const chi = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+    const curYear = new Date().getFullYear();
+
+    for (let y = curYear; y <= curYear + 2; y++) {
+        const canChi = `${can[(y - 4) % 10]} ${chi[(y - 4) % 12]}`;
+        const opt = document.createElement('option');
+        opt.value = `${y} (${canChi})`;
+        opt.textContent = `Năm ${y} - ${canChi}`;
+        sel.appendChild(opt);
+    }
+})();
 </script>
 </body>
 </html>
