@@ -1442,7 +1442,12 @@
         /* Ép chặt tối đa theo chiều rộng màn hình điện thoại */
         max-width: calc(100vw - 13px); /* Giảm từ 24px xuống 16px cho khớp mép phải */
         padding: 10px 12px;
+}
+@media screen and (max-width: 768px) {
+    input, textarea, select {
+        font-size: 16px !important;
     }
+}
 
     .aff-list {
         display: flex;
@@ -1734,6 +1739,16 @@ a.hl-link:hover {
     background: #1e4b41;
     color: #f0d78c;
     border-color: #1e4b41;
+}
+
+#input-cau-hoi {
+    width: 100%;
+    min-height: 76px;
+    height: auto;
+    padding: 10px 12px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    resize: vertical;
 }
 </style>
 </head>
