@@ -1647,6 +1647,33 @@
     .ln-x-year { font-size: 9.5px; }
     .ln-x-chi { font-size: 9px; }
 }
+
+.hl-label {
+    color: #161c18;
+    font-weight: 700;
+}
+.hl-good {
+    color: #166534;
+    background-color: #e6f4ec;
+    padding: 0 4px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+.hl-bad {
+    color: #a93226;
+    background-color: #fdecec;
+    padding: 0 4px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+.hl-inter {
+    color: #8a5a00;
+    background-color: #fdf3dc;
+    padding: 0 4px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
 </style>
 </head>
 <body>
@@ -2087,6 +2114,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+    function highlightBaziKeywords(text) {
+        if (!text) return "";
+        let html = String(text);
+    
+        // 1. Làm đậm nhãn đầu dòng (VD: "Thiên Can:", "Tương tác Địa chi:")
+        html = html.replace(
+            /^([^:]{3,35}:)/,
+            '<strong class="hl-label">$1</strong>'
+        );
+    
+        // 2. Nhóm Tốt / Cát (Xanh rêu)
+        const goodRegex = /(Đắc lệnh|Thương Quan chế Sát|Thực Thần chế Sát|Quan\/Sát Ấn tương sinh|Sát Ấn tương sinh|Quan Ấn tương sinh|Thực Thần sinh Tài|Thương Quan sinh Tài|Chuyển Kỵ thành Hỷ|Dĩ Kỵ chế Kỵ|Hóa Cát|Xung Khứ Kỵ|gốc rễ vững)/gi;
+        html = html.replace(goodRegex, '<span class="hl-good">$1</span>');
+    
+        // 3. Nhóm Xấu / Cảnh báo (Đỏ đất)
+        const badRegex = /(Thất lệnh|Quan Sát hỗn tạp|Thương Quan kiến Quan|Kiêu Thần đoạt Thực|Tỷ Kiếp đoạt Tài|Tham Tài hoại Ấn|Tài Ấn tương khắc|THIÊN KHẮC ĐỊA XUNG|Tranh hợp|suy kiệt\/biến chất|suy kiệt|bạt căn|hợp bất hóa|hợp trói|bất ổn|Kỵ Thần)/gi;
+        html = html.replace(badRegex, '<span class="hl-bad">$1</span>');
+    
+        // 4. Nhóm Tương tác & Hóa (Vàng hổ phách)
+        const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tham Hợp Vong Xung|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
+        html = html.replace(interRegex, '<span class="hl-inter">$1</span>');
+    
+        return html;
+    }
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
     
@@ -2363,7 +2414,7 @@
             let htmlChiTiet = "";
             if (vuongSuy.phan_tich_chi_tiet && vuongSuy.phan_tich_chi_tiet.length > 0) {
                 vuongSuy.phan_tich_chi_tiet.forEach(dong => {
-                    htmlChiTiet += `<div style="margin-bottom: 6px;">• ${dong}</div>`;
+                    htmlChiTiet += `<div style="margin-bottom: 6px;">• ${highlightBaziKeywords(dong)}</div>`;
                 });
             }
 
@@ -2583,7 +2634,9 @@ function getHTMLChiTietDaiVan(dv) {
             tuongTacHtml += `
                 <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid ${borderColor}; border-radius: 4px;">
                     <div style="font-weight: bold; color: ${titleColor}; font-size: 15px;">${icon} ${loaiText}</div>
-                    <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
+                    <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">
+                        ${highlightBaziKeywords(item.chi_tiet)}
+                    </div>
                 </div>
             `;
         });
