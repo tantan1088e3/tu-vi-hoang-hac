@@ -2244,7 +2244,7 @@ function highlightBaziKeywords(text) {
     html = html.replace(badRegex, (m) => createKeywordLink(m, "hl-bad"));
 
     // 4. Nhóm Tương tác & Hóa (Vàng hổ phách)
-    const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tham Hợp Vong Xung|hợp bất hóa|hợp trói|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
+    const interRegex = /(Tam hội|Tam hợp|Bán hợp|Lục hợp|Lục xung|Trực xung|Tứ hành xung|Tam hình|Tương hình|tự hình|Tương phá|Lục hại|Tương hại|Tham Hợp Vong Xung|hợp bất hóa|hợp trói|hóa Mộc|hóa Hỏa|hóa Thổ|hóa Kim|hóa Thủy|hướng hóa Mộc|hướng hóa Hỏa|hướng hóa Thổ|hướng hóa Kim|hướng hóa Thủy|Dụng Thần|Hỷ Thần)/gi;
     html = html.replace(interRegex, (m) => createKeywordLink(m, "hl-inter"));
 
     return html;
