@@ -2343,8 +2343,11 @@ function highlightBaziKeywords(text) {
     const loadingScreen = document.getElementById("loadingOverlay");
 
     const rawCauHoi = (document.getElementById('input-cau-hoi')?.value || '').trim().slice(0, 220);
-    const namHoi = document.getElementById('input-nam-hoi')?.value || '';
-    const cauHoi = rawCauHoi ? `[Trọng tâm năm ${namHoi}] ${rawCauHoi}` : '';
+    const namHoi = (document.getElementById('input-nam-hoi')?.value || '').trim();
+    const hasExplicitYear = /\b(19\d{2}|20\d{2})\b/.test(rawCauHoi);
+    const cauHoi = rawCauHoi
+        ? (namHoi && !hasExplicitYear ? `[Trọng tâm năm ${namHoi}] ${rawCauHoi}` : rawCauHoi)
+        : '';
     const notifyEmail = (document.getElementById('input-email-notify')?.value || '').trim();
 
     // Tạo object userInput để truyền vào LocalStorage
