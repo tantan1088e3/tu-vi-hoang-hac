@@ -2369,12 +2369,18 @@ function highlightBaziKeywords(text) {
         }
 
         // 3. GỌI API VÀ ĐỢI (AWAIT) DATA TRẢ VỀ (ĐÃ GỬI KÈM cau_hoi & notify_email)
+        const baziHeaders = {
+            'Content-Type': 'application/json',
+            'x-api-key': 'HoangHac_Web_Public_2026'
+        };
+        const savedAdminKey = localStorage.getItem('hh_ak');
+        if (savedAdminKey) {
+            baziHeaders['x-admin-key'] = savedAdminKey;
+        }
+
         const res = await fetch('https://api.tuvihoanghac.id.vn/api/bazi', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': 'HoangHac_Web_Public_2026'
-            },
+            headers: baziHeaders,
             body: JSON.stringify({
                 year,
                 month,
