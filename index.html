@@ -4308,11 +4308,12 @@ function chonCauHoiNhanh(text) {
     const chi = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
     const curYear = new Date().getFullYear();
 
-    for (let y = curYear; y <= curYear + 2; y++) {
+    for (let y = curYear - 5; y <= curYear + 5; y++) {
         const canChi = `${can[(y - 4) % 10]} ${chi[(y - 4) % 12]}`;
         const opt = document.createElement('option');
         opt.value = `${y} (${canChi})`;
         opt.textContent = `Năm ${y} - ${canChi}`;
+        if (y === curYear) opt.selected = true; // Mặc định chọn năm hiện tại
         sel.appendChild(opt);
     }
 })();
