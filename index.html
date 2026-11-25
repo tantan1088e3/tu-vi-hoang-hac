@@ -1675,13 +1675,26 @@
 }
 a.hl-link {
     text-decoration: none;
+    border-bottom: 1px dotted currentColor; /* Gạch chấm mảnh cùng màu chữ để báo hiệu là link */
     cursor: pointer;
-    transition: opacity 0.15s ease, text-decoration 0.15s ease;
+    transition: opacity 0.15s ease, border-bottom-style 0.15s ease;
 }
+
+/* Thêm mũi tên cực nhỏ phía sau để người dùng (nhất là trên mobile) biết bấm được */
+a.hl-link::after {
+    content: "↗";
+    font-size: 0.72em;
+    margin-left: 2px;
+    opacity: 0.65;
+    vertical-align: super;
+}
+
 a.hl-link:hover {
-    text-decoration: underline;
+    border-bottom-style: solid; /* Rê chuột vào thì nét chấm liền lại */
     opacity: 0.85;
 }
+
+
 </style>
 </head>
 <body>
