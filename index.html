@@ -4423,6 +4423,20 @@ function showHoangHacToast(message, duration = 6500) {
     toast.querySelector('button').addEventListener('click', closeToast);
     setTimeout(closeToast, duration);
 }
+    
+document.addEventListener('focusout', function (e) {
+    if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+            const originalContent = viewport.getAttribute('content');
+            // Ép Safari thu về tỷ lệ 1.0
+            viewport.setAttribute('content', originalContent + ', maximum-scale=1.0');
+            setTimeout(() => {
+                viewport.setAttribute('content', originalContent);
+            }, 300);
+        }
+    }
+});
 </script>
 </body>
 </html>
