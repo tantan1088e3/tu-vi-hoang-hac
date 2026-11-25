@@ -2392,6 +2392,9 @@ function highlightBaziKeywords(text) {
 
         // 5. XỬ LÝ KẾT QUẢ VÀ ĐỔI GIAO DIỆN
         if (response.status === "success") {
+            if (response.cau_hoi_warning) {
+                alert(response.cau_hoi_warning);
+            }
             ChartStorage.save(userInput);
             console.log("Đã lưu lá số thành công!");
             renderHistoryList();
