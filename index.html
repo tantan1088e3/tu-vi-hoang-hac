@@ -2506,22 +2506,61 @@ function getHTMLChiTietDaiVan(dv) {
         return `<div style="font-size: 15.5px; line-height: 1.6; color: #666; font-style: italic; text-align: justify; padding: 10px;">Giai đoạn Tiểu Vận (trước khi lên Đại Vận), năng lượng còn phụ thuộc nhiều vào cha mẹ. Hãy chọn các Đại Vận tiếp theo.</div>`;
     }
 
-    // Xử lý Các mục tương tác
     let tuongTacHtml = "";
     if (phanTich.chi_tiet_tuong_tac && phanTich.chi_tiet_tuong_tac.length > 0) {
         phanTich.chi_tiet_tuong_tac.forEach(item => {
-            
+            const rawLoai = (item.loai || "").toLowerCase();
+
+            // ==========================================
+            // PHÂN LOẠI KÝ HIỆU & MÀU SẮC TRỰC QUAN
+            // ==========================================
+            let icon = "🟡";
+            let borderColor = "#d49a1a"; // Vàng cảnh báo / Trung tính
+            let titleColor = "#9a6b00";
+
+            if (
+                rawLoai.includes("thiên khắc địa xung") ||
+                rawLoai.includes("đại hung") ||
+                rawLoai.includes("hung họa") ||
+                rawLoai.includes("bất an") ||
+                rawLoai.includes("hóa kỵ") ||
+                rawLoai.includes("mất dụng") ||
+                rawLoai.includes("hợp trói kỵ")
+            ) {
+                icon = "🔴";
+                borderColor = "#c0392b"; // Đỏ (Xấu / Rủi ro cao)
+                titleColor = "#a93226";
+            } else if (
+                rawLoai.includes("đại cát") ||
+                rawLoai.includes("cát lợi") ||
+                rawLoai.includes("cát hưng") ||
+                rawLoai.includes("trợ lực") ||
+                rawLoai.includes("hóa cát") ||
+                rawLoai.includes("xung khứ kỵ")
+            ) {
+                icon = "🟢";
+                borderColor = "#1e7e4f"; // Xanh (Tốt / Thuận lợi)
+                titleColor = "#166534";
+            } else if (
+                rawLoai.includes("áp lực") ||
+                rawLoai.includes("bình hòa") ||
+                rawLoai.includes("bình an") ||
+                rawLoai.includes("hình") ||
+                rawLoai.includes("xung")
+            ) {
+                icon = "🟡";
+                borderColor = "#d49a1a"; // Vàng (Cảnh báo nhẹ / Cần lưu ý)
+                titleColor = "#9a6b00";
+            }
+
             // ==========================================
             // AUTO BẮT TỪ KHÓA VÀ NGŨ HÀNH ĐỂ GẮN BADGE
             // ==========================================
             let loaiText = item.loai;
-            
-            // 1. Quét các Hợp / Hội có mang theo Ngũ Hành (VD: Bán hợp Mộc, Tam hợp Kim...)
+
             loaiText = loaiText.replace(/(Tam Hội|Tam Hợp|Bán Hợp|Lục Hợp|Hợp Hóa|Hợp)\s*(Mộc|Kim|Thủy|Hỏa|Thổ)?/gi, (match, kieuHop, nguHanh) => {
-                let badgeClass = 'badge-hop'; // Màu mặc định nếu chỉ ghi "Hợp"
-                
+                let badgeClass = 'badge-hop';
                 if (nguHanh) {
-                    // Nếu dò thấy Ngũ Hành phía sau, ép màu theo Ngũ Hành
                     const nh = nguHanh.toLowerCase();
                     if (nh === 'mộc') badgeClass = 'badge-moc';
                     if (nh === 'kim') badgeClass = 'badge-kim';
@@ -2529,27 +2568,21 @@ function getHTMLChiTietDaiVan(dv) {
                     if (nh === 'hỏa') badgeClass = 'badge-hoa';
                     if (nh === 'thổ') badgeClass = 'badge-tho';
                 } else {
-                    // Nếu không có ngũ hành, phân loại theo tính chất Hợp/Hội
                     const kh = kieuHop.toLowerCase();
                     if (kh.includes('hội')) badgeClass = 'badge-hoi';
                     if (kh.includes('tam hợp')) badgeClass = 'badge-tamhop';
                 }
-                
-                // Trả về HTML đã bọc đúng màu
                 return `<span class="badge-tuvi ${badgeClass}">${match}</span>`;
             });
 
-            // 2. Nhóm Cảnh báo (Màu đỏ/cam) - Giữ nguyên như cũ
             loaiText = loaiText.replace(/(Tương Xung|Trực Xung|Xung)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
             loaiText = loaiText.replace(/(Tương Hình|Tự Hình|Hình)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
             loaiText = loaiText.replace(/(Tương Hại|Hại)/gi, '<span class="badge-tuvi badge-hinh">$1</span>');
             loaiText = loaiText.replace(/(Tương Phá|Phá)/gi, '<span class="badge-tuvi badge-xung">$1</span>');
-            // ==========================================
 
-            // Sử dụng loaiText đã được bọc span badge thay vì item.loai gốc
             tuongTacHtml += `
-                <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid #1e4b41; border-radius: 4px;">
-                    <div style="font-weight: bold; color: #1e4b41; font-size: 15px;">🔸 ${loaiText}</div>
+                <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-left: 3px solid ${borderColor}; border-radius: 4px;">
+                    <div style="font-weight: bold; color: ${titleColor}; font-size: 15px;">${icon} ${loaiText}</div>
                     <div style="font-size: 15px; margin-top: 6px; line-height: 1.6; color: #333; text-align: justify;">${item.chi_tiet}</div>
                 </div>
             `;
