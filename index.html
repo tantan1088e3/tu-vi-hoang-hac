@@ -3873,6 +3873,7 @@ async function checkExistingAiResult(maLaSo, btn) {
     const url = `https://api.tuvihoanghac.id.vn/api/check-ai-by-code/${encodeURIComponent(maLaSo)}`;
     let attempts = 0;
     const maxAttempts = 15; // 15 lần * 60s = tối đa 15 phút
+    let isFinalDone = false;
 
     const pollOnce = async () => {
         if (cachedAiCode !== maLaSo) {
@@ -3896,23 +3897,33 @@ async function checkExistingAiResult(maLaSo, btn) {
             }
 
             if (data.status === "done" && data.data) {
+                isFinalDone = true;
                 stopExistingAiPolling();
                 cachedAiContent = data.data;
                 setAiButtonReadyState(btn);
+            } else if (data.status === "waiting" && data.data) {
+                // Có bài luận gốc -> mở nút cho khách đọc ngay, NHƯNG vẫn tiếp tục polling chờ câu hỏi mới
+                cachedAiContent = data.data;
+                setAiButtonReadyState(btn);
             } else if (data.status === "error" || data.status === "unavailable") {
+                isFinalDone = true;
                 stopExistingAiPolling();
-                setAiButtonUnavailableState(btn);
+                if (!cachedAiContent) {
+                    setAiButtonUnavailableState(btn);
+                }
             }
         } catch (e) {
-            setAiButtonUnavailableState(btn);
+            if (!cachedAiContent) {
+                setAiButtonUnavailableState(btn);
+            }
         }
     };
 
     // Kiểm tra ngay 1 lần khi vừa lập xong lá số
     await pollOnce();
 
-    // Chưa có bài thì cứ 1 phút quét lại 1 lần
-    if (cachedAiCode === maLaSo && !cachedAiContent && !existingAiPollTimer) {
+    // Chưa xong hẳn (kể cả khi đang xem tạm bài gốc) thì cứ 1 phút quét lại 1 lần
+    if (cachedAiCode === maLaSo && !isFinalDone && !existingAiPollTimer) {
         existingAiPollTimer = setInterval(pollOnce, 60000);
     }
 }
