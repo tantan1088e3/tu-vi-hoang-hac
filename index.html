@@ -1675,22 +1675,12 @@
 }
 a.hl-link {
     text-decoration: none;
-    border-bottom: 1px dotted currentColor; /* Gạch chấm mảnh cùng màu chữ để báo hiệu là link */
+    border-bottom: 1px dotted currentColor;
     cursor: pointer;
     transition: opacity 0.15s ease, border-bottom-style 0.15s ease;
 }
-
-/* Thêm mũi tên cực nhỏ phía sau để người dùng (nhất là trên mobile) biết bấm được */
-a.hl-link::after {
-    content: "↗";
-    font-size: 0.72em;
-    margin-left: 2px;
-    opacity: 0.65;
-    vertical-align: super;
-}
-
 a.hl-link:hover {
-    border-bottom-style: solid; /* Rê chuột vào thì nét chấm liền lại */
+    border-bottom-style: solid;
     opacity: 0.85;
 }
 
@@ -2136,11 +2126,7 @@ a.hl-link:hover {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     const BAZI_KEYWORD_LINKS = {
-        "thương quan chế sát": "/bai-viet/thuong-quan-che-sat.html",
-        "thất lệnh": "/bai-viet/dac-lenh-that-lenh.html",
-        "đắc lệnh": "/bai-viet/dac-lenh-that-lenh.html",
-        "lục hợp": "/bai-viet/luc-hop-dia-chi.html",
-        "tự hình": "/bai-viet/tu-hinh-trong-bat-tu.html",
+        /*"thương quan chế sát": "/bai-viet/thuong-quan-che-sat.html"*/
         // ... sau này có bài mới chỉ cần thêm vào đây
     };
     
