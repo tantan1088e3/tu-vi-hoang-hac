@@ -3892,7 +3892,6 @@ function stopExistingAiPolling() {
 function formatWebPreviewContent(fullMarkdown) {
     if (!fullMarkdown) return "";
 
-    // Tìm vị trí bắt đầu của PHẦN II (hỗ trợ cả định dạng mới lẫn bài cache cũ "2. Luận giải Đại Vận")
     const part2Regex = /(?:^|\n)(?:#{1,3}\s*|\*{1,2}\s*)?(?:PHẦN\s+II\b|2\.\s*Luận\s+giải\s+Đại\s+Vận)/i;
     const match = fullMarkdown.match(part2Regex);
 
@@ -3901,31 +3900,36 @@ function formatWebPreviewContent(fullMarkdown) {
     const cutIndex = match.index;
     const part1 = fullMarkdown.slice(0, cutIndex).trim();
 
-    // Lấy khoảng 220 ký tự đầu của Phần II để làm nền mờ kích thích tò mò
+    // Lấy dài hơn (~600 ký tự) và giữ nguyên xuống dòng để nhìn rõ dáng bài luận Đại Vận
     const teaserRaw = fullMarkdown
-        .slice(cutIndex, cutIndex + 260)
+        .slice(cutIndex, cutIndex + 600)
         .replace(/[#*_`>]/g, "")
-        .trim();
+        .trim()
+        .replace(/\n+/g, "<br><br>");
 
-    // Thay đúng package ID app của bạn nếu khác
     const googlePlayUrl = "https://play.google.com/store/apps/details?id=com.buiquangtan.bazi";
 
     const lockedHtml = `
-<div style="position:relative; margin-top:24px; border-radius:12px; overflow:hidden; border:1px solid #d4af37; background:#f9f8f4;">
-    <div style="padding:18px; filter:blur(5px); -webkit-filter:blur(5px); user-select:none; pointer-events:none; opacity:0.65; color:#333; line-height:1.6;">
+<div style="position:relative; margin-top:20px; min-height:260px; border-radius:12px; overflow:hidden;">
+    <!-- Lớp chữ Phần II hiện mờ ở bên dưới -->
+    <div style="padding:16px 8px; filter:blur(3.5px); -webkit-filter:blur(3.5px); user-select:none; pointer-events:none; opacity:0.75; color:#d8d5ce; line-height:1.7; font-size:14.5px;">
         ${teaserRaw}...
     </div>
-    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; background:linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.96) 55%);">
-        <div style="font-weight:700; font-size:16px; color:#8B0000; margin-bottom:6px;">
-            🔒 Mở khóa trọn bộ Đại Vận & Lời khuyên Cải Vận
+
+    <!-- Lớp phủ chuyển sắc nhẹ dần xuống đáy + Hộp tải App nổi ở giữa -->
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px; background:linear-gradient(180deg, rgba(22,28,24,0.15) 0%, rgba(22,28,24,0.75) 55%, rgba(22,28,24,0.98) 100%);">
+        <div style="background:rgba(20,26,22,0.92); border:1px solid #d4af37; border-radius:12px; padding:18px 22px; text-align:center; max-width:440px; box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+            <div style="font-weight:700; font-size:16px; color:#f0d78c; margin-bottom:6px;">
+                🔒 Mở khóa trọn bộ Đại Vận & Lời khuyên Cải Vận
+            </div>
+            <div style="font-size:13.5px; color:#d8d5ce; margin-bottom:14px; line-height:1.5;">
+                Tải ứng dụng <b style="color:#ffffff;">Xem Bát Tự - Tứ Trụ</b> trên Google Play để đọc miễn phí toàn bộ luận giải 10 Đại Vận và lời khuyên chi tiết.
+            </div>
+            <a href="${googlePlayUrl}" target="_blank" rel="noopener noreferrer"
+               style="display:inline-block; background:#d4af37; color:#161c18; text-decoration:none; font-weight:700; font-size:14px; padding:10px 22px; border-radius:8px;">
+                📲 Tải App trên Google Play (Miễn phí)
+            </a>
         </div>
-        <div style="font-size:13.5px; color:#444; margin-bottom:14px; max-width:420px; line-height:1.5;">
-            Tải ứng dụng <b>Xem Bát Tự - Tứ Trụ</b> trên Google Play để đọc miễn phí toàn bộ luận giải 10 Đại Vận và lời khuyên chi tiết.
-        </div>
-        <a href="${googlePlayUrl}" target="_blank" rel="noopener noreferrer"
-           style="display:inline-block; background:#1b5e20; color:#ffffff; text-decoration:none; font-weight:700; font-size:14px; padding:10px 22px; border-radius:8px; box-shadow:0 3px 8px rgba(0,0,0,0.15);">
-            📲 Tải App trên Google Play (Miễn phí)
-        </a>
     </div>
 </div>`;
 
