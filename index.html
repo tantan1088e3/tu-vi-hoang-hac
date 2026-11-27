@@ -3900,7 +3900,6 @@ function formatWebPreviewContent(fullMarkdown) {
     const cutIndex = match.index;
     const part1 = fullMarkdown.slice(0, cutIndex).trim();
 
-    // Lấy dài hơn (~600 ký tự) và giữ nguyên xuống dòng để nhìn rõ dáng bài luận Đại Vận
     const teaserRaw = fullMarkdown
         .slice(cutIndex, cutIndex + 600)
         .replace(/[#*_`>]/g, "")
@@ -3909,29 +3908,16 @@ function formatWebPreviewContent(fullMarkdown) {
 
     const googlePlayUrl = "https://play.google.com/store/apps/details?id=com.buiquangtan.bazi";
 
-    const lockedHtml = `
-<div style="position:relative; margin-top:20px; min-height:260px; border-radius:12px; overflow:hidden;">
-    <!-- Lớp chữ Phần II hiện mờ ở bên dưới -->
-    <div style="padding:16px 8px; filter:blur(3.5px); -webkit-filter:blur(3.5px); user-select:none; pointer-events:none; opacity:0.75; color:#d8d5ce; line-height:1.7; font-size:14.5px;">
-        ${teaserRaw}...
-    </div>
-
-    <!-- Lớp phủ chuyển sắc nhẹ dần xuống đáy + Hộp tải App nổi ở giữa -->
-    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px; background:linear-gradient(180deg, rgba(22,28,24,0.15) 0%, rgba(22,28,24,0.75) 55%, rgba(22,28,24,0.98) 100%);">
-        <div style="background:rgba(20,26,22,0.92); border:1px solid #d4af37; border-radius:12px; padding:18px 22px; text-align:center; max-width:440px; box-shadow:0 8px 24px rgba(0,0,0,0.5);">
-            <div style="font-weight:700; font-size:16px; color:#f0d78c; margin-bottom:6px;">
-                🔒 Mở khóa trọn bộ Đại Vận & Lời khuyên Cải Vận
-            </div>
-            <div style="font-size:13.5px; color:#d8d5ce; margin-bottom:14px; line-height:1.5;">
-                Tải ứng dụng <b style="color:#ffffff;">Xem Bát Tự - Tứ Trụ</b> trên Google Play để đọc miễn phí toàn bộ luận giải 10 Đại Vận và lời khuyên chi tiết.
-            </div>
-            <a href="${googlePlayUrl}" target="_blank" rel="noopener noreferrer"
-               style="display:inline-block; background:#d4af37; color:#161c18; text-decoration:none; font-weight:700; font-size:14px; padding:10px 22px; border-radius:8px;">
-                📲 Tải App trên Google Play (Miễn phí)
-            </a>
-        </div>
-    </div>
-</div>`;
+    // Viết không thụt lề, không dòng trống để Markdown không hiểu nhầm là code block
+    const lockedHtml =
+`<div style="position:relative; margin-top:20px; min-height:260px; border-radius:12px; overflow:hidden;">` +
+`<div style="padding:16px 8px; filter:blur(2px); -webkit-filter:blur(2px); user-select:none; pointer-events:none; opacity:0.85; color:#d8d5ce; line-height:1.7; font-size:14.5px;">${teaserRaw}...</div>` +
+`<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px; background:linear-gradient(180deg, rgba(22,28,24,0.1) 0%, rgba(22,28,24,0.7) 55%, rgba(22,28,24,0.96) 100%);">` +
+`<div style="background:rgba(20,26,22,0.92); border:1px solid #d4af37; border-radius:12px; padding:18px 22px; text-align:center; max-width:440px; box-shadow:0 8px 24px rgba(0,0,0,0.5);">` +
+`<div style="font-weight:700; font-size:16px; color:#f0d78c; margin-bottom:6px;">🔒 Mở khóa trọn bộ Đại Vận & Lời khuyên Cải Vận</div>` +
+`<div style="font-size:13.5px; color:#d8d5ce; margin-bottom:14px; line-height:1.5;">Tải ứng dụng <b style="color:#ffffff;">Xem Bát Tự - Tứ Trụ</b> trên Google Play để đọc miễn phí toàn bộ luận giải 10 Đại Vận và lời khuyên chi tiết.</div>` +
+`<a href="${googlePlayUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block; background:#d4af37; color:#161c18; text-decoration:none; font-weight:700; font-size:14px; padding:10px 22px; border-radius:8px;">📲 Tải App trên Google Play (Miễn phí)</a>` +
+`</div></div></div>`;
 
     return part1 + "\n\n" + lockedHtml;
 }
