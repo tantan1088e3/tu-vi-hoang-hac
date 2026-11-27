@@ -1963,23 +1963,23 @@ a.hl-link:hover {
 
                     <!-- Khối Mời Trà (Donate) - Chỉ hiện sau khi có bài luận -->
                     <div id="hh-donate-section" style="margin-top:16px;">
-                        <div style="background:#fbf8f1; border:1px solid #dfd2b0; border-radius:8px; padding:14px 12px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
-                            <div style="color:#8b5a14; font-weight:700; font-size:13.5px; margin-bottom:6px;">
+                        <div style="background:#fbf8f1; border:1px solid #d8e2dc; border-radius:8px; padding:12px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+                            <div style="color:#1c4228; font-weight:700; font-size:13px; margin-bottom:6px; letter-spacing:0.2px;">
                                 🍵 TÙY DUYÊN MỜI TRÀ CỤ HOÀNG HẠC
                             </div>
-                            <p style="font-size:12px; line-height:1.5; color:#4a4f4b; margin:0 0 10px 0;">
+                            <p style="font-size:12px; line-height:1.45; color:#555555; margin:0 0 10px 0;">
                                 Hệ thống lập lá số và luận giải tại <strong style="color:#1c4228;">Hoàng Hạc Các</strong> hoàn toàn miễn phí.
                                 Nếu bài luận mang lại cho bạn một góc nhìn hữu ích, bạn có thể tùy hỷ mời lão phu một chén trà để duy trì đèn sách và máy chủ.
                             </p>
-                            <button type="button" id="hh-toggle-qr-btn"
-                                    style="width:100%; background:linear-gradient(135deg, #d4af37, #b59024); color:#161c18; border:none; border-radius:6px; padding:8px 12px; font-weight:700; font-size:12.5px; cursor:pointer;">
+                            <button type="button" id="hh-toggle-qr-btn" onclick="toggleDonateQr()"
+                                    style="width:100%; background:#1c4228; color:#f0d78c; border:none; border-radius:6px; padding:8px 12px; font-weight:700; font-size:13px; cursor:pointer;">
                                 Hiện mã QR Mời Trà
                             </button>
                             <div id="hh-qr-wrap" style="display:none; margin-top:12px;">
                                 <img src="qr-mb-fini.png" alt="Mã QR Mời Trà Hoàng Hạc Các"
-                                     style="width:160px; max-width:90%; border-radius:8px; border:2px solid #d4af37; background:#fff; padding:4px;" />
-                                <div style="margin-top:6px; font-size:11.5px; color:#5c635e;">
-                                    Nội dung CK gợi ý: <code style="color:#8b5a14;">Moi tra ${safeCode}</code>
+                                     style="width:150px; max-width:90%; border-radius:8px; border:2px solid #1c4228; background:#ffffff; padding:4px;" />
+                                <div style="margin-top:6px; font-size:11.5px; color:#555555;">
+                                    Nội dung CK gợi ý: <code style="color:#1c4228; font-weight:700;">Moi tra ${safeCode}</code>
                                 </div>
                             </div>
                         </div>
@@ -4472,6 +4472,16 @@ function showHoangHacToast(message, duration = 6500) {
         }
     }
 });*/
+
+function toggleDonateQr() {
+    const wrap = document.getElementById("hh-qr-wrap");
+    const btn = document.getElementById("hh-toggle-qr-btn");
+    if (!wrap || !btn) return;
+
+    const isHidden = wrap.style.display === "none" || !wrap.style.display;
+    wrap.style.display = isHidden ? "block" : "none";
+    btn.textContent = isHidden ? "Ẩn mã QR Mời Trà" : "Hiện mã QR Mời Trà";
+}
 </script>
 </body>
 </html>
