@@ -2112,45 +2112,7 @@ a.hl-link:hover {
                             <span>Vật phẩm thanh tịnh & Trà dưỡng tâm</span>
                             <span class="aff-tag">TikTok Shop</span>
                         </div>
-                        <div class="aff-list">
-                            <!-- Thẻ 1: Nhang Gừng Mộc Thảo An Hương -->
-                            <a class="aff-item" href="https://shorten.asia/PGCsvMFT" target="_blank" rel="nofollow sponsored noopener noreferrer">
-                                <img class="aff-thumb" src="images/nhang-gung.png" alt="Nhang Gừng Mộc Thảo An Hương">
-                                <div class="aff-info">
-                                    <div class="aff-item-title">Nhang Gừng Mộc Thảo An Hương</div>
-                                    <div class="aff-item-sub">Mall • 4.6★ (187K đã bán)</div>
-                                </div>
-                                <span class="aff-btn">Xem →</span>
-                            </a>
-                    
-                            <!-- Thẻ 2: 1kg Nụ Trầm Hương Quế -->
-                            <a class="aff-item" href="https://shorten.asia/ZeeT8hrY" target="_blank" rel="nofollow sponsored noopener noreferrer">
-                                <img class="aff-thumb" src="images/nu-tram-que.png" alt="1kg Nụ Trầm Hương Quế">
-                                <div class="aff-info">
-                                    <div class="aff-item-title">1kg Nụ Trầm Hương Quế (400 Nụ)</div>
-                                    <div class="aff-item-sub">Star Shop • 4.6★ (52.6K đã bán)</div>
-                                </div>
-                                <span class="aff-btn">Xem →</span>
-                            </a>
-                            <!-- DÒNG 2 - Thẻ 3: Trà Đông Trùng Hạ Thảo Tứ Vị An Nhiên -->
-                            <a class="aff-item" href="https://shorten.asia/kJA41uKV" target="_blank" rel="nofollow sponsored noopener noreferrer">
-                                <img class="aff-thumb" src="images/tra-dong-trung-ha-thao.png" alt="Trà Đông Trùng Hạ Thảo Tứ Vị An Nhiên">
-                                <div class="aff-info">
-                                    <div class="aff-item-title">Trà Đông Trùng Tứ Vị An Nhiên</div>
-                                    <div class="aff-item-sub">Mall • 4.8★ (451.8K đã bán)</div>
-                                </div>
-                                <span class="aff-btn">Xem →</span>
-                            </a>
-                            <!-- DÒNG 2 - Thẻ 4: Trà Lá Mâm Xôi Tứ Vị -->
-                            <a class="aff-item" href="https://shorten.asia/MeGcdWGM" target="_blank" rel="nofollow sponsored noopener noreferrer">
-                                <img class="aff-thumb" src="images/tra-la-mam-xoi.png" alt="Trà Lá Mâm Xôi Tứ Vị">
-                                <div class="aff-info">
-                                    <div class="aff-item-title">Trà Lá Mâm Xôi Tứ Vị (35 Túi)</div>
-                                    <div class="aff-item-sub">Chính hãng • 4.7★ (18K đã bán)</div>
-                                </div>
-                                <span class="aff-btn">Xem →</span>
-                            </a>
-                        </div>
+                        <div id="aff-items-list" class="aff-list"></div>
                     </div>
                     
                     <div style="text-align: center">
@@ -4506,6 +4468,56 @@ function toggleDonateQr() {
     wrap.style.display = isHidden ? "block" : "none";
     btn.textContent = isHidden ? "Ẩn mã QR Mời Trà" : "Hiện mã QR Mời Trà";
 }
+
+async function loadAffiliateData() {
+    try {
+        const res = await fetch('data/aff.json?v=' + new Date().toISOString().slice(0, 10), { cache: 'no-cache' });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // 1. Render 4 vật phẩm ở cột giữa
+        const itemsEl = document.getElementById('aff-items-list');
+        if (itemsEl && Array.isArray(data.items)) {
+            itemsEl.innerHTML = data.items.map(item => `
+                <a class="aff-item" href="${item.url}" target="_blank" rel="nofollow sponsored noopener noreferrer">
+                    <img class="aff-thumb" src="${item.img}" alt="${item.alt || item.title}">
+                    <div class="aff-info">
+                        <div class="aff-item-title">${item.title}</div>
+                        <div class="aff-item-sub">${item.sub}</div>
+                    </div>
+                    <span class="aff-btn">Xem →</span>
+                </a>
+            `).join('');
+        }
+
+        // 2. Render tủ sách ở cột phải
+        const booksEl = document.getElementById('aff-books-list');
+        if (booksEl && Array.isArray(data.books)) {
+            booksEl.innerHTML = data.books.map(book => `
+                <a href="${book.url}" target="_blank" rel="nofollow sponsored noopener noreferrer"
+                   style="display:flex; align-items:center; gap:10px; text-decoration:none; padding:8px; border:1px solid #ecebe4; border-radius:6px; background:#fbf8f1; color:inherit;">
+                    <img src="${book.img}" alt="${book.alt || book.title}"
+                         style="width:48px; height:64px; object-fit:cover; border-radius:4px; flex-shrink:0; border:1px solid #e0ddd3; background:#fff;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-size:12.5px; font-weight:700; color:#1c4228; line-height:1.35; margin-bottom:3px;">
+                            ${book.title}
+                        </div>
+                        <div style="font-size:11px; color:#666; margin-bottom:4px;">
+                            ${book.sub}
+                        </div>
+                        <span style="display:inline-block; font-size:11px; font-weight:700; color:#8b5a14;">
+                            Xem trên TikTok Shop →
+                        </span>
+                    </div>
+                </a>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Lỗi tải aff.json:', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadAffiliateData);
 </script>
 </body>
 </html>
