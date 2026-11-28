@@ -2431,6 +2431,15 @@ function switchMainTab(topic, element) {
     const resultBox = document.getElementById('bazi-result-container');
     const aiBox = document.getElementById('ai-result-container');
 
+    // Chỉ lưu lại trạng thái khi đang rời khỏi tab Công cụ
+    const isLeavingCongCu = (sectionTools && window.getComputedStyle(sectionTools).display !== 'none') ||
+                            (resultBox && window.getComputedStyle(resultBox).display !== 'none');
+
+    if (topic !== 'congcu' && isLeavingCongCu) {
+        _wasShowingResult = !!(resultBox && window.getComputedStyle(resultBox).display !== 'none');
+        _wasShowingAI = !!(aiBox && window.getComputedStyle(aiBox).display !== 'none');
+    }
+
     // Ẩn tất cả các tab phụ (Kiến thức, Tải App, Tư vấn)
     document.querySelectorAll('.main-page-section').forEach(sec => {
         sec.style.display = 'none';
@@ -2438,19 +2447,15 @@ function switchMainTab(topic, element) {
 
     if (topic === 'congcu') {
         if (_wasShowingResult && resultBox) {
-            sectionTools.style.display = 'none';
+            if (sectionTools) sectionTools.style.display = 'none';
             resultBox.style.display = 'block';
         } else {
-            sectionTools.style.display = 'block';
+            if (sectionTools) sectionTools.style.display = 'block';
             if (resultBox) resultBox.style.display = 'none';
         }
         if (_wasShowingAI && aiBox) aiBox.style.display = 'block';
     } else {
-        // Lưu lại trạng thái kết quả trước khi ẩn
-        if (resultBox && resultBox.style.display !== 'none') _wasShowingResult = true;
-        if (aiBox && aiBox.style.display !== 'none') _wasShowingAI = true;
-
-        sectionTools.style.display = 'none';
+        if (sectionTools) sectionTools.style.display = 'none';
         if (resultBox) resultBox.style.display = 'none';
         if (aiBox) aiBox.style.display = 'none';
 
@@ -2480,31 +2485,37 @@ function filterKienThuc(cat, btn) {
     }
 
     function resetBaziForm() {
-        stopExistingAiPolling();
-        // 1. HIỆN LẠI FORM NHẬP LIỆU (Xóa inline style 'none', trả về CSS mặc định)
-        document.getElementById('bazi-form-container').style.display = '';
-        
-        // 2. ẨN MỆNH BÀN KẾT QUẢ VÀ NÚT LÊN ĐẦU TRANG
-        document.getElementById('bazi-result-container').style.display = 'none';
-        document.getElementById('btnBackToTop').style.display = 'none'; 
-        document.getElementById('btnAI').style.display = 'none'; 
-        document.getElementById('ai-result-container').style.display = 'none'; 
-        
-        // 3. HIỆN LẠI KHU VỰC LỊCH SỬ
-        document.getElementById('bazi-history-container').style.display = '';
-        
-        const historyCol = document.querySelector('.history-col');
-        if (historyCol) {
-            // QUAN TRỌNG: Đừng dùng 'flex' ở đây, dùng chuỗi rỗng để CSS gốc tự lo!
-            historyCol.style.display = ''; 
-        }
-        
-        // 4. HIỆN LẠI CỘT TRỐNG BÊN TRÁI 
-        const emptyCol = document.querySelector('.empty-col');
-        if (emptyCol) {
-            emptyCol.style.display = '';
-        }
+    stopExistingAiPolling();
+
+    // 0. RESET TRẠNG THÁI TAB & BẬT LẠI KHUNG CHA SECTION-TOOLS
+    _wasShowingResult = false;
+    _wasShowingAI = false;
+    const sectionTools = document.getElementById('section-tools');
+    if (sectionTools) sectionTools.style.display = '';
+
+    // 1. HIỆN LẠI FORM NHẬP LIỆU (Xóa inline style 'none', trả về CSS mặc định)
+    document.getElementById('bazi-form-container').style.display = '';
+
+    // 2. ẨN MỆNH BÀN KẾT QUẢ VÀ NÚT LÊN ĐẦU TRANG
+    document.getElementById('bazi-result-container').style.display = 'none';
+    document.getElementById('btnBackToTop').style.display = 'none';
+    document.getElementById('btnAI').style.display = 'none';
+    document.getElementById('ai-result-container').style.display = 'none';
+
+    // 3. HIỆN LẠI KHU VỰC LỊCH SỬ
+    document.getElementById('bazi-history-container').style.display = '';
+
+    const historyCol = document.querySelector('.history-col');
+    if (historyCol) {
+        historyCol.style.display = '';
     }
+
+    // 4. HIỆN LẠI CỘT TRỐNG BÊN TRÁI
+    const emptyCol = document.querySelector('.empty-col');
+    if (emptyCol) {
+        emptyCol.style.display = '';
+    }
+}
 
     function scrollToAnalysis() {
         document.getElementById('box-luan-giai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
