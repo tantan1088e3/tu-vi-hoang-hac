@@ -4682,6 +4682,19 @@ async function loadAffiliateData() {
     }
 }
 
+function openTabFromHash() {
+    const topic = window.location.hash.replace('#', '');
+    if (!topic) return;
+
+    const btn = document.querySelector(`.main-tab[onclick*="'${topic}'"]`);
+    if (btn) {
+        switchMainTab(topic, btn);
+    }
+}
+
+window.addEventListener('DOMContentLoaded', openTabFromHash);
+window.addEventListener('hashchange', openTabFromHash);
+
 document.addEventListener('DOMContentLoaded', loadAffiliateData);
 </script>
 </body>
