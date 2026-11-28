@@ -1790,7 +1790,7 @@ a.hl-link:hover {
 <nav class="main-nav">
     <div class="main-menu-list">
         <button class="main-tab active" onclick="switchMainTab('congcu', this)">LẬP LÁ SỐ</button>
-        <button class="main-tab" onclick="switchMainTab('tutru', this)">TỨ TRỤ BÁT TỰ</button>
+        <button class="main-tab" onclick="switchMainTab('tutru', this)">KIẾN THỨC</button>
         <button class="main-tab" onclick="switchMainTab('tuvi', this)">TỬ VI ĐẨU SỐ</button>
         <button class="main-tab" onclick="switchMainTab('app', this)">TẢI APP</button>
         <button class="main-tab" onclick="switchMainTab('tuvan', this)">TƯ VẤN ★</button>
@@ -2211,6 +2211,97 @@ a.hl-link:hover {
     </div>
 </div>
 
+<!-- ==================== TAB 2: KIẾN THỨC ==================== -->
+<div id="section-kienthuc" class="main-page-section" style="display: none; max-width: 1100px; margin: 24px auto; padding: 0 16px;">
+    <div style="text-align: center; margin-bottom: 22px;">
+        <h2 style="color: #1c4228; margin: 0 0 6px;">KIẾN THỨC MỆNH LÝ</h2>
+        <p style="color: #666; font-size: 14px; margin: 0;">Tổng hợp nền tảng Tứ Trụ Bát Tự, Tử Vi Đẩu Số & Lục Hào</p>
+        <!-- Nút lọc nhanh -->
+        <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
+            <button class="kt-filter-btn active" onclick="filterKienThuc('all', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #1c4228; background: #1c4228; color: #f0d78c; cursor: pointer; font-size: 13px; font-weight: 600;">Tất cả</button>
+            <button class="kt-filter-btn" onclick="filterKienThuc('tutru', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #d8e2dc; background: #fff; color: #1c4228; cursor: pointer; font-size: 13px; font-weight: 600;">Tứ Trụ (Bát Tự)</button>
+            <button class="kt-filter-btn" onclick="filterKienThuc('tuvi', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #d8e2dc; background: #fff; color: #1c4228; cursor: pointer; font-size: 13px; font-weight: 600;">Tử Vi Đẩu Số</button>
+            <button class="kt-filter-btn" onclick="filterKienThuc('luchao', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #d8e2dc; background: #fff; color: #1c4228; cursor: pointer; font-size: 13px; font-weight: 600;">Lục Hào</button>
+        </div>
+    </div>
+
+    <!-- Danh sách bài viết -->
+    <div id="kt-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px;">
+        <article class="kt-card" data-cat="tutru" style="background: #fff; border: 1px solid #d8e2dc; border-radius: 8px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <span style="font-size: 11px; font-weight: 700; color: #1c4228; background: #e8f1eb; padding: 3px 8px; border-radius: 4px;">TỨ TRỤ</span>
+            <h3 style="margin: 10px 0 8px; font-size: 16px; color: #1c4228; line-height: 1.4;">Cách đọc Vượng Suy & Dụng Thần trên Hoàng Hạc Các</h3>
+            <p style="font-size: 13.5px; color: #555; line-height: 1.55; margin: 0 0 14px;">Hiểu đúng bản chất Đắc lệnh, Cội rễ, Xung – Hình – Hợp – Phá để tự chiêm nghiệm lá số của chính mình.</p>
+            <a href="#" style="color: #1c4228; font-weight: 700; font-size: 13px; text-decoration: none;">Đọc tiếp →</a>
+        </article>
+
+        <article class="kt-card" data-cat="tutru" style="background: #fff; border: 1px solid #d8e2dc; border-radius: 8px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <span style="font-size: 11px; font-weight: 700; color: #1c4228; background: #e8f1eb; padding: 3px 8px; border-radius: 4px;">TỨ TRỤ</span>
+            <h3 style="margin: 10px 0 8px; font-size: 16px; color: #1c4228; line-height: 1.4;">Cách xem Biểu đồ sóng năng lượng 10 năm</h3>
+            <p style="font-size: 13.5px; color: #555; line-height: 1.55; margin: 0 0 14px;">Vì sao có năm gặp Kỵ thần nhưng nhờ có Dụng thần thông quan mà vẫn bình hòa, ổn định?</p>
+            <a href="#" style="color: #1c4228; font-weight: 700; font-size: 13px; text-decoration: none;">Đọc tiếp →</a>
+        </article>
+
+        <article class="kt-card" data-cat="tuvi" style="background: #fff; border: 1px solid #d8e2dc; border-radius: 8px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <span style="font-size: 11px; font-weight: 700; color: #8a6d1c; background: #fbf4de; padding: 3px 8px; border-radius: 4px;">TỬ VI</span>
+            <h3 style="margin: 10px 0 8px; font-size: 16px; color: #1c4228; line-height: 1.4;">Nhập môn xem lá số Tử Vi: Tam Hợp & Tứ Hóa</h3>
+            <p style="font-size: 13.5px; color: #555; line-height: 1.55; margin: 0 0 14px;">Những nguyên tắc cốt lõi khi nhìn Mệnh – Thân và các cung cường trên lá số Tử Vi Đẩu Số.</p>
+            <a href="#" style="color: #1c4228; font-weight: 700; font-size: 13px; text-decoration: none;">Đọc tiếp →</a>
+        </article>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: TẢI APP ==================== -->
+<div id="section-app" class="main-page-section" style="display: none; max-width: 900px; margin: 24px auto; padding: 0 16px;">
+    <div style="background: #fff; border: 1px solid #d8e2dc; border-radius: 10px; padding: 28px 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <h2 style="color: #1c4228; margin: 0 0 8px;">ỨNG DỤNG HOÀNG HẠC CÁC (ANDROID)</h2>
+        <p style="color: #555; font-size: 14.5px; max-width: 600px; margin: 0 auto 22px; line-height: 1.6;">
+            Lập lá số Tứ Trụ Bát Tự nhanh chóng, lưu trữ danh sách lá số ngay trên điện thoại và tra cứu Đại Vận – Lưu Niên mọi lúc mọi nơi.
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 260px; max-width: 380px; background: #fbf8f1; border: 1px solid #d8e2dc; border-radius: 8px; padding: 20px;">
+                <h3 style="color: #1c4228; margin: 0 0 8px; font-size: 16px;">Xem Bát Tự - Tứ Trụ</h3>
+                <p style="font-size: 13px; color: #555; margin: 0 0 16px; line-height: 1.5;">
+                    An lá số chuẩn tiết khí, phân tích Vượng Suy, Xung Hình Hợp Phá và biểu đồ vận hạn 10 năm.
+                </p>
+                <a href="https://play.google.com/store/apps/details?id=com.buiquangtan.bazi&pcampaignid=web_share" target="_blank"
+                   style="display: inline-block; background: #1c4228; color: #f0d78c; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 13.5px; text-decoration: none;">
+                    ▶ Tải trên Google Play
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: TƯ VẤN ★ ==================== -->
+<div id="section-tuvan" class="main-page-section" style="display: none; max-width: 820px; margin: 24px auto; padding: 0 16px;">
+    <div style="background: #fff; border: 1px solid #d8e2dc; border-radius: 10px; padding: 28px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <h2 style="color: #1c4228; text-align: center; margin: 0 0 8px;">HỖ TRỢ LUẬN GIẢI LÁ SỐ</h2>
+        <p style="color: #555; text-align: center; font-size: 14px; margin: 0 0 22px; line-height: 1.6;">
+            Hệ thống web cung cấp công cụ lập lá số và chỉ báo nền tảng miễn phí. Nếu bạn cần luận giải chuyên sâu theo hoàn cảnh thực tế (Công việc, Tài lộc, Hôn nhân, Vận hạn), vui lòng liên hệ trực tiếp:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+            <div style="background: #fbf8f1; border: 1px solid #d8e2dc; border-radius: 8px; padding: 18px; text-align: center;">
+                <h4 style="color: #1c4228; margin: 0 0 8px;">Facebook Vô Vi Các</h4>
+                <p style="font-size: 13px; color: #555; margin: 0 0 14px;">Nhắn tin trực tiếp gửi ngày giờ sinh và câu hỏi cần giải đáp.</p>
+                <a href="https://www.facebook.com/profile.php?id=61556658004278" target="_blank"
+                   style="display: inline-block; background: #1c4228; color: #f0d78c; padding: 9px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; text-decoration: none;">
+                    Kết nối Facebook
+                </a>
+            </div>
+
+            <div style="background: #fbf8f1; border: 1px solid #d8e2dc; border-radius: 8px; padding: 18px; text-align: center;">
+                <h4 style="color: #1c4228; margin: 0 0 8px;">Lưu ý trước khi hỏi</h4>
+                <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.55; text-align: left;">
+                    • Cung cấp đúng ngày, tháng, năm, giờ sinh (Dương lịch hoặc Âm lịch rõ ràng).<br>
+                    • Ghi rõ giới tính và 1–2 vấn đề trọng tâm bạn đang quan tâm nhất.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer class="site-footer" style="text-align: center; padding: 3rem 1.5rem; background: #1a1a1a; color: #888; border-top: 4px solid var(--accent); margin-top: 40px; font-size: 0.9rem; line-height: 1.6;">
     <p style="font-size: 1.05rem; font-weight: bold; color: #aaa; margin-bottom: 15px;">
         &copy; 2026 Tử Vi Hoàng Hạc
@@ -2288,15 +2379,59 @@ function highlightBaziKeywords(text) {
     // Biến lưu trữ dữ liệu lá số để truyền cho AI
     let currentBaziDataForAI = null;
     
-    function switchMainTab(topic, element) {
-        document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
-        element.classList.add('active');
-        if (topic === 'congcu') {
-            document.getElementById('section-tools').style.display = 'block';
+    let _wasShowingResult = false;
+let _wasShowingAI = false;
+
+function switchMainTab(topic, element) {
+    document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
+    if (element) element.classList.add('active');
+
+    const sectionTools = document.getElementById('section-tools');
+    const resultBox = document.getElementById('bazi-result-container');
+    const aiBox = document.getElementById('ai-result-container');
+
+    // Ẩn tất cả các tab phụ (Kiến thức, Tải App, Tư vấn)
+    document.querySelectorAll('.main-page-section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+
+    if (topic === 'congcu') {
+        if (_wasShowingResult && resultBox) {
+            sectionTools.style.display = 'none';
+            resultBox.style.display = 'block';
         } else {
-            document.getElementById('section-tools').style.display = 'none';
+            sectionTools.style.display = 'block';
+            if (resultBox) resultBox.style.display = 'none';
         }
+        if (_wasShowingAI && aiBox) aiBox.style.display = 'block';
+    } else {
+        // Lưu lại trạng thái kết quả trước khi ẩn
+        if (resultBox && resultBox.style.display !== 'none') _wasShowingResult = true;
+        if (aiBox && aiBox.style.display !== 'none') _wasShowingAI = true;
+
+        sectionTools.style.display = 'none';
+        if (resultBox) resultBox.style.display = 'none';
+        if (aiBox) aiBox.style.display = 'none';
+
+        const target = document.getElementById('section-' + topic);
+        if (target) target.style.display = 'block';
     }
+}
+
+function filterKienThuc(cat, btn) {
+    document.querySelectorAll('.kt-filter-btn').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#1c4228';
+        b.style.borderColor = '#d8e2dc';
+    });
+    btn.style.background = '#1c4228';
+    btn.style.color = '#f0d78c';
+    btn.style.borderColor = '#1c4228';
+
+    document.querySelectorAll('.kt-card').forEach(card => {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+    });
+}
 
     function switchToolTab(toolType, element) {
         document.querySelectorAll('.sub-tab').forEach(tab => tab.classList.remove('active'));
