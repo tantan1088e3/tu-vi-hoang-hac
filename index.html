@@ -1757,10 +1757,6 @@ a.hl-link:hover {
     resize: vertical;
 }
 
-#section-kienthuc, #section-app, #section-tuvan{
-    margin: 0 auto 24px !important;
-}
-
 @media (max-width: 768px) {
     #bazi-result-container .box-luan-giai,
     #bazi-result-container .promo-box,
@@ -2152,61 +2148,7 @@ a.hl-link:hover {
             </div>
         </div>
     </div>
-</div>
-
-<!-- KHUNG KẾT QUẢ AI (Nằm ngay trên Footer) -->
-<div id="ai-result-container" style="display: none; max-width: 1100px; margin: 30px auto; padding: 30px; border: 1px solid var(--accent); background: #161c18; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);">
-    <h3 style="color: var(--accent); border-bottom: 1px dashed rgba(212, 175, 55, 0.4); padding-bottom: 15px; margin-bottom: 25px; text-align: center; font-size: 1.3rem;">
-        📜 VÔ VI LUẬN MỆNH
-    </h3>
-    
-    <!-- 1. Trạng thái Loading (Cụ đang bấm độn) -->
-    <div id="ai-loading" style="text-align: center; padding: 30px;">
-        <div style="font-size: 30px; animation: pulse 1.5s infinite; margin-bottom: 15px;">⏳</div>
-        <p style="color: #aaa; font-style: italic;">Cụ Hoàng Hạc đang bấm độn và phân tích dữ liệu... xin chờ giây lát...</p>
-    </div>
-
-    <!-- 2. Nội dung text AI trả về (Đang để nội dung demo) -->
-    <div id="ai-content" style="display: none; color: #ddd; line-height: 1.8; font-size: 1.05rem;">
-        <p><strong>1. Tổng quan ngũ hành:</strong> Dữ liệu từ  đang được phân tích. Nguyên cục thể hiện sự tương tác mạnh mẽ giữa các thiên can...</p>
-        <p><strong>2. Phân tích dụng thần:</strong>Chức Năng Đang Phát Triển</p>
-        <p><strong>3. Lời khuyên cải vận:</strong> ...</p>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <span style="font-size: 0.85rem; color: #666; font-style: italic;">* Phiên bản Demo giao diện, tính năng kết nối LLM đang được hoàn thiện.</span>
-        </div>
-    </div>
-    <!-- Nút tải ảnh (Mặc định ẩn, chỉ hiện khi có kết quả) -->
-    <div id="ai-download-box" style="display: none; text-align: center; margin-top: 35px; border-top: 1px dashed rgba(212, 175, 55, 0.2); padding-top: 25px;">
-        <button id="btnDownloadAI" style="background: var(--accent, #d4af37); color: #111; font-weight: bold; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: all 0.3s;">
-            📄 Tải Lời Phân Tích (PDF)
-        </button>
-        <!-- Khối Mời Trà (Donate) cho luồng xem trực tiếp từ btnAI -->
-    <div style="margin-top: 24px; background: #1c241f; border: 1px solid #3a4a3f; border-radius: 10px; padding: 18px 16px; text-align: center;">
-        <div style="color: #d4af37; font-weight: 700; font-size: 15px; margin-bottom: 8px;">
-            🍵 TÙY DUYÊN MỜI TRÀ CỤ HOÀNG HẠC
-        </div>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #c7cfc9; margin: 0 auto 14px; max-width: 520px;">
-            Hệ thống lập lá số và luận giải tại <strong style="color: #f0d78c;">Hoàng Hạc Các</strong> hoàn toàn miễn phí. 
-            Nếu bài luận mang lại cho bạn một góc nhìn hữu ích, bạn có thể tùy hỷ mời lão phu một chén trà để duy trì đèn sách và máy chủ.
-        </p>
-        <button type="button" id="hh-inline-toggle-qr"
-                onclick="const w = document.getElementById('hh-inline-qr-wrap'); const hide = (w.style.display === 'none' || !w.style.display); w.style.display = hide ? 'block' : 'none'; this.textContent = hide ? 'Ẩn mã QR Mời Trà' : 'Hiện mã QR Mời Trà';"
-                style="background: linear-gradient(135deg, #d4af37, #b59024); color: #161c18; border: none; border-radius: 6px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer;">
-            Hiện mã QR Mời Trà
-        </button>
-        <div id="hh-inline-qr-wrap" style="display: none; margin-top: 14px;">
-            <img src="qr-mb-fini.png" alt="Mã QR Mời Trà Hoàng Hạc Các" 
-                 style="width: 190px; max-width: 75%; border-radius: 8px; border: 2px solid #d4af37; background: #fff; padding: 4px;" />
-            <div style="margin-top: 8px; font-size: 12.5px; color: #aab5ae;">
-                Nội dung CK gợi ý: <code style="color: #f0d78c;">Moi tra Hoang Hac Cac</code>
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-
-<!-- ==================== TAB 2: KIẾN THỨC ==================== -->
+    <!-- ==================== TAB 2: KIẾN THỨC ==================== -->
 <div id="section-kienthuc" class="main-page-section" style="display: none; max-width: 1100px; margin: 24px auto; padding: 0 16px;">
     <div style="text-align: center; margin-bottom: 22px;">
         <h2 style="color: #1c4228; margin: 0 0 6px;">KIẾN THỨC MỆNH LÝ</h2>
@@ -2294,6 +2236,59 @@ a.hl-link:hover {
                 </p>
             </div>
         </div>
+    </div>
+</div>
+</div>
+
+<!-- KHUNG KẾT QUẢ AI (Nằm ngay trên Footer) -->
+<div id="ai-result-container" style="display: none; max-width: 1100px; margin: 30px auto; padding: 30px; border: 1px solid var(--accent); background: #161c18; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);">
+    <h3 style="color: var(--accent); border-bottom: 1px dashed rgba(212, 175, 55, 0.4); padding-bottom: 15px; margin-bottom: 25px; text-align: center; font-size: 1.3rem;">
+        📜 VÔ VI LUẬN MỆNH
+    </h3>
+    
+    <!-- 1. Trạng thái Loading (Cụ đang bấm độn) -->
+    <div id="ai-loading" style="text-align: center; padding: 30px;">
+        <div style="font-size: 30px; animation: pulse 1.5s infinite; margin-bottom: 15px;">⏳</div>
+        <p style="color: #aaa; font-style: italic;">Cụ Hoàng Hạc đang bấm độn và phân tích dữ liệu... xin chờ giây lát...</p>
+    </div>
+
+    <!-- 2. Nội dung text AI trả về (Đang để nội dung demo) -->
+    <div id="ai-content" style="display: none; color: #ddd; line-height: 1.8; font-size: 1.05rem;">
+        <p><strong>1. Tổng quan ngũ hành:</strong> Dữ liệu từ  đang được phân tích. Nguyên cục thể hiện sự tương tác mạnh mẽ giữa các thiên can...</p>
+        <p><strong>2. Phân tích dụng thần:</strong>Chức Năng Đang Phát Triển</p>
+        <p><strong>3. Lời khuyên cải vận:</strong> ...</p>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <span style="font-size: 0.85rem; color: #666; font-style: italic;">* Phiên bản Demo giao diện, tính năng kết nối LLM đang được hoàn thiện.</span>
+        </div>
+    </div>
+    <!-- Nút tải ảnh (Mặc định ẩn, chỉ hiện khi có kết quả) -->
+    <div id="ai-download-box" style="display: none; text-align: center; margin-top: 35px; border-top: 1px dashed rgba(212, 175, 55, 0.2); padding-top: 25px;">
+        <button id="btnDownloadAI" style="background: var(--accent, #d4af37); color: #111; font-weight: bold; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: all 0.3s;">
+            📄 Tải Lời Phân Tích (PDF)
+        </button>
+        <!-- Khối Mời Trà (Donate) cho luồng xem trực tiếp từ btnAI -->
+    <div style="margin-top: 24px; background: #1c241f; border: 1px solid #3a4a3f; border-radius: 10px; padding: 18px 16px; text-align: center;">
+        <div style="color: #d4af37; font-weight: 700; font-size: 15px; margin-bottom: 8px;">
+            🍵 TÙY DUYÊN MỜI TRÀ CỤ HOÀNG HẠC
+        </div>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #c7cfc9; margin: 0 auto 14px; max-width: 520px;">
+            Hệ thống lập lá số và luận giải tại <strong style="color: #f0d78c;">Hoàng Hạc Các</strong> hoàn toàn miễn phí. 
+            Nếu bài luận mang lại cho bạn một góc nhìn hữu ích, bạn có thể tùy hỷ mời lão phu một chén trà để duy trì đèn sách và máy chủ.
+        </p>
+        <button type="button" id="hh-inline-toggle-qr"
+                onclick="const w = document.getElementById('hh-inline-qr-wrap'); const hide = (w.style.display === 'none' || !w.style.display); w.style.display = hide ? 'block' : 'none'; this.textContent = hide ? 'Ẩn mã QR Mời Trà' : 'Hiện mã QR Mời Trà';"
+                style="background: linear-gradient(135deg, #d4af37, #b59024); color: #161c18; border: none; border-radius: 6px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer;">
+            Hiện mã QR Mời Trà
+        </button>
+        <div id="hh-inline-qr-wrap" style="display: none; margin-top: 14px;">
+            <img src="qr-mb-fini.png" alt="Mã QR Mời Trà Hoàng Hạc Các" 
+                 style="width: 190px; max-width: 75%; border-radius: 8px; border: 2px solid #d4af37; background: #fff; padding: 4px;" />
+            <div style="margin-top: 8px; font-size: 12.5px; color: #aab5ae;">
+                Nội dung CK gợi ý: <code style="color: #f0d78c;">Moi tra Hoang Hac Cac</code>
+            </div>
+        </div>
+    </div>
     </div>
 </div>
 
